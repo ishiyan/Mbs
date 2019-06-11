@@ -1,0 +1,39 @@
+.axis text {
+    font-size: 6px;
+}
+
+text.symbol {
+    fill: #BBBBBB;
+}
+
+path.candle {
+    stroke: #000000;
+}
+
+path.candle.body {
+    stroke-width: 0;
+}
+
+path.candle.up {
+    fill: #00AA00;
+    stroke: #00AA00;
+}
+
+path.candle.down {
+    fill: #FF0000;
+    stroke: #FF0000;
+}
+
+path.volume {
+    fill: #DDDDDD;
+}
+
+rect.pane {
+    cursor: move;
+    fill: none;
+    pointer-events: all;
+}
+
+.container {
+    padding:12px;
+}

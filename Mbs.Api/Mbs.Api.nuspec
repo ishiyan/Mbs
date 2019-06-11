@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>Mbs.Api</id>
+        <version>1.0.1-alpha1</version>
+        <description>Mbs library web api</description>
+        <authors>Mbrane</authors>
+        <owners>Mbrane</owners>
+        <projectUrl>http://www.angular.io</projectUrl>
+        <iconUrl>file://Icon.png</iconUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <developmentDependency>false</developmentDependency>
+        <releaseNotes>Version 1.0.1</releaseNotes>
+        <copyright>Copyright © 2018 Mbrane. All rights reserved.</copyright>
+        <tags>mbrane mbs rest api</tags>
+        <dependencies>
+            <dependency id="AutoMapper" version="7.0.1" />
+            <dependency id="AutoMapper.Extensions.Microsoft.DependencyInjection" version="5.0.1" />
+            <dependency id="Swashbuckle.AspNetCore" version="3.0.0" />
+        </dependencies>
+    </metadata>
+    <files>
+      <file src="package.png" target="Icon.png" />
+      <file src="bin\Release\netcoreapp2.1\Mbs.dll" target="lib\netcoreapp2.1\Mbs.dll" />
+      <file src="bin\Release\netcoreapp2.1\Mbs.pdb" target="lib\netcoreapp2.1\Mbs.pdb" />
+      <file src="bin\Release\netcoreapp2.1\Mbs.xml" target="lib\netcoreapp2.1\Mbs.xml" />
+      <file src="bin\Release\netcoreapp2.1\Mbs.Api.dll" target="lib\netcoreapp2.1\Mbs.Api.dll" />
+      <file src="bin\Release\netcoreapp2.1\Mbs.Api.pdb" target="lib\netcoreapp2.1\Mbs.Api.pdb" />
+      <file src="bin\Release\netcoreapp2.1\Mbs.Api.xml" target="lib\netcoreapp2.1\Mbs.Api.xml" />
+      <file src="bin\Release\netcoreapp2.1\Mbs.Api.deps.json" target="lib\netcoreapp2.1\Mbs.Api.deps.json" />
+      <file src="bin\Release\netcoreapp2.1\Mbs.Api.runtimeconfig.json" target="lib\netcoreapp2.1\Mbs.Api.runtimeconfig.json" />
+    </files>
+</package>

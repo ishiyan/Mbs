@@ -1,0 +1,24 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: mbsapihostng
+  labels:
+    app: mbsapihostng
+spec:
+  replicas: {{ .Values.replicaCounts.mbsapihostng }}
+  selector:
+    matchLabels:
+      app: mbsapihostng
+  template:
+    metadata:
+      labels:
+        app: mbsapihostng
+    spec:
+      containers:
+      - name: "{{ .Chart.Name }}"
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        ports:
+        - containerPort: 80
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "{{ .Values.aspnetcore.environment }}"

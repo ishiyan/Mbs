@@ -1,0 +1,41 @@
+// @import '../../styles';
+$small-breakpoint-width: 720px;
+
+.d3-sidenav-container {
+    flex: 1;
+}
+
+.d3-header {
+    display: flex;
+    padding: 8px;
+    min-height: 64px; 
+    div {
+        padding: 24px 8px;
+    }
+}
+
+.d3-sidenav-toggle {
+    padding: 0;
+    margin: 8px;
+    min-width: 64px;
+    display: none;
+    @media (max-width: $small-breakpoint-width) {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+}
+
+/*.d3-sidenav-toggle {
+    padding: 0;
+    margin: 8px;
+    min-width: 64px;
+    display: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}*/
+
+.d3-sidenav-item-selected {
+    font-weight: 600;
+}

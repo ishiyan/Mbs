@@ -1,0 +1,13 @@
+<mat-toolbar color="primary" class="mat-elevation-z8 app-toolbar">
+    <mat-toolbar-row>
+        <mat-icon svgIcon="mbrane" class="logo"></mat-icon>
+        <!-- span>mB</span -->
+        <a mat-button class="hide-small" *ngFor="let key of itemKeys" [routerLink]="key">{{items[key]}}</a>
+        <span class="fill-remaining-space"></span>
+        <!-- theme-picker></theme-picker -->
+        <a mat-button routerLink="d3">D3</a>
+    </mat-toolbar-row>
+    <mat-toolbar-row class="show-small">
+        <a mat-button *ngFor="let key of itemKeys" [routerLink]="key">{{items[key]}}</a>
+    </mat-toolbar-row>
+</mat-toolbar>

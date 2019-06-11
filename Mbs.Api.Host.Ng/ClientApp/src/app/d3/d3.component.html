@@ -1,0 +1,32 @@
+<mat-sidenav-container class="d3-sidenav-container">
+    <mat-sidenav #d3Sidenav fixedTopGap="112" class="mat-elevation-z16"
+        [mode]="mobileQuery.matches ? 'over' : 'side'"
+        [fixedInViewport]="mobileQuery.matches"
+        [opened]="!mobileQuery.matches">
+<!--
+    <mat-sidenav #d3Sidenav fixedTopGap="112" class="mat-elevation-z16"
+        mode="over"
+        fixedInViewport="true"
+        opened="false">
+-->
+        <mat-nav-list>
+            <mat-list-item *ngFor="let sample of samples"
+               [routerLink]="'/d3/' + sample.route"
+               routerLinkActive="d3-sidenav-item-selected"
+               (click)="selectedSample = sample"
+               [class.d3-sidenav-item-selected]="currentSample == sample">
+                   {{sample.name}}
+            </mat-list-item>
+        </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <mat-toolbar color="primary" class="d3-header">
+            <button mat-button class="d3-sidenav-toggle" (click)="d3Sidenav.toggle()">
+                <mat-icon>menu</mat-icon>
+            </button>
+            <div>D3: {{currentSample.name}}</div>
+        </mat-toolbar>
+        <router-outlet></router-outlet>
+        <app-footer></app-footer>
+    </mat-sidenav-content>
+</mat-sidenav-container>

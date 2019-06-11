@@ -1,0 +1,40 @@
+// @import '../../styles';
+// $small-breakpoint-width: 720px;
+
+.mbsapi-sidenav-container {
+    flex: 1;
+}
+
+.mbsapi-header {
+    display: flex;
+    padding: 8px;
+    min-height: 64px; 
+    div {
+        padding: 24px 8px;
+    }
+}
+
+/*.mbsapi-sidenav-toggle {
+    padding: 0;
+    margin: 8px;
+    min-width: 64px;
+    display: none;
+    @media (max-width: $small-breakpoint-width) {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+}*/
+
+.mbsapi-sidenav-toggle {
+    padding: 0;
+    margin: 8px;
+    min-width: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mbsapi-sidenav-item-selected {
+    font-weight: 600;
+}

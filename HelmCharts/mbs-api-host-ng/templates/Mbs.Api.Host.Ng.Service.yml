@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mbsapihostng
+spec:
+  type: ClusterIP
+  selector:
+    app: mbsapihostng
+  ports:
+  - protocol: TCP
+    port: 80

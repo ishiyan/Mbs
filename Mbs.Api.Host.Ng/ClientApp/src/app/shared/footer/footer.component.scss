@@ -1,0 +1,36 @@
+@import '../../../styles';
+
+.footer {
+    margin-top: 40px;
+    padding: 2px;
+    font-size: 12px;
+    background: mat-color($primary);
+    color: mat-color($primary, default-contrast);
+  }
+  
+  .footer-list {
+    align-items: center;
+    display: flex;
+    flex-flow: row wrap;
+    padding-bottom: 8px;
+  }
+
+  .footer-copyright {
+    display: flex;
+    flex: 1;
+    justify-content: flex-end;
+    flex-direction: column;
+    min-width: 225px;
+    text-align: center;
+  }
+
+  .footer-logo {
+    margin-right: 24px;
+    padding-bottom: -12px;
+  }
+
+  @media screen and (max-width: 720px){
+    .footer-list {
+      flex-direction: column;
+    }
+  }

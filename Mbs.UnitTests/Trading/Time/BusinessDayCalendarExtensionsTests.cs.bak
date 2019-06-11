@@ -1,0 +1,336 @@
+﻿using System;
+using Mbs.Trading.Time;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+namespace Mbs.UnitTests.Trading.Time
+{
+    [TestClass]
+    public class BusinessDayCalendarExtensionsTests
+    {
+        private static readonly ExchangeMic[] MicsEuronext =
+        {
+            ExchangeMic.Xbru, ExchangeMic.Alxb, ExchangeMic.Enxb, ExchangeMic.Mlxb, ExchangeMic.Tnlb, ExchangeMic.Vpxb,
+            ExchangeMic.Xbrd, ExchangeMic.Xpar, ExchangeMic.Alxp, ExchangeMic.Xmat, ExchangeMic.Xmli, ExchangeMic.Xmon,
+            ExchangeMic.Xlis, ExchangeMic.Alxl, ExchangeMic.Enxl, ExchangeMic.Mfox, ExchangeMic.Wqxl, ExchangeMic.Xams,
+            ExchangeMic.Tnla, ExchangeMic.Xeuc, ExchangeMic.Xeue, ExchangeMic.Xeui, ExchangeMic.Xldn // , ExchangeMic.Alxa
+        };
+
+        private static readonly ExchangeMic[] MicsUs =
+        {
+            ExchangeMic.Edga, ExchangeMic.Edgx, ExchangeMic.Bato, ExchangeMic.Bats, ExchangeMic.Baty, ExchangeMic.Bids,
+            ExchangeMic.Xbox, ExchangeMic.C2Ox, ExchangeMic.Xcbo, ExchangeMic.Xcbf, ExchangeMic.Fcbt, ExchangeMic.Xcbt,
+            ExchangeMic.Xchi, ExchangeMic.Fcme, ExchangeMic.Xcme, ExchangeMic.Xcec, ExchangeMic.Edgo, ExchangeMic.Eris,
+            ExchangeMic.Ifus, ExchangeMic.Imfx, ExchangeMic.Iexg, ExchangeMic.Xisx, ExchangeMic.Gmni, ExchangeMic.Mcry,
+            ExchangeMic.Xkbt, ExchangeMic.Xmio, ExchangeMic.Xmge, ExchangeMic.Gree, ExchangeMic.Pipe, ExchangeMic.Otcq,
+            ExchangeMic.Psgm, ExchangeMic.Pinx, ExchangeMic.Xpho, ExchangeMic.Ootc, ExchangeMic.Xotc, ExchangeMic.Xoch,
+            ExchangeMic.Xnyl, ExchangeMic.Nodx, ExchangeMic.Xnym, ExchangeMic.Xcis, ExchangeMic.Xndq, ExchangeMic.Xpsx,
+            ExchangeMic.Xphl, ExchangeMic.Xbxo, ExchangeMic.Xbos, ExchangeMic.Xnms, ExchangeMic.Xngs, ExchangeMic.Xncm,
+            ExchangeMic.Xnas, ExchangeMic.Amxo, ExchangeMic.Xase, ExchangeMic.Arco, ExchangeMic.Arcx, ExchangeMic.Xnys
+        };
+
+        private static readonly ExchangeMic[] MicsSwiss =
+        {
+            ExchangeMic.Xbrn, ExchangeMic.Aixe, ExchangeMic.Xqmh, ExchangeMic.Xswb, ExchangeMic.Xswx, ExchangeMic.Xvtx
+        };
+
+        private static readonly ExchangeMic[] MicsSwedish =
+        {
+            ExchangeMic.Xsto, ExchangeMic.Nmtf, ExchangeMic.Xngm, ExchangeMic.Xndx, ExchangeMic.Fnse, ExchangeMic.Xsat
+        };
+
+        private static readonly ExchangeMic[] MicsNorwegian =
+        {
+            ExchangeMic.Xosl, ExchangeMic.Xoas, ExchangeMic.Notc, ExchangeMic.Norx
+        };
+
+        private static readonly ExchangeMic[] MicsDanish =
+        {
+            ExchangeMic.Xcse, ExchangeMic.Dktc, ExchangeMic.Fndk
+        };
+
+        private static readonly ExchangeMic[] MicsNotSpecified =
+        {
+            ExchangeMic.Xxxx
+        };
+
+        // ReSharper disable InconsistentNaming
+        [TestMethod]
+        public void BusinessDayCalendarExtensions_IsBusinessHoliday_NoHolidays_AlwaysWorkingDay()
+        {
+            DateTime dateOrigin = new DateTime(1980, 1, 1);
+            for (int i = 0; i < 365 * 40; ++i)
+            {
+                DateTime date = dateOrigin.AddDays(i).Date;
+                Assert.AreEqual(false, date.IsBusinessHoliday(BusinessDayCalendar.NoHolidays), date.ToLongDateString());
+            }
+        }
+
+        [TestMethod]
+        public void BusinessDayCalendarExtensions_IsBusinessHoliday_Euronext_EuronextHolidayCalendar()
+        {
+            int callCount = InvokeIsBusinessHolidayEuronext();
+            Assert.AreEqual(1, callCount, "EuronextHoliday.IsEuronextHoliday");
+        }
+
+        [TestMethod]
+        public void BusinessDayCalendarExtensions_IsBusinessHoliday_UnitedStates_UsHolidayCalendar()
+        {
+            int callCount = InvokeIsBusinessHolidayUs();
+            Assert.AreEqual(1, callCount, "UsHoliday.IsUsHoliday");
+        }
+
+        [TestMethod]
+        public void BusinessDayCalendarExtensions_IsBusinessHoliday_Switzerland_SwissHolidayCalendar()
+        {
+            int callCount = InvokeIsBusinessHolidaySwiss();
+            Assert.AreEqual(1, callCount, "SwissHoliday.IsSwissHoliday");
+        }
+
+        [TestMethod]
+        public void BusinessDayCalendarExtensions_IsBusinessHoliday_Sweden_SwedishHolidayCalendar()
+        {
+            int callCount = InvokeIsBusinessHolidaySwedish();
+            Assert.AreEqual(1, callCount, "SwedishHoliday.IsSwedishHoliday");
+        }
+
+        [TestMethod]
+        public void BusinessDayCalendarExtensions_IsBusinessHoliday_Denmark_DanishHolidayCalendar()
+        {
+            int callCount = InvokeIsBusinessHolidayDanish();
+            Assert.AreEqual(1, callCount, "DanishHoliday.IsDanishHoliday");
+        }
+
+        [TestMethod]
+        public void BusinessDayCalendarExtensions_IsBusinessHoliday_Norway_NorwegianHolidayCalendar()
+        {
+            int callCount = InvokeIsBusinessHolidayNorwegian();
+            Assert.AreEqual(1, callCount, "NorwegianHoliday.IsNorwegianHoliday");
+        }
+
+        [TestMethod]
+        public void BusinessDayCalendarExtensions_IsBusinessHoliday_EuronextMic_EuronextHolidayCalendar()
+        {
+            foreach (var mic in MicsEuronext)
+            {
+                int callCount = InvokeIsBusinessHolidayEuronext(mic);
+                Assert.AreEqual(1, callCount, "EuronextHoliday.IsEuronextHoliday");
+            }
+        }
+
+        [TestMethod]
+        public void BusinessDayCalendarExtensions_IsBusinessHoliday_UsMic_UsHolidayCalendar()
+        {
+            foreach (var mic in MicsUs)
+            {
+                int callCount = InvokeIsBusinessHolidayUs(mic);
+                Assert.AreEqual(1, callCount, "UsHoliday.IsUsHoliday");
+            }
+        }
+
+        [TestMethod]
+        public void BusinessDayCalendarExtensions_IsBusinessHoliday_SwissMic_SwissHolidayCalendar()
+        {
+            foreach (var mic in MicsSwiss)
+            {
+                int callCount = InvokeIsBusinessHolidaySwiss(mic);
+                Assert.AreEqual(1, callCount, "SwissHoliday.IsSwissHoliday");
+            }
+        }
+
+        [TestMethod]
+        public void BusinessDayCalendarExtensions_IsBusinessHoliday_SwedishMic_SwedishHolidayCalendar()
+        {
+            foreach (var mic in MicsSwedish)
+            {
+                int callCount = InvokeIsBusinessHolidaySwedish(mic);
+                Assert.AreEqual(1, callCount, "SwedishHoliday.IsSwedishHoliday");
+            }
+        }
+
+        [TestMethod]
+        public void BusinessDayCalendarExtensions_IsBusinessHoliday_NorwegianMic_NorwegianHolidayCalendar()
+        {
+            foreach (var mic in MicsNorwegian)
+            {
+                int callCount = InvokeIsBusinessHolidayNorwegian(mic);
+                Assert.AreEqual(1, callCount, "NorwegianHoliday.IsNorwegianHoliday");
+            }
+        }
+
+        [TestMethod]
+        public void BusinessDayCalendarExtensions_IsBusinessHoliday_DanishMic_DanishHolidayCalendar()
+        {
+            foreach (var mic in MicsDanish)
+            {
+                int callCount = InvokeIsBusinessHolidayDanish(mic);
+                Assert.AreEqual(1, callCount, "DanishHoliday.IsDanishHoliday");
+            }
+        }
+
+        [TestMethod]
+        public void BusinessDayCalendarExtensions_IsBusinessHoliday_NotSpecifiedMic_WeekendsOnlyHolidayCalendar()
+        {
+            foreach (var mic in MicsNotSpecified)
+            {
+                int callCount = InvokeIsBusinessHolidayWeekend(mic);
+                Assert.AreEqual(1, callCount, "BusinessDayCalendarExtensions.IsWeekend");
+            }
+        }
+
+        [TestMethod]
+        public void BusinessDayCalendarExtensions_IsBusinessDay_Target_TargetHolidayCalendar()
+        {
+            int callCount = InvokeIsBusinessDayTarget();
+            Assert.AreEqual(1, callCount, "TargetHoliday.IsTargetHoliday");
+        }
+
+        [TestMethod]
+        public void BusinessDayCalendarExtensions_IsBusinessDay_WeekendsOnly_WeekendsOnlyHolidayCalendar()
+        {
+            int callCount = InvokeIsBusinessDayWeekend();
+            Assert.AreEqual(1, callCount, "BusinessDayCalendarExtensions.IsWeekend");
+        }
+
+        [TestMethod]
+        public void BusinessDayCalendarExtensions_IsBusinessDay_NoHolidays_AlwaysWorkingDay()
+        {
+            DateTime dateOrigin = new DateTime(1980, 1, 1);
+            for (int i = 0; i < 365 * 40; ++i)
+            {
+                DateTime date = dateOrigin.AddDays(i).Date;
+                Assert.AreEqual(true, date.IsBusinessDay(BusinessDayCalendar.NoHolidays), date.ToLongDateString());
+            }
+        }
+
+        [TestMethod]
+        public void BusinessDayCalendarExtensions_IsBusinessDay_Euronext_EuronextHolidayCalendar()
+        {
+            int callCount = InvokeIsBusinessDayEuronext();
+            Assert.AreEqual(1, callCount, "EuronextHoliday.IsEuronextHoliday");
+        }
+
+        [TestMethod]
+        public void BusinessDayCalendarExtensions_IsBusinessDay_UnitedStates_UsHolidayCalendar()
+        {
+            int callCount = InvokeIsBusinessDayUs();
+            Assert.AreEqual(1, callCount, "UsHoliday.IsUsHoliday");
+        }
+
+        [TestMethod]
+        public void BusinessDayCalendarExtensions_IsBusinessDay_Switzerland_SwissHolidayCalendar()
+        {
+            int callCount = InvokeIsBusinessDaySwiss();
+            Assert.AreEqual(1, callCount, "SwissHoliday.IsSwissHoliday");
+        }
+
+        [TestMethod]
+        public void BusinessDayCalendarExtensions_IsBusinessDay_Sweden_SwedishHolidayCalendar()
+        {
+            int callCount = InvokeIsBusinessDaySwedish();
+            Assert.AreEqual(1, callCount, "SwedishHoliday.IsSwedishHoliday");
+        }
+
+        [TestMethod]
+        public void BusinessDayCalendarExtensions_IsBusinessDay_Denmark_DanishHolidayCalendar()
+        {
+            int callCount = InvokeIsBusinessDayDanish();
+            Assert.AreEqual(1, callCount, "DanishHoliday.IsDanishHoliday");
+        }
+
+        [TestMethod]
+        public void BusinessDayCalendarExtensions_IsBusinessDay_Norway_NorwegianHolidayCalendar()
+        {
+            int callCount = InvokeIsBusinessDayNorwegian();
+            Assert.AreEqual(1, callCount, "NorwegianHoliday.IsNorwegianHoliday");
+        }
+
+        [TestMethod]
+        public void BusinessDayCalendarExtensions_IsBusinessDay_EuronextMic_EuronextHolidayCalendar()
+        {
+            foreach (var mic in MicsEuronext)
+            {
+                int callCount = InvokeIsBusinessDayEuronext(mic);
+                Assert.AreEqual(1, callCount, "EuronextHoliday.IsEuronextHoliday");
+            }
+        }
+
+        [TestMethod]
+        public void BusinessDayCalendarExtensions_IsBusinessDay_UsMic_UsHolidayCalendar()
+        {
+            foreach (var mic in MicsUs)
+            {
+                int callCount = InvokeIsBusinessDayUs(mic);
+                Assert.AreEqual(1, callCount, "UsHoliday.IsUsHoliday");
+            }
+        }
+
+        [TestMethod]
+        public void BusinessDayCalendarExtensions_IsBusinessDay_SwissMic_SwissHolidayCalendar()
+        {
+            foreach (var mic in MicsSwiss)
+            {
+                int callCount = InvokeIsBusinessDaySwiss(mic);
+                Assert.AreEqual(1, callCount, "SwissHoliday.IsSwissHoliday");
+            }
+        }
+
+        [TestMethod]
+        public void BusinessDayCalendarExtensions_IsBusinessDay_SwedishMic_SwedishHolidayCalendar()
+        {
+            foreach (var mic in MicsSwedish)
+            {
+                int callCount = InvokeIsBusinessDaySwedish(mic);
+                Assert.AreEqual(1, callCount, "SwedishHoliday.IsSwedishHoliday");
+            }
+        }
+
+        [TestMethod]
+        public void BusinessDayCalendarExtensions_IsBusinessDay_NorwegianMic_NorwegianHolidayCalendar()
+        {
+            foreach (var mic in MicsNorwegian)
+            {
+                int callCount = InvokeIsBusinessDayNorwegian(mic);
+                Assert.AreEqual(1, callCount, "NorwegianHoliday.IsNorwegianHoliday");
+            }
+        }
+
+        [TestMethod]
+        public void BusinessDayCalendarExtensions_IsBusinessDay_DanishMic_DanishHolidayCalendar()
+        {
+            foreach (var mic in MicsDanish)
+            {
+                int callCount = InvokeIsBusinessDayDanish(mic);
+                Assert.AreEqual(1, callCount, "DanishHoliday.IsDanishHoliday");
+            }
+        }
+
+        [TestMethod]
+        public void BusinessDayCalendarExtensions_IsBusinessDay_NotSpecifiedMic_WeekendsOnlyHolidayCalendar()
+        {
+            foreach (var mic in MicsNotSpecified)
+            {
+                int callCount = InvokeIsBusinessDayWeekend(mic);
+                Assert.AreEqual(1, callCount, "BusinessDayCalendarExtensions.IsWeekend");
+            }
+        }
+
+        [TestMethod]
+        public void BusinessDayCalendarExtensions_IsWeekend_ValidDate_CorrctResult()
+        {
+            DateTime dateOrigin = new DateTime(1980, 1, 1);
+            for (int i = 0; i < 365 * 40; ++i)
+            {
+                DateTime date = dateOrigin.AddDays(i).Date;
+                DayOfWeek dow = date.DayOfWeek;
+                if (dow == DayOfWeek.Saturday || dow == DayOfWeek.Sunday)
+                {
+                    Assert.IsTrue(date.IsWeekend(), "Weekend " + date.ToLongDateString());
+                }
+                else
+                {
+                    Assert.IsFalse(date.IsWeekend(), "Workday " + date.ToLongDateString());
+                }
+            }
+        }
+    }
+}

@@ -28,6 +28,7 @@ RUN dotnet restore ./Mbs.Api.Host.Ng/Mbs.Api.Host.Ng.csproj
 COPY Mbs.Api.Host.Ng Mbs.Api.Host.Ng/
 COPY Mbs.Api Mbs.Api/
 COPY Mbs Mbs/
+COPY Shared Shared/
 WORKDIR /root/src/app/netcoreapp/Mbs.Api.Host.Ng
 RUN dotnet publish -c release -f netcoreapp2.2 -o published
 

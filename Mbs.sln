@@ -50,8 +50,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{81F07984-6B19-4080-A296-92E812D1D490}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mbs.Api.Host.ConcurrentHttpRequestsGenerator", "Mbs.Api.Host.ConcurrentHttpRequestsGenerator\Mbs.Api.Host.ConcurrentHttpRequestsGenerator.csproj", "{073D3D82-5275-43DB-A160-28447DF9AC41}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mbs.Examples", "Mbs.Examples", "{F0282F9F-B6C0-447B-BFB3-9FC888F6BA67}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{5B3C2188-6003-40CD-B740-96C587AFAF1D}"

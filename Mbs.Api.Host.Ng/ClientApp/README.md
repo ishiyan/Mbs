@@ -37,7 +37,7 @@ npm install mathjax@latest --save
 npm -i @types/mathjax --only=dev
 ```
 
-3. Add script to the `.angular-cli.json`
+3. Add script to the `angular-cli.json`
 ```json
 "scripts": ["../node_modules/mathjax/MathJax.js"],
 ``` 

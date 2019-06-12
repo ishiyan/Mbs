@@ -28,13 +28,13 @@
     <MathJaxAssets>$(SpaRoot)src/assets/mathjax</MathJaxAssets>
     <AllowNgBuild>true</AllowNgBuild>
     <AllowNgClean>false</AllowNgClean>
-    <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
+    <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules/**</DefaultItemExcludes>
   </PropertyGroup>
 
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
     <Content Remove="$(SpaRoot)**" />
-    <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
+    <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules/**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -50,7 +50,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="..\Shared\GlobalSuppressions.cs" Link="GlobalSuppressions.cs" />
+    <Compile Include="../Shared/GlobalSuppressions.cs" Link="GlobalSuppressions.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -70,7 +70,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Mbs.Api\Mbs.Api.csproj" />
+    <ProjectReference Include="../Mbs.Api/Mbs.Api.csproj" />
   </ItemGroup>
 
   <Target Name="NpmInstall" BeforeTargets="BeforeBuild" Condition="!Exists('$(SpaRoot)$(Ng)')">
@@ -84,15 +84,13 @@
     <Exec Command="npm --version" WorkingDirectory="$(SpaRoot)" />
     <Message Text="npm install..." Importance="high" />
     <Exec Command="npm install" WorkingDirectory="$(SpaRoot)" />
-    <Message Text="ng --version..." Importance="high" />
-    <Exec Command="$(Ng) --version" WorkingDirectory="$(SpaRoot)" />
     <Message Text="------ Finished installation of npm packages ------" Importance="high" />
-    <Message Text="------ Started removing mathjax assets ------" Importance="high" />
-    <RemoveDir Directories="$(MathJaxAssets)" ContinueOnError="true" />
-    <Message Text="------ Finished removing mathjax assets ------" Importance="high" />
   </Target>
 
   <Target Name="CopyMathJax" BeforeTargets="BeforeBuild" AfterTargets="NpmInstall" Condition="!Exists('$(MathJaxAssets)/MathJax.js')">
+    <Message Text="------ Started removing mathjax assets ------" Importance="high" />
+    <RemoveDir Directories="$(MathJaxAssets)" ContinueOnError="true" />
+    <Message Text="------ Finished removing mathjax assets ------" Importance="high" />
     <Message Text="------ Started copying mathjax assets ------" Importance="high" />
     <ItemGroup>
       <MathJaxFiles Include="$(MathJax)/MathJax.js" />
@@ -110,6 +108,7 @@
     <Copy SourceFiles="@(MathJaxFontsFiles)" DestinationFolder="$(MathJaxAssets)/fonts/%(RecursiveDir)" />
     <Message Text="------ Finished copying mathjax assets ------" Importance="high" />
   </Target>
+
   <Target Name="NgBuildDev" BeforeTargets="Build" Condition="$(AllowNgBuild) And '$(Configuration)' == 'Debug'">
     <Message Text="------ Starting ng cli development build ------" Importance="high" />
     <Exec Command="$(Ng) --version" WorkingDirectory="$(SpaRoot)" />
@@ -126,7 +125,7 @@
 
   <Target Name="CleanDist" AfterTargets="Clean" Condition="$(AllowNgClean) And $(AllowNgBuild)">
     <Message Text="------ Cleaning wwwroot ------" Importance="high" />
-    <Delete Files="wwwroot\**" />
+    <Delete Files="wwwroot/**" />
   </Target>
 
 </Project>

@@ -1,10 +1,10 @@
 import { Component, Input } from '@angular/core';
 import { UniformRandomGeneratorKind } from '../../../../data/generators/uniform-random-generator-kind.enum';
-import { NormalRandomGeneratorKind } from 'src/app/shared/mbs/data/generators/normal-random-generator-kind.enum';
+import { NormalRandomGeneratorKind } from '../../../../data/generators/normal-random-generator-kind.enum';
 // tslint:disable-next-line: max-line-length
 import { FractionalBrownianMotionParameters } from '../../../../data/generators/fractional-brownian-motion/fractional-brownian-motion-parameters';
 // tslint:disable-next-line: max-line-length
-import { FractionalBrownianMotionAlgorithm } from 'src/app/shared/mbs/data/generators/fractional-brownian-motion/fractional-brownian-motion-algorithm.enum';
+import { FractionalBrownianMotionAlgorithm } from '../../../../data/generators/fractional-brownian-motion/fractional-brownian-motion-algorithm.enum';
 import { Enums } from '../../../enums';
 
 @Component({

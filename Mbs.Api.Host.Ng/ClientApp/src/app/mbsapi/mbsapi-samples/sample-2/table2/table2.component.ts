@@ -1,12 +1,11 @@
 import { Component, OnInit, ElementRef, ViewChild, Input } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
-import { TimeParameters } from 'src/app/shared/mbs/data/generators/time-parameters';
-import { WaveformParameters } from 'src/app/shared/mbs/data/generators/waveform-parameters';
-import { OhlcvParameters } from 'src/app/shared/mbs/data/generators/ohlcv-parameters';
-import { QuoteParameters } from 'src/app/shared/mbs/data/generators/quote-parameters';
-import { TradeParameters } from 'src/app/shared/mbs/data/generators/trade-parameters';
+import { TimeParameters } from '../../../../shared/mbs/data/generators/time-parameters';
+import { WaveformParameters } from '../../../../shared/mbs/data/generators/waveform-parameters';
+import { OhlcvParameters } from '../../../../shared/mbs/data/generators/ohlcv-parameters';
+import { QuoteParameters } from '../../../../shared/mbs/data/generators/quote-parameters';
+import { TradeParameters } from '../../../../shared/mbs/data/generators/trade-parameters';
 // tslint:disable-next-line: max-line-length
-import { FractionalBrownianMotionParameters } from 'src/app/shared/mbs/data/generators/fractional-brownian-motion/fractional-brownian-motion-parameters';
+import { FractionalBrownianMotionParameters } from '../../../../shared/mbs/data/generators/fractional-brownian-motion/fractional-brownian-motion-parameters';
 
 @Component({
     selector: 'app-table2',

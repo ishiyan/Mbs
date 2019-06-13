@@ -4,6 +4,10 @@
 
 ```shell
 az aks browse --resource-group mbrane --name mbrane1
+
+helm ls --all mbsapihostng
+helm del --purge mbsapihostng
+
 kubectl get deployment mbsapihostng
 kubectl delete deployment mbsapihostng
 ```

@@ -8,7 +8,7 @@ namespace Mbs.Api.Host.Ng.Extensions
     /// <summary>
     /// Adds the Angular routing middlewares to the <see cref="IApplicationBuilder"/> request execution pipeline.
     /// </summary>
-    public static class AngularRoutingAppicationBuilderExtensions
+    public static class AngularRoutingApplicationBuilderExtensions
     {
         /// <summary>
         /// Adds the Angular routing middlewares to the <see cref="IApplicationBuilder"/> request execution pipeline.

@@ -86,7 +86,7 @@ namespace Mbs.Numerics.Random
         }
 
         /// <summary>
-        /// The autocovariance function of a fractional Gaussian noise.
+        /// The auto-covariance function of a fractional Gaussian noise.
         /// </summary>
         /// <param name="i">The index number, i > 0. For i == 1 the return value is 1.</param>
         /// <param name="twoH">The value of the Hurst exponent times two.</param>
@@ -162,7 +162,7 @@ namespace Mbs.Numerics.Random
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void FractionalGaussianNoiseSpectrum(double[] powerSpectrum, int length, double hurst)
         {
-            // The result of the natural logrithm of the gamma function will always be positive.
+            // The result of the natural logarithm of the gamma function will always be positive.
             double g = SpecialFunctions.LnGamma(2 * hurst + 1);
 
             double factor = 2 * Math.Sin(Math.PI * hurst) * Math.Exp(g);
@@ -267,13 +267,13 @@ namespace Mbs.Numerics.Random
             int k = 1;
             do
             {
-                int istep = 2 * k;
+                int step = 2 * k;
                 for (int m = 0; m < k; ++m)
                 {
                     double arg = Math.PI * m / k;
                     double cos = Math.Cos(arg);
                     double sin = Math.Sin(arg);
-                    for (int i = m; i < length; i += istep)
+                    for (int i = m; i < length; i += step)
                     {
                         double real = cos * array[i + k].Real - sin * array[i + k].Imag;
                         double imag = sin * array[i + k].Real + cos * array[i + k].Imag;
@@ -284,7 +284,7 @@ namespace Mbs.Numerics.Random
                     }
                 }
 
-                k = istep;
+                k = step;
             }
             while (k < length);
         }

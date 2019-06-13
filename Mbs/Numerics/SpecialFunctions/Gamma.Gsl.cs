@@ -17,7 +17,7 @@ namespace Mbs.Numerics
         public static partial class Gsl
         {
             /// <summary>
-            /// The natural logrithm of the gamma function,
+            /// The natural logarithm of the gamma function,
             /// <para><c>lnΓ(x) = ln∫̥˚˚ tˣ⁻¹e⁻ᵗdt</c>.</para>,
             /// subject to <c>x</c> not being a negative integer or zero.
             /// For <c>0>x</c> the real part of <c>lnΓ(x)</c> is returned,
@@ -28,7 +28,7 @@ namespace Mbs.Numerics
             /// values of <c>lnΓ(x)</c> even for values of x which would cause <c>Γ(x)</c> to overflow.</para>
             /// </summary>
             /// <param name="x">The argument, which must be positive.</param>
-            /// <returns>The natural logrithm of the gamma function <c>lnΓ(x)</c>.</returns>
+            /// <returns>The natural logarithm of the gamma function <c>lnΓ(x)</c>.</returns>
             /// <seealso href="http://mathworld.wolfram.com/LogGammaFunction.html" />
             // ReSharper disable once MemberHidesStaticFromOuterClass
             public static double LnGamma(double x)
@@ -75,7 +75,7 @@ namespace Mbs.Numerics
             }
 
             /// <summary>
-            /// The natural logrithm of the complex gamma function, <c>lnΓ(x)</c>.
+            /// The natural logarithm of the complex gamma function, <c>lnΓ(x)</c>.
             /// </summary>
             /// <param name="z">The complex argument, which must have a non-negative real part.</param>
             /// <returns>The complex value <c>lnΓ(x)</c>.</returns>
@@ -117,7 +117,7 @@ namespace Mbs.Numerics
             /// </summary>
             /// <param name="x">The argument, which must be positive.</param>
             /// <param name="sign">The sign of the gamma function.</param>
-            /// <returns>The natural logrithm of the gamma function <c>lnΓ(x)</c>.</returns>
+            /// <returns>The natural logarithm of the gamma function <c>lnΓ(x)</c>.</returns>
             /// <seealso href="http://mathworld.wolfram.com/LogGammaFunction.html" />
             public static double LnGammaSign(double x, out double sign)
             {
@@ -156,14 +156,14 @@ namespace Mbs.Numerics
                     // Try to extract a fractional part from x.
                     double z = 1d - x;
                     double s = Math.Sin(Constants.Pi * x);
-                    double abss = Math.Abs(s);
+                    double absS = Math.Abs(s);
                     if (Math.Abs(s) < double.Epsilon)
                     {
                         sign = 0d;
                         return double.NaN;
                     }
 
-                    if (abss < Constants.Pi * 0.015)
+                    if (absS < Constants.Pi * 0.015)
                     {
                         // x is near a negative integer, -n.
                         if (x < int.MinValue + 2d)
@@ -179,7 +179,7 @@ namespace Mbs.Numerics
 
                     {
                         sign = s > 0d ? 1d : -1d;
-                        return Constants.LnPi - (Math.Log(abss) + LnGammaLanczos(z));
+                        return Constants.LnPi - (Math.Log(absS) + LnGammaLanczos(z));
                     }
                 }
 
@@ -302,13 +302,13 @@ namespace Mbs.Numerics
                 if (x < 2d)
                 {
                     double t = 4d / 3d * (x - 0.5) - 1d;
-                    return GstaraChebyshevSeries.Evaluate(t);
+                    return GStarAChebyshevSeries.Evaluate(t);
                 }
 
                 if (x < 10d)
                 {
                     double t = 0.25 * (x - 2d) - 1d;
-                    double value = GstarbChebyshevSeries.Evaluate(t);
+                    double value = GStarBChebyshevSeries.Evaluate(t);
                     return value / (x * x) + 1d + 1d / (12d * x);
                 }
 
@@ -325,7 +325,7 @@ namespace Mbs.Numerics
             }
 
             /// <summary>
-            /// The psi function, <c>ψ(x)</c>, also called the digamma function, is the logrithmic derivative of the gamma function:
+            /// The psi function, <c>ψ(x)</c>, also called the digamma function, is the logarithmic derivative of the gamma function:
             /// <para><c>ψ(x) = d/dx ln Γ(x) = Γʹ(x)/Γ(x)</c>.</para>
             /// </summary>
             /// <param name="x">The real argument, x ≠ {0.0, -1.0, -2.0, ...}.</param>
@@ -395,7 +395,7 @@ namespace Mbs.Numerics
             /// <summary>
             /// Evaluates the digamma function for a positive integer argument.
             /// <para />
-            /// The psi function, <c>ψ(x)</c>, also called the digamma function, is the logrithmic derivative of the gamma function:
+            /// The psi function, <c>ψ(x)</c>, also called the digamma function, is the logarithmic derivative of the gamma function:
             /// <para />
             /// ψ(x) = d/dx ln Γ(x) = Γʹ(x)/Γ(x).
             /// </summary>
@@ -409,7 +409,7 @@ namespace Mbs.Numerics
                 if (n <= 0)
                     return double.NaN;
                 double value;
-                if (n <= PsiTableNmax)
+                if (n <= PsiTableNMax)
                 {
                     value = PsiTable[n];
                 }
@@ -430,7 +430,7 @@ namespace Mbs.Numerics
             }
 
             /// <summary>
-            /// The complex psi function, <c>ψ(z)</c>, also called the digamma function, is the logrithmic derivative of the gamma function:
+            /// The complex psi function, <c>ψ(z)</c>, also called the digamma function, is the logarithmic derivative of the gamma function:
             /// <para><c>ψ(z) = d/dz ln Γ(z) = Γʹ(z)/Γ(z)</c>.</para>
             /// </summary>
             /// <param name="z">The complex argument.</param>
@@ -464,7 +464,7 @@ namespace Mbs.Numerics
 
             /// <summary>
             /// The trigamma function, <c>ψ₁(x)</c> (the second of the polygamma functions),
-            /// is the second logrithmic derivative of the gamma function:
+            /// is the second logarithmic derivative of the gamma function:
             /// <para><c>ψ₁(x) = d²/dx² ln Γ(x)</c>.</para>
             /// It follows from this definition that
             /// <para><c>ψ₁(x) = d/dx ψ(x)</c></para>
@@ -520,7 +520,7 @@ namespace Mbs.Numerics
                 if (n <= 0)
                     return double.NaN;
                 double value;
-                if (n <= Psi1TableNmax)
+                if (n <= Psi1TableNMax)
                 {
                     value = Psi1Table[n];
                 }
@@ -591,7 +591,7 @@ namespace Mbs.Numerics
             /// <para>This function changes rapidly from 1 to 0 around the point <c>x=a</c>.</para>
             /// <para>This function is the complement of the lower incomplete gamma function <c>P(a,x) = 1 - Q(a,x)</c> (<see cref="RegularizedGammaP"/>).</para>
             /// </summary>
-            /// <param name="a">The shape paraemter, which must be positive.</param>
+            /// <param name="a">The shape parameter, which must be positive.</param>
             /// <param name="x">The argument, which must be non-negative.</param>
             /// <returns>The value of <c>Γ(a,x)/Γ(x)</c>.</returns>
             // ReSharper disable once MemberHidesStaticFromOuterClass
@@ -601,7 +601,7 @@ namespace Mbs.Numerics
             }
 
             /// <summary>
-            /// The full (non-normalised / non-regularized) lower incomplete Gamma function,
+            /// The full (non-normalized / non-regularized) lower incomplete Gamma function,
             /// <para><c>γ(a,x) = ∫̽˳ tᵃ⁻¹e⁻ᵗdt</c>.</para>
             /// <para>The lower incomplete gamma function is obtained by carrying out the gamma function integration from zero to some
             /// finite value <c>x</c>, instead of to infinity. Like the gamma function itself, this function gets large very quickly. For most
@@ -619,7 +619,7 @@ namespace Mbs.Numerics
             }
 
             /// <summary>
-            /// The full (non-normalised / non-regularized) upper incomplete Gamma function,
+            /// The full (non-normalized / non-regularized) upper incomplete Gamma function,
             /// <para><c>Γ(a,x) = ∫̊ₓ̊ tᵃ⁻¹e⁻ᵗdt</c>.</para>
             /// <para>The upper incomplete gamma function is obtained by carrying out the gamma function integration from finite value <c>x</c>
             /// to infinity. Like the gamma function itself, this function gets large very quickly. For most
@@ -783,22 +783,22 @@ namespace Mbs.Numerics
 
                     // Calculate series for ln(gamma(1+n-eps)).
                     // Double-precision for |eps| < 0.02.
-                    double aeps = Math.Abs(eps);
+                    double absEps = Math.Abs(eps);
 
                     double psi2Value = 0d, psi3Value = 0d, psi4Value = 0d, psi5Value = 0d, psi6Value = 0d;
                     double c0 = LnFactorial(n);
                     int n1 = n + 1;
                     double psi0Value = Digamma(n1);
                     double psi1Value = Trigamma(n1) / 2d;
-                    if (aeps > 0.00001)
+                    if (absEps > 0.00001)
                         psi2Value = Polygamma(2, n1) / 6d;
-                    if (aeps > 0.0002)
+                    if (absEps > 0.0002)
                         psi3Value = Polygamma(3, n1) / 24d;
-                    if (aeps > 0.001)
+                    if (absEps > 0.001)
                         psi4Value = Polygamma(4, n1) / 120d;
-                    if (aeps > 0.005)
+                    if (absEps > 0.005)
                         psi5Value = Polygamma(5, n1) / 720d;
-                    if (aeps > 0.01)
+                    if (absEps > 0.01)
                         psi6Value = Polygamma(6, n1) / 5040d;
                     double lngSeries = c0 - eps * (psi0Value - eps * (psi1Value - eps * (psi2Value - eps * (psi3Value
                         - eps * (psi4Value - eps * (psi5Value - eps * psi6Value))))));
@@ -993,7 +993,7 @@ namespace Mbs.Numerics
             /// <summary>
             /// Chebyshev series.
             /// </summary>
-            private static readonly double[] GstaraData =
+            private static readonly double[] GStarAData =
             {
                 2.16786447866463034423060819465,
                 -0.05533249018745584258035832802,
@@ -1030,12 +1030,12 @@ namespace Mbs.Numerics
             /// <summary>
             /// Chebyshev coefficients for <c>Gamma*(3/4(t+1)+1/2), tϵ(-1, 1)</c>.
             /// </summary>
-            private static readonly ChebyshevSeries GstaraChebyshevSeries = new ChebyshevSeries(-1, 1, 29, GstaraData);
+            private static readonly ChebyshevSeries GStarAChebyshevSeries = new ChebyshevSeries(-1, 1, 29, GStarAData);
 
             /// <summary>
             /// Chebyshev series.
             /// </summary>
-            private static readonly double[] GstarbData =
+            private static readonly double[] GStarBData =
             {
                 0.0057502277273114339831606096782,
                 0.0004496689534965685038254147807,
@@ -1072,7 +1072,7 @@ namespace Mbs.Numerics
             /// <summary>
             /// Chebyshev coefficients for <c>x^2(Gamma*(x) - 1 - 1/(12x)), x = 4(t+1)+2, tϵ(-1, 1)</c>.
             /// </summary>
-            private static readonly ChebyshevSeries GstarbChebyshevSeries = new ChebyshevSeries(-1, 1, 29, GstarbData);
+            private static readonly ChebyshevSeries GStarBChebyshevSeries = new ChebyshevSeries(-1, 1, 29, GStarBData);
 
             /// <summary>
             /// Chebyshev series.
@@ -1195,7 +1195,7 @@ namespace Mbs.Numerics
             private static readonly ChebyshevSeries ApsiChebyshevSeries = new ChebyshevSeries(-1, 1, 15, ApsiData);
 
 #pragma warning disable SA1203 // Constants must appear before fields
-            private const int PsiTableNmax = 100;
+            private const int PsiTableNMax = 100;
 #pragma warning restore SA1203
             private static readonly double[] PsiTable =
             {
@@ -1303,7 +1303,7 @@ namespace Mbs.Numerics
             };
 
 #pragma warning disable SA1203 // Constants must appear before fields
-            private const int Psi1TableNmax = 100;
+            private const int Psi1TableNMax = 100;
 #pragma warning restore SA1203
             private static readonly double[] Psi1Table =
             {

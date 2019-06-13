@@ -15,8 +15,8 @@ import { euronextListShort } from '../../../../shared/mbs/euronext-list-short';
 import { MbsError } from '../../../../shared/mbs/errors/mbs-error';
 import { SnackBarService } from '../../../../shared/snack-bar/snack-bar.service';
 
-//const apiUrl = "/api/v1/instruments/lists/";
-const apiUrl = "http://localhost:5000/api/v1/instruments/lists/";
+const apiUrl = "/api/v1/instruments/lists/";
+//const apiUrl = "http://localhost:5000/api/v1/instruments/lists/";
 const httpOptions = {
     headers: new HttpHeaders({
         'Content-Type': 'application/json'//,

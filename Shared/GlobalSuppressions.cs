@@ -19,3 +19,5 @@ using System.Diagnostics.CodeAnalysis;
 
 [assembly: SuppressMessage("Naming", "CA1710:Identifiers should have correct suffix", Justification = "Reviewed.")]
 [assembly: SuppressMessage("Reliability", "CA2007:Do not directly await a Task", Justification = "not applicable to .NET Core.")]
+[assembly: SuppressMessage("Design", "CA1062:Validate arguments of public methods", Justification = "Reviewed.")]
+[assembly: SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters", Justification = "Reviewed.")]

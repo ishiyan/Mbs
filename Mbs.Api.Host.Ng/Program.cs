@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
 
@@ -42,7 +41,7 @@ namespace Mbs.Api.Host.Ng
                     Serilog.Log.Logger = new LoggerConfiguration()
                         .ReadFrom.Configuration(hostingContext.Configuration)
                         .CreateLogger();
-                    Serilog.Log.Information($"Created logger, environment is {hostingContext.HostingEnvironment}");
+                    Serilog.Log.Information($"Created logger, environment is {hostingContext.HostingEnvironment.EnvironmentName}");
 
                     /* services.AddApplicationInsightsTelemetry(hostingContext.Configuration); */
                 })

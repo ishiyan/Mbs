@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Mbs.Api.Extensions;
 using Mbs.Api.Host.Ng.Extensions;
 using Mbs.Api.Services.Trading.Instruments;
@@ -21,39 +20,47 @@ namespace Mbs.Api.Host.Ng
 {
     public class Startup
     {
+        public Startup(IConfiguration configuration)
+        {
+            this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            enableSwagger = configuration.GetSection("EnableSwagger").Get<bool>();
+        }
+
+        private readonly IConfiguration configuration;
+        private readonly bool enableSwagger;
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors();
             services.AddMbsApi();
-            services.AddMbsApiSwagger("Mbs.Api.Host.Ng");
+            if (enableSwagger)
+                services.AddMbsApiSwagger("Mbs.Api.Host.Ng");
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             // In production, the Angular files will be served from this directory
-            services.AddSpaStaticFiles(configuration => configuration.RootPath = "wwwroot");
+            services.AddSpaStaticFiles(conf => conf.RootPath = "wwwroot");
         }
 
-        public void Configure(IApplicationBuilder app, IConfiguration configuration, IHostingEnvironment environment, ILoggerFactory loggerFactory, IInstrumentListDataService instrumentList)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment environment, ILoggerFactory loggerFactory, IInstrumentListDataService instrumentList)
         {
+            if (loggerFactory == null)
+                throw new ArgumentNullException(nameof(loggerFactory));
+            if (instrumentList == null)
+                throw new ArgumentNullException(nameof(instrumentList));
+
             Log.SetLogger(loggerFactory.CreateLogger("Mbs"));
             instrumentList.AddListFromJsonFile("euronext", "euronext.json");
 
-            if (environment.IsDevelopment())
-                app.UseDeveloperExceptionPage();
-            /* else
-                app.UseExceptionHandler("/Error"); */
-
             // Registered before static files to always set header.
             app.UseNwebsec();
-            app.UseCorsConfiguration(configuration);
-            /* app.UseAngularRouting(); */
-            /* app.UseHttpsRedirection(); */
-
-            app.UseStaticFiles();
-            app.UseSpaStaticFiles();
-            app.UseMbsApiSwagger();
             app.UseMbsApiExceptionHandling();
+            app.UseCorsConfiguration(configuration);
+            if (enableSwagger)
+                app.UseMbsApiSwagger();
+            /* app.UseAngularRouting(); */
 
+            app.UseSpaStaticFiles();
             app.UseMvcWithDefaultRoute();
             app.UseSpa(spa =>
             {

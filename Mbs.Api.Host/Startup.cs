@@ -1,4 +1,5 @@
-﻿using Mbs.Api.Extensions;
+﻿using System;
+using Mbs.Api.Extensions;
 using Mbs.Api.Host.Extensions;
 using Mbs.Api.Services.Trading.Instruments;
 using Microsoft.AspNetCore.Builder;
@@ -19,7 +20,7 @@ namespace Mbs.Api.Host
     {
         public Startup(IConfiguration configuration)
         {
-            this.configuration = configuration;
+            this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             enableSwagger = configuration.GetSection("EnableSwagger").Get<bool>();
         }
 
@@ -44,6 +45,11 @@ namespace Mbs.Api.Host
 
         public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory, IInstrumentListDataService instrumentList)
         {
+            if (loggerFactory == null)
+                throw new ArgumentNullException(nameof(loggerFactory));
+            if (instrumentList == null)
+                throw new ArgumentNullException(nameof(instrumentList));
+
             Log.SetLogger(loggerFactory.CreateLogger("Mbs"));
             instrumentList.AddListFromJsonFile("euronext", "euronext.json");
 

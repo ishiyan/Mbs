@@ -40,7 +40,7 @@ namespace Mbs.Api.Host
                     Serilog.Log.Logger = new LoggerConfiguration()
                         .ReadFrom.Configuration(hostingContext.Configuration)
                         .CreateLogger();
-                    Serilog.Log.Information($"Created logger, environment is {hostingContext.HostingEnvironment}");
+                    Serilog.Log.Information($"Created logger, environment is {hostingContext.HostingEnvironment.EnvironmentName}");
 
                     /* services.AddApplicationInsightsTelemetry(hostingContext.Configuration); */
                 })

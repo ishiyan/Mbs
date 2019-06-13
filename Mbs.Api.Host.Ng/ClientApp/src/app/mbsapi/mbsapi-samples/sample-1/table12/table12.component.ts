@@ -94,7 +94,7 @@ export class Table12Component implements OnInit {
     ngOnInit() {
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
-        this.listService.getInstrumentList('zeuronext')
+        this.listService.getInstrumentList('euronext')
             .subscribe({
                 next: list => {
                     this.expandedInstrument = null;

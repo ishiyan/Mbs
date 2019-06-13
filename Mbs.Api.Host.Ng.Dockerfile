@@ -37,4 +37,4 @@ FROM microsoft/dotnet:2.2-aspnetcore-runtime
 
 WORKDIR /root/  
 COPY --from=builder /root/src/app/netcoreapp/Mbs.Api.Host.Ng/published .
-ENTRYPOINT ["dotnet", "Mbs.Api.Host.Ng"]
+ENTRYPOINT ["dotnet", "Mbs.Api.Host.Ng.dll"]

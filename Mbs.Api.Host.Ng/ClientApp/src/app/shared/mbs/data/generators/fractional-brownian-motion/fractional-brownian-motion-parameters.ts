@@ -16,7 +16,7 @@ export class FractionalBrownianMotionParameters {
     amplitude: number = FractionalBrownianMotionParameters.defaultAmplitude;
     /** The minimum of the fractional Brownian motion, should be positive. */
     minimalValue: number = FractionalBrownianMotionParameters.defaultMinimalValue;
-    /** The Hurst exponent of the fractal Brownian motion, H∈[0, 1]. */
+    /** The Hurst exponent of the fractional Brownian motion, H∈[0, 1]. */
     hurstExponent: number = FractionalBrownianMotionParameters.defaultHurstExponent;
     /** The fractional Brownian motion algorithm. */
     algorithm: FractionalBrownianMotionAlgorithm = FractionalBrownianMotionParameters.defaultAlgorithm;

@@ -4,6 +4,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
+import { MathJaxModule } from '../math-jax/math-jax.module';
 import { MaterialModule } from '../material/material.module';
 
 import { BusinessDayCalendarExplanationComponent } from './components/data/generators/business-day-calendar-explanation.component';
@@ -21,7 +22,8 @@ import { FractionalBrownianMotionParametersComponent } from './components/data/g
         RouterModule,
         MaterialModule,
         FlexLayoutModule,
-        FormsModule
+        FormsModule,
+        MathJaxModule
     ],
     exports: [
         BusinessDayCalendarExplanationComponent, TimeParametersComponent, WaveformParametersComponent,

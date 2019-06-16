@@ -259,7 +259,7 @@ export const scienceEquationsSamples: Sample[] =
             code: '\\Gamma \\left( a \\right) = \\int\\limits_0^\\infty  {s^{a - 1} } e^{ - s} ds'
         },
         {
-            name: 'Statistics: gamma dunction',
+            name: 'Statistics: gamma function',
             code: '\\Gamma \\left( x \\right) = \\int\\limits_0^\\infty  {s^{x - 1} e^{ - s} ds}'
         },
         {

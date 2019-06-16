@@ -4,7 +4,7 @@ export const exampleFormulasSamples: Sample[] =
     [
         {
             name: '01',
-            code: '\\int_0^{\\infty}{x^{2n}e^{-ax^2}dx}=\\frac{2n-1}{2a}\\int_0^{\\infty}{x^{2(n-1)}e^{-ax^2}dx}=\\frac{(2n-1)!!}{2^{n+1}}\\sqrt{\\frac{\pi}{a^{2n+1}}}' // tslint:disable-line
+            code: '\\int_0^{\\infty}{x^{2n}e^{-ax^2}dx}=\\frac{2n-1}{2a}\\int_0^{\\infty}{x^{2(n-1)}e^{-ax^2}dx}=\\frac{(2n-1)!!}{2^{n+1}}\\sqrt{\\frac{\\pi}{a^{2n+1}}}' // tslint:disable-line
         },
         {
             name: '02',
@@ -108,7 +108,7 @@ export const exampleFormulasSamples: Sample[] =
         },
         {
             name: '27',
-            code: '\\langle \\psi | …….\\langle \\psi | \\phi \\rangle \\'
+            code: '\\langle \\psi | …….\\langle \\psi | \\phi \\rangle'
         },
         {
             name: '28',
@@ -168,7 +168,7 @@ export const exampleFormulasSamples: Sample[] =
         },
         {
             name: '42',
-            code: 'e^x = \\sum_{n=0}^\\infty \\frac{x^n}{n!}\\quad\\text{where\\ }n!=\\prod_{i=1}^n i\\,,\\ \\overline{U_\\alpha} = \\bigcap_\\alpha U_\\alpha' // tslint:disable-line
+            code: 'e^x = \\sum_{n=0}^\\infty \\frac{x^n}{n!}\\quad\\text{where }n!=\\prod_{i=1}^n i\\,,\\ \\overline{U_\\alpha} = \\bigcap_\\alpha U_\\alpha' // tslint:disable-line
         },
         {
             name: '43',
@@ -176,6 +176,6 @@ export const exampleFormulasSamples: Sample[] =
         },
         {
             name: '44',
-            code: '\\int_a^bu\\frac{d^2v}{dx^2}\\,dx =\\left.u\\frac{dv}{dx}\\right|_a^b -\\int_a^b\\frac{du}{dx}\\frac{dv}{dx} \\,dx\\'
+            code: '\\int_a^bu\\frac{d^2v}{dx^2}\\,dx =\\left.u\\frac{dv}{dx}\\right|_a^b -\\int_a^b\\frac{du}{dx}\\frac{dv}{dx} \\,dx'
         }
     ];

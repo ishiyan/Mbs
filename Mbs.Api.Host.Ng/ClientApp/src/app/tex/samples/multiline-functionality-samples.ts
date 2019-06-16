@@ -24,7 +24,7 @@ export const multilineFunctionalitySamples: Sample[] =
         },
         {
             name: 'Arrays 02',
-            code: '|x| = \\left\{ \\begin{array}{ll} x & \\mbox{if $x \\geq 0$};\\\\ -x & \\mbox{if $x < 0$}.\\end{array} \\right'
+            code: '|x| = \\left\\{ \\begin{array}{ll} x & \\mbox{ if $x \\geq 0$ };\\\\-x & \\mbox{ if $x < 0$ }.\\end{array} \\right.'
         },
         {
             name: 'Arrays 03',
@@ -48,7 +48,7 @@ export const multilineFunctionalitySamples: Sample[] =
         },
         {
             name: 'Arrays 08',
-            code: '\\begin{eqnarray*}\n    e^x &\approx& 1+x+x^2/2! + \\\\\n    && {}+x^3/3! + x^4/4! + \\\\\n    && + x^5/5!\n\\end{eqnarray*}' // tslint:disable-line
+            code: '\\begin{eqnarray*}\n    e^x &\\approx& 1+x+x^2/2! + \\\\\n    && {}+x^3/3! + x^4/4! + \\\\\n    && + x^5/5!\n\\end{eqnarray*}' // tslint:disable-line
         },
         {
             name: 'Arrays 09',
@@ -68,7 +68,7 @@ export const multilineFunctionalitySamples: Sample[] =
         },
         {
             name: 'Arrays 13',
-            code: '\\Psi\\\' = \\frac{ d } { d \\phi } \\left(\\begin{ array }{ c }\n  \\phi_{ 2}  \\\\  \\phi_{ 3}  \\\\  1 - \\phi_{ 2} - \\phi_{ 1} ^ { 2} / 2\n\\end{ array } \\right) \\qquad\n\\Theta = \\left(\\begin{ array }{ ccc }\n  0 & 1 & 0 \\\\\n - \\theta_{ 1} \\psi_{ 1} - \\psi_{ 2} & 0 & \\psi_3 \\\\\n -\\phi_{ 1} & -1 & 0\n\\end{ array } \\right)' // tslint:disable-line
+            code: '\\Psi\' = \\frac{ d } { d \\phi } \\left(\\begin{ array }{ c }\n  \\phi_{ 2}  \\\\  \\phi_{ 3}  \\\\  1 - \\phi_{ 2} - \\phi_{ 1} ^ { 2} / 2\n\\end{ array } \\right) \\qquad\n\\Theta = \\left(\\begin{ array }{ ccc }\n  0 & 1 & 0 \\\\\n - \\theta_{ 1} \\psi_{ 1} - \\psi_{ 2} & 0 & \\psi_3 \\\\\n -\\phi_{ 1} & -1 & 0\n\\end{ array } \\right)' // tslint:disable-line
         },
         {
             name: 'Arrays 14',

@@ -212,7 +212,7 @@ export const basicFunctionalitySamples: Sample[] =
         },
         {
             name: 'Automatic sizing 04',
-            code: '\\left\\{\\frac{x^2}{y^3}\\right\}'
+            code: '\\left\\{\\frac{x^2}{y^3}\\right\\}'
         },
         {
             name: 'Automatic sizing 05',
@@ -352,7 +352,7 @@ export const basicFunctionalitySamples: Sample[] =
         },
         {
             name: 'Brackets, braces and delimiters 03',
-            code: '\\langle \\psi | ��.\\langle \\psi | \\phi \\rangle '
+            code: '\\langle \\psi | …….\\langle \\psi | \\phi \\rangle '
         },
         {
             name: 'Brackets, braces and delimiters 04',
@@ -404,31 +404,31 @@ export const basicFunctionalitySamples: Sample[] =
         },
         {
             name: 'Parenthesizing big expressions, brackets, bars 01',
-            code: '\\big( \\Big( \\bigg( \\Bigg( � \\Bigg] \\bigg] \\Big] \\big]'
+            code: '\\big( \\Big( \\bigg( \\Bigg( … \\Bigg] \\bigg] \\Big] \\big]'
         },
         {
             name: 'Parenthesizing big expressions, brackets, bars 02',
-            code: '\\big\\{ \\Big\\{ \\bigg\\{ \\Bigg\\{ � \\Bigg\\rangle \\bigg\\rangle \\Big\\rangle \\big\\rangle'
+            code: '\\big\\{ \\Big\\{ \\bigg\\{ \\Bigg\\{ … \\Bigg\\rangle \\bigg\\rangle \\Big\\rangle \\big\\rangle'
         },
         {
             name: 'Parenthesizing big expressions, brackets, bars 03',
-            code: '\\big\\| \\Big\\| \\bigg\\| \\Bigg\\| � \\Bigg| \\bigg| \\Big| \\big|'
+            code: '\\big\\| \\Big\\| \\bigg\\| \\Bigg\\| … \\Bigg| \\bigg| \\Big| \\big|'
         },
         {
             name: 'Parenthesizing big expressions, brackets, bars 04',
-            code: '\\big\\lfloor \\Big\\lfloor \\bigg\\lfloor \\Bigg\\lfloor � \\Bigg\\rceil \\bigg\\rceil \\Big\\rceil \\big\\rceil'
+            code: '\\big\\lfloor \\Big\\lfloor \\bigg\\lfloor \\Bigg\\lfloor … \\Bigg\\rceil \\bigg\\rceil \\Big\\rceil \\big\\rceil'
         },
         {
             name: 'Parenthesizing big expressions, brackets, bars 05',
-            code: '\\big\\uparrow \\Big\\uparrow \\bigg\\uparrow \\Bigg\\uparrow � \\Bigg\\Downarrow \\bigg\\Downarrow \\Big\\Downarrow \\big\\Downarrow' // tslint:disable-line
+            code: '\\big\\uparrow \\Big\\uparrow \\bigg\\uparrow \\Bigg\\uparrow … \\Bigg\\Downarrow \\bigg\\Downarrow \\Big\\Downarrow \\big\\Downarrow' // tslint:disable-line
         },
         {
             name: 'Parenthesizing big expressions, brackets, bars 06',
-            code: '\\big\\updownarrow \\Big\\updownarrow \\bigg\\updownarrow \\Bigg\\updownarrow � \\Bigg\\Updownarrow \\bigg\\Updownarrow'
+            code: '\\big\\updownarrow \\Big\\updownarrow \\bigg\\updownarrow \\Bigg\\updownarrow … \\Bigg\\Updownarrow \\bigg\\Updownarrow'
         },
         {
             name: 'Parenthesizing big expressions, brackets, bars 07',
-            code: '\\big / \\Big / \\bigg / \\Bigg / � \\Bigg\\backslash \\bigg\\backslash \\Big\\backslash \\big\\backslash'
+            code: '\\big / \\Big / \\bigg / \\Bigg / … \\Bigg\\backslash \\bigg\\backslash \\Big\\backslash \\big\\backslash'
         },
         {
             name: 'Bracketed functions 01',
@@ -528,7 +528,7 @@ export const basicFunctionalitySamples: Sample[] =
         },
         {
             name: 'Functions 08',
-            code: 'x_{i+1}\\ =\\ N^{i+1}(x_{0})\\ =\\ N(x_{i})\\ =\\ x_{i} - \\frac{f(x_{i})}{f\\\'(x_{i})}'
+            code: 'x_{i+1}\\ =\\ N^{i+1}(x_{0})\\ =\\ N(x_{i})\\ =\\ x_{i} - \\frac{f(x_{i})}{f\'(x_{i})}'
         },
         {
             name: 'Functions 09',
@@ -572,7 +572,7 @@ export const basicFunctionalitySamples: Sample[] =
         },
         {
             name: 'Functions 19',
-            code: 'e^x = \\sum_{n=0}^\\infty \\frac{x^n}{n!}\\quad\\text{where\\ }n!=\\prod_{i=1}^n i\\,,\\ \\overline{U_\\alpha} = \\bigcap_\\alpha U_\\alpha' // tslint:disable-line
+            code: 'e^x = \\sum_{n=0}^\\infty \\frac{x^n}{n!}\\quad\\text{where }n!=\\prod_{i=1}^n i\\,,\\ \\overline{U_\\alpha} = \\bigcap_\\alpha U_\\alpha' // tslint:disable-line
         },
         {
             name: 'Functions 20',
@@ -712,7 +712,7 @@ export const basicFunctionalitySamples: Sample[] =
         },
         {
             name: 'Very basic 06',
-            code: '12x \\bmod 14.4/y \\quad 15x^2 + y \\over 12 \\quad 8B \\over 2^7 * 5x'
+            code: '12x \\bmod 14.4/y \\quad 15x^2 + y \\over {12 \\quad 8B \\over 2^7 * 5x}'
         },
         {
             name: 'Very basic 07',

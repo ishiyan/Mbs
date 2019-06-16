@@ -8,7 +8,7 @@ export const symbolSamples: Sample[] =
         },
         {
             name: 'Capital Greek letters',
-            code: '\\Alpha\\ \\Beta\\ \\Gamma\\ \\Delta\\ \\Epsilon\\ \\Zeta\\ \\Eta\\ \\Theta\\ \\Iota\\ \\Kappa\\ \\Lambda\n\\Mu\\ \\Nu\\ \\Xi\\ \\Omicron\\ \\Pi\\ \\Rho\\ \\Sigma\\ \\Tau\\ \\Upsilon\\ \\Phi\\ \\Chi\\ \\Psi\\ \\Omega' // tslint:disable-line
+            code: 'A\\ B\\ \\Gamma\\ \\Delta\\ E\\ Z\\ H\\ \\Theta\\ I\\ K\\ \\Lambda\\ M\\ N\\ \\Xi\\ O\\ \\Pi\\ R\\ \\Sigma\\ T\\ \\Upsilon\\ \\Phi\\ X\\ \\Psi\\ \\Omega' // tslint:disable-line
         },
         {
             name: 'Greek letters 01',
@@ -16,7 +16,7 @@ export const symbolSamples: Sample[] =
         },
         {
             name: 'Greek letters 02',
-            code: 'I\\ \\iota \\quad\nK\\ \\kappa\\ \\varkappa \\quad\n\\Lambda\\ \\lambda \\quad\nM\\ \\mu \\quad\nN\\ \\nu \\quad\n\\Xi\\ \\xi \\quad\nO\\ \\omicron \\quad\nPi\\ \\pi\\ \\varpi \\quad\nP\\ \\rho\\ \\varrho' // tslint:disable-line
+            code: 'I\\ \\iota \\quad\nK\\ \\kappa\\ \\varkappa \\quad\n\\Lambda\\ \\lambda \\quad\nM\\ \\mu \\quad\nN\\ \\nu \\quad\n\\Xi\\ \\xi \\quad\nO\\ \\omicron \\quad\n\\Pi\\ \\pi\\ \\varpi \\quad\nP\\ \\rho\\ \\varrho' // tslint:disable-line
         },
         {
             name: 'Greek letters 03',
@@ -24,7 +24,7 @@ export const symbolSamples: Sample[] =
         },
         {
             name: 'Some extra symbols',
-            code: '\\aleph\\ \beth\\ \\gimel\\ \\daleth\\ \varpi\\ \varrho\\ \varsigma\\ \varphi\\ \varepsilon\\ \vartheta\\ \varkappa\\ \\pi\\ \\rho\\ \\sigma\\ \\phi\\ \\epsilon\\ \\theta\\ \\kappa\\ \\digamma\\ \\Finv\\ \\varpropto' // tslint:disable-line
+            code: '\\aleph\\ \\beth\\ \\gimel\\ \\daleth\\ \\varpi\\ \\varrho\\ \\varsigma\\ \\varphi\\ \\varepsilon\\ \\vartheta\\ \\varkappa\\ \\pi\\ \\rho\\ \\sigma\\ \\phi\\ \\epsilon\\ \\theta\\ \\kappa\\ \\digamma\\ \\Finv\\ \\varpropto' // tslint:disable-line
         },
         {
             name: 'Other symbols',
@@ -49,6 +49,10 @@ export const symbolSamples: Sample[] =
         {
             name: 'Binary operations 04',
             code: '\\star\\, \\star \\vee\\, \\vee \\bigcirc\\, \\bigcirc \\circ\\, \\circ\\,\n\\dagger\\, \\dagger \\wedge\\, \\wedge \\bullet\\, \\bullet \\setminus\\, \\setminus\\,\n\\ddagger\\, \\ddagger \\cdot\\, \\cdot \\wr\\, \\wr \\amalg\\, \\amalg' // tslint:disable-line
+        },
+        {
+            name: 'Binary operations 05 (AMS)',
+            code: '\\dotplus\\ \\centerdot\\ \\intercal\\ \\ltimes\\ \\rtimes\\ \\divideontimes\\ \\Cup\\ \\doublecup\\ \\Cap\\ \\doublecap\\ \\smallsetminus\\ \\veebar\\ \\barwedge\\ \\doublebarwedge\\ \\boxplus\\ \\boxminus\\ \\boxtimes\\ \\boxdot\\ \\circleddash\\ \\circledcirc\\ \\circledast\\ \\leftthreetimes\\ \\rightthreetimes\\ \\curlyvee\\ \\curlywedge' // tslint:disable-line
         },
         {
             name: 'Operators',
@@ -92,7 +96,7 @@ export const symbolSamples: Sample[] =
         },
         {
             name: 'Dots',
-            code: '\\ldots\\ \\ddots\\ \\cdots\\ \\dots\\ \vdots\\ \\hdotsfor{9}'
+            code: '\\ldots\\ \\ddots\\ \\cdots\\ \\dots\\ \\vdots\\ \\hdotsfor{9}'
         },
         {
             name: 'Variable-sized',
@@ -132,7 +136,7 @@ export const symbolSamples: Sample[] =
         },
         {
             name: 'Logic',
-            code: '\\forall\\ \\exists\\ \\nexists\\ \\bar{A}\\ \\mid\\ \\wedge\\ \\vee\\ \\neg\\ \\to\\ \\gets\\ \\iff\n\\bigwedge\\ \\bigvee\\ \\diamond\\ \\lozenge\\ \\vdash\\ \\Vdash\\ \\vDash\\ \\Vvdash\\ \\models\\ \\dashv' // tslint:disable-line
+            code: '\\forall\\ \\exists\\ \\nexists\\ \\bar{A}\\ \\mid\\ \\wedge\\ \\svee\\ \\neg\\ \\to\\ \\gets\\ \\iff\n\\bigwedge\\ \\bigvee\\ \\diamond\\ \\lozenge\\ \\vdash\\ \\Vdash\\ \\vDash\\ \\Vvdash\\ \\models\\ \\dashv' // tslint:disable-line
         },
         {
             name: 'Set and logic notation 01',
@@ -151,7 +155,15 @@ export const symbolSamples: Sample[] =
             code: '\\land\\, \\land \\bot\\, \\bot\\,\n\\lor\\, \\lor \\emptyset\\, and\\, \\varnothing'
         },
         {
+            name: 'Math alphabets',
+            code: '\\mathrm{ABCdef}\\ \\mathit{ABCdef}\\ \\mathcal{ABCdef}\\ \\mathfrak{ABCdef}\\ \\mathbb{ABCdef}'
+        },
+        {
             name: 'Other constructions',
             code: '\\widetilde{abc}\\ \\widehat{abc}\\ \\overleftarrow{abc}\\ \\overrightarrow{abc}\\ \\overline{abc}\\ \\underline{abc}\\ \\underbrace{abc}\\ \\sqrt{abc}\\ \\sqrt[n]{abc}\\ f\'\\ \\frac{abc}{xyz}\\ \\overbrace{abc}' // tslint:disable-line
+        },
+        {
+            name: 'Script style',
+            code: '\\scriptstyle(3 - {3^{2y} - 4xz_1 \\over 2.1})'
         }
     ];

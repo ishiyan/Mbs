@@ -21,7 +21,7 @@
     <mat-form-field>
         <mat-label>Sawtooth shape</mat-label>
         <mat-select [(value)]="sawtoothParameters.sawtoothShape" [compareWith]="compare" required>
-            <mat-option *ngFor="let type of sawtoothShape" [value]="type">
+            <mat-option *ngFor="let type of sawtoothShapes" [value]="type">
                 {{type}}
             </mat-option>
         </mat-select>

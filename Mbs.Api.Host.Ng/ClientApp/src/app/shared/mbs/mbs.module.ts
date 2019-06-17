@@ -15,6 +15,8 @@ import { QuoteParametersComponent } from './components/data/generators/quote-par
 import { TradeParametersComponent } from './components/data/generators/trade-parameters.component';
 // tslint:disable-next-line: max-line-length
 import { FractionalBrownianMotionParametersComponent } from './components/data/generators/fractional-brownian-motion/fractional-brownian-motion-parameters.component';
+import { ChirpParametersComponent } from './components/data/generators/chirp/chirp-parameters.component';
+import { SawtoothParametersComponent } from './components/data/generators/sawtooth/sawtooth-parameters.component';
 
 @NgModule({
     imports: [
@@ -28,12 +30,12 @@ import { FractionalBrownianMotionParametersComponent } from './components/data/g
     exports: [
         BusinessDayCalendarExplanationComponent, TimeParametersComponent, WaveformParametersComponent,
         OhlcvParametersComponent, QuoteParametersComponent, TradeParametersComponent,
-        FractionalBrownianMotionParametersComponent
+        FractionalBrownianMotionParametersComponent, ChirpParametersComponent, SawtoothParametersComponent
     ],
     declarations: [
         BusinessDayCalendarExplanationComponent, TimeParametersComponent, WaveformParametersComponent,
         OhlcvParametersComponent, QuoteParametersComponent, TradeParametersComponent,
-        FractionalBrownianMotionParametersComponent
+        FractionalBrownianMotionParametersComponent, ChirpParametersComponent, SawtoothParametersComponent
     ]
 })
 export class MbsModule { }

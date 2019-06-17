@@ -15,6 +15,9 @@ import { Enums } from '../../../enums';
 export class FractionalBrownianMotionParametersComponent {
     @Input() fractionalBrownianMotionParameters: FractionalBrownianMotionParameters;
 
+    eq1 = '$mid_t=α\\cdot fBm_t(H, ng, seed)+β,$';
+    eq2 = '$sample_t=mid_t+noise_t$';
+
     algorithms = Object.keys(FractionalBrownianMotionAlgorithm);
     normalRandomGenerators = Object.keys(NormalRandomGeneratorKind);
     uniformRandomGenerators = Object.keys(UniformRandomGeneratorKind);

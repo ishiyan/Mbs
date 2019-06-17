@@ -1,45 +1,24 @@
 <div #container class="container"></div>
 <br />
-<br />
-<mat-vertical-stepper>
-    <mat-step label="Data type">
-            <app-mbs-data-generators-ohlcv-parameters [ohlcvParameters]="ohlcvParameters">
-            </app-mbs-data-generators-ohlcv-parameters>
-    </mat-step>
-    <mat-step label="Synthetic data">
-            <app-mbs-data-generators-fractional-brownian-motion-parameters
-                [fractionalBrownianMotionParameters]="fractionalBrownianMotionParameters">
-            </app-mbs-data-generators-fractional-brownian-motion-parameters>
+<mat-horizontal-stepper labelPosition="bottom">
+    <ng-template matStepperIcon="edit" let-index="index">
+        {{index + 1}}
+    </ng-template>
+    <mat-step>
+        <ng-template matStepLabel><span class="multilite-label">Sawtooth</span></ng-template>
+        <mat-accordion multi="true">
+            <app-mbs-data-generators-sawtooth-parameters [sawtoothParameters]="sawtoothParameters">
+            </app-mbs-data-generators-sawtooth-parameters>
             <app-mbs-data-generators-waveform-parameters [waveformParameters]="waveformParameters">
             </app-mbs-data-generators-waveform-parameters>
             <app-mbs-data-generators-time-parameters [timeParameters]="timeParameters">
             </app-mbs-data-generators-time-parameters>
             <app-mbs-data-generators-ohlcv-parameters [ohlcvParameters]="ohlcvParameters">
             </app-mbs-data-generators-ohlcv-parameters>
-    </mat-step>
-    <mat-step label="Instrument">
-            <app-mbs-data-generators-ohlcv-parameters [ohlcvParameters]="ohlcvParameters">
-            </app-mbs-data-generators-ohlcv-parameters>
-    </mat-step>
-    <mat-step label="Done">
-        <mat-accordion multi="true">
-            <app-mbs-data-generators-ohlcv-parameters [ohlcvParameters]="ohlcvParameters">
-            </app-mbs-data-generators-ohlcv-parameters>
-        </mat-accordion>
-    </mat-step>
-</mat-vertical-stepper>
-<br />
-<br />
-<br />
-<mat-horizontal-stepper labelPosition="bottom" #stepper>
-    <ng-template matStepperIcon="edit" let-index="index">
-        {{index + 1}}
-    </ng-template>
-    <mat-step>
-        <ng-template matStepLabel><span class="multilite-label">Data type</span></ng-template>
-        <mat-accordion multi="true">
-            <app-mbs-data-generators-ohlcv-parameters [ohlcvParameters]="ohlcvParameters">
-            </app-mbs-data-generators-ohlcv-parameters>
+            <app-mbs-data-generators-quote-parameters [quoteParameters]="quoteParameters">
+            </app-mbs-data-generators-quote-parameters>
+            <app-mbs-data-generators-trade-parameters [tradeParameters]="tradeParameters">
+            </app-mbs-data-generators-trade-parameters>
         </mat-accordion>
     </mat-step>
     <mat-step>
@@ -54,6 +33,10 @@
             </app-mbs-data-generators-time-parameters>
             <app-mbs-data-generators-ohlcv-parameters [ohlcvParameters]="ohlcvParameters">
             </app-mbs-data-generators-ohlcv-parameters>
+            <app-mbs-data-generators-quote-parameters [quoteParameters]="quoteParameters">
+            </app-mbs-data-generators-quote-parameters>
+            <app-mbs-data-generators-trade-parameters [tradeParameters]="tradeParameters">
+            </app-mbs-data-generators-trade-parameters>
         </mat-accordion>
     </mat-step>
     <mat-step>
@@ -64,105 +47,28 @@
         </mat-accordion>
     </mat-step>
     <mat-step>
-        <ng-template matStepLabel><span class="multilite-label">Done</span></ng-template>
+        <ng-template matStepLabel><span class="multilite-label">Chirp</span></ng-template>
         <mat-accordion multi="true">
+            <app-mbs-data-generators-chirp-parameters [chirpParameters]="chirpParameters">
+            </app-mbs-data-generators-chirp-parameters>
+            <app-mbs-data-generators-waveform-parameters [waveformParameters]="waveformParameters">
+            </app-mbs-data-generators-waveform-parameters>
+            <app-mbs-data-generators-time-parameters [timeParameters]="timeParameters">
+            </app-mbs-data-generators-time-parameters>
             <app-mbs-data-generators-ohlcv-parameters [ohlcvParameters]="ohlcvParameters">
             </app-mbs-data-generators-ohlcv-parameters>
+            <app-mbs-data-generators-quote-parameters [quoteParameters]="quoteParameters">
+            </app-mbs-data-generators-quote-parameters>
+            <app-mbs-data-generators-trade-parameters [tradeParameters]="tradeParameters">
+            </app-mbs-data-generators-trade-parameters>
         </mat-accordion>
     </mat-step>
 </mat-horizontal-stepper>
 <br />
 <br />
-<br />
-<mat-tab-group class="mat-elevation-z4">
-    <mat-tab label="Chirp">
-        <div class="example-small-box mat-elevation-z4">
-            Chirp
-        </div>
-        <mat-accordion multi="true">
-            <app-mbs-data-generators-ohlcv-parameters [ohlcvParameters]="ohlcvParameters">
-            </app-mbs-data-generators-ohlcv-parameters>
-        </mat-accordion>
-    </mat-tab>
-    <mat-tab label="Square">
-        <div class="example-small-box mat-elevation-z4">
-            Square
-        </div>
-        <ng-template matTabContent>
-            <mat-accordion multi="true">
-                <app-mbs-data-generators-ohlcv-parameters [ohlcvParameters]="ohlcvParameters">
-                </app-mbs-data-generators-ohlcv-parameters>
-            </mat-accordion>
-        </ng-template>
-    </mat-tab>
-    <mat-tab label="Sawtooth">
-        <div class="example-small-box mat-elevation-z4">
-            Sawtooth
-        </div>
-    </mat-tab>
-    <mat-tab label="Sinusoidal">
-        <div class="example-large-box mat-elevation-z4">
-            Sinusoidal
-        </div>
-    </mat-tab>
-    <mat-tab label="Multi-sinusoidal">
-        <div class="example-large-box mat-elevation-z4">
-            Multi-sinusoidal
-        </div>
-    </mat-tab>
-    <mat-tab label="Fractional Brownian motion">
-        <div class="example-large-box mat-elevation-z4">
-            Fractional Brownian motion
-        </div>
-    </mat-tab>
-    <mat-tab label="Geometric Brownian motion">
-        <ng-template matTabContent>
-            <mat-accordion multi="true">
-                <app-mbs-data-generators-fractional-brownian-motion-parameters
-                    [fractionalBrownianMotionParameters]="fractionalBrownianMotionParameters">
-                </app-mbs-data-generators-fractional-brownian-motion-parameters>
-                <app-mbs-data-generators-waveform-parameters [waveformParameters]="waveformParameters">
-                </app-mbs-data-generators-waveform-parameters>
-                <app-mbs-data-generators-time-parameters [timeParameters]="timeParameters">
-                </app-mbs-data-generators-time-parameters>
-                <app-mbs-data-generators-ohlcv-parameters [ohlcvParameters]="ohlcvParameters">
-                </app-mbs-data-generators-ohlcv-parameters>
-            </mat-accordion>
-        </ng-template>
-    </mat-tab>
-</mat-tab-group>
-<br />
-<mat-accordion multi="true">
-    <app-mbs-data-generators-fractional-brownian-motion-parameters
-        [fractionalBrownianMotionParameters]="fractionalBrownianMotionParameters">
-    </app-mbs-data-generators-fractional-brownian-motion-parameters>
-    <app-mbs-data-generators-waveform-parameters [waveformParameters]="waveformParameters">
-    </app-mbs-data-generators-waveform-parameters>
-    <app-mbs-data-generators-time-parameters [timeParameters]="timeParameters">
-    </app-mbs-data-generators-time-parameters>
-    <app-mbs-data-generators-ohlcv-parameters [ohlcvParameters]="ohlcvParameters">
-    </app-mbs-data-generators-ohlcv-parameters>
-</mat-accordion>
-
-<br />
-<div class="box mat-elevation-z4">
-    <app-mbs-data-generators-fractional-brownian-motion-parameters
-        [fractionalBrownianMotionParameters]="fractionalBrownianMotionParameters">
-    </app-mbs-data-generators-fractional-brownian-motion-parameters>
-    <app-mbs-data-generators-waveform-parameters [waveformParameters]="waveformParameters">
-    </app-mbs-data-generators-waveform-parameters>
-    <app-mbs-data-generators-time-parameters [timeParameters]="timeParameters">
-    </app-mbs-data-generators-time-parameters>
-    <app-mbs-data-generators-ohlcv-parameters [ohlcvParameters]="ohlcvParameters">
-    </app-mbs-data-generators-ohlcv-parameters>
-    <app-mbs-data-generators-quote-parameters [quoteParameters]="quoteParameters">
-    </app-mbs-data-generators-quote-parameters>
-    <app-mbs-data-generators-trade-parameters [tradeParameters]="tradeParameters">
-    </app-mbs-data-generators-trade-parameters>
-</div>
-<br />
-<br />
 <pre>{{ fractionalBrownianMotionParameters | json }}</pre>
+<pre>{{ chirpParameters | json }}</pre>
+<pre>{{ sawtoothParameters | json }}</pre>
 <pre>{{ waveformParameters | json }}</pre>
 <pre>{{ timeParameters | json }}</pre>
 <pre>{{ ohlcvParameters | json }}</pre>

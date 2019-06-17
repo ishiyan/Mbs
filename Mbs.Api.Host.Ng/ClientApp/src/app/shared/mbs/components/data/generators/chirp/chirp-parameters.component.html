@@ -1,0 +1,50 @@
+<mat-expansion-panel expanded="true">
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+            Chirp generation parameters
+        </mat-panel-title>
+    </mat-expansion-panel-header>
+    <div>
+        <span [appMathJax]="eq1">{{eq1}}</span>
+        <span [appMathJax]="eq2">{{eq2}}</span>
+        <span [appMathJax]="eq3">{{eq3}}</span>
+        <span [appMathJax]="eq4">{{eq4}}</span>
+    </div>
+    <mat-form-field>
+        <input type="number" matInput placeholder="Amplitude, α" [(ngModel)]="chirpParameters.amplitude" min="4"
+            step="1" required>
+        <mat-hint>The amplitude of the chirp, should be positive.</mat-hint>
+    </mat-form-field>
+    <mat-form-field>
+        <input type="number" matInput placeholder="Minimum value, β" [(ngModel)]="chirpParameters.minimalValue" min="1"
+            step="1" required>
+        <mat-hint>The minimum of the chirp, should be positive.</mat-hint>
+    </mat-form-field>
+    <mat-form-field>
+        <input type="number" matInput placeholder="Initial period, λ1" [(ngModel)]="chirpParameters.initialPeriod"
+            min="0" max="1" step="1" required>
+        <mat-hint>The instantaneous initial period of the chirp in samples, should be ≥ 2.</mat-hint>
+    </mat-form-field>
+    <mat-form-field>
+        <input type="number" matInput placeholder="Final period, λL" [(ngModel)]="chirpParameters.finalPeriod" min="0"
+            max="1" step="1" required>
+        <mat-hint>The instantaneous final period of the chirp in samples, should be ≥ 2.</mat-hint>
+    </mat-form-field>
+    <mat-form-field>
+        <input type="number" matInput placeholder="Initial phase, φ" [(ngModel)]="chirpParameters.phaseInPi" min="0"
+            max="1" step="0.01" required>
+        <mat-hint>The initial phase, φ, of the chirp in ratios of π; if φ∈[-1, 1], then the phase ∈[-π, π].</mat-hint>
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label>Chirp sweep</mat-label>
+        <mat-select [(value)]="chirpParameters.chirpSweep" [compareWith]="compare" required>
+            <mat-option *ngFor="let type of chirpSweeps" [value]="type">
+                {{type}}
+            </mat-option>
+        </mat-select>
+        <mat-hint>The chirp sweep.</mat-hint>
+    </mat-form-field>
+    <mat-checkbox [(ngModel)]="chirpParameters.isBiDirectional" class="last-form-field">
+        Is bi-directional
+    </mat-checkbox>
+</mat-expansion-panel>

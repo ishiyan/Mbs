@@ -8,7 +8,7 @@
  *  ➋ The ask and bid sizes are constant values. */
 export class QuoteParameters {
     private static readonly defaultSpreadFraction: number = 0.3;
-    private static readonly defaultAskSize: number = 0.2;
+    private static readonly defaultAskSize: number = 100;
     private static readonly defaultBidSize: number = 100;
 
     /** The spread fraction, ρs, which determines the ask and bid prices as a fraction of the mid price. */

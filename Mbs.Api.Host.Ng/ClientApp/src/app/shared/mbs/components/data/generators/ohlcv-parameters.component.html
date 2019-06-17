@@ -8,19 +8,20 @@
         <span [appMathJax]="eq1">{{eq1}}</span>
         <span [appMathJax]="eq2">{{eq2}}</span>
         <span [appMathJax]="eq3">{{eq3}}</span>
+        <span [appMathJax]="eq4">{{eq4}}</span>
     </div>
     <mat-form-field>
         <input type="number" matInput placeholder="Shadow fraction, ρs"
             [(ngModel)]="ohlcvParameters.candlestickShadowFraction" min="0" max="1" step="0.01" required>
-        <mat-hint>Length of candlestick shadows as a fraction of a mid price.</mat-hint>
+        <mat-hint>Length of candlestick shadows as a fraction [0,1] of a mid price.</mat-hint>
     </mat-form-field>
     <mat-form-field>
         <input type="number" matInput placeholder="Body fraction, ρb" [(ngModel)]="ohlcvParameters.candlestickBodyFraction"
             min="0" max="1" step="0.01" required>
-        <mat-hint>Half-length of a candlestick body as a fraction of a mid price.</mat-hint>
+        <mat-hint>Half-length of a candlestick body as a fraction [0,1] of a mid price.</mat-hint>
     </mat-form-field>
-    <mat-form-field>
-        <input type="number" matInput placeholder="Volume, ν" [(ngModel)]="ohlcvParameters.volume" min="1" step="1"
+    <mat-form-field class="last-form-field">
+        <input type="number" matInput placeholder="Volume, υ" [(ngModel)]="ohlcvParameters.volume" min="1" step="1"
             required>
         <mat-hint>The same for all candlesticks.</mat-hint>
     </mat-form-field>

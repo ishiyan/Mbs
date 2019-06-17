@@ -6,6 +6,8 @@ import { QuoteParameters } from '../../../../shared/mbs/data/generators/quote-pa
 import { TradeParameters } from '../../../../shared/mbs/data/generators/trade-parameters';
 // tslint:disable-next-line: max-line-length
 import { FractionalBrownianMotionParameters } from '../../../../shared/mbs/data/generators/fractional-brownian-motion/fractional-brownian-motion-parameters';
+import { ChirpParameters } from '../../../../shared/mbs/data/generators/chirp/chirp-parameters';
+import { SawtoothParameters } from '../../../../shared/mbs/data/generators/sawtooth/sawtooth-parameters';
 
 @Component({
     selector: 'app-table2',
@@ -19,6 +21,8 @@ export class Table2Component implements OnInit {
     quoteParameters: QuoteParameters = new QuoteParameters();
     tradeParameters: TradeParameters = new TradeParameters();
     fractionalBrownianMotionParameters: FractionalBrownianMotionParameters = new FractionalBrownianMotionParameters();
+    chirpParameters: ChirpParameters = new ChirpParameters();
+    sawtoothParameters: SawtoothParameters = new SawtoothParameters();
 
     constructor(private element: ElementRef) {
     }

@@ -11,6 +11,8 @@ import { Enums } from '../../enums';
 export class WaveformParametersComponent {
     @Input() waveformParameters: WaveformParameters;
 
+    eq1 = '$noise_t=mid_t\\cdot ρ_n\\cdot random(seed),$';
+
     uniformRandomGenerators: string[] = Object.keys(UniformRandomGeneratorKind);
 
     compare = Enums.compare;

@@ -1,0 +1,33 @@
+<mat-expansion-panel expanded="true">
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+            Sawtooth generation parameters
+        </mat-panel-title>
+    </mat-expansion-panel-header>
+    <div>
+        <span [appMathJax]="eq1">{{eq1}}</span>
+        <span [appMathJax]="eq2">{{eq2}}</span>
+    </div>
+    <mat-form-field>
+        <input type="number" matInput placeholder="Amplitude, α" [(ngModel)]="sawtoothParameters.amplitude" min="4"
+            step="1" required>
+        <mat-hint>The amplitude of the sawtooth, should be positive.</mat-hint>
+    </mat-form-field>
+    <mat-form-field>
+        <input type="number" matInput placeholder="Minimum value, β" [(ngModel)]="sawtoothParameters.minimalValue" min="1"
+            step="1" required>
+        <mat-hint>The minimum of the sawtooth, should be positive.</mat-hint>
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label>Sawtooth shape</mat-label>
+        <mat-select [(value)]="sawtoothParameters.sawtoothShape" [compareWith]="compare" required>
+            <mat-option *ngFor="let type of sawtoothShape" [value]="type">
+                {{type}}
+            </mat-option>
+        </mat-select>
+        <mat-hint>The sawtooth shape.</mat-hint>
+    </mat-form-field>
+    <mat-checkbox [(ngModel)]="sawtoothParameters.isBiDirectional" class="last-form-field">
+        Is bi-directional
+    </mat-checkbox>
+</mat-expansion-panel>

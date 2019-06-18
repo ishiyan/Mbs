@@ -40,6 +40,7 @@ import { SinusoidalParametersComponent } from './components/data/generators/sinu
         OhlcvParametersComponent, QuoteParametersComponent, TradeParametersComponent,
         FractionalBrownianMotionParametersComponent, ChirpParametersComponent, SawtoothParametersComponent,
         SquareParametersComponent, SinusoidalParametersComponent
-    ]
+    ],
+    entryComponents: [BusinessDayCalendarExplanationComponent]
 })
 export class MbsModule { }

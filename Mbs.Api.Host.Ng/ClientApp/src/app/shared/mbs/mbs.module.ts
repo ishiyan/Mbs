@@ -17,6 +17,8 @@ import { TradeParametersComponent } from './components/data/generators/trade-par
 import { FractionalBrownianMotionParametersComponent } from './components/data/generators/fractional-brownian-motion/fractional-brownian-motion-parameters.component';
 import { ChirpParametersComponent } from './components/data/generators/chirp/chirp-parameters.component';
 import { SawtoothParametersComponent } from './components/data/generators/sawtooth/sawtooth-parameters.component';
+import { SquareParametersComponent } from './components/data/generators/square/square-parameters.component';
+import { SinusoidalParametersComponent } from './components/data/generators/sinusoidal/sinusoidal-parameters.component';
 
 @NgModule({
     imports: [
@@ -30,12 +32,14 @@ import { SawtoothParametersComponent } from './components/data/generators/sawtoo
     exports: [
         BusinessDayCalendarExplanationComponent, TimeParametersComponent, WaveformParametersComponent,
         OhlcvParametersComponent, QuoteParametersComponent, TradeParametersComponent,
-        FractionalBrownianMotionParametersComponent, ChirpParametersComponent, SawtoothParametersComponent
+        FractionalBrownianMotionParametersComponent, ChirpParametersComponent, SawtoothParametersComponent,
+        SquareParametersComponent, SinusoidalParametersComponent
     ],
     declarations: [
         BusinessDayCalendarExplanationComponent, TimeParametersComponent, WaveformParametersComponent,
         OhlcvParametersComponent, QuoteParametersComponent, TradeParametersComponent,
-        FractionalBrownianMotionParametersComponent, ChirpParametersComponent, SawtoothParametersComponent
+        FractionalBrownianMotionParametersComponent, ChirpParametersComponent, SawtoothParametersComponent,
+        SquareParametersComponent, SinusoidalParametersComponent
     ]
 })
 export class MbsModule { }

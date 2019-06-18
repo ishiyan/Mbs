@@ -8,6 +8,8 @@ import { TradeParameters } from '../../../../shared/mbs/data/generators/trade-pa
 import { FractionalBrownianMotionParameters } from '../../../../shared/mbs/data/generators/fractional-brownian-motion/fractional-brownian-motion-parameters';
 import { ChirpParameters } from '../../../../shared/mbs/data/generators/chirp/chirp-parameters';
 import { SawtoothParameters } from '../../../../shared/mbs/data/generators/sawtooth/sawtooth-parameters';
+import { SquareParameters } from '../../../../shared/mbs/data/generators/square/square-parameters';
+import { SinusoidalParameters } from '../../../../shared/mbs/data/generators/sinusoidal/sinusoidal-parameters';
 
 @Component({
     selector: 'app-table2',
@@ -23,6 +25,8 @@ export class Table2Component implements OnInit {
     fractionalBrownianMotionParameters: FractionalBrownianMotionParameters = new FractionalBrownianMotionParameters();
     chirpParameters: ChirpParameters = new ChirpParameters();
     sawtoothParameters: SawtoothParameters = new SawtoothParameters();
+    squareParameters: SquareParameters = new SquareParameters();
+    sinusoidalParameters: SinusoidalParameters = new SinusoidalParameters();
 
     constructor(private element: ElementRef) {
     }

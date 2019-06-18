@@ -12,7 +12,7 @@ export class SinusoidalParameters {
     /** The period of the sinusoid in samples, should be ≥ 2. */
     period: number = SinusoidalParameters.defaultPeriod;
     /** The phase, φ, of the sinusoid in ratios of π; if φ∈[-1, 1], then the phase ∈[-π, π]. */
-    phaseInPi: number;
+    phaseInPi: number = SinusoidalParameters.defaultPhaseInPi;
 
     constructor(data?: SinusoidalParameters) {
         if (data) {

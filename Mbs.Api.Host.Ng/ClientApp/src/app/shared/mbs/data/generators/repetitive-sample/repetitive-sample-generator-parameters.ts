@@ -2,7 +2,7 @@ import { TimeParameters } from '../time-parameters';
 
 /** The input parameters for the repetitive sample generator. */
 export class RepetitiveSampleGeneratorParameters {
-    private static readonly defaultSampleCount: number = 256;
+    private static readonly defaultSampleCount: number = 252;
     private static readonly defaultOffsetSamples: number = 0;
     private static readonly defaultRepetitionsCount: number = 0;
 

@@ -5,7 +5,7 @@
         {{index + 1}}
     </ng-template>
     <mat-step>
-        <ng-template matStepLabel><span class="multilite-label">Sawtooth</span></ng-template>
+        <ng-template matStepLabel><span class="multilite-label">Saw&#8203;tooth</span></ng-template>
         <mat-accordion multi="true">
             <app-mbs-data-generators-sawtooth-parameters [sawtoothParameters]="sawtoothParameters">
             </app-mbs-data-generators-sawtooth-parameters>
@@ -22,7 +22,7 @@
         </mat-accordion>
     </mat-step>
     <mat-step>
-        <ng-template matStepLabel><span class="multilite-label">Synthe&#8203;tic data</span></ng-template>
+        <ng-template matStepLabel><span class="multilite-label">fBm</span></ng-template>
         <mat-accordion multi="true">
             <app-mbs-data-generators-fractional-brownian-motion-parameters
                 [fractionalBrownianMotionParameters]="fractionalBrownianMotionParameters">
@@ -40,14 +40,24 @@
         </mat-accordion>
     </mat-step>
     <mat-step>
-        <ng-template matStepLabel><span class="multilite-label">Inst&#8203;ru&#8203;ment</span></ng-template>
+        <ng-template matStepLabel><span class="multilite-label">Squ&#8203;a&#8203;re</span></ng-template>
         <mat-accordion multi="true">
+            <app-mbs-data-generators-square-parameters [squareParameters]="squareParameters">
+            </app-mbs-data-generators-square-parameters>
+            <app-mbs-data-generators-waveform-parameters [waveformParameters]="waveformParameters">
+            </app-mbs-data-generators-waveform-parameters>
+            <app-mbs-data-generators-time-parameters [timeParameters]="timeParameters">
+            </app-mbs-data-generators-time-parameters>
             <app-mbs-data-generators-ohlcv-parameters [ohlcvParameters]="ohlcvParameters">
             </app-mbs-data-generators-ohlcv-parameters>
+            <app-mbs-data-generators-quote-parameters [quoteParameters]="quoteParameters">
+            </app-mbs-data-generators-quote-parameters>
+            <app-mbs-data-generators-trade-parameters [tradeParameters]="tradeParameters">
+            </app-mbs-data-generators-trade-parameters>
         </mat-accordion>
     </mat-step>
     <mat-step>
-        <ng-template matStepLabel><span class="multilite-label">Chirp</span></ng-template>
+        <ng-template matStepLabel><span class="multilite-label">Chi&#8203;rp</span></ng-template>
         <mat-accordion multi="true">
             <app-mbs-data-generators-chirp-parameters [chirpParameters]="chirpParameters">
             </app-mbs-data-generators-chirp-parameters>
@@ -63,14 +73,33 @@
             </app-mbs-data-generators-trade-parameters>
         </mat-accordion>
     </mat-step>
+    <mat-step>
+        <ng-template matStepLabel><span class="multilite-label">Si&#8203;nu&#8203;so&#8203;id</span></ng-template>
+        <mat-accordion multi="true">
+            <app-mbs-data-generators-sinusoidal-parameters [sinusoidalParameters]="sinusoidalParameters">
+            </app-mbs-data-generators-sinusoidal-parameters>
+            <app-mbs-data-generators-waveform-parameters [waveformParameters]="waveformParameters">
+            </app-mbs-data-generators-waveform-parameters>
+            <app-mbs-data-generators-time-parameters [timeParameters]="timeParameters">
+            </app-mbs-data-generators-time-parameters>
+            <app-mbs-data-generators-ohlcv-parameters [ohlcvParameters]="ohlcvParameters">
+            </app-mbs-data-generators-ohlcv-parameters>
+            <app-mbs-data-generators-quote-parameters [quoteParameters]="quoteParameters">
+            </app-mbs-data-generators-quote-parameters>
+            <app-mbs-data-generators-trade-parameters [tradeParameters]="tradeParameters">
+            </app-mbs-data-generators-trade-parameters>
+        </mat-accordion>
+    </mat-step>
 </mat-horizontal-stepper>
 <br />
 <br />
-<pre>{{ fractionalBrownianMotionParameters | json }}</pre>
-<pre>{{ chirpParameters | json }}</pre>
-<pre>{{ sawtoothParameters | json }}</pre>
-<pre>{{ waveformParameters | json }}</pre>
-<pre>{{ timeParameters | json }}</pre>
-<pre>{{ ohlcvParameters | json }}</pre>
-<pre>{{ quoteParameters | json }}</pre>
-<pre>{{ tradeParameters | json }}</pre>
+<pre>fBm: {{ fractionalBrownianMotionParameters | json }}</pre>
+<pre>chirp: {{ chirpParameters | json }}</pre>
+<pre>sawtooth: {{ sawtoothParameters | json }}</pre>
+<pre>square: {{ squareParameters | json }}</pre>
+<pre>sinusoidal: {{ sinusoidalParameters | json }}</pre>
+<pre>waveform: {{ waveformParameters | json }}</pre>
+<pre>time: {{ timeParameters | json }}</pre>
+<pre>ohlcv: {{ ohlcvParameters | json }}</pre>
+<pre>quote: {{ quoteParameters | json }}</pre>
+<pre>trade: {{ tradeParameters | json }}</pre>

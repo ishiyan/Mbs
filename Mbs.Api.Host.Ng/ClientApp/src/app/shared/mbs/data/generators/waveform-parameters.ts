@@ -1,6 +1,8 @@
 import { UniformRandomGeneratorKind } from './uniform-random-generator-kind.enum';
+import { objectName, waveformSamplesName, offsetSamplesName, repetitionsCountName, noiseAmplitudeFractionName,
+    noiseUniformRandomGeneratorKindName, noiseUniformRandomGeneratorSeedName } from './constants';
 
-/** The input parameters for the waveform generators. A waveform generator produces samples with an optional noise. */
+/** The waveform input parameters for the generators. */
 export class WaveformParameters {
     private static readonly defaultWaveformSamples: number = 128;
     private static readonly defaultOffsetSamples: number = 0;
@@ -11,14 +13,19 @@ export class WaveformParameters {
 
     /** The number of samples in the waveform. */
     waveformSamples: number = WaveformParameters.defaultWaveformSamples;
+
     /** The number of samples before the very first waveform sample. The value of zero means the waveform starts immediately. */
     offsetSamples: number = WaveformParameters.defaultOffsetSamples;
+
     /** The number of repetitions of the waveform. The value of zero means infinite. */
     repetitionsCount: number = WaveformParameters.defaultRepetitionsCount;
+
     /** The amplitude of the noise as a fraction of the sample value. If zero, noise will be not produced. */
     noiseAmplitudeFraction: number = WaveformParameters.defaultNoiseAmplitudeFraction;
+
     /** The kind of an uniform random generator to produce the noise. */
     noiseUniformRandomGeneratorKind: UniformRandomGeneratorKind = WaveformParameters.defaultNoiseUniformRandomGeneratorKind;
+
     /** The seed of a random generator to produce the noise. */
     noiseUniformRandomGeneratorSeed: number = WaveformParameters.defaultNoiseUniformRandomGeneratorSeed;
 
@@ -33,37 +40,39 @@ export class WaveformParameters {
     }
 
     static fromJS(data: any): WaveformParameters {
-        data = typeof data === 'object' ? data : {};
+        data = typeof data === objectName ? data : {};
         const result = new WaveformParameters();
         result.init(data);
         return result;
     }
 
-    init(data?: any) {
+    private init(data?: any): void {
         if (data) {
-            this.waveformSamples = data['waveformSamples'] !== undefined
-                ? data['waveformSamples'] : WaveformParameters.defaultOffsetSamples;
-            this.offsetSamples = data['offsetSamples'] !== undefined
-                ? data['offsetSamples'] : WaveformParameters.defaultOffsetSamples;
-            this.repetitionsCount = data['repetitionsCount'] !== undefined
-                ? data['repetitionsCount'] : WaveformParameters.defaultRepetitionsCount;
-            this.noiseAmplitudeFraction = data['noiseAmplitudeFraction'] !== undefined
-                ? data['noiseAmplitudeFraction'] : WaveformParameters.defaultNoiseAmplitudeFraction;
-            this.noiseUniformRandomGeneratorKind = data['noiseUniformRandomGeneratorKind'] !== undefined
-                ? data['noiseUniformRandomGeneratorKind'] : WaveformParameters.defaultNoiseUniformRandomGeneratorKind;
-            this.noiseUniformRandomGeneratorSeed = data['noiseUniformRandomGeneratorSeed'] !== undefined
-                ? data['noiseUniformRandomGeneratorSeed'] : WaveformParameters.defaultNoiseUniformRandomGeneratorSeed;
+            this.waveformSamples = data[waveformSamplesName] !== undefined ? data[waveformSamplesName] :
+                WaveformParameters.defaultOffsetSamples;
+            this.offsetSamples = data[offsetSamplesName] !== undefined ? data[offsetSamplesName] :
+                WaveformParameters.defaultOffsetSamples;
+            this.repetitionsCount = data[repetitionsCountName] !== undefined ? data[repetitionsCountName] :
+                WaveformParameters.defaultRepetitionsCount;
+            this.noiseAmplitudeFraction = data[noiseAmplitudeFractionName] !== undefined ? data[noiseAmplitudeFractionName] :
+                WaveformParameters.defaultNoiseAmplitudeFraction;
+            this.noiseUniformRandomGeneratorKind = data[noiseUniformRandomGeneratorKindName] !== undefined ?
+                data[noiseUniformRandomGeneratorKindName] :
+                WaveformParameters.defaultNoiseUniformRandomGeneratorKind;
+            this.noiseUniformRandomGeneratorSeed = data[noiseUniformRandomGeneratorSeedName] !== undefined ?
+                data[noiseUniformRandomGeneratorSeedName] :
+                WaveformParameters.defaultNoiseUniformRandomGeneratorSeed;
         }
     }
 
     toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data['waveformSamples'] = this.waveformSamples;
-        data['offsetSamples'] = this.offsetSamples;
-        data['repetitionsCount'] = this.repetitionsCount;
-        data['noiseAmplitudeFraction'] = this.noiseAmplitudeFraction;
-        data['noiseUniformRandomGeneratorKind'] = this.noiseUniformRandomGeneratorKind;
-        data['noiseUniformRandomGeneratorSeed'] = this.noiseUniformRandomGeneratorSeed;
+        data = typeof data === objectName ? data : {};
+        data[waveformSamplesName] = this.waveformSamples;
+        data[offsetSamplesName] = this.offsetSamples;
+        data[repetitionsCountName] = this.repetitionsCount;
+        data[noiseAmplitudeFractionName] = this.noiseAmplitudeFraction;
+        data[noiseUniformRandomGeneratorKindName] = this.noiseUniformRandomGeneratorKind;
+        data[noiseUniformRandomGeneratorSeedName] = this.noiseUniformRandomGeneratorSeed;
         return data;
     }
 }

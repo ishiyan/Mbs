@@ -1,3 +1,5 @@
+import { amplitudeName, minimalValueName, objectName } from '../constants';
+
 /** The input parameters for the square impulse generator. */
 export class SquareParameters {
     private static readonly defaultAmplitude: number = 100;
@@ -5,6 +7,7 @@ export class SquareParameters {
 
     /** The amplitude of the square impulse, should be positive. */
     amplitude: number = SquareParameters.defaultAmplitude;
+
     /** The minimum of square impulse, should be positive. */
     minimalValue: number = SquareParameters.defaultMinimalValue;
 
@@ -19,25 +22,25 @@ export class SquareParameters {
     }
 
     static fromJS(data: any): SquareParameters {
-        data = typeof data === 'object' ? data : {};
+        data = typeof data === objectName ? data : {};
         const result = new SquareParameters();
         result.init(data);
         return result;
     }
 
-    init(data?: any) {
+    private init(data?: any): void {
         if (data) {
-            this.amplitude = data['amplitude'] !== undefined
-                ? data['amplitude'] : SquareParameters.defaultAmplitude;
-            this.minimalValue = data['minimalValue'] !== undefined
-                ? data['minimalValue'] : SquareParameters.defaultMinimalValue;
+            this.amplitude = data[amplitudeName] !== undefined ? data[amplitudeName] :
+                SquareParameters.defaultAmplitude;
+            this.minimalValue = data[minimalValueName] !== undefined ? data[minimalValueName] :
+                SquareParameters.defaultMinimalValue;
         }
     }
 
     toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data['amplitude'] = this.amplitude;
-        data['minimalValue'] = this.minimalValue;
+        data = typeof data === objectName ? data : {};
+        data[amplitudeName] = this.amplitude;
+        data[minimalValueName] = this.minimalValue;
         return data;
     }
 }

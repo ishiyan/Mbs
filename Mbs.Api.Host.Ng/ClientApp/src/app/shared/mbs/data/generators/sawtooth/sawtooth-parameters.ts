@@ -1,4 +1,5 @@
 import { SawtoothShape } from './sawtooth-shape.enum';
+import { amplitudeName, minimalValueName, isBiDirectionalName, sawtoothShapeName, objectName } from '../constants';
 
 /** The input parameters for the sawtooth impulse generator. */
 export class SawtoothParameters {
@@ -9,10 +10,13 @@ export class SawtoothParameters {
 
     /** The amplitude of the sawtooth impulse, should be positive. */
     amplitude: number = SawtoothParameters.defaultAmplitude;
+
     /** The minimum of the sawtooth impulse, should be positive. */
     minimalValue: number = SawtoothParameters.defaultMinimalValue;
+
     /** whether the sawtooth impulse is reflected horizontally to form a triangle shape. */
     isBiDirectional: boolean = SawtoothParameters.defaultIsBiDirectional;
+
     /** The sawtooth shape. */
     sawtoothShape: SawtoothShape = SawtoothParameters.defaultSawtoothShape;
 
@@ -27,32 +31,31 @@ export class SawtoothParameters {
     }
 
     static fromJS(data: any): SawtoothParameters {
-        data = typeof data === 'object' ? data : {};
+        data = typeof data === objectName ? data : {};
         const result = new SawtoothParameters();
         result.init(data);
         return result;
     }
 
-    init(data?: any) {
+    private init(data?: any): void {
         if (data) {
-            this.amplitude = data['amplitude'] !== undefined
-                ? data['amplitude'] : SawtoothParameters.defaultAmplitude;
-            this.minimalValue = data['minimalValue'] !== undefined
-                ? data['minimalValue'] : SawtoothParameters.defaultMinimalValue;
-            this.isBiDirectional = data['isBiDirectional'] !== undefined
-                ? data['isBiDirectional']
-                : SawtoothParameters.defaultIsBiDirectional;
-            this.sawtoothShape = data['sawtoothShape'] !== undefined
-                ? data['sawtoothShape'] : SawtoothParameters.defaultSawtoothShape;
+            this.amplitude = data[amplitudeName] !== undefined ? data[amplitudeName] :
+                SawtoothParameters.defaultAmplitude;
+            this.minimalValue = data[minimalValueName] !== undefined ? data[minimalValueName] :
+                SawtoothParameters.defaultMinimalValue;
+            this.isBiDirectional = data[isBiDirectionalName] !== undefined ? data[isBiDirectionalName] :
+                SawtoothParameters.defaultIsBiDirectional;
+            this.sawtoothShape = data[sawtoothShapeName] !== undefined ? data[sawtoothShapeName] :
+                SawtoothParameters.defaultSawtoothShape;
         }
     }
 
     toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data['amplitude'] = this.amplitude;
-        data['minimalValue'] = this.minimalValue;
-        data['isBiDirectional'] = this.isBiDirectional;
-        data['sawtoothShape'] = this.sawtoothShape;
+        data = typeof data === objectName ? data : {};
+        data[amplitudeName] = this.amplitude;
+        data[minimalValueName] = this.minimalValue;
+        data[isBiDirectionalName] = this.isBiDirectional;
+        data[sawtoothShapeName] = this.sawtoothShape;
         return data;
     }
 }

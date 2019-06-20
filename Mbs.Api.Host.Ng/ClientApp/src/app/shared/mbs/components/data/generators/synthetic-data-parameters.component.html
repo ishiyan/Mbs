@@ -1,0 +1,45 @@
+<br />
+<mat-button-toggle-group #group="matButtonToggleGroup" [value]="syntheticDataKind" (change)="dataKindChanged(group.value)">
+    <mat-button-toggle *ngFor="let type of dataKinds" [value]="type">{{type}}</mat-button-toggle>
+</mat-button-toggle-group>
+<br />
+<br />
+<p *ngIf="isFbm">data is Fbm</p>
+<p *ngIf="isGbm">data is Gbm</p>
+<p *ngIf="isChirp">data is Chirp</p>
+<p *ngIf="isSawtooth">data is Sawtooth</p>
+<p *ngIf="isSquare">data is Square</p>
+<p *ngIf="isSinusoid">data is Sinusoid</p>
+<p *ngIf="isMultiSinusoid">data is MultiSinusoid</p>
+<br />
+<br />
+Selected value: {{group.value}}
+<br />
+syntheticDataKind: {{syntheticDataKind}}
+<br />
+isFbm: {{isFbm}}
+<br />
+isGbm: {{isGbm}}
+<br />
+isChirp: {{isChirp}}
+<br />
+isSawtooth: {{isSawtooth}}
+<br />
+isSquare: {{isSquare}}
+<br />
+isSinusoid: {{isSinusoid}}
+<br />
+isMultiSinusoid: {{isMultiSinusoid}}
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<pre>ohlcv: {{ohlcvGen | json}}</pre>
+<br />
+<pre>quote: {{quoteGen | json}}</pre>
+<br />
+<pre>trade: {{tradeGen | json}}</pre>
+<br />
+<pre>scalar: {{scalarGen | json}}</pre>

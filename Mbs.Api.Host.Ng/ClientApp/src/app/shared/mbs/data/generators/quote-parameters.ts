@@ -1,4 +1,6 @@
-/** The quote related input parameters for the waveform generators. A waveform generator produces quotes with the following traits.
+import { objectName, spreadFractionName, askSizeName, bidSizeName } from './constants';
+
+/** The quote related input parameters for the waveform generators.
  *
  *  ➊ The ask and bid prices are equidistant from the mid price.
  *  (a) The half-length of the spread is defined as a ratio ∈[0, 1].
@@ -31,28 +33,28 @@ export class QuoteParameters {
     }
 
     static fromJS(data: any): QuoteParameters {
-        data = typeof data === 'object' ? data : {};
+        data = typeof data === objectName ? data : {};
         const result = new QuoteParameters();
         result.init(data);
         return result;
     }
 
-    init(data?: any) {
+    private init(data?: any): void {
         if (data) {
-            this.spreadFraction = data['spreadFraction'] !== undefined
-                ? data['spreadFraction'] : QuoteParameters.defaultSpreadFraction;
-            this.askSize = data['askSize'] !== undefined
-                ? data['askSize'] : QuoteParameters.defaultAskSize;
-            this.bidSize = data['bidSize'] !== undefined
-                ? data['bidSize'] : QuoteParameters.defaultBidSize;
+            this.spreadFraction = data[spreadFractionName] !== undefined
+                ? data[spreadFractionName] : QuoteParameters.defaultSpreadFraction;
+            this.askSize = data[askSizeName] !== undefined
+                ? data[askSizeName] : QuoteParameters.defaultAskSize;
+            this.bidSize = data[bidSizeName] !== undefined
+                ? data[bidSizeName] : QuoteParameters.defaultBidSize;
         }
     }
 
     toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data['spreadFraction'] = this.spreadFraction;
-        data['askSize'] = this.askSize;
-        data['bidSize'] = this.bidSize;
+        data = typeof data === objectName ? data : {};
+        data[spreadFractionName] = this.spreadFraction;
+        data[askSizeName] = this.askSize;
+        data[bidSizeName] = this.bidSize;
         return data;
     }
 }

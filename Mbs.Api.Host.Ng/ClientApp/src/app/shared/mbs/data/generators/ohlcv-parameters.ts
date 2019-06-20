@@ -1,19 +1,10 @@
-/** The input parameters for the waveform generators. A waveform generator produces samples with an optional noise. */
-export class OhlcvParameters {
+import { objectName, candlestickShadowFractionName, candlestickBodyFractionName, volumeName } from './constants';
 
+ /** The ohlcv input parameters for the waveform generators. */
+export class OhlcvParameters {
     private static readonly defaultCandlestickShadowFraction: number = 0.3;
     private static readonly defaultCandlestickBodyFraction: number = 0.2;
     private static readonly defaultVolume: number = 100;
-
-    constructor(data?: OhlcvParameters) {
-        if (data) {
-            for (const property in data) {
-                if (data.hasOwnProperty(property)) {
-                    (<any>this)[property] = (<any>data)[property];
-                }
-            }
-        }
-    }
 
     /** The shadow fraction, ρs, which determines the length of the candlestick shadows as a fraction of the mid price; ρs∈[0, 1].
      *
@@ -28,29 +19,39 @@ export class OhlcvParameters {
     /** The volume, which is the same for all candlesticks; should be positive. */
     volume: number = OhlcvParameters.defaultVolume;
 
+    constructor(data?: OhlcvParameters) {
+        if (data) {
+            for (const property in data) {
+                if (data.hasOwnProperty(property)) {
+                    (<any>this)[property] = (<any>data)[property];
+                }
+            }
+        }
+    }
+
     static fromJS(data: any): OhlcvParameters {
-        data = typeof data === 'object' ? data : {};
+        data = typeof data === objectName ? data : {};
         const result = new OhlcvParameters();
         result.init(data);
         return result;
     }
 
-    init(data?: any) {
+    private init(data?: any): void {
         if (data) {
-            this.candlestickShadowFraction = data['candlestickShadowFraction'] !== undefined
-                ? data['candlestickShadowFraction'] : OhlcvParameters.defaultCandlestickShadowFraction;
-            this.candlestickBodyFraction = data['candlestickBodyFraction'] !== undefined
-                ? data['candlestickBodyFraction'] : OhlcvParameters.defaultCandlestickBodyFraction;
-            this.volume = data['volume'] !== undefined
-                ? data['volume'] : OhlcvParameters.defaultVolume;
+            this.candlestickShadowFraction = data[candlestickShadowFractionName] !== undefined ? data[candlestickShadowFractionName] :
+                OhlcvParameters.defaultCandlestickShadowFraction;
+            this.candlestickBodyFraction = data[candlestickBodyFractionName] !== undefined ? data[candlestickBodyFractionName] :
+                OhlcvParameters.defaultCandlestickBodyFraction;
+            this.volume = data[volumeName] !== undefined ? data[volumeName] :
+                OhlcvParameters.defaultVolume;
         }
     }
 
     toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data['candlestickShadowFraction'] = this.candlestickShadowFraction;
-        data['candlestickBodyFraction'] = this.candlestickBodyFraction;
-        data['volume'] = this.volume;
+        data = typeof data === objectName ? data : {};
+        data[candlestickShadowFractionName] = this.candlestickShadowFraction;
+        data[candlestickBodyFractionName] = this.candlestickBodyFraction;
+        data[volumeName] = this.volume;
         return data;
     }
 }

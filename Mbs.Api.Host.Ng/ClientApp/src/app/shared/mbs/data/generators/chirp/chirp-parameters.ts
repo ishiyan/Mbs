@@ -1,4 +1,6 @@
 import { ChirpSweep } from './chirp-sweep.enum';
+import { amplitudeName, minimalValueName, initialPeriodName, finalPeriodName, phaseInPiName, isBiDirectionalName, chirpSweepName,
+    objectName } from '../constants';
 
 /** The input parameters for the chirp generator. */
 export class ChirpParameters {
@@ -12,16 +14,22 @@ export class ChirpParameters {
 
     /** The amplitude of the chirp, should be positive. */
     amplitude: number = ChirpParameters.defaultAmplitude;
+
     /** The minimum of the chirp, should be positive. */
     minimalValue: number = ChirpParameters.defaultMinimalValue;
+
     /** The instantaneous initial period of the chirp in samples, should be ≥ 2. */
     initialPeriod: number = ChirpParameters.defaultInitialPeriod;
+
     /** The instantaneous final period of the chirp in samples, should be ≥ 2. */
     finalPeriod: number = ChirpParameters.defaultFinalPeriod;
+
     /** The initial phase, φ, of the chirp in ratios of π; if φ∈[-1, 1], then the phase ∈[-π, π]. */
     phaseInPi: number = ChirpParameters.defaultPhaseInPi;
+
     /** If the period of even chirps descends from the final period to the initial one, to form a symmetrical shape with odd chirps. */
     isBiDirectional: boolean = ChirpParameters.defaultIsBiDirectional;
+
     /** The chirp sweep. */
     chirpSweep: ChirpSweep = ChirpParameters.defaultChirpSweep;
 
@@ -36,41 +44,40 @@ export class ChirpParameters {
     }
 
     static fromJS(data: any): ChirpParameters {
-        data = typeof data === 'object' ? data : {};
+        data = typeof data === objectName ? data : {};
         const result = new ChirpParameters();
         result.init(data);
         return result;
     }
 
-    init(data?: any) {
+    private init(data?: any): void {
         if (data) {
-            this.amplitude = data['amplitude'] !== undefined
-                ? data['amplitude'] : ChirpParameters.defaultAmplitude;
-            this.minimalValue = data['minimalValue'] !== undefined
-                ? data['minimalValue'] : ChirpParameters.defaultMinimalValue;
-            this.initialPeriod = data['initialPeriod'] !== undefined
-                ? data['initialPeriod'] : ChirpParameters.defaultInitialPeriod;
-            this.finalPeriod = data['finalPeriod'] !== undefined
-                ? data['finalPeriod'] : ChirpParameters.defaultFinalPeriod;
-            this.phaseInPi = data['phaseInPi'] !== undefined
-                ? data['phaseInPi'] : ChirpParameters.defaultPhaseInPi;
-            this.isBiDirectional = data['isBiDirectional'] !== undefined
-                ? data['isBiDirectional']
-                : ChirpParameters.defaultIsBiDirectional;
-            this.chirpSweep = data['chirpSweep'] !== undefined
-                ? data['chirpSweep'] : ChirpParameters.defaultChirpSweep;
+            this.amplitude = data[amplitudeName] !== undefined ? data[amplitudeName] :
+                ChirpParameters.defaultAmplitude;
+            this.minimalValue = data[minimalValueName] !== undefined ? data[minimalValueName] :
+                ChirpParameters.defaultMinimalValue;
+            this.initialPeriod = data[initialPeriodName] !== undefined ? data[initialPeriodName] :
+                ChirpParameters.defaultInitialPeriod;
+            this.finalPeriod = data[finalPeriodName] !== undefined ? data[finalPeriodName] :
+                ChirpParameters.defaultFinalPeriod;
+            this.phaseInPi = data[phaseInPiName] !== undefined ? data[phaseInPiName] :
+                ChirpParameters.defaultPhaseInPi;
+            this.isBiDirectional = data[isBiDirectionalName] !== undefined ? data[isBiDirectionalName] :
+                ChirpParameters.defaultIsBiDirectional;
+            this.chirpSweep = data[chirpSweepName] !== undefined ? data[chirpSweepName] :
+                ChirpParameters.defaultChirpSweep;
         }
     }
 
     toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data['amplitude'] = this.amplitude;
-        data['minimalValue'] = this.minimalValue;
-        data['initialPeriod'] = this.initialPeriod;
-        data['finalPeriod'] = this.finalPeriod;
-        data['phaseInPi'] = this.phaseInPi;
-        data['isBiDirectional'] = this.isBiDirectional;
-        data['chirpSweep'] = this.chirpSweep;
+        data = typeof data === objectName ? data : {};
+        data[amplitudeName] = this.amplitude;
+        data[minimalValueName] = this.minimalValue;
+        data[initialPeriodName] = this.initialPeriod;
+        data[finalPeriodName] = this.finalPeriod;
+        data[phaseInPiName] = this.phaseInPi;
+        data[isBiDirectionalName] = this.isBiDirectional;
+        data[chirpSweepName] = this.chirpSweep;
         return data;
     }
 }

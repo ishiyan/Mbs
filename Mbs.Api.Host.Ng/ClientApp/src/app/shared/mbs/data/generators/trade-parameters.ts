@@ -1,4 +1,6 @@
-/** The trade related input parameters for the waveform generators. A waveform generator produces trades with a constant volume. */
+import { objectName, volumeName } from './constants';
+
+/** The trade related input parameters for the waveform generators. */
 export class TradeParameters {
     private static readonly defaultVolume: number = 100;
 
@@ -16,22 +18,21 @@ export class TradeParameters {
     }
 
     static fromJS(data: any): TradeParameters {
-        data = typeof data === 'object' ? data : {};
+        data = typeof data === objectName ? data : {};
         const result = new TradeParameters();
         result.init(data);
         return result;
     }
 
-    init(data?: any) {
+    private init(data?: any): void {
         if (data) {
-            this.volume = data['volume'] !== undefined
-                ? data['volume'] : TradeParameters.defaultVolume;
+            this.volume = data[volumeName] !== undefined ? data[volumeName] : TradeParameters.defaultVolume;
         }
     }
 
     toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data['volume'] = this.volume;
+        data = typeof data === objectName ? data : {};
+        data[volumeName] = this.volume;
         return data;
     }
 }

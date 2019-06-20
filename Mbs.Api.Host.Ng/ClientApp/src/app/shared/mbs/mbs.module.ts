@@ -19,6 +19,7 @@ import { ChirpParametersComponent } from './components/data/generators/chirp/chi
 import { SawtoothParametersComponent } from './components/data/generators/sawtooth/sawtooth-parameters.component';
 import { SquareParametersComponent } from './components/data/generators/square/square-parameters.component';
 import { SinusoidalParametersComponent } from './components/data/generators/sinusoidal/sinusoidal-parameters.component';
+import { SyntheticDataParametersComponent } from './components/data/generators/synthetic-data-parameters.component';
 
 @NgModule({
     imports: [
@@ -33,13 +34,13 @@ import { SinusoidalParametersComponent } from './components/data/generators/sinu
         BusinessDayCalendarExplanationComponent, TimeParametersComponent, WaveformParametersComponent,
         OhlcvParametersComponent, QuoteParametersComponent, TradeParametersComponent,
         FractionalBrownianMotionParametersComponent, ChirpParametersComponent, SawtoothParametersComponent,
-        SquareParametersComponent, SinusoidalParametersComponent
+        SquareParametersComponent, SinusoidalParametersComponent, SyntheticDataParametersComponent
     ],
     declarations: [
         BusinessDayCalendarExplanationComponent, TimeParametersComponent, WaveformParametersComponent,
         OhlcvParametersComponent, QuoteParametersComponent, TradeParametersComponent,
         FractionalBrownianMotionParametersComponent, ChirpParametersComponent, SawtoothParametersComponent,
-        SquareParametersComponent, SinusoidalParametersComponent
+        SquareParametersComponent, SinusoidalParametersComponent, SyntheticDataParametersComponent
     ],
     entryComponents: [BusinessDayCalendarExplanationComponent]
 })

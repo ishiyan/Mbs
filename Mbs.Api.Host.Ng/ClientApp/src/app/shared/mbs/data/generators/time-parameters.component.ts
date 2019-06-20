@@ -1,10 +1,10 @@
 import { Component, ElementRef, Input, NgModule } from '@angular/core';
-import { TimeGranularity } from '../../../time/time-granularity.enum';
-import { BusinessDayCalendar } from '../../../time/business-day-calendar.enum';
-import { BusinessDayCalendarExplanationComponent } from './business-day-calendar-explanation.component';
+import { TimeGranularity } from './../../time/time-granularity.enum';
+import { BusinessDayCalendar } from './../../time/business-day-calendar.enum';
+import { BusinessDayCalendarDescriptionComponent } from '../../time/business-day-calendar-description.component';
 import { MatDialog } from '@angular/material';
-import { TimeParameters } from '../../../data/generators/time-parameters';
-import { Enums } from '../../enums';
+import { TimeParameters } from './time-parameters';
+import { Enums } from '../../utils/enums';
 
 @Component({
     selector: 'app-mbs-data-generators-time-parameters',
@@ -22,7 +22,7 @@ export class TimeParametersComponent {
     constructor(public dialog: MatDialog) {
     }
 
-    openBusinessDayCalendarExplanation() {
-        this.dialog.open(BusinessDayCalendarExplanationComponent, null);
+    openBusinessDayCalendarDescription() {
+        this.dialog.open(BusinessDayCalendarDescriptionComponent, null);
     }
 }

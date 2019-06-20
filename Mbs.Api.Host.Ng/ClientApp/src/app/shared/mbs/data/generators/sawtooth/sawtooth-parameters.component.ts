@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
-import { SawtoothParameters } from '../../../../data/generators/sawtooth/sawtooth-parameters';
-import { SawtoothShape } from '../../../../data/generators/sawtooth/sawtooth-shape.enum';
-import { Enums } from '../../../enums';
+import { SawtoothParameters } from './sawtooth-parameters';
+import { SawtoothShape } from './sawtooth-shape.enum';
+import { Enums } from '../../../utils/enums';
 
 @Component({
     selector: 'app-mbs-data-generators-sawtooth-parameters',

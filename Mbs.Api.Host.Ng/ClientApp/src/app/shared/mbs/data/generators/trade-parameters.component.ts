@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { TradeParameters } from '../../../data/generators/trade-parameters';
+import { TradeParameters } from './trade-parameters';
 
 @Component({
     selector: 'app-mbs-data-generators-trade-parameters',

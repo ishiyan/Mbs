@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { SinusoidalParameters } from '../../../../data/generators/sinusoidal/sinusoidal-parameters';
+import { SinusoidalParameters } from './sinusoidal-parameters';
 
 @Component({
     selector: 'app-mbs-data-generators-sinusoidal-parameters',

@@ -9,6 +9,7 @@ export const chirpParametersName = 'chirpParameters';
 export const sawtoothParametersName = 'sawtoothParameters';
 export const squareParametersName = 'squareParameters';
 export const sinusoidalParametersName = 'sinusoidalParameters';
+export const multiSinusoidalComponentsName = 'multiSinusoidalComponents';
 export const ohlcvParametersName = 'ohlcvParameters';
 export const quoteParametersName = 'quoteParameters';
 export const tradeParametersName = 'tradeParameters';

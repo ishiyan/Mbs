@@ -1,4 +1,5 @@
 import { TimeParameters } from '../time-parameters';
+import { sampleCountName, offsetSamplesName, repetitionsCountName, timeParametersName, objectName } from '../constants';
 
 /** The input parameters for the repetitive sample generator. */
 export class RepetitiveSampleGeneratorParameters {
@@ -8,14 +9,17 @@ export class RepetitiveSampleGeneratorParameters {
 
     /** The number of samples to generate. */
     sampleCount: number = RepetitiveSampleGeneratorParameters.defaultSampleCount;
+
     /** The number of samples before the very first waveform sample.
      *
      * The value of zero means the waveform starts immediately. */
     offsetSamples: number = RepetitiveSampleGeneratorParameters.defaultOffsetSamples;
+
     /** The number of repetitions of the waveform.
      *
      * The value of zero means infinite. */
     repetitionsCount: number = RepetitiveSampleGeneratorParameters.defaultRepetitionsCount;
+
     /** The time related input parameters. */
     timeParameters: TimeParameters = new TimeParameters();
 
@@ -30,31 +34,31 @@ export class RepetitiveSampleGeneratorParameters {
     }
 
     static fromJS(data: any): RepetitiveSampleGeneratorParameters {
-        data = typeof data === 'object' ? data : {};
+        data = typeof data === objectName ? data : {};
         const result = new RepetitiveSampleGeneratorParameters();
         result.init(data);
         return result;
     }
 
-    init(data?: any) {
+    private init(data?: any): void {
         if (data) {
-            this.sampleCount = data['sampleCount'] !== undefined
-                ? data['sampleCount'] : RepetitiveSampleGeneratorParameters.defaultSampleCount;
-            this.offsetSamples = data['offsetSamples'] !== undefined
-                ? data['offsetSamples'] : RepetitiveSampleGeneratorParameters.defaultOffsetSamples;
-            this.repetitionsCount = data['repetitionsCount'] !== undefined
-                ? data['repetitionsCount'] : RepetitiveSampleGeneratorParameters.defaultRepetitionsCount;
-            this.timeParameters = data['timeParameters']
-                ? TimeParameters.fromJS(data['timeParameters']) : new TimeParameters();
+            this.sampleCount = data[sampleCountName] !== undefined ? data[sampleCountName] :
+                RepetitiveSampleGeneratorParameters.defaultSampleCount;
+            this.offsetSamples = data[offsetSamplesName] !== undefined ? data[offsetSamplesName] :
+                RepetitiveSampleGeneratorParameters.defaultOffsetSamples;
+            this.repetitionsCount = data[repetitionsCountName] !== undefined ? data[repetitionsCountName] :
+                RepetitiveSampleGeneratorParameters.defaultRepetitionsCount;
+            this.timeParameters = data[timeParametersName] ? TimeParameters.fromJS(data[timeParametersName]) :
+                new TimeParameters();
         }
     }
 
     toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data['sampleCount'] = this.sampleCount;
-        data['offsetSamples'] = this.offsetSamples;
-        data['repetitionsCount'] = this.repetitionsCount;
-        data['timeParameters'] = this.timeParameters ? this.timeParameters.toJSON() : <any>undefined;
+        data = typeof data === objectName ? data : {};
+        data[sampleCountName] = this.sampleCount;
+        data[offsetSamplesName] = this.offsetSamples;
+        data[repetitionsCountName] = this.repetitionsCount;
+        data[timeParametersName] = this.timeParameters ? this.timeParameters.toJSON() : new TimeParameters();
         return data;
     }
 }

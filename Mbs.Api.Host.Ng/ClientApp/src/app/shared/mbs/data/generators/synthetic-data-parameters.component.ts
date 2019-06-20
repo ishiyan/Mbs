@@ -1,10 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { SyntheticDataKind, SyntheticDataKindValues } from '../../../data/generators/synthetic-data-kind.enum';
-import { ChirpGeneratorParameters } from '../../../data/generators/chirp/chirp-generator-parameters';
-import { ChirpOhlcvGeneratorParameters } from '../../../data/generators/chirp/chirp-ohlcv-generator-parameters';
-import { ChirpQuoteGeneratorParameters } from '../../../data/generators/chirp/chirp-quote-generator-parameters';
-import { ChirpTradeGeneratorParameters } from '../../../data/generators/chirp/chirp-trade-generator-parameters';
-import { ChirpScalarGeneratorParameters } from '../../../data/generators/chirp/chirp-scalar-generator-parameters';
+import { SyntheticDataKind, SyntheticDataKindValues } from './synthetic-data-kind.enum';
+import { ChirpGeneratorParameters } from './chirp/chirp-generator-parameters';
+import { ChirpOhlcvGeneratorParameters } from './chirp/chirp-ohlcv-generator-parameters';
+import { ChirpQuoteGeneratorParameters } from './chirp/chirp-quote-generator-parameters';
+import { ChirpTradeGeneratorParameters } from './chirp/chirp-trade-generator-parameters';
+import { ChirpScalarGeneratorParameters } from './chirp/chirp-scalar-generator-parameters';
 
 @Component({
     selector: 'app-mbs-data-generators-synthetic-data-parameters',

@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
-import { UniformRandomGeneratorKind } from '../../../data/generators/uniform-random-generator-kind.enum';
-import { WaveformParameters } from '../../../data/generators/waveform-parameters';
-import { Enums } from '../../enums';
+import { UniformRandomGeneratorKind } from './uniform-random-generator-kind.enum';
+import { WaveformParameters } from './waveform-parameters';
+import { Enums } from '../../utils/enums';
 
 @Component({
     selector: 'app-mbs-data-generators-waveform-parameters',

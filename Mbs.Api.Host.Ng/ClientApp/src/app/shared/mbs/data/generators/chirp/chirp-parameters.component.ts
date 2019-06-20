@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
-import { ChirpParameters } from '../../../../data/generators/chirp/chirp-parameters';
-import { ChirpSweep } from '../../../../data/generators/chirp/chirp-sweep.enum';
-import { Enums } from '../../../enums';
+import { ChirpParameters } from './chirp-parameters';
+import { ChirpSweep } from './chirp-sweep.enum';
+import { Enums } from '../../../utils/enums';
 
 @Component({
     selector: 'app-mbs-data-generators-chirp-parameters',

@@ -1,4 +1,5 @@
 import { MultiSinusoidalComponentParameters } from './multi-sinusoidal-component-parameters';
+import { minimalValueName, multiSinusoidalComponentsName, objectName } from '../constants';
 
 /** The input parameters for the multi-sinusoidal generator. */
 export class MultiSinusoidalParameters {
@@ -6,6 +7,7 @@ export class MultiSinusoidalParameters {
 
     /** The minimum of the combined sinusoids, should be positive. */
     minimalValue: number = MultiSinusoidalParameters.defaultMinimalValue;
+
     /** An array of the parameters for individual sinusoids. */
     multiSinusoidalComponents: MultiSinusoidalComponentParameters[] = [new MultiSinusoidalComponentParameters()];
 
@@ -20,19 +22,19 @@ export class MultiSinusoidalParameters {
     }
 
     static fromJS(data: any): MultiSinusoidalParameters {
-        data = typeof data === 'object' ? data : {};
+        data = typeof data === objectName ? data : {};
         const result = new MultiSinusoidalParameters();
         result.init(data);
         return result;
     }
 
-    init(data?: any) {
+    private init(data?: any): void {
         if (data) {
-            this.minimalValue = data['minimalValue'] !== undefined
-                ? data['minimalValue'] : MultiSinusoidalParameters.defaultMinimalValue;
-            if (data['multiSinusoidalComponents'] && data['multiSinusoidalComponents'].constructor === Array) {
+            this.minimalValue = data[minimalValueName] !== undefined ? data[minimalValueName] :
+                MultiSinusoidalParameters.defaultMinimalValue;
+            if (data[multiSinusoidalComponentsName] && data[multiSinusoidalComponentsName].constructor === Array) {
                 this.multiSinusoidalComponents = [] as any;
-                for (const item of data['multiSinusoidalComponents']) {
+                for (const item of data[multiSinusoidalComponentsName]) {
                     this.multiSinusoidalComponents.push(MultiSinusoidalComponentParameters.fromJS(item));
                 }
             }
@@ -40,12 +42,12 @@ export class MultiSinusoidalParameters {
     }
 
     toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data['minimalValue'] = this.minimalValue;
+        data = typeof data === objectName ? data : {};
+        data[minimalValueName] = this.minimalValue;
         if (this.multiSinusoidalComponents && this.multiSinusoidalComponents.constructor === Array) {
-            data['multiSinusoidalComponents'] = [];
+            data[multiSinusoidalComponentsName] = [];
             for (const item of this.multiSinusoidalComponents) {
-                data['multiSinusoidalComponents'].push(item.toJSON());
+                data[multiSinusoidalComponentsName].push(item.toJSON());
             }
         }
         return data;

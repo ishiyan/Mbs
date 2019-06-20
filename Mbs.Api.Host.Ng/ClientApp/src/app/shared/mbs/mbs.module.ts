@@ -7,19 +7,19 @@ import { RouterModule } from '@angular/router';
 import { MathJaxModule } from '../math-jax/math-jax.module';
 import { MaterialModule } from '../material/material.module';
 
-import { BusinessDayCalendarExplanationComponent } from './components/data/generators/business-day-calendar-explanation.component';
-import { TimeParametersComponent } from './components/data/generators/time-parameters.component';
-import { WaveformParametersComponent } from './components/data/generators/waveform-parameters.component';
-import { OhlcvParametersComponent } from './components/data/generators/ohlcv-parameters.component';
-import { QuoteParametersComponent } from './components/data/generators/quote-parameters.component';
-import { TradeParametersComponent } from './components/data/generators/trade-parameters.component';
+import { BusinessDayCalendarDescriptionComponent } from './time/business-day-calendar-description.component';
+import { TimeParametersComponent } from './data/generators/time-parameters.component';
+import { WaveformParametersComponent } from './data/generators/waveform-parameters.component';
+import { OhlcvParametersComponent } from './data/generators/ohlcv-parameters.component';
+import { QuoteParametersComponent } from './data/generators/quote-parameters.component';
+import { TradeParametersComponent } from './data/generators/trade-parameters.component';
 // tslint:disable-next-line: max-line-length
-import { FractionalBrownianMotionParametersComponent } from './components/data/generators/fractional-brownian-motion/fractional-brownian-motion-parameters.component';
-import { ChirpParametersComponent } from './components/data/generators/chirp/chirp-parameters.component';
-import { SawtoothParametersComponent } from './components/data/generators/sawtooth/sawtooth-parameters.component';
-import { SquareParametersComponent } from './components/data/generators/square/square-parameters.component';
-import { SinusoidalParametersComponent } from './components/data/generators/sinusoidal/sinusoidal-parameters.component';
-import { SyntheticDataParametersComponent } from './components/data/generators/synthetic-data-parameters.component';
+import { FractionalBrownianMotionParametersComponent } from './data/generators/fractional-brownian-motion/fractional-brownian-motion-parameters.component';
+import { ChirpParametersComponent } from './data/generators/chirp/chirp-parameters.component';
+import { SawtoothParametersComponent } from './data/generators/sawtooth/sawtooth-parameters.component';
+import { SquareParametersComponent } from './data/generators/square/square-parameters.component';
+import { SinusoidalParametersComponent } from './data/generators/sinusoidal/sinusoidal-parameters.component';
+import { SyntheticDataParametersComponent } from './data/generators/synthetic-data-parameters.component';
 
 @NgModule({
     imports: [
@@ -31,17 +31,17 @@ import { SyntheticDataParametersComponent } from './components/data/generators/s
         MathJaxModule
     ],
     exports: [
-        BusinessDayCalendarExplanationComponent, TimeParametersComponent, WaveformParametersComponent,
+        BusinessDayCalendarDescriptionComponent, TimeParametersComponent, WaveformParametersComponent,
         OhlcvParametersComponent, QuoteParametersComponent, TradeParametersComponent,
         FractionalBrownianMotionParametersComponent, ChirpParametersComponent, SawtoothParametersComponent,
         SquareParametersComponent, SinusoidalParametersComponent, SyntheticDataParametersComponent
     ],
     declarations: [
-        BusinessDayCalendarExplanationComponent, TimeParametersComponent, WaveformParametersComponent,
+        BusinessDayCalendarDescriptionComponent, TimeParametersComponent, WaveformParametersComponent,
         OhlcvParametersComponent, QuoteParametersComponent, TradeParametersComponent,
         FractionalBrownianMotionParametersComponent, ChirpParametersComponent, SawtoothParametersComponent,
         SquareParametersComponent, SinusoidalParametersComponent, SyntheticDataParametersComponent
     ],
-    entryComponents: [BusinessDayCalendarExplanationComponent]
+    entryComponents: [BusinessDayCalendarDescriptionComponent]
 })
 export class MbsModule { }

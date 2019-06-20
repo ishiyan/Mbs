@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { SquareParameters } from '../../../../data/generators/square/square-parameters';
+import { SquareParameters } from './square-parameters';
 
 @Component({
     selector: 'app-mbs-data-generators-square-parameters',

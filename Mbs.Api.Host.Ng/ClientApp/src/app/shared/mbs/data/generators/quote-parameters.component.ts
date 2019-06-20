@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { QuoteParameters } from '../../../data/generators/quote-parameters';
+import { QuoteParameters } from './quote-parameters';
 
 @Component({
     selector: 'app-mbs-data-generators-quote-parameters',

@@ -1,58 +1,24 @@
 <div #container class="container"></div>
-<app-mbs-data-generators-synthetic-data-parameters></app-mbs-data-generators-synthetic-data-parameters>
+<br />
+Selected value: {{temporalEntityKind}}
 <br />
 <br />
-<br />
-<br />
-<br />
-<mat-button-toggle-group name="f1">
-    <mat-button-toggle value="1">fBm</mat-button-toggle>
-    <mat-button-toggle value="2">gBm</mat-button-toggle>
-    <mat-button-toggle value="3">Chirp</mat-button-toggle>
-    <mat-button-toggle value="4">Sawtooth</mat-button-toggle>
-    <mat-button-toggle value="5">Square</mat-button-toggle>
-    <mat-button-toggle value="6">Sinusoid</mat-button-toggle>
-    <mat-button-toggle value="7">Multi-sinusoid</mat-button-toggle>
+<mat-button-toggle-group #group="matButtonToggleGroup" [(value)]="temporalEntityKind">
+    <mat-button-toggle *ngFor="let type of temporalEntityKinds" [value]="type.toLowerCase()">{{type}}</mat-button-toggle>
 </mat-button-toggle-group>
+<!--
+<mat-select [(value)]="temporalEntityKind" (change)="temporalEntityKindChanged(group.value)" [compareWith]="compare">
+<mat-option *ngFor="let type of temporalEntityKinds" [value]="type">
+    {{type}}
+</mat-option>
+</mat-select>
+-->
 <br />
 <br />
+<app-mbs-data-generators-synthetic-data-parameters [temporalEntityKind]="temporalEntityKind"></app-mbs-data-generators-synthetic-data-parameters>
 <br />
 <br />
-<mat-button-toggle-group name="f2">
-    <mat-button-toggle value="1">Sawtooth</mat-button-toggle>
-    <mat-button-toggle value="2">Square</mat-button-toggle>
-    <mat-button-toggle value="3">Chirp</mat-button-toggle>
-    <mat-button-toggle value="4">Sinusoid</mat-button-toggle>
-    <mat-button-toggle value="7">Multi-sinusoid</mat-button-toggle>
-    <mat-button-toggle value="5">Frac BM</mat-button-toggle>
-    <mat-button-toggle value="6">Geom BM</mat-button-toggle>
-</mat-button-toggle-group>
-<br />
-<br />
-<br />
-<br />
-<mat-form-field>
-    <mat-label>Synthetic waveform:</mat-label>
-    <mat-select>
-        <mat-option value="1">Sawtooth</mat-option>
-        <mat-option value="2">Square</mat-option>
-        <mat-option value="3">Chirp</mat-option>
-        <mat-option value="4">Sinusoid</mat-option>
-        <mat-option value="5">Fractional Brownian motion</mat-option>
-        <mat-option value="6">Geometric</mat-option>
-        <mat-option value="7">Multi-sinusoid</mat-option>
-        <mat-option value="8">Repetitive sample</mat-option>
-    </mat-select>
-</mat-form-field>
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-
+<!--
 <mat-horizontal-stepper labelPosition="bottom">
     <ng-template matStepperIcon="edit" let-index="index">
         {{index + 1}}
@@ -156,3 +122,4 @@
 <pre>ohlcv: {{ ohlcvParameters | json }}</pre>
 <pre>quote: {{ quoteParameters | json }}</pre>
 <pre>trade: {{ tradeParameters | json }}</pre>
+-->

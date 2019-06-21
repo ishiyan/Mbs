@@ -10,6 +10,15 @@ import { ChirpParameters } from '../../../../shared/mbs/data/generators/chirp/ch
 import { SawtoothParameters } from '../../../../shared/mbs/data/generators/sawtooth/sawtooth-parameters';
 import { SquareParameters } from '../../../../shared/mbs/data/generators/square/square-parameters';
 import { SinusoidalParameters } from '../../../../shared/mbs/data/generators/sinusoidal/sinusoidal-parameters';
+import { TemporalEntityKind } from '../../../../shared/mbs/data/entities/temporal-entity-kind.enum';
+import { ChirpGeneratorParameters } from '../../../../shared/mbs/data/generators/chirp/chirp-generator-parameters';
+// tslint:disable-next-line: max-line-length
+import { FractionalBrownianMotionGeneratorParameters } from '../../../../shared/mbs/data/generators/fractional-brownian-motion/fractional-brownian-motion-generator-parameters';
+// tslint:disable-next-line: max-line-length
+import { GeometricBrownianMotionGeneratorParameters } from '../../../../shared/mbs/data/generators/geometric-brownian-motion/geometric-brownian-motion-generator-parameters';
+import { SawtoothGeneratorParameters } from '../../../../shared/mbs/data/generators/sawtooth/sawtooth-generator-parameters';
+import { SquareGeneratorParameters } from '../../../../shared/mbs/data/generators/square/square-generator-parameters';
+import { SinusoidalGeneratorParameters } from '../../../../shared/mbs/data/generators/sinusoidal/sinusoidal-generator-parameters';
 
 @Component({
     selector: 'app-table2',
@@ -17,6 +26,16 @@ import { SinusoidalParameters } from '../../../../shared/mbs/data/generators/sin
     styleUrls: ['./table2.component.scss']
 })
 export class Table2Component implements OnInit {
+    temporalEntityKind: TemporalEntityKind = TemporalEntityKind.Ohlcv;
+    readonly temporalEntityKinds = Object.keys(TemporalEntityKind);
+
+    chirpGeneratorParameters: ChirpGeneratorParameters = new ChirpGeneratorParameters();
+    fbmGeneratorParameters: FractionalBrownianMotionGeneratorParameters = new FractionalBrownianMotionGeneratorParameters();
+    gbmGeneratorParameters: GeometricBrownianMotionGeneratorParameters = new GeometricBrownianMotionGeneratorParameters();
+    sawtoothGeneratorParameters: SawtoothGeneratorParameters = new SawtoothGeneratorParameters();
+    squareGeneratorParameters: SquareGeneratorParameters = new SquareGeneratorParameters();
+    sinusoidGeneratorParameters: SinusoidalGeneratorParameters = new SinusoidalGeneratorParameters();
+
     timeParameters: TimeParameters = new TimeParameters();
     waveformParameters: WaveformParameters = new WaveformParameters();
     ohlcvParameters: OhlcvParameters = new OhlcvParameters();
@@ -34,4 +53,8 @@ export class Table2Component implements OnInit {
 
     ngOnInit() {
     }
+
+    /* public temporalEntityKindChanged(value: TemporalEntityKind): void {
+        this.temporalEntityKind = value;
+    } */
 }

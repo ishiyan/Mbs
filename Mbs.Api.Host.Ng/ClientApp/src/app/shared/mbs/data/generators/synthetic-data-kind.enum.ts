@@ -7,5 +7,3 @@ export enum SyntheticDataKind {
     Sinusoid = 'Sinusoid',
     MultiSinusoid = 'Multi-sinusoid',
 }
-
-export const SyntheticDataKindValues = ['fBm', 'gBm', 'Chirp', 'Sawtooth', 'Square', 'Sinusoid', 'Multi-sinusoid'];

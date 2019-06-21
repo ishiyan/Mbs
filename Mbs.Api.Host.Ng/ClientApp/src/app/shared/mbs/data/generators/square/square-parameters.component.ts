@@ -9,6 +9,7 @@ import { SquareParameters } from './square-parameters';
 export class SquareParametersComponent {
     @Input() squareParameters: SquareParameters;
 
-    eq1 = '$mid_t=\\left\\{\\begin{array}{rl}α+β&t\\in [1, \\lambda]\\\\β&t\\in [\\lambda+1, 2\\lambda]\\end{array}\\right.,$';
+// tslint:disable-next-line: max-line-length
+    eq1 = '$mid_t=\\left\\{\\begin{array}{rl}\\alpha+\\beta&t\\in [1, \\lambda]\\\\\\beta&t\\in [\\lambda+1, 2\\lambda]\\end{array}\\right.,$';
     eq2 = '$sample_t=mid_t+noise_t$';
 }

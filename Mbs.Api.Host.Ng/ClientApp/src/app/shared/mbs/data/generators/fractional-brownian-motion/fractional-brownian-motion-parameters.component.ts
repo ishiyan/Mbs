@@ -13,7 +13,7 @@ import { Enums } from '../../../utils/enums';
 export class FractionalBrownianMotionParametersComponent {
     @Input() fractionalBrownianMotionParameters: FractionalBrownianMotionParameters;
 
-    eq1 = '$mid_t=α\\cdot fBm_t(H, ng, seed)+β,$';
+    eq1 = '$mid_t=\\alpha\\cdot fBm_t(H, ng, seed)+\\beta,$';
     eq2 = '$sample_t=mid_t+noise_t$';
 
     algorithms = Object.keys(FractionalBrownianMotionAlgorithm);

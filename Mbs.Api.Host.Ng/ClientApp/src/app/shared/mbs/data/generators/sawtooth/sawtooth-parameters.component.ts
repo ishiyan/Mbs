@@ -11,7 +11,7 @@ import { Enums } from '../../../utils/enums';
 export class SawtoothParametersComponent {
     @Input() sawtoothParameters: SawtoothParameters;
 
-    eq1 = '$mid_t=α\\cdot shape_t\\cdot t+β,$';
+    eq1 = '$mid_t=\\alpha\\cdot shape_t\\cdot t+\\beta,$';
     eq2 = '$sample_t=mid_t+noise_t$';
 
     sawtoothShapes = Object.keys(SawtoothShape);

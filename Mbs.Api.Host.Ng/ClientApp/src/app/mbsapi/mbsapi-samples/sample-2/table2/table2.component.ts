@@ -19,6 +19,7 @@ import { GeometricBrownianMotionGeneratorParameters } from '../../../../shared/m
 import { SawtoothGeneratorParameters } from '../../../../shared/mbs/data/generators/sawtooth/sawtooth-generator-parameters';
 import { SquareGeneratorParameters } from '../../../../shared/mbs/data/generators/square/square-generator-parameters';
 import { SinusoidalGeneratorParameters } from '../../../../shared/mbs/data/generators/sinusoidal/sinusoidal-generator-parameters';
+import { SyntheticDataParameters } from '../../../../shared/mbs/data/generators/synthetic-data-parameters';
 
 @Component({
     selector: 'app-table2',
@@ -28,6 +29,8 @@ import { SinusoidalGeneratorParameters } from '../../../../shared/mbs/data/gener
 export class Table2Component implements OnInit {
     temporalEntityKind: TemporalEntityKind = TemporalEntityKind.Ohlcv;
     readonly temporalEntityKinds = Object.keys(TemporalEntityKind);
+
+    syntheticDataParameters: SyntheticDataParameters = new SyntheticDataParameters();
 
     chirpGeneratorParameters: ChirpGeneratorParameters = new ChirpGeneratorParameters();
     fbmGeneratorParameters: FractionalBrownianMotionGeneratorParameters = new FractionalBrownianMotionGeneratorParameters();

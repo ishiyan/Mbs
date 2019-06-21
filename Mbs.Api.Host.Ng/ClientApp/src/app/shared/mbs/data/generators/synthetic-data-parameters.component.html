@@ -1,79 +1,43 @@
-<mat-button-toggle-group #group="matButtonToggleGroup" [value]="syntheticDataKind" (change)="dataKindChanged(group.value)">
+<mat-button-toggle-group #group="matButtonToggleGroup" [value]="syntheticDataParameters.syntheticDataKind"
+    (change)="dataKindChanged(group.value)">
     <mat-button-toggle *ngFor="let type of dataKinds" [value]="type">{{type}}</mat-button-toggle>
 </mat-button-toggle-group>
-<br />
-<br />
-<mat-accordion *ngIf="isChirp" multi="true">
-        <app-mbs-data-generators-chirp-parameters [chirpParameters]="chirpGeneratorParameters.chirpParameters">
-        </app-mbs-data-generators-chirp-parameters>
-        <app-mbs-data-generators-waveform-parameters [waveformParameters]="chirpGeneratorParameters.waveformParameters">
-        </app-mbs-data-generators-waveform-parameters>
-        <app-mbs-data-generators-time-parameters [timeParameters]="chirpGeneratorParameters.timeParameters">
-        </app-mbs-data-generators-time-parameters>
-        <app-mbs-data-generators-ohlcv-parameters *ngIf="isOhlcv" [ohlcvParameters]="chirpGeneratorParameters.ohlcvParameters">
-        </app-mbs-data-generators-ohlcv-parameters>
-        <app-mbs-data-generators-quote-parameters *ngIf="isQuote" [quoteParameters]="chirpGeneratorParameters.quoteParameters">
-        </app-mbs-data-generators-quote-parameters>
-        <app-mbs-data-generators-trade-parameters *ngIf="isTrade" [tradeParameters]="chirpGeneratorParameters.tradeParameters">
-        </app-mbs-data-generators-trade-parameters>
-</mat-accordion>
-<mat-accordion *ngIf="isFbm" multi="true">
-        <app-mbs-data-generators-fractional-brownian-motion-parameters
-            [fractionalBrownianMotionParameters]="fbmGeneratorParameters.fbmParameters">
-        </app-mbs-data-generators-fractional-brownian-motion-parameters>
-        <app-mbs-data-generators-waveform-parameters [waveformParameters]="fbmGeneratorParameters.waveformParameters">
-        </app-mbs-data-generators-waveform-parameters>
-        <app-mbs-data-generators-time-parameters [timeParameters]="fbmGeneratorParameters.timeParameters">
-        </app-mbs-data-generators-time-parameters>
-        <app-mbs-data-generators-ohlcv-parameters *ngIf="isOhlcv" [ohlcvParameters]="fbmGeneratorParameters.ohlcvParameters">
-        </app-mbs-data-generators-ohlcv-parameters>
-        <app-mbs-data-generators-quote-parameters *ngIf="isQuote" [quoteParameters]="fbmGeneratorParameters.quoteParameters">
-        </app-mbs-data-generators-quote-parameters>
-        <app-mbs-data-generators-trade-parameters *ngIf="isTrade" [tradeParameters]="fbmGeneratorParameters.tradeParameters">
-        </app-mbs-data-generators-trade-parameters>
-</mat-accordion>
-<mat-accordion *ngIf="isSawtooth" multi="true">
-        <app-mbs-data-generators-sawtooth-parameters
-            [sawtoothParameters]="sawtoothGeneratorParameters.sawtoothParameters">
-        </app-mbs-data-generators-sawtooth-parameters>
-        <app-mbs-data-generators-waveform-parameters [waveformParameters]="sawtoothGeneratorParameters.waveformParameters">
-        </app-mbs-data-generators-waveform-parameters>
-        <app-mbs-data-generators-time-parameters [timeParameters]="sawtoothGeneratorParameters.timeParameters">
-        </app-mbs-data-generators-time-parameters>
-        <app-mbs-data-generators-ohlcv-parameters *ngIf="isOhlcv" [ohlcvParameters]="sawtoothGeneratorParameters.ohlcvParameters">
-        </app-mbs-data-generators-ohlcv-parameters>
-        <app-mbs-data-generators-quote-parameters *ngIf="isQuote" [quoteParameters]="sawtoothGeneratorParameters.quoteParameters">
-        </app-mbs-data-generators-quote-parameters>
-        <app-mbs-data-generators-trade-parameters *ngIf="isTrade" [tradeParameters]="sawtoothGeneratorParameters.tradeParameters">
-        </app-mbs-data-generators-trade-parameters>
-</mat-accordion>
-<mat-accordion *ngIf="isSquare" multi="true">
-        <app-mbs-data-generators-square-parameters
-            [squareParameters]="squareGeneratorParameters.squareParameters">
-        </app-mbs-data-generators-square-parameters>
-        <app-mbs-data-generators-waveform-parameters [waveformParameters]="squareGeneratorParameters.waveformParameters">
-        </app-mbs-data-generators-waveform-parameters>
-        <app-mbs-data-generators-time-parameters [timeParameters]="squareGeneratorParameters.timeParameters">
-        </app-mbs-data-generators-time-parameters>
-        <app-mbs-data-generators-ohlcv-parameters *ngIf="isOhlcv" [ohlcvParameters]="squareGeneratorParameters.ohlcvParameters">
-        </app-mbs-data-generators-ohlcv-parameters>
-        <app-mbs-data-generators-quote-parameters *ngIf="isQuote" [quoteParameters]="squareGeneratorParameters.quoteParameters">
-        </app-mbs-data-generators-quote-parameters>
-        <app-mbs-data-generators-trade-parameters *ngIf="isTrade" [tradeParameters]="squareGeneratorParameters.tradeParameters">
-        </app-mbs-data-generators-trade-parameters>
-</mat-accordion>
-<mat-accordion *ngIf="isSinusoid" multi="true">
-        <app-mbs-data-generators-sinusoidal-parameters
-            [sinusoidalParameters]="sinusoidGeneratorParameters.sinusoidalParameters">
-        </app-mbs-data-generators-sinusoidal-parameters>
-        <app-mbs-data-generators-waveform-parameters [waveformParameters]="sinusoidGeneratorParameters.waveformParameters">
-        </app-mbs-data-generators-waveform-parameters>
-        <app-mbs-data-generators-time-parameters [timeParameters]="sinusoidGeneratorParameters.timeParameters">
-        </app-mbs-data-generators-time-parameters>
-        <app-mbs-data-generators-ohlcv-parameters *ngIf="isOhlcv" [ohlcvParameters]="sinusoidGeneratorParameters.ohlcvParameters">
-        </app-mbs-data-generators-ohlcv-parameters>
-        <app-mbs-data-generators-quote-parameters *ngIf="isQuote" [quoteParameters]="sinusoidGeneratorParameters.quoteParameters">
-        </app-mbs-data-generators-quote-parameters>
-        <app-mbs-data-generators-trade-parameters *ngIf="isTrade" [tradeParameters]="sinusoidGeneratorParameters.tradeParameters">
-        </app-mbs-data-generators-trade-parameters>
+<p></p>
+<mat-divider></mat-divider>
+<mat-accordion multi="true">
+    <mat-form-field>
+        <input type="number" matInput placeholder="Samples to generate" [(ngModel)]="syntheticDataParameters.sampleCount" min="4" step="1" required>
+        <mat-hint>The number of samples to generate.</mat-hint>
+    </mat-form-field>
+    <app-mbs-data-generators-chirp-parameters [ngClass]="isChirp ? 'shown' : 'hidden'"
+        [chirpParameters]="syntheticDataParameters.chirpParameters">
+    </app-mbs-data-generators-chirp-parameters>
+    <app-mbs-data-generators-fractional-brownian-motion-parameters [ngClass]="isFbm ? 'shown' : 'hidden'"
+        [fractionalBrownianMotionParameters]="syntheticDataParameters.fbmParameters">
+    </app-mbs-data-generators-fractional-brownian-motion-parameters>
+    <!--app-mbs-data-generators-geometric-brownian-motion-parameters [ngStyle]="{'visibility':isGbm ? 'visible' : 'hidden'}"
+        [geometricBrownianMotionParameters]="syntheticDataParameters.gbmParameters">
+    </app-mbs-data-generators-geometric-brownian-motion-parameters-->
+    <app-mbs-data-generators-sawtooth-parameters [ngClass]="isSawtooth ? 'shown' : 'hidden'"
+        [sawtoothParameters]="syntheticDataParameters.sawtoothParameters">
+    </app-mbs-data-generators-sawtooth-parameters>
+    <app-mbs-data-generators-square-parameters [ngClass]="isSquare ? 'shown' : 'hidden'"
+        [squareParameters]="syntheticDataParameters.squareParameters">
+    </app-mbs-data-generators-square-parameters>
+    <app-mbs-data-generators-sinusoidal-parameters [ngClass]="isSinusoid ? 'shown' : 'hidden'"
+        [sinusoidalParameters]="syntheticDataParameters.sinusoidalParameters">
+    </app-mbs-data-generators-sinusoidal-parameters>
+    <app-mbs-data-generators-waveform-parameters [waveformParameters]="syntheticDataParameters.waveformParameters">
+    </app-mbs-data-generators-waveform-parameters>
+    <app-mbs-data-generators-time-parameters [timeParameters]="syntheticDataParameters.timeParameters">
+    </app-mbs-data-generators-time-parameters>
+    <app-mbs-data-generators-ohlcv-parameters [ngClass]="isOhlcv ? 'shown' : 'hidden'"
+        [ohlcvParameters]="syntheticDataParameters.ohlcvParameters">
+    </app-mbs-data-generators-ohlcv-parameters>
+    <app-mbs-data-generators-quote-parameters [ngClass]="isQuote ? 'shown' : 'hidden'"
+        [quoteParameters]="syntheticDataParameters.quoteParameters">
+    </app-mbs-data-generators-quote-parameters>
+    <app-mbs-data-generators-trade-parameters [ngClass]="isTrade ? 'shown' : 'hidden'"
+        [tradeParameters]="syntheticDataParameters.tradeParameters">
+    </app-mbs-data-generators-trade-parameters>
 </mat-accordion>

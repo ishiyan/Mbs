@@ -11,7 +11,7 @@ import { Enums } from '../../../utils/enums';
 export class ChirpParametersComponent {
     @Input() chirpParameters: ChirpParameters;
 
-    eq1 = '$mid_t=a\\cdot\\cos(sweep_t\\cdot t+\\varphi\\cdot\\pi)+b,$';
+    eq1 = '$mid_t=\\alpha\\cdot\\cos(sweep_t\\cdot t+\\varphi\\cdot\\pi)+\\beta,$';
     eq2 = '$sweep_1=\\frac{2\\pi}{\\lambda_1},$';
     eq3 = '$sweep_L=\\frac{2\\pi}{\\lambda_L},$';
     eq4 = '$sample_t=mid_t+noise_t$';

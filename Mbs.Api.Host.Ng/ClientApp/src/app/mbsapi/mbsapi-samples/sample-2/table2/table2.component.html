@@ -3,7 +3,7 @@
 Selected value: {{temporalEntityKind}}
 <br />
 <br />
-<mat-button-toggle-group #group="matButtonToggleGroup" [(value)]="temporalEntityKind">
+<mat-button-toggle-group #group="matButtonToggleGroup" [(value)]="syntheticDataParameters.temporalEntityKind">
     <mat-button-toggle *ngFor="let type of temporalEntityKinds" [value]="type.toLowerCase()">{{type}}</mat-button-toggle>
 </mat-button-toggle-group>
 <!--
@@ -15,9 +15,10 @@ Selected value: {{temporalEntityKind}}
 -->
 <br />
 <br />
-<app-mbs-data-generators-synthetic-data-parameters [temporalEntityKind]="temporalEntityKind"></app-mbs-data-generators-synthetic-data-parameters>
+<app-mbs-data-generators-synthetic-data-parameters [syntheticDataParameters]="syntheticDataParameters"></app-mbs-data-generators-synthetic-data-parameters>
 <br />
 <br />
+<pre>{{ syntheticDataParameters | json }}</pre>
 <!--
 <mat-horizontal-stepper labelPosition="bottom">
     <ng-template matStepperIcon="edit" let-index="index">

@@ -9,6 +9,6 @@ import { SinusoidalParameters } from './sinusoidal-parameters';
 export class SinusoidalParametersComponent {
     @Input() sinusoidalParameters: SinusoidalParameters;
 
-    eq1 = '$mid_t=α\\cdot\\cos(\\frac{2\\pi}{\\lambda}t+\\varphi\\cdot\\pi)+β,$';
+    eq1 = '$mid_t=\\alpha\\cdot\\cos(\\frac{2\\pi}{\\lambda}t+\\varphi\\cdot\\pi)+\\beta,$';
     eq2 = '$sample_t=mid_t+noise_t$';
 }

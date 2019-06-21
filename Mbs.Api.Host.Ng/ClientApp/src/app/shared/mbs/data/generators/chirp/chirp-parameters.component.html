@@ -1,7 +1,7 @@
-<mat-expansion-panel expanded="true">
+<mat-expansion-panel [expanded]="true">
     <mat-expansion-panel-header>
         <mat-panel-title>
-            Chirp generation parameters
+            Chirp parameters
         </mat-panel-title>
     </mat-expansion-panel-header>
     <div>
@@ -45,6 +45,6 @@
         <mat-hint>The chirp sweep.</mat-hint>
     </mat-form-field>
     <mat-slide-toggle [(ngModel)]="chirpParameters.isBiDirectional" class="last-form-field">
-        Is bi-directional
+        Bi-directional
     </mat-slide-toggle>
 </mat-expansion-panel>

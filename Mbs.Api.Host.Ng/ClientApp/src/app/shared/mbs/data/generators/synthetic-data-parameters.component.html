@@ -19,9 +19,9 @@
     <app-mbs-data-generators-fractional-brownian-motion-parameters [ngClass]="isFbm ? 'shown' : 'hidden'"
         [fractionalBrownianMotionParameters]="syntheticDataParameters.fbmParameters">
     </app-mbs-data-generators-fractional-brownian-motion-parameters>
-    <!--app-mbs-data-generators-geometric-brownian-motion-parameters [ngStyle]="{'visibility':isGbm ? 'visible' : 'hidden'}"
+    <app-mbs-data-generators-geometric-brownian-motion-parameters  [ngClass]="isGbm ? 'shown' : 'hidden'"
         [geometricBrownianMotionParameters]="syntheticDataParameters.gbmParameters">
-    </app-mbs-data-generators-geometric-brownian-motion-parameters-->
+    </app-mbs-data-generators-geometric-brownian-motion-parameters>
     <app-mbs-data-generators-sawtooth-parameters [ngClass]="isSawtooth ? 'shown' : 'hidden'"
         [sawtoothParameters]="syntheticDataParameters.sawtoothParameters">
     </app-mbs-data-generators-sawtooth-parameters>

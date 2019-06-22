@@ -15,6 +15,8 @@ import { QuoteParametersComponent } from './data/generators/quote-parameters.com
 import { TradeParametersComponent } from './data/generators/trade-parameters.component';
 // tslint:disable-next-line: max-line-length
 import { FractionalBrownianMotionParametersComponent } from './data/generators/fractional-brownian-motion/fractional-brownian-motion-parameters.component';
+// tslint:disable-next-line: max-line-length
+import { GeometricBrownianMotionParametersComponent } from './data/generators/geometric-brownian-motion/geometric-brownian-motion-parameters.component';
 import { ChirpParametersComponent } from './data/generators/chirp/chirp-parameters.component';
 import { SawtoothParametersComponent } from './data/generators/sawtooth/sawtooth-parameters.component';
 import { SquareParametersComponent } from './data/generators/square/square-parameters.component';
@@ -33,14 +35,14 @@ import { SyntheticDataParametersComponent } from './data/generators/synthetic-da
     exports: [
         BusinessDayCalendarDescriptionComponent, TimeParametersComponent, WaveformParametersComponent,
         OhlcvParametersComponent, QuoteParametersComponent, TradeParametersComponent,
-        FractionalBrownianMotionParametersComponent, ChirpParametersComponent, SawtoothParametersComponent,
-        SquareParametersComponent, SinusoidalParametersComponent, SyntheticDataParametersComponent
+        FractionalBrownianMotionParametersComponent, GeometricBrownianMotionParametersComponent, ChirpParametersComponent,
+        SawtoothParametersComponent, SquareParametersComponent, SinusoidalParametersComponent, SyntheticDataParametersComponent
     ],
     declarations: [
         BusinessDayCalendarDescriptionComponent, TimeParametersComponent, WaveformParametersComponent,
         OhlcvParametersComponent, QuoteParametersComponent, TradeParametersComponent,
-        FractionalBrownianMotionParametersComponent, ChirpParametersComponent, SawtoothParametersComponent,
-        SquareParametersComponent, SinusoidalParametersComponent, SyntheticDataParametersComponent
+        FractionalBrownianMotionParametersComponent, GeometricBrownianMotionParametersComponent, ChirpParametersComponent,
+        SawtoothParametersComponent, SquareParametersComponent, SinusoidalParametersComponent, SyntheticDataParametersComponent
     ],
     entryComponents: [BusinessDayCalendarDescriptionComponent]
 })

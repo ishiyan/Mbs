@@ -5,10 +5,14 @@
 <p></p>
 <mat-divider></mat-divider>
 <mat-accordion multi="true">
-    <mat-form-field>
-        <input type="number" matInput placeholder="Samples to generate" [(ngModel)]="syntheticDataParameters.sampleCount" min="4" step="1" required>
-        <mat-hint>The number of samples to generate.</mat-hint>
-    </mat-form-field>
+    <mat-expansion-panel [expanded]="true">
+            <br/>
+            <mat-form-field>
+            <input type="number" matInput placeholder="Samples to generate"
+                [(ngModel)]="syntheticDataParameters.sampleCount" min="4" step="1" required>
+            <mat-hint>The total number of samples to generate.</mat-hint>
+        </mat-form-field>
+    </mat-expansion-panel>
     <app-mbs-data-generators-chirp-parameters [ngClass]="isChirp ? 'shown' : 'hidden'"
         [chirpParameters]="syntheticDataParameters.chirpParameters">
     </app-mbs-data-generators-chirp-parameters>

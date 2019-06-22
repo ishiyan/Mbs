@@ -14,7 +14,7 @@ export class SawtoothParameters {
     /** The minimum of the sawtooth impulse, should be positive. */
     minimalValue: number = SawtoothParameters.defaultMinimalValue;
 
-    /** whether the sawtooth impulse is reflected horizontally to form a triangle shape. */
+    /** Whether the sawtooth impulse is reflected horizontally to form a triangle shape. */
     isBiDirectional: boolean = SawtoothParameters.defaultIsBiDirectional;
 
     /** The sawtooth shape. */

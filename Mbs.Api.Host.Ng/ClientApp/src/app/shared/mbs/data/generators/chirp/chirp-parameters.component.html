@@ -44,7 +44,12 @@
         </mat-select>
         <mat-hint>The chirp sweep.</mat-hint>
     </mat-form-field>
-    <mat-slide-toggle [(ngModel)]="chirpParameters.isBiDirectional" class="last-form-field">
-        Bi-directional
-    </mat-slide-toggle>
+    <mat-form-field class="last-form-field">
+        <mat-label>Bi-directional</mat-label>
+        <mat-select [(value)]="chirpParameters.isBiDirectional" required>
+            <mat-option [value]="true">Yes</mat-option>
+            <mat-option [value]="false">No</mat-option>
+        </mat-select>
+        <mat-hint>If the period of even chirps descends from the final period to the initial one, to form a symmetrical shape with odd chirps.</mat-hint>
+    </mat-form-field>
 </mat-expansion-panel>

@@ -27,7 +27,12 @@
         </mat-select>
         <mat-hint>The sawtooth impulse shape.</mat-hint>
     </mat-form-field>
-    <mat-slide-toggle [(ngModel)]="sawtoothParameters.isBiDirectional" class="last-form-field">
-        Is bi-directional
-    </mat-slide-toggle>
-</mat-expansion-panel>
+    <mat-form-field>
+            <mat-label>Bi-directional</mat-label>
+            <mat-select [(value)]="sawtoothParameters.isBiDirectional" required>
+                <mat-option [value]="true">Yes</mat-option>
+                <mat-option [value]="false">No</mat-option>
+            </mat-select>
+            <mat-hint>If the sawtooth impulse is reflected horizontally to form a triangle shape.</mat-hint>
+        </mat-form-field>
+    </mat-expansion-panel>

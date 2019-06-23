@@ -47,3 +47,5 @@ export const sessionEndTimeName = 'sessionEndTime';
 export const startDateName = 'startDate';
 export const timeGranularityName = 'timeGranularity';
 export const businessDayCalendarName = 'businessDayCalendar';
+export const temporalEntityKindName = 'temporalEntityKind';
+export const syntheticDataKindName = 'syntheticDataKind';

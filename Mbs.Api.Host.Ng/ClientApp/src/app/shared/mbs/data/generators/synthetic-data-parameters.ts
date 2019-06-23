@@ -13,7 +13,7 @@ import { TemporalEntityKind } from '../entities/temporal-entity-kind.enum';
 import { SyntheticDataKind } from './synthetic-data-kind.enum';
 import { sampleCountName, timeParametersName, waveformParametersName, chirpParametersName, ohlcvParametersName, quoteParametersName,
     tradeParametersName, objectName, fbmParametersName, gbmParametersName, sawtoothParametersName, sinusoidalParametersName,
-    squareParametersName } from './constants';
+    squareParametersName, temporalEntityKindName, syntheticDataKindName} from './constants';
 
 /** The input parameters for the synthetic data generation. */
 export class SyntheticDataParameters {
@@ -83,8 +83,8 @@ export class SyntheticDataParameters {
     private init(data?: any): void {
         if (data) {
             this.sampleCount = data[sampleCountName];
-            this.temporalEntityKind = data['temporalEntityKind'];
-            this.syntheticDataKind = data['syntheticDataKind'];
+            this.temporalEntityKind = data[temporalEntityKindName];
+            this.syntheticDataKind = data[syntheticDataKindName];
             this.chirpParameters = data[chirpParametersName] ? ChirpParameters.fromJS(data[chirpParametersName]) :
                 new ChirpParameters();
             this.fbmParameters = data[fbmParametersName] ? FractionalBrownianMotionParameters.fromJS(data[fbmParametersName]) :
@@ -110,22 +110,54 @@ export class SyntheticDataParameters {
         }
     }
 
-    toJSON(data?: any) {
+    toJSON(data?: any): any {
         data = typeof data === objectName ? data : {};
         data[sampleCountName] = this.sampleCount;
-        data['temporalEntityKind'] = this.temporalEntityKind;
-        data['syntheticDataKind'] = this.syntheticDataKind;
-        data[chirpParametersName] = this.chirpParameters ? this.chirpParameters.toJSON() : new ChirpParameters();
-        data[fbmParametersName] = this.fbmParameters ? this.fbmParameters.toJSON() : new FractionalBrownianMotionParameters();
-        data[gbmParametersName] = this.gbmParameters ? this.gbmParameters.toJSON() : new GeometricBrownianMotionParameters();
-        data[sawtoothParametersName] = this.sawtoothParameters ? this.sawtoothParameters.toJSON() : new SawtoothParameters();
-        data[sinusoidalParametersName] = this.sinusoidalParameters ? this.sinusoidalParameters.toJSON() : new SinusoidalParameters();
-        data[squareParametersName] = this.squareParameters ? this.squareParameters.toJSON() : new SquareParameters();
+        data[temporalEntityKindName] = this.temporalEntityKind;
+        data[syntheticDataKindName] = this.syntheticDataKind;
+        switch (this.syntheticDataKind) {
+            case SyntheticDataKind.Chirp: {
+                data[chirpParametersName] = this.chirpParameters ? this.chirpParameters.toJSON() : new ChirpParameters();
+                break;
+            }
+            case SyntheticDataKind.FractionalBrownianMotion: {
+                data[fbmParametersName] = this.fbmParameters ? this.fbmParameters.toJSON() : new FractionalBrownianMotionParameters();
+                break;
+            }
+            case SyntheticDataKind.GeometricBrownianMotion: {
+                data[gbmParametersName] = this.gbmParameters ? this.gbmParameters.toJSON() : new GeometricBrownianMotionParameters();
+                break;
+            }
+            case SyntheticDataKind.Sawtooth: {
+                data[sawtoothParametersName] = this.sawtoothParameters ? this.sawtoothParameters.toJSON() : new SawtoothParameters();
+                break;
+            }
+            case SyntheticDataKind.Sinusoid: {
+                data[sinusoidalParametersName] = this.sinusoidalParameters ? this.sinusoidalParameters.toJSON() :
+                    new SinusoidalParameters();
+                break;
+            }
+            case SyntheticDataKind.Square: {
+                data[squareParametersName] = this.squareParameters ? this.squareParameters.toJSON() : new SquareParameters();
+                break;
+            }
+        }
         data[waveformParametersName] = this.waveformParameters ? this.waveformParameters.toJSON() : new WaveformParameters();
         data[timeParametersName] = this.timeParameters ? this.timeParameters.toJSON() : new TimeParameters();
-        data[ohlcvParametersName] = this.ohlcvParameters ? this.ohlcvParameters.toJSON() : new OhlcvParameters();
-        data[quoteParametersName] = this.quoteParameters ? this.quoteParameters.toJSON() : new QuoteParameters();
-        data[tradeParametersName] = this.tradeParameters ? this.tradeParameters.toJSON() : new TradeParameters();
+        switch (this.temporalEntityKind) {
+            case TemporalEntityKind.Ohlcv: {
+                data[ohlcvParametersName] = this.ohlcvParameters ? this.ohlcvParameters.toJSON() : new OhlcvParameters();
+                break;
+            }
+            case TemporalEntityKind.Quote: {
+                data[quoteParametersName] = this.quoteParameters ? this.quoteParameters.toJSON() : new QuoteParameters();
+                break;
+            }
+            case TemporalEntityKind.Trade: {
+                data[tradeParametersName] = this.tradeParameters ? this.tradeParameters.toJSON() : new TradeParameters();
+                break;
+            }
+        }
         return data;
     }
 }

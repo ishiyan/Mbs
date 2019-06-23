@@ -1,13 +1,13 @@
 import { SquareParameters } from './square-parameters';
 import { TimeParameters } from '../time-parameters';
 import { WaveformParameters } from '../waveform-parameters';
-import { SquareGeneratorParameters } from './square-generator-parameters';
+import { SyntheticDataParameters } from '../synthetic-data-parameters';
 import { sampleCountName, timeParametersName, waveformParametersName, squareParametersName, objectName } from '../constants';
 
 /** The input parameters for the square scalar generator. */
 export class SquareScalarGeneratorParameters {
     /** The number of samples to generate. */
-    sampleCount: number = SquareGeneratorParameters.defaultSampleCount;
+    sampleCount: number = SyntheticDataParameters.defaultSampleCount;
 
     /** The time related input parameters. */
     timeParameters: TimeParameters = new TimeParameters();

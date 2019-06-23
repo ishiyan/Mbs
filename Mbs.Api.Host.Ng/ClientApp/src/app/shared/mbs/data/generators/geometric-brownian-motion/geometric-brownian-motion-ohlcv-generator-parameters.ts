@@ -2,14 +2,14 @@ import { GeometricBrownianMotionParameters } from './geometric-brownian-motion-p
 import { TimeParameters } from '../time-parameters';
 import { WaveformParameters } from '../waveform-parameters';
 import { OhlcvParameters } from '../ohlcv-parameters';
-import { GeometricBrownianMotionGeneratorParameters } from './geometric-brownian-motion-generator-parameters';
+import { SyntheticDataParameters } from '../synthetic-data-parameters';
 import { sampleCountName, timeParametersName, waveformParametersName, gbmParametersName, ohlcvParametersName,
     objectName } from '../constants';
 
 /** The input parameters for the geometric Brownian motion ohlcv generator. */
 export class GeometricBrownianMotionOhlcvGeneratorParameters {
     /** The number of samples to generate. */
-    sampleCount: number = GeometricBrownianMotionGeneratorParameters.defaultSampleCount;
+    sampleCount: number = SyntheticDataParameters.defaultSampleCount;
 
     /** The time related input parameters. */
     timeParameters: TimeParameters = new TimeParameters();

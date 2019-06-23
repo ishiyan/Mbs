@@ -2,7 +2,7 @@ import { SquareParameters } from './square-parameters';
 import { TimeParameters } from '../time-parameters';
 import { WaveformParameters } from '../waveform-parameters';
 import { QuoteParameters } from '../quote-parameters';
-import { SquareGeneratorParameters } from './square-generator-parameters';
+import { SyntheticDataParameters } from '../synthetic-data-parameters';
 import { sampleCountName, timeParametersName, waveformParametersName, squareParametersName, quoteParametersName,
     objectName } from '../constants';
 
@@ -11,7 +11,7 @@ export class SquareQuoteGeneratorParameters {
     static readonly defaultSampleCount: number = 128;
 
     /** The number of samples to generate. */
-    sampleCount: number = SquareGeneratorParameters.defaultSampleCount;
+    sampleCount: number = SyntheticDataParameters.defaultSampleCount;
 
     /** The time related input parameters. */
     timeParameters: TimeParameters = new TimeParameters();

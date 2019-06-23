@@ -1,13 +1,13 @@
 import { GeometricBrownianMotionParameters } from './geometric-brownian-motion-parameters';
 import { TimeParameters } from '../time-parameters';
 import { WaveformParameters } from '../waveform-parameters';
-import { GeometricBrownianMotionGeneratorParameters } from './geometric-brownian-motion-generator-parameters';
+import { SyntheticDataParameters } from '../synthetic-data-parameters';
 import { sampleCountName, timeParametersName, waveformParametersName, gbmParametersName, objectName } from '../constants';
 
 /** The input parameters for the geometric Brownian motion scalar generator. */
 export class GeometricBrownianMotionScalarGeneratorParameters {
     /** The number of samples to generate. */
-    sampleCount: number = GeometricBrownianMotionGeneratorParameters.defaultSampleCount;
+    sampleCount: number = SyntheticDataParameters.defaultSampleCount;
 
     /** The time related input parameters. */
     timeParameters: TimeParameters = new TimeParameters();

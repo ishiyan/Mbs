@@ -2,14 +2,14 @@ import { SawtoothParameters } from './sawtooth-parameters';
 import { TimeParameters } from '../time-parameters';
 import { WaveformParameters } from '../waveform-parameters';
 import { QuoteParameters } from '../quote-parameters';
-import { SawtoothGeneratorParameters } from './sawtooth-generator-parameters';
+import { SyntheticDataParameters } from '../synthetic-data-parameters';
 import { sampleCountName, timeParametersName, waveformParametersName, sawtoothParametersName, quoteParametersName,
     objectName } from '../constants';
 
 /** The input parameters for the sawtooth quote generator. */
 export class SawtoothQuoteGeneratorParameters {
     /** The number of samples to generate. */
-    sampleCount: number = SawtoothGeneratorParameters.defaultSampleCount;
+    sampleCount: number = SyntheticDataParameters.defaultSampleCount;
 
     /** The time related input parameters. */
     timeParameters: TimeParameters = new TimeParameters();

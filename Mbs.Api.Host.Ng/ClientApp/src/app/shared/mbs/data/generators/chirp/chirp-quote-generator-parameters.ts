@@ -2,14 +2,14 @@ import { ChirpParameters } from './chirp-parameters';
 import { TimeParameters } from '../time-parameters';
 import { WaveformParameters } from '../waveform-parameters';
 import { QuoteParameters } from '../quote-parameters';
-import { ChirpGeneratorParameters } from './chirp-generator-parameters';
+import { SyntheticDataParameters } from '../synthetic-data-parameters';
 import { sampleCountName, timeParametersName, waveformParametersName, chirpParametersName, quoteParametersName,
     objectName } from '../constants';
 
 /** The input parameters for the chirp quote generator. */
 export class ChirpQuoteGeneratorParameters {
     /** The number of samples to generate. */
-    sampleCount: number = ChirpGeneratorParameters.defaultSampleCount;
+    sampleCount: number = SyntheticDataParameters.defaultSampleCount;
 
     /** The time related input parameters. */
     timeParameters: TimeParameters = new TimeParameters();

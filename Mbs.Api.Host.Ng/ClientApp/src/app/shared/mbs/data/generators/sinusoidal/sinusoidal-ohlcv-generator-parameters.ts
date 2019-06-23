@@ -2,14 +2,14 @@ import { SinusoidalParameters } from './sinusoidal-parameters';
 import { TimeParameters } from '../time-parameters';
 import { WaveformParameters } from '../waveform-parameters';
 import { OhlcvParameters } from '../ohlcv-parameters';
-import { SinusoidalGeneratorParameters } from './sinusoidal-generator-parameters';
+import { SyntheticDataParameters } from '../synthetic-data-parameters';
 import { sampleCountName, timeParametersName, waveformParametersName, sinusoidalParametersName, ohlcvParametersName,
     objectName } from '../constants';
 
 /** The input parameters for the sinusoidal ohlcv generator. */
 export class SinusoidalOhlcvGeneratorParameters {
     /** The number of samples to generate. */
-    sampleCount: number = SinusoidalGeneratorParameters.defaultSampleCount;
+    sampleCount: number = SyntheticDataParameters.defaultSampleCount;
 
     /** The time related input parameters. */
     timeParameters: TimeParameters = new TimeParameters();

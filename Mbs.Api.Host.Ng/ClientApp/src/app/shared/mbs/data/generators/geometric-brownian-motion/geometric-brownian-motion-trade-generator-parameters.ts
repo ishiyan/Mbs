@@ -2,14 +2,14 @@ import { GeometricBrownianMotionParameters } from './geometric-brownian-motion-p
 import { TimeParameters } from '../time-parameters';
 import { WaveformParameters } from '../waveform-parameters';
 import { TradeParameters } from '../trade-parameters';
-import { GeometricBrownianMotionGeneratorParameters } from './geometric-brownian-motion-generator-parameters';
+import { SyntheticDataParameters } from '../synthetic-data-parameters';
 import { sampleCountName, timeParametersName, waveformParametersName, gbmParametersName, tradeParametersName,
     objectName } from '../constants';
 
 /** The input parameters for the geometric Brownian motion trade generator. */
 export class GeometricBrownianMotionTradeGeneratorParameters {
     /** The number of samples to generate. */
-    sampleCount: number = GeometricBrownianMotionGeneratorParameters.defaultSampleCount;
+    sampleCount: number = SyntheticDataParameters.defaultSampleCount;
 
     /** The time related input parameters. */
     timeParameters: TimeParameters = new TimeParameters();

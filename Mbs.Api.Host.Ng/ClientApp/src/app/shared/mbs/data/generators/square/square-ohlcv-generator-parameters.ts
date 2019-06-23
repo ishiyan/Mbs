@@ -2,14 +2,14 @@ import { SquareParameters } from './square-parameters';
 import { TimeParameters } from '../time-parameters';
 import { WaveformParameters } from '../waveform-parameters';
 import { OhlcvParameters } from '../ohlcv-parameters';
-import { SquareGeneratorParameters } from './square-generator-parameters';
+import { SyntheticDataParameters } from '../synthetic-data-parameters';
 import { sampleCountName, timeParametersName, waveformParametersName, squareParametersName, ohlcvParametersName,
     objectName } from '../constants';
 
 /** The input parameters for the square ohlcv generator. */
 export class SquareOhlcvGeneratorParameters {
     /** The number of samples to generate. */
-    sampleCount: number = SquareGeneratorParameters.defaultSampleCount;
+    sampleCount: number = SyntheticDataParameters.defaultSampleCount;
 
     /** The time related input parameters. */
     timeParameters: TimeParameters = new TimeParameters();

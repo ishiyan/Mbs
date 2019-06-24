@@ -51,33 +51,6 @@ export class GeometricBrownianMotionParameters {
         }
     }
 
-    static fromJS(data: any): GeometricBrownianMotionParameters {
-        data = typeof data === objectName ? data : {};
-        const result = new GeometricBrownianMotionParameters();
-        result.init(data);
-        return result;
-    }
-
-    private init(data?: any): void {
-        if (data) {
-            this.amplitude = data[amplitudeName] !== undefined ? data[amplitudeName] :
-                GeometricBrownianMotionParameters.defaultAmplitude;
-            this.minimalValue = data[minimalValueName] !== undefined ? data[minimalValueName] :
-                GeometricBrownianMotionParameters.defaultMinimalValue;
-            this.drift = data[driftName] !== undefined ? data[driftName] :
-                GeometricBrownianMotionParameters.defaultDrift;
-            this.volatility = data[volatilityName] !== undefined ? data[volatilityName] :
-                GeometricBrownianMotionParameters.defaultVolatility;
-            this.normalRandomGeneratorKind = data[normalRandomGeneratorKindName] !== undefined ? data[normalRandomGeneratorKindName] :
-                GeometricBrownianMotionParameters.defaultNormalRandomGeneratorKind;
-            this.associatedUniformRandomGeneratorKind = data[associatedUniformRandomGeneratorKindName] !== undefined ?
-                data[associatedUniformRandomGeneratorKindName] :
-                GeometricBrownianMotionParameters.defaultAssociatedUniformRandomGeneratorKind;
-            this.seed = data[seedName] !== undefined ? data[seedName] :
-                GeometricBrownianMotionParameters.defaultSeed;
-        }
-    }
-
     toJSON(data?: any) {
         data = typeof data === objectName ? data : {};
         data[amplitudeName] = this.amplitude;

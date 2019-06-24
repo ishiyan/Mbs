@@ -39,32 +39,6 @@ export class WaveformParameters {
         }
     }
 
-    static fromJS(data: any): WaveformParameters {
-        data = typeof data === objectName ? data : {};
-        const result = new WaveformParameters();
-        result.init(data);
-        return result;
-    }
-
-    private init(data?: any): void {
-        if (data) {
-            this.waveformSamples = data[waveformSamplesName] !== undefined ? data[waveformSamplesName] :
-                WaveformParameters.defaultOffsetSamples;
-            this.offsetSamples = data[offsetSamplesName] !== undefined ? data[offsetSamplesName] :
-                WaveformParameters.defaultOffsetSamples;
-            this.repetitionsCount = data[repetitionsCountName] !== undefined ? data[repetitionsCountName] :
-                WaveformParameters.defaultRepetitionsCount;
-            this.noiseAmplitudeFraction = data[noiseAmplitudeFractionName] !== undefined ? data[noiseAmplitudeFractionName] :
-                WaveformParameters.defaultNoiseAmplitudeFraction;
-            this.noiseUniformRandomGeneratorKind = data[noiseUniformRandomGeneratorKindName] !== undefined ?
-                data[noiseUniformRandomGeneratorKindName] :
-                WaveformParameters.defaultNoiseUniformRandomGeneratorKind;
-            this.noiseUniformRandomGeneratorSeed = data[noiseUniformRandomGeneratorSeedName] !== undefined ?
-                data[noiseUniformRandomGeneratorSeedName] :
-                WaveformParameters.defaultNoiseUniformRandomGeneratorSeed;
-        }
-    }
-
     toJSON(data?: any) {
         data = typeof data === objectName ? data : {};
         data[waveformSamplesName] = this.waveformSamples;

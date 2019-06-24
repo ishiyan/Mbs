@@ -30,26 +30,6 @@ export class SawtoothParameters {
         }
     }
 
-    static fromJS(data: any): SawtoothParameters {
-        data = typeof data === objectName ? data : {};
-        const result = new SawtoothParameters();
-        result.init(data);
-        return result;
-    }
-
-    private init(data?: any): void {
-        if (data) {
-            this.amplitude = data[amplitudeName] !== undefined ? data[amplitudeName] :
-                SawtoothParameters.defaultAmplitude;
-            this.minimalValue = data[minimalValueName] !== undefined ? data[minimalValueName] :
-                SawtoothParameters.defaultMinimalValue;
-            this.isBiDirectional = data[isBiDirectionalName] !== undefined ? data[isBiDirectionalName] :
-                SawtoothParameters.defaultIsBiDirectional;
-            this.sawtoothShape = data[sawtoothShapeName] !== undefined ? data[sawtoothShapeName] :
-                SawtoothParameters.defaultSawtoothShape;
-        }
-    }
-
     toJSON(data?: any) {
         data = typeof data === objectName ? data : {};
         data[amplitudeName] = this.amplitude;

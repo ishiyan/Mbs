@@ -33,26 +33,6 @@ export class RepetitiveSampleGeneratorParameters {
         }
     }
 
-    static fromJS(data: any): RepetitiveSampleGeneratorParameters {
-        data = typeof data === objectName ? data : {};
-        const result = new RepetitiveSampleGeneratorParameters();
-        result.init(data);
-        return result;
-    }
-
-    private init(data?: any): void {
-        if (data) {
-            this.sampleCount = data[sampleCountName] !== undefined ? data[sampleCountName] :
-                RepetitiveSampleGeneratorParameters.defaultSampleCount;
-            this.offsetSamples = data[offsetSamplesName] !== undefined ? data[offsetSamplesName] :
-                RepetitiveSampleGeneratorParameters.defaultOffsetSamples;
-            this.repetitionsCount = data[repetitionsCountName] !== undefined ? data[repetitionsCountName] :
-                RepetitiveSampleGeneratorParameters.defaultRepetitionsCount;
-            this.timeParameters = data[timeParametersName] ? TimeParameters.fromJS(data[timeParametersName]) :
-                new TimeParameters();
-        }
-    }
-
     toJSON(data?: any) {
         data = typeof data === objectName ? data : {};
         data[sampleCountName] = this.sampleCount;

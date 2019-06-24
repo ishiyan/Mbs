@@ -33,27 +33,6 @@ export class ChirpQuoteGeneratorParameters {
         }
     }
 
-    static fromJS(data: any): ChirpQuoteGeneratorParameters {
-        data = typeof data === objectName ? data : {};
-        const result = new ChirpQuoteGeneratorParameters();
-        result.init(data);
-        return result;
-    }
-
-    private init(data?: any): void {
-        if (data) {
-            this.sampleCount = data[sampleCountName];
-            this.timeParameters = data[timeParametersName] ? TimeParameters.fromJS(data[timeParametersName]) :
-                new TimeParameters();
-            this.waveformParameters = data[waveformParametersName] ? WaveformParameters.fromJS(data[waveformParametersName]) :
-                new WaveformParameters();
-            this.chirpParameters = data[chirpParametersName] ? ChirpParameters.fromJS(data[chirpParametersName]) :
-                new ChirpParameters();
-            this.quoteParameters = data[quoteParametersName] ? QuoteParameters.fromJS(data[quoteParametersName]) :
-                new QuoteParameters();
-        }
-    }
-
     toJSON(data?: any) {
         data = typeof data === objectName ? data : {};
         data[sampleCountName] = this.sampleCount;

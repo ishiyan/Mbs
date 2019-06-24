@@ -28,25 +28,6 @@ export class GeometricBrownianMotionScalarGeneratorParameters {
         }
     }
 
-    static fromJS(data: any): GeometricBrownianMotionScalarGeneratorParameters {
-        data = typeof data === objectName ? data : {};
-        const result = new GeometricBrownianMotionScalarGeneratorParameters();
-        result.init(data);
-        return result;
-    }
-
-    private init(data?: any): void {
-        if (data) {
-            this.sampleCount = data[sampleCountName];
-            this.timeParameters = data[timeParametersName] ? TimeParameters.fromJS(data[timeParametersName]) :
-                new TimeParameters();
-            this.waveformParameters = data[waveformParametersName] ? WaveformParameters.fromJS(data[waveformParametersName]) :
-                new WaveformParameters();
-            this.gbmParameters = data[gbmParametersName] ? GeometricBrownianMotionParameters.fromJS(data[gbmParametersName]) :
-                new GeometricBrownianMotionParameters();
-        }
-    }
-
     toJSON(data?: any) {
         data = typeof data === objectName ? data : {};
         data[sampleCountName] = this.sampleCount;

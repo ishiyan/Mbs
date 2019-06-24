@@ -33,27 +33,6 @@ export class GeometricBrownianMotionOhlcvGeneratorParameters {
         }
     }
 
-    static fromJS(data: any): GeometricBrownianMotionOhlcvGeneratorParameters {
-        data = typeof data === objectName ? data : {};
-        const result = new GeometricBrownianMotionOhlcvGeneratorParameters();
-        result.init(data);
-        return result;
-    }
-
-    private init(data?: any): void {
-        if (data) {
-            this.sampleCount = data[sampleCountName];
-            this.timeParameters = data[timeParametersName] ? TimeParameters.fromJS(data[timeParametersName]) :
-                new TimeParameters();
-            this.waveformParameters = data[waveformParametersName] ? WaveformParameters.fromJS(data[waveformParametersName]) :
-                new WaveformParameters();
-            this.gbmParameters = data[gbmParametersName] ? GeometricBrownianMotionParameters.fromJS(data[gbmParametersName]) :
-                new GeometricBrownianMotionParameters();
-            this.ohlcvParameters = data[ohlcvParametersName] ? OhlcvParameters.fromJS(data[ohlcvParametersName]) :
-                new OhlcvParameters();
-        }
-    }
-
     toJSON(data?: any) {
         data = typeof data === objectName ? data : {};
         data[sampleCountName] = this.sampleCount;

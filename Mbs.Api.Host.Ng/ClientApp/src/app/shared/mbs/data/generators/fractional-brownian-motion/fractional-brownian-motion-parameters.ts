@@ -51,33 +51,6 @@ export class FractionalBrownianMotionParameters {
         }
     }
 
-    static fromJS(data: any): FractionalBrownianMotionParameters {
-        data = typeof data === objectName ? data : {};
-        const result = new FractionalBrownianMotionParameters();
-        result.init(data);
-        return result;
-    }
-
-    private init(data?: any): void {
-        if (data) {
-            this.amplitude = data[amplitudeName] !== undefined ? data[amplitudeName] :
-                FractionalBrownianMotionParameters.defaultAmplitude;
-            this.minimalValue = data[minimalValueName] !== undefined ? data[minimalValueName] :
-                FractionalBrownianMotionParameters.defaultMinimalValue;
-            this.hurstExponent = data[hurstExponentName] !== undefined ? data[hurstExponentName] :
-                FractionalBrownianMotionParameters.defaultHurstExponent;
-            this.algorithm = data[algorithmName] !== undefined ? data[algorithmName] :
-                FractionalBrownianMotionParameters.defaultAlgorithm;
-            this.normalRandomGeneratorKind = data[normalRandomGeneratorKindName] !== undefined ? data[normalRandomGeneratorKindName] :
-                FractionalBrownianMotionParameters.defaultNormalRandomGeneratorKind;
-            this.associatedUniformRandomGeneratorKind = data[associatedUniformRandomGeneratorKindName] !== undefined ?
-                data[associatedUniformRandomGeneratorKindName] :
-                FractionalBrownianMotionParameters.defaultAssociatedUniformRandomGeneratorKind;
-            this.seed = data[seedName] !== undefined ? data[seedName] :
-                FractionalBrownianMotionParameters.defaultSeed;
-        }
-    }
-
     toJSON(data?: any) {
         data = typeof data === objectName ? data : {};
         data[amplitudeName] = this.amplitude;

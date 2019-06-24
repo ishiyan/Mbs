@@ -25,24 +25,6 @@ export class MultiSinusoidalComponentParameters {
         }
     }
 
-    static fromJS(data: any): MultiSinusoidalComponentParameters {
-        data = typeof data === objectName ? data : {};
-        const result = new MultiSinusoidalComponentParameters();
-        result.init(data);
-        return result;
-    }
-
-    private init(data?: any): void {
-        if (data) {
-            this.amplitude = data[amplitudeName] !== undefined ? data[amplitudeName] :
-                MultiSinusoidalComponentParameters.defaultAmplitude;
-            this.period = data[periodName] !== undefined ? data[periodName] :
-                MultiSinusoidalComponentParameters.defaultPeriod;
-            this.phaseInPi = data[phaseInPiName] !== undefined ? data[phaseInPiName] :
-                MultiSinusoidalComponentParameters.defaultPhaseInPi;
-        }
-    }
-
     toJSON(data?: any) {
         data = typeof data === objectName ? data : {};
         data[amplitudeName] = this.amplitude;

@@ -73,43 +73,6 @@ export class SyntheticDataParameters {
         }
     }
 
-    static fromJS(data: any): SyntheticDataParameters {
-        data = typeof data === objectName ? data : {};
-        const result = new SyntheticDataParameters();
-        result.init(data);
-        return result;
-    }
-
-    private init(data?: any): void {
-        if (data) {
-            this.sampleCount = data[sampleCountName];
-            this.temporalEntityKind = data[temporalEntityKindName];
-            this.syntheticDataKind = data[syntheticDataKindName];
-            this.chirpParameters = data[chirpParametersName] ? ChirpParameters.fromJS(data[chirpParametersName]) :
-                new ChirpParameters();
-            this.fbmParameters = data[fbmParametersName] ? FractionalBrownianMotionParameters.fromJS(data[fbmParametersName]) :
-                new FractionalBrownianMotionParameters();
-            this.gbmParameters = data[gbmParametersName] ? GeometricBrownianMotionParameters.fromJS(data[gbmParametersName]) :
-                new GeometricBrownianMotionParameters();
-            this.sawtoothParameters = data[sawtoothParametersName] ? SawtoothParameters.fromJS(data[sawtoothParametersName]) :
-                new SawtoothParameters();
-            this.sinusoidalParameters = data[sinusoidalParametersName] ? SinusoidalParameters.fromJS(data[sinusoidalParametersName]) :
-                new SinusoidalParameters();
-            this.squareParameters = data[squareParametersName] ? SquareParameters.fromJS(data[squareParametersName]) :
-                new SquareParameters();
-            this.waveformParameters = data[waveformParametersName] ? WaveformParameters.fromJS(data[waveformParametersName]) :
-                new WaveformParameters();
-            this.timeParameters = data[timeParametersName] ? TimeParameters.fromJS(data[timeParametersName]) :
-                new TimeParameters();
-            this.ohlcvParameters = data[ohlcvParametersName] ? OhlcvParameters.fromJS(data[ohlcvParametersName]) :
-                new OhlcvParameters();
-            this.quoteParameters = data[quoteParametersName] ? QuoteParameters.fromJS(data[quoteParametersName]) :
-                new QuoteParameters();
-            this.tradeParameters = data[tradeParametersName] ? TradeParameters.fromJS(data[tradeParametersName]) :
-                new TradeParameters();
-        }
-    }
-
     toJSON(data?: any): any {
         data = typeof data === objectName ? data : {};
         data[sampleCountName] = this.sampleCount;

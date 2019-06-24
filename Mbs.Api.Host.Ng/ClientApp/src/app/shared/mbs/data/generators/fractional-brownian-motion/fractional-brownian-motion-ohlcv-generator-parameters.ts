@@ -33,27 +33,6 @@ export class FractionalBrownianMotionOhlcvGeneratorParameters {
         }
     }
 
-    static fromJS(data: any): FractionalBrownianMotionOhlcvGeneratorParameters {
-        data = typeof data === objectName ? data : {};
-        const result = new FractionalBrownianMotionOhlcvGeneratorParameters();
-        result.init(data);
-        return result;
-    }
-
-    private init(data?: any): void {
-        if (data) {
-            this.sampleCount = data[sampleCountName];
-            this.timeParameters = data[timeParametersName] ? TimeParameters.fromJS(data[timeParametersName]) :
-                new TimeParameters();
-            this.waveformParameters = data[waveformParametersName] ? WaveformParameters.fromJS(data[waveformParametersName]) :
-                new WaveformParameters();
-            this.fbmParameters = data[fbmParametersName] ? FractionalBrownianMotionParameters.fromJS(data[fbmParametersName]) :
-                new FractionalBrownianMotionParameters();
-            this.ohlcvParameters = data[ohlcvParametersName] ? OhlcvParameters.fromJS(data[ohlcvParametersName]) :
-                new OhlcvParameters();
-        }
-    }
-
     toJSON(data?: any) {
         data = typeof data === objectName ? data : {};
         data[sampleCountName] = this.sampleCount;

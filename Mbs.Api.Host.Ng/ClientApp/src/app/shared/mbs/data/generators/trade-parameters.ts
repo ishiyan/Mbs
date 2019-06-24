@@ -17,19 +17,6 @@ export class TradeParameters {
         }
     }
 
-    static fromJS(data: any): TradeParameters {
-        data = typeof data === objectName ? data : {};
-        const result = new TradeParameters();
-        result.init(data);
-        return result;
-    }
-
-    private init(data?: any): void {
-        if (data) {
-            this.volume = data[volumeName] !== undefined ? data[volumeName] : TradeParameters.defaultVolume;
-        }
-    }
-
     toJSON(data?: any) {
         data = typeof data === objectName ? data : {};
         data[volumeName] = this.volume;

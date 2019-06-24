@@ -21,22 +21,6 @@ export class SquareParameters {
         }
     }
 
-    static fromJS(data: any): SquareParameters {
-        data = typeof data === objectName ? data : {};
-        const result = new SquareParameters();
-        result.init(data);
-        return result;
-    }
-
-    private init(data?: any): void {
-        if (data) {
-            this.amplitude = data[amplitudeName] !== undefined ? data[amplitudeName] :
-                SquareParameters.defaultAmplitude;
-            this.minimalValue = data[minimalValueName] !== undefined ? data[minimalValueName] :
-                SquareParameters.defaultMinimalValue;
-        }
-    }
-
     toJSON(data?: any) {
         data = typeof data === objectName ? data : {};
         data[amplitudeName] = this.amplitude;

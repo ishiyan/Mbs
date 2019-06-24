@@ -36,32 +36,10 @@ export class TimeParameters {
         }
     }
 
-    static fromJS(data: any): TimeParameters {
-        data = typeof data === objectName ? data : {};
-        const result = new TimeParameters();
-        result.init(data);
-        return result;
-    }
-
     private static formatDate(d: Date): string {
         return d.getFullYear() + '-' +
             (d.getMonth() < 9 ? ('0' + (d.getMonth() + 1)) : (d.getMonth() + 1)) + '-' +
             (d.getDate() < 10 ? ('0' + d.getDate()) : d.getDate());
-    }
-
-    private init(data?: any): void {
-        if (data) {
-            this.sessionStartTime = data[sessionStartTimeName] !== undefined ? data[sessionStartTimeName] :
-                TimeParameters.defaultSessionStartTime;
-            this.sessionEndTime = data[sessionEndTimeName] !== undefined ? data[sessionEndTimeName] :
-                TimeParameters.defaultSessionEndTime;
-            this.startDate = data[startDateName] ? new Date(data[startDateName].toString()) :
-                TimeParameters.dafaultStartDate;
-            this.timeGranularity = data[timeGranularityName] !== undefined ? data[timeGranularityName] :
-                TimeParameters.dafaultTimeGranularity;
-            this.businessDayCalendar = data[businessDayCalendarName] !== undefined ? data[businessDayCalendarName] :
-                TimeParameters.dafaultBusinessDayCalendar;
-        }
     }
 
     toJSON(data?: any) {

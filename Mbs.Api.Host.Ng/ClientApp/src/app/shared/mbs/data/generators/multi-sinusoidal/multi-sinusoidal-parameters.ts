@@ -21,26 +21,6 @@ export class MultiSinusoidalParameters {
         }
     }
 
-    static fromJS(data: any): MultiSinusoidalParameters {
-        data = typeof data === objectName ? data : {};
-        const result = new MultiSinusoidalParameters();
-        result.init(data);
-        return result;
-    }
-
-    private init(data?: any): void {
-        if (data) {
-            this.minimalValue = data[minimalValueName] !== undefined ? data[minimalValueName] :
-                MultiSinusoidalParameters.defaultMinimalValue;
-            if (data[multiSinusoidalComponentsName] && data[multiSinusoidalComponentsName].constructor === Array) {
-                this.multiSinusoidalComponents = [] as any;
-                for (const item of data[multiSinusoidalComponentsName]) {
-                    this.multiSinusoidalComponents.push(MultiSinusoidalComponentParameters.fromJS(item));
-                }
-            }
-        }
-    }
-
     toJSON(data?: any) {
         data = typeof data === objectName ? data : {};
         data[minimalValueName] = this.minimalValue;

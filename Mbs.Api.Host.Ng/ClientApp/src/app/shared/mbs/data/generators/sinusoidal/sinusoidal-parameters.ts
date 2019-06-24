@@ -29,26 +29,6 @@ export class SinusoidalParameters {
         }
     }
 
-    static fromJS(data: any): SinusoidalParameters {
-        data = typeof data === objectName ? data : {};
-        const result = new SinusoidalParameters();
-        result.init(data);
-        return result;
-    }
-
-    private init(data?: any): void {
-        if (data) {
-            this.amplitude = data[amplitudeName] !== undefined ? data[amplitudeName] :
-                SinusoidalParameters.defaultAmplitude;
-            this.minimalValue = data[minimalValueName] !== undefined ? data[minimalValueName] :
-                SinusoidalParameters.defaultMinimalValue;
-            this.period = data[periodName] !== undefined ? data[periodName] :
-                SinusoidalParameters.defaultPeriod;
-            this.phaseInPi = data[phaseInPiName] !== undefined ? data[phaseInPiName] :
-                SinusoidalParameters.defaultPhaseInPi;
-        }
-    }
-
     toJSON(data?: any) {
         data = typeof data === objectName ? data : {};
         data[amplitudeName] = this.amplitude;

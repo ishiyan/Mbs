@@ -28,25 +28,6 @@ export class ChirpScalarGeneratorParameters {
         }
     }
 
-    static fromJS(data: any): ChirpScalarGeneratorParameters {
-        data = typeof data === objectName ? data : {};
-        const result = new ChirpScalarGeneratorParameters();
-        result.init(data);
-        return result;
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.sampleCount = data[sampleCountName];
-            this.timeParameters = data[timeParametersName] ? TimeParameters.fromJS(data[timeParametersName]) :
-                new TimeParameters();
-            this.waveformParameters = data[waveformParametersName] ? WaveformParameters.fromJS(data[waveformParametersName]) :
-                new WaveformParameters();
-            this.chirpParameters = data[chirpParametersName] ? ChirpParameters.fromJS(data[chirpParametersName]) :
-                new ChirpParameters();
-        }
-    }
-
     toJSON(data?: any) {
         data = typeof data === objectName ? data : {};
         data[sampleCountName] = this.sampleCount;

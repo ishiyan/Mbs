@@ -29,24 +29,6 @@ export class OhlcvParameters {
         }
     }
 
-    static fromJS(data: any): OhlcvParameters {
-        data = typeof data === objectName ? data : {};
-        const result = new OhlcvParameters();
-        result.init(data);
-        return result;
-    }
-
-    private init(data?: any): void {
-        if (data) {
-            this.candlestickShadowFraction = data[candlestickShadowFractionName] !== undefined ? data[candlestickShadowFractionName] :
-                OhlcvParameters.defaultCandlestickShadowFraction;
-            this.candlestickBodyFraction = data[candlestickBodyFractionName] !== undefined ? data[candlestickBodyFractionName] :
-                OhlcvParameters.defaultCandlestickBodyFraction;
-            this.volume = data[volumeName] !== undefined ? data[volumeName] :
-                OhlcvParameters.defaultVolume;
-        }
-    }
-
     toJSON(data?: any) {
         data = typeof data === objectName ? data : {};
         data[candlestickShadowFractionName] = this.candlestickShadowFraction;

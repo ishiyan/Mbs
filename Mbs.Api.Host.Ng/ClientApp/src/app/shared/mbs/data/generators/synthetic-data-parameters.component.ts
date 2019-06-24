@@ -17,22 +17,6 @@ export class SyntheticDataParametersComponent implements OnInit {
     ngOnInit() {
     }
 
-    /*public get ohlcvGen(): ChirpOhlcvGeneratorParameters {
-        return ChirpOhlcvGeneratorParameters.fromJS(this.syntheticDataParameters.chirpGeneratorParameters);
-    }
-
-    public get quoteGen(): ChirpQuoteGeneratorParameters {
-        return ChirpQuoteGeneratorParameters.fromJS(this.syntheticDataParameters.chirpGeneratorParameters);
-    }
-
-    public get tradeGen(): ChirpTradeGeneratorParameters {
-        return ChirpTradeGeneratorParameters.fromJS(this.syntheticDataParameters.chirpGeneratorParameters);
-    }
-
-    public get scalarGen(): ChirpScalarGeneratorParameters {
-        return ChirpScalarGeneratorParameters.fromJS(this.syntheticDataParameters.chirpGeneratorParameters);
-    }*/
-
     public dataKindChanged(value: SyntheticDataKind): void {
         this.syntheticDataParameters.syntheticDataKind = value;
     }

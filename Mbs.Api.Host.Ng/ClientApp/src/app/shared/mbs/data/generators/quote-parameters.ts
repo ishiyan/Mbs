@@ -32,24 +32,6 @@ export class QuoteParameters {
         }
     }
 
-    static fromJS(data: any): QuoteParameters {
-        data = typeof data === objectName ? data : {};
-        const result = new QuoteParameters();
-        result.init(data);
-        return result;
-    }
-
-    private init(data?: any): void {
-        if (data) {
-            this.spreadFraction = data[spreadFractionName] !== undefined
-                ? data[spreadFractionName] : QuoteParameters.defaultSpreadFraction;
-            this.askSize = data[askSizeName] !== undefined
-                ? data[askSizeName] : QuoteParameters.defaultAskSize;
-            this.bidSize = data[bidSizeName] !== undefined
-                ? data[bidSizeName] : QuoteParameters.defaultBidSize;
-        }
-    }
-
     toJSON(data?: any) {
         data = typeof data === objectName ? data : {};
         data[spreadFractionName] = this.spreadFraction;

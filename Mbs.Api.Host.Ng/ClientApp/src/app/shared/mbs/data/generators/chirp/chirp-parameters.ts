@@ -43,32 +43,6 @@ export class ChirpParameters {
         }
     }
 
-    static fromJS(data: any): ChirpParameters {
-        data = typeof data === objectName ? data : {};
-        const result = new ChirpParameters();
-        result.init(data);
-        return result;
-    }
-
-    private init(data?: any): void {
-        if (data) {
-            this.amplitude = data[amplitudeName] !== undefined ? data[amplitudeName] :
-                ChirpParameters.defaultAmplitude;
-            this.minimalValue = data[minimalValueName] !== undefined ? data[minimalValueName] :
-                ChirpParameters.defaultMinimalValue;
-            this.initialPeriod = data[initialPeriodName] !== undefined ? data[initialPeriodName] :
-                ChirpParameters.defaultInitialPeriod;
-            this.finalPeriod = data[finalPeriodName] !== undefined ? data[finalPeriodName] :
-                ChirpParameters.defaultFinalPeriod;
-            this.phaseInPi = data[phaseInPiName] !== undefined ? data[phaseInPiName] :
-                ChirpParameters.defaultPhaseInPi;
-            this.isBiDirectional = data[isBiDirectionalName] !== undefined ? data[isBiDirectionalName] :
-                ChirpParameters.defaultIsBiDirectional;
-            this.chirpSweep = data[chirpSweepName] !== undefined ? data[chirpSweepName] :
-                ChirpParameters.defaultChirpSweep;
-        }
-    }
-
     toJSON(data?: any) {
         data = typeof data === objectName ? data : {};
         data[amplitudeName] = this.amplitude;

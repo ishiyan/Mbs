@@ -5,7 +5,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { Directive } from '@angular/core';
 
 import { MaterialModule } from './shared/material/material.module';
 import { MathJaxModule } from './shared/math-jax/math-jax.module';

@@ -3,7 +3,7 @@ import { ExchangeMic } from './../markets/exchange-mic.enum';
 import { CurrencyCode } from './../currencies/currency-code.enum';
 
 /** Contains information to describe an instrument. */
-export class Instrument implements IInstrument {
+export class Instrument /*implements IInstrument*/ {
     /** Gets or sets the optional symbol (ticker) of the security. */
     symbol?: string | undefined;
     /** Gets or sets a name of the instrument. */
@@ -29,7 +29,7 @@ export class Instrument implements IInstrument {
     /** Gets or sets an additional information for indices. */
     index?: Index | undefined;
 
-    constructor(data?: IInstrument) {
+    constructor(data?: Instrument) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property)) {

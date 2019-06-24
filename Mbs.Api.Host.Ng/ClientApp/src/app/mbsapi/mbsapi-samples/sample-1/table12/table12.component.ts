@@ -7,8 +7,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { InstrumentType } from '../../../../shared/mbs/instruments/instrument-type.enum';
 import { ExchangeMic } from '../../../../shared/mbs/markets/exchange-mic.enum';
 import { CurrencyCode } from '../../../../shared/mbs/currencies/currency-code.enum';
-import { IInstrument } from '../../../../shared/mbs/instruments/instrument';
-import { euronextListShort } from '../../../../shared/mbs/euronext-list-short';
+import { Instrument } from '../../../../shared/mbs/instruments/instrument';
 import { ListService } from './list.service';
 import { SnackBarService } from '../../../../shared/snack-bar/snack-bar.service';
 
@@ -31,15 +30,15 @@ export class Table12Component implements OnInit {
     public InstrumentType = InstrumentType;
     public ExchangeMic = ExchangeMic;
     public CurrencyCode = CurrencyCode; // added
-    public expandedInstrument: IInstrument; // added
+    public expandedInstrument: Instrument; // added
     displayedColumns: string[] = ['type', 'symbol', 'name', 'isin', 'mic'];
-    dataSource: MatTableDataSource<IInstrument>;
+    dataSource: MatTableDataSource<Instrument>;
 
     constructor(private listService: ListService, private snackBarService: SnackBarService) {
-        this.dataSource = new MatTableDataSource<IInstrument>();
-        this.dataSource.filterPredicate = (data: IInstrument, filter: string) => {
-            return (data.description && data.description.toLowerCase().indexOf(filter) !== -1) ||
-                (data.name && data.name.toLowerCase().indexOf(filter) !== -1) ||
+        this.dataSource = new MatTableDataSource<Instrument>();
+        this.dataSource.filterPredicate = (data: Instrument, filter: string) => {
+            // return (data.description && data.description.toLowerCase().indexOf(filter) !== -1) ||
+            return (data.name && data.name.toLowerCase().indexOf(filter) !== -1) ||
                 (data.symbol && data.symbol.toLowerCase().indexOf(filter) !== -1) ||
                 (data.isin && data.isin.toLowerCase().indexOf(filter) !== -1) ||
                 (data.type && data.type.toLowerCase().indexOf(filter) !== -1) ||
@@ -98,7 +97,7 @@ export class Table12Component implements OnInit {
             .subscribe({
                 next: list => {
                     this.expandedInstrument = null;
-                    this.dataSource.data = list; // new MatTableDataSource(list);
+                    this.dataSource.data = list;
                 },
                 error: error => {
                     this.expandedInstrument = null;

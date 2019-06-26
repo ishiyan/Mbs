@@ -14,7 +14,6 @@ const httpOptions = {
     })
 };
 
-
 @Injectable()
 export class ListService {
     constructor(private httpClient: HttpClient) { }

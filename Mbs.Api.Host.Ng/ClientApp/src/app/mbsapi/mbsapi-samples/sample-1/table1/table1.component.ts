@@ -1,10 +1,10 @@
 import { Component, OnInit, ElementRef, ViewChild, Input } from '@angular/core';
 import {animate, state, style, transition, trigger} from '@angular/animations';
-import { InstrumentType } from '../../../../shared/mbs/instruments/instrument-type.enum';
+import { InstrumentType } from '../../../../shared/mbs/instruments/types/instrument-type.enum';
 import { ExchangeMic } from '../../../../shared/mbs/markets/exchange-mic.enum';
 import { CurrencyCode } from '../../../../shared/mbs/currencies/currency-code.enum';
 import { Instrument } from '../../../../shared/mbs/instruments/instrument';
-import { euronextListShort } from '../../../../shared/mbs/euronext-list-short';
+// import { euronextListShort } from '../../../../shared/mbs/euronext-list-short';
 
 @Component({
     selector: 'app-table1',
@@ -26,7 +26,7 @@ export class Table1Component implements OnInit {
     public CurrencyCode = CurrencyCode; // added
     public expandedInstrument: Instrument; // added
     displayedColumns: string[] = ['type', 'symbol', 'name', 'isin', 'mic'];
-    dataSource = euronextListShort;
+    // dataSource = euronextListShort;
 
     constructor(private element: ElementRef) {
     }

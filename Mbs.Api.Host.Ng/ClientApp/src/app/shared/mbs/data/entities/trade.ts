@@ -1,5 +1,7 @@
+import { ConvertableToJSON } from '../convertable-to-json';
+
 /** A _trade_ (price and volume) entity. */
-export class Trade {
+export class Trade implements ConvertableToJSON {
     /** The price. */
     price: number;
 
@@ -19,7 +21,7 @@ export class Trade {
         }
     }
 
-    toJSON(data?: any) {
+    toJSON(data?: any): any {
         data = typeof data === 'object' ? data : {};
         data['price'] = this.price;
         data['volume'] = this.volume;

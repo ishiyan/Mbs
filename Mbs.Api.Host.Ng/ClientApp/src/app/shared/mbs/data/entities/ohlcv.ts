@@ -1,5 +1,7 @@
+import { ConvertableToJSON } from '../convertable-to-json';
+
 /** An [open, high, low, close, volume] bar. */
-export class Ohlcv {
+export class Ohlcv implements ConvertableToJSON {
     /** The opening price. */
     open: number;
 
@@ -31,7 +33,7 @@ export class Ohlcv {
         }
     }
 
-    toJSON(data?: any) {
+    toJSON(data?: any): any {
         data = typeof data === 'object' ? data : {};
         data['open'] = this.open;
         data['high'] = this.high;

@@ -1,13 +1,3 @@
-.table-container {
-    position: relative;
-    // max-height: 700px;
-    max-width: 600px;
-    overflow: auto;
-    margin: 0px;
-    //margin-left: 32px;
-    padding: 16px;
-  }
-
 ::ng-deep .mat-horizontal-content-container {
   padding: 0px !important;
 }
@@ -18,9 +8,14 @@
 }
 
 .multiline-label {
-    white-space: normal;
-  }
+  white-space: normal;
+}
 
-  mat-button-toggle-group {
-    flex-wrap: wrap;
-  }
+mat-button-toggle-group {
+  flex-wrap: wrap;
+}
+
+.button {
+  margin: 16px;
+  margin-bottom: 32px;
+}

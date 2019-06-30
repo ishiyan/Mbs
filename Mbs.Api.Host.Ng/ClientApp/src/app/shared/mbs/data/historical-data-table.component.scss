@@ -1,0 +1,26 @@
+.table-container {
+  position: relative;
+  overflow: auto;
+  margin: 0px;
+  padding: 16px;
+}
+
+.name {
+   margin: 0px;
+   margin-bottom: 16px;
+  }
+
+.moniker {
+  margin: 0px;
+  margin-bottom: 32px;
+}
+
+table {
+  width: 100%;
+}
+
+.row td {
+  border-bottom-width: 0;
+  font-size: 12px;
+  font-weight: 500;
+}

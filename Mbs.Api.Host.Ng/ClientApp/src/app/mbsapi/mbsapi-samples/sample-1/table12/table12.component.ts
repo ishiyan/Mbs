@@ -29,8 +29,8 @@ export class Table12Component implements OnInit {
 
     public InstrumentType = InstrumentType;
     public ExchangeMic = ExchangeMic;
-    public CurrencyCode = CurrencyCode; // added
-    public expandedInstrument: Instrument; // added
+    public CurrencyCode = CurrencyCode;
+    public expandedInstrument: Instrument;
     displayedColumns: string[] = ['type', 'symbol', 'name', 'isin', 'mic'];
     dataSource: MatTableDataSource<Instrument>;
 

@@ -1,5 +1,7 @@
+import { ConvertableToJSON } from '../convertable-to-json';
+
 /** A _scalar_ (value and time) entity. */
-export class Scalar {
+export class Scalar implements ConvertableToJSON {
     /** The value. */
     value: number;
 
@@ -16,7 +18,7 @@ export class Scalar {
         }
     }
 
-    toJSON(data?: any) {
+    toJSON(data?: any): any {
         data = typeof data === 'object' ? data : {};
         data['value'] = this.value;
         data['time'] = this.time ? this.time.toISOString() : <any>undefined;

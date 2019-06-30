@@ -1,5 +1,7 @@
+import { ConvertableToJSON } from '../convertable-to-json';
+
 /** A price _quote_ (bid/ask price and size pair). */
-export class Quote {
+export class Quote implements ConvertableToJSON {
     /** The bid price. */
     bidPrice: number;
 
@@ -25,7 +27,7 @@ export class Quote {
         }
     }
 
-    toJSON(data?: any) {
+    toJSON(data?: any): any {
         data = typeof data === 'object' ? data : {};
         data['bidPrice'] = this.bidPrice;
         data['bidSize'] = this.bidSize;

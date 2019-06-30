@@ -22,6 +22,8 @@ import { SawtoothParametersComponent } from './data/generators/sawtooth/sawtooth
 import { SquareParametersComponent } from './data/generators/square/square-parameters.component';
 import { SinusoidalParametersComponent } from './data/generators/sinusoidal/sinusoidal-parameters.component';
 import { SyntheticDataParametersComponent } from './data/generators/synthetic-data-parameters.component';
+import { SyntheticDataService } from './data/generators/synthetic-data.service';
+import { HistoricalDataTableComponent } from './data/historical-data-table.component';
 
 @NgModule({
     imports: [
@@ -36,14 +38,21 @@ import { SyntheticDataParametersComponent } from './data/generators/synthetic-da
         BusinessDayCalendarDescriptionComponent, TimeParametersComponent, WaveformParametersComponent,
         OhlcvParametersComponent, QuoteParametersComponent, TradeParametersComponent,
         FractionalBrownianMotionParametersComponent, GeometricBrownianMotionParametersComponent, ChirpParametersComponent,
-        SawtoothParametersComponent, SquareParametersComponent, SinusoidalParametersComponent, SyntheticDataParametersComponent
+        SawtoothParametersComponent, SquareParametersComponent, SinusoidalParametersComponent, SyntheticDataParametersComponent,
+        HistoricalDataTableComponent
     ],
     declarations: [
         BusinessDayCalendarDescriptionComponent, TimeParametersComponent, WaveformParametersComponent,
         OhlcvParametersComponent, QuoteParametersComponent, TradeParametersComponent,
         FractionalBrownianMotionParametersComponent, GeometricBrownianMotionParametersComponent, ChirpParametersComponent,
-        SawtoothParametersComponent, SquareParametersComponent, SinusoidalParametersComponent, SyntheticDataParametersComponent
+        SawtoothParametersComponent, SquareParametersComponent, SinusoidalParametersComponent, SyntheticDataParametersComponent,
+        HistoricalDataTableComponent
     ],
-    entryComponents: [BusinessDayCalendarDescriptionComponent]
+    providers: [
+        SyntheticDataService
+    ],
+    entryComponents: [
+        BusinessDayCalendarDescriptionComponent
+    ]
 })
 export class MbsModule { }

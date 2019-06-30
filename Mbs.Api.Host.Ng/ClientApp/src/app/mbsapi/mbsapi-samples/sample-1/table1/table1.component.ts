@@ -26,7 +26,7 @@ export class Table1Component implements OnInit {
     public CurrencyCode = CurrencyCode; // added
     public expandedInstrument: Instrument; // added
     displayedColumns: string[] = ['type', 'symbol', 'name', 'isin', 'mic'];
-    // dataSource = euronextListShort;
+    dataSource = []; // euronextListShort;
 
     constructor(private element: ElementRef) {
     }

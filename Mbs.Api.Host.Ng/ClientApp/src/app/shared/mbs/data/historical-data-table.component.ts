@@ -1,7 +1,11 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatTableDataSource } from '@angular/material';
 import { TemporalEntityKind } from './entities/temporal-entity-kind.enum';
-import { HistoricalData, TemporalEntity } from './historical-data';
+import { HistoricalData } from './historical-data';
+import { Ohlcv } from './entities/ohlcv';
+import { Quote } from '@angular/compiler';
+import { Trade } from './entities/trade';
+import { Scalar } from './entities/scalar';
 
 @Component({
     selector: 'app-mbs-data-historical-data-table',
@@ -14,7 +18,7 @@ export class HistoricalDataTableComponent implements OnInit {
 
     name: string;
     moniker: string;
-    dataSource: MatTableDataSource<TemporalEntity> = new MatTableDataSource<TemporalEntity>();
+    dataSource: MatTableDataSource<Ohlcv | Quote | Trade | Scalar> = new MatTableDataSource<Ohlcv | Quote | Trade | Scalar>();
 
     ngOnInit() {
         this.dataSource.paginator = this.paginator;

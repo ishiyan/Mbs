@@ -1,21 +1,11 @@
-export interface TemporalEntity {
-    time: Date;
-    open?: number | undefined;
-    high?: number | undefined;
-    low?: number | undefined;
-    close?: number | undefined;
-    bidPrice?: number | undefined;
-    bidSize?: number | undefined;
-    askPrice?: number | undefined;
-    askSize?: number | undefined;
-    price?: number | undefined;
-    volume?: number | undefined;
-    value?: number | undefined;
-}
+import { Ohlcv } from './entities/ohlcv';
+import { Trade } from './entities/trade';
+import { Quote } from '@angular/compiler';
+import { Scalar } from './entities/scalar';
 
 export interface HistoricalData {
     isDataAdjusted?: boolean | undefined;
     name?: string | undefined;
     moniker?: string | undefined;
-    data: TemporalEntity[];
+    data: Ohlcv[] | Quote[] | Trade[] | Scalar[];
 }

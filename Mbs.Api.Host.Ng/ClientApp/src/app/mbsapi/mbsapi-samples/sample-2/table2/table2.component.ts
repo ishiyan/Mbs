@@ -14,6 +14,8 @@ export class Table2Component implements OnInit {
   readonly temporalEntityKinds = Object.keys(TemporalEntityKind);
   syntheticDataParameters: SyntheticDataParameters = new SyntheticDataParameters();
   historicalData: HistoricalData;
+  historicalDataName: string;
+  historicalDataMoniker: string;
 
   constructor(private element: ElementRef, private syntheticDataService: SyntheticDataService, private snackBarService: SnackBarService) {
   }
@@ -28,9 +30,11 @@ export class Table2Component implements OnInit {
       .subscribe({
         next: data => {
           this.historicalData = data;
+          this.historicalDataName = data.name;
+          this.historicalDataMoniker = data.moniker;
         },
         error: error => {
-          this.historicalData = null;
+          this.historicalData = undefined;
           this.snackBarService.add(error as string);
           console.error(error as string);
         }

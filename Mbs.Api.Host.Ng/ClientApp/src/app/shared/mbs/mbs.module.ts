@@ -24,35 +24,36 @@ import { SinusoidalParametersComponent } from './data/generators/sinusoidal/sinu
 import { SyntheticDataParametersComponent } from './data/generators/synthetic-data-parameters.component';
 import { SyntheticDataService } from './data/generators/synthetic-data.service';
 import { HistoricalDataTableComponent } from './data/historical-data-table.component';
+import { HistoricalDataDownloadComponent } from './data/historical-data-download.component';
 
 @NgModule({
-    imports: [
-        CommonModule,
-        RouterModule,
-        MaterialModule,
-        FlexLayoutModule,
-        FormsModule,
-        MathJaxModule
-    ],
-    exports: [
-        BusinessDayCalendarDescriptionComponent, TimeParametersComponent, WaveformParametersComponent,
-        OhlcvParametersComponent, QuoteParametersComponent, TradeParametersComponent,
-        FractionalBrownianMotionParametersComponent, GeometricBrownianMotionParametersComponent, ChirpParametersComponent,
-        SawtoothParametersComponent, SquareParametersComponent, SinusoidalParametersComponent, SyntheticDataParametersComponent,
-        HistoricalDataTableComponent
-    ],
-    declarations: [
-        BusinessDayCalendarDescriptionComponent, TimeParametersComponent, WaveformParametersComponent,
-        OhlcvParametersComponent, QuoteParametersComponent, TradeParametersComponent,
-        FractionalBrownianMotionParametersComponent, GeometricBrownianMotionParametersComponent, ChirpParametersComponent,
-        SawtoothParametersComponent, SquareParametersComponent, SinusoidalParametersComponent, SyntheticDataParametersComponent,
-        HistoricalDataTableComponent
-    ],
-    providers: [
-        SyntheticDataService
-    ],
-    entryComponents: [
-        BusinessDayCalendarDescriptionComponent
-    ]
+  imports: [
+    CommonModule,
+    RouterModule,
+    MaterialModule,
+    FlexLayoutModule,
+    FormsModule,
+    MathJaxModule
+  ],
+  exports: [
+    BusinessDayCalendarDescriptionComponent, TimeParametersComponent, WaveformParametersComponent,
+    OhlcvParametersComponent, QuoteParametersComponent, TradeParametersComponent,
+    FractionalBrownianMotionParametersComponent, GeometricBrownianMotionParametersComponent, ChirpParametersComponent,
+    SawtoothParametersComponent, SquareParametersComponent, SinusoidalParametersComponent, SyntheticDataParametersComponent,
+    HistoricalDataTableComponent, HistoricalDataDownloadComponent
+  ],
+  declarations: [
+    BusinessDayCalendarDescriptionComponent, TimeParametersComponent, WaveformParametersComponent,
+    OhlcvParametersComponent, QuoteParametersComponent, TradeParametersComponent,
+    FractionalBrownianMotionParametersComponent, GeometricBrownianMotionParametersComponent, ChirpParametersComponent,
+    SawtoothParametersComponent, SquareParametersComponent, SinusoidalParametersComponent, SyntheticDataParametersComponent,
+    HistoricalDataTableComponent, HistoricalDataDownloadComponent
+  ],
+  providers: [
+    SyntheticDataService
+  ],
+  entryComponents: [
+    BusinessDayCalendarDescriptionComponent
+  ]
 })
 export class MbsModule { }

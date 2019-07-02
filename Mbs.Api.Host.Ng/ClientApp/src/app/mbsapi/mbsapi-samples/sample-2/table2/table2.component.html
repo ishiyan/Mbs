@@ -20,7 +20,9 @@
     <mat-step>
         <ng-template matStepLabel><span class="multiline-label">Vi&#8203;ew</span></ng-template>
         <button mat-raised-button color="accent" (click)="generateData()" class="button">Generate data</button>
-        <app-mbs-data-historical-data-table [temporalEntityKind]="syntheticDataParameters.temporalEntityKind" [historicalData]="historicalData">
+        <div class="name" *ngIf="historicalData">{{historicalDataName}}</div>
+        <div class="moniker" *ngIf="historicalData">{{historicalDataMoniker}}</div>
+        <app-mbs-data-historical-data-table [historicalData]="historicalData" [enableDownload]="true" *ngIf="historicalData">
         </app-mbs-data-historical-data-table>
     </mat-step>
 </mat-horizontal-stepper>

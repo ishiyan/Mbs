@@ -17,7 +17,7 @@ import { sampleCountName, timeParametersName, waveformParametersName, chirpParam
 
 /** The input parameters for the synthetic data generation. */
 export class SyntheticDataParameters {
-    static readonly defaultSampleCount: number = 1024;
+    static readonly defaultSampleCount: number = 128;
     static readonly defaultTemporalEntityKind: TemporalEntityKind = TemporalEntityKind.Ohlcv;
     static readonly defaultSyntheticDataKind: SyntheticDataKind = SyntheticDataKind.FractionalBrownianMotion;
 

@@ -50,8 +50,9 @@ export class HistoricalDataDownloadComponent {
   selectedTimeFormat: string = this.timeFormats[0];
   selectedDecimalFormat = 0;
   canDownload = false;
-  descriptionAndHeaders = true;
-  byteOrderMark = false;
+  writeDescription = true;
+  writeHeader = false;
+  writeByteOrderMark = false;
   private datePipe = new DatePipe(this.locale);
   private decimalPipe = new DecimalPipe(this.locale);
 
@@ -61,7 +62,7 @@ export class HistoricalDataDownloadComponent {
     }
     const eol = '\r\n';
     const separator = ';';
-    const items = this.historicalData.data;
+    const items = this.currentHistoricalData.data;
     const headers = this.currentColumns;
     const timeFormat = this.selectedTimeFormat;
     const decimalFormat = this.decimalFormats[this.selectedDecimalFormat];
@@ -77,11 +78,13 @@ export class HistoricalDataDownloadComponent {
     };
 
     const csv = items.map(row => headers.map(fieldName => replacer(fieldName, row[fieldName])).join(separator));
-    if (this.descriptionAndHeaders) {
+    if (this.writeDescription) {
       const comment = '# ';
-      csv.unshift(comment + headers.join(separator));
-      csv.unshift(comment + this.historicalData.moniker);
-      csv.unshift(comment + this.historicalData.name);
+      csv.unshift(this.writeHeader ? headers.join(separator) : (comment + headers.join(separator)));
+      csv.unshift(comment + this.currentHistoricalData.moniker);
+      csv.unshift(comment + this.currentHistoricalData.name);
+    } else if (this.writeHeader) {
+      csv.unshift(headers.join(separator));
     }
     return csv.join(eol);
   }
@@ -90,9 +93,9 @@ export class HistoricalDataDownloadComponent {
     if (!this.canDownload) {
       return;
     }
-    const csv = this.byteOrderMark ? '\ufeff' + this.convertToCSV() : this.convertToCSV();
+    const csv = this.writeByteOrderMark ? '\ufeff' + this.convertToCSV() : this.convertToCSV();
     const blob = new Blob([csv], { 'type': 'text/csv;charset=utf8;' });
-    const filename = this.historicalData.name.replace(/ /g, '_') + '.csv';
+    const filename = this.currentHistoricalData.name.replace(/ /g, '_') + '.csv';
 
     if (navigator.msSaveBlob) {
       navigator.msSaveBlob(blob, filename);

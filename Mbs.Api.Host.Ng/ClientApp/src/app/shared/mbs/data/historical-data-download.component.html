@@ -19,10 +19,17 @@
   </mat-form-field>
   <mat-form-field class="short-field">
     <mat-label>Description</mat-label>
-    <mat-select [(value)]="descriptionAndHeaders">
+    <mat-select [(value)]="writeDescription">
       <mat-option [value]="true" selected>Yes</mat-option>
       <mat-option [value]="false">No</mat-option>
     </mat-select>
   </mat-form-field>
-  <button mat-raised-button color="accent" (click)="doDownload()" class="button" [disabled]="!canDownload">Download</button>
+  <mat-form-field class="short-field">
+      <mat-label>Header</mat-label>
+      <mat-select [(value)]="writeHeader">
+        <mat-option [value]="true">Yes</mat-option>
+        <mat-option [value]="false" selected>No</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button mat-raised-button color="accent" (click)="doDownload()" class="button" [disabled]="!canDownload">Download</button>
 </mat-expansion-panel>

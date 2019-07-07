@@ -1,7 +1,5 @@
-import { ConvertableToJSON } from '../convertable-to-json';
-
 /** A _trade_ (price and volume) entity. */
-export class Trade implements ConvertableToJSON {
+export class Trade {
   /** The date and time. */
   time: Date;
 
@@ -11,7 +9,7 @@ export class Trade implements ConvertableToJSON {
   /** The volume (quantity). */
   volume: number;
 
-  constructor(data?: Trade) {
+  constructor(data?: any) {
     if (data) {
       for (const property in data) {
         if (data.hasOwnProperty(property)) {

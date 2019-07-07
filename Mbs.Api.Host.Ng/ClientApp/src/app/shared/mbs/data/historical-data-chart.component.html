@@ -1,0 +1,12 @@
+<div #container class="container"></div>
+<div id="chart"></div>
+<mat-expansion-panel expanded="false">
+  <mat-expansion-panel-header>
+    <mat-panel-title>View</mat-panel-title>
+  </mat-expansion-panel-header>
+  <mat-slide-toggle class="slide-toggle" [(ngModel)]="viewCandlestick">Candlestick</mat-slide-toggle>
+  <mat-slide-toggle class="slide-toggle" [(ngModel)]="viewVolume">Volume</mat-slide-toggle>
+  <mat-slide-toggle class="slide-toggle" [(ngModel)]="viewCrosshair">Crosshair</mat-slide-toggle>
+  <mat-slide-toggle class="slide-toggle" [(ngModel)]="viewScalarAsPoint">Scalar points</mat-slide-toggle>
+  <mat-slide-toggle class="slide-toggle" [(ngModel)]="viewTradeAsPoint">Trade points</mat-slide-toggle>
+</mat-expansion-panel>

@@ -9,9 +9,9 @@ import { HistoricalData } from '../historical-data';
 import { SyntheticDataKind } from './synthetic-data-kind.enum';
 import { TemporalEntityKind } from '../entities/temporal-entity-kind.enum';
 
-const apiUrlPrefix = '/api/v1/data/generators/';
+// const apiUrlPrefix = '/api/v1/data/generators/';
 // const apiUrlPrefix = 'http://localhost:5000/api/v1/data/generators/';
-// const apiUrlPrefix = 'https://mbrane1.westeurope.cloudapp.azure.com/api/v1/data/generators/';
+const apiUrlPrefix = 'https://mbrane1.westeurope.cloudapp.azure.com/api/v1/data/generators/';
 const httpOptions = {
   headers: new HttpHeaders({
     'Content-Type': 'application/json' // , 'Authorization': 'my-auth-token'
@@ -63,6 +63,9 @@ export class SyntheticDataService {
       .pipe(
         retry(3), // retry a failed request up to 3 times
         map(hd => {
+          if (hd.data) {
+            hd.data.forEach(v => v['time'] = new Date(v['time']));
+          }
           hd.temporalEntityKind = parameters.temporalEntityKind;
           hd.timeGranularity = parameters.timeParameters.timeGranularity;
           return hd;

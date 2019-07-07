@@ -22,6 +22,7 @@
         <button mat-raised-button color="accent" (click)="generateData()" class="button">Generate data</button>
         <div class="name" *ngIf="historicalData">{{historicalDataName}}</div>
         <div class="moniker" *ngIf="historicalData">{{historicalDataMoniker}}</div>
+        <app-historical-data-chart [svgheight]=400 [historicalData]="historicalData" *ngIf="historicalData"></app-historical-data-chart>
         <app-mbs-data-historical-data-table [historicalData]="historicalData" [enableDownload]="true" *ngIf="historicalData">
         </app-mbs-data-historical-data-table>
     </mat-step>

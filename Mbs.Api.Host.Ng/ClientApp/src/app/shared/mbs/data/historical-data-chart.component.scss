@@ -1,0 +1,97 @@
+.container {
+  margin: 0px;
+  padding-top:0px;
+  padding-bottom:0px;
+  padding-left:8px;
+  padding-right:8px;
+  height: 1px;
+}
+
+.slide-toggle {
+  margin: 0;
+  margin-right: 16px;
+}
+
+:host ::ng-deep {
+  text {
+    fill: #000;
+  }
+
+  path.candle {
+    stroke: #000000;
+  }
+
+  path.candle.body {
+    stroke-width: 1px; // 0;
+  }
+
+  path.candle.up {
+    fill: white; // #00AA00;
+    // stroke: #00AA00;
+  }
+
+  path.candle.down {
+    fill: black; // #FF0000;
+    // stroke: #FF0000;
+  }
+
+  path.ohlc {
+    fill: #000000;
+    stroke: #000000;
+    stroke-width: 1px;
+  }
+
+  path.ohlc.up {
+    fill: #00AA00;
+    stroke: #00AA00;
+  }
+
+  path.ohlc.down {
+    fill: #FF0000;
+    stroke: #FF0000;
+  }
+
+  path.volume {
+    fill: #CDCDCD;
+  }
+
+  path.point {
+    fill: white;
+    stroke: #000000;
+    stroke-width: 1.5px;
+  }
+
+  path.line {////////////////////
+    fill: none;
+    stroke: rgb(126, 127, 128);
+    stroke-width: 1;
+  }
+
+  path.area {
+    fill: #CDCDCD;
+  }
+
+  .extent {
+    stroke: #fff;
+    fill-opacity: .125;
+    shape-rendering: crispEdges;
+  }
+
+  .coords {
+    font: 10px sans-serif;
+  }
+
+  .crosshair {
+    cursor: crosshair;
+    font: 10px sans-serif;
+  }
+
+  .crosshair path.wire {
+    stroke: #DDDDDD;
+    stroke-dasharray: 1, 1;
+  }
+
+  .crosshair .axisannotation path {
+    fill: #DDDDDD;
+  }
+}

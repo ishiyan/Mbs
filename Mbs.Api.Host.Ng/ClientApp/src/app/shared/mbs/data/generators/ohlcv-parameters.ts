@@ -2,8 +2,8 @@ import { objectName, candlestickShadowFractionName, candlestickBodyFractionName,
 
  /** The ohlcv input parameters for the waveform generators. */
 export class OhlcvParameters {
-    private static readonly defaultCandlestickShadowFraction: number = 0.3;
-    private static readonly defaultCandlestickBodyFraction: number = 0.2;
+    private static readonly defaultCandlestickShadowFraction: number = 0.03;
+    private static readonly defaultCandlestickBodyFraction: number = 0.01;
     private static readonly defaultVolume: number = 100;
 
     /** The shadow fraction, ρs, which determines the length of the candlestick shadows as a fraction of the mid price; ρs∈[0, 1].

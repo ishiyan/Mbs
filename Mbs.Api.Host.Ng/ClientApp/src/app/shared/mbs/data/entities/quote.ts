@@ -1,7 +1,5 @@
-import { ConvertableToJSON } from '../convertable-to-json';
-
 /** A price _quote_ (bid/ask price and size pair). */
-export class Quote implements ConvertableToJSON {
+export class Quote {
   /** The date and time. */
   time: Date;
 
@@ -17,7 +15,7 @@ export class Quote implements ConvertableToJSON {
   /** The ask size. */
   askSize: number;
 
-  constructor(data?: Quote) {
+  constructor(data?: any) {
     if (data) {
       for (const property in data) {
         if (data.hasOwnProperty(property)) {

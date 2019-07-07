@@ -1,14 +1,12 @@
-import { ConvertableToJSON } from '../convertable-to-json';
-
 /** A _scalar_ (value and time) entity. */
-export class Scalar implements ConvertableToJSON {
+export class Scalar {
   /** The date and time. */
   time: Date;
 
   /** The value. */
   value: number;
 
-  constructor(data?: Scalar) {
+  constructor(data?: any) {
     if (data) {
       for (const property in data) {
         if (data.hasOwnProperty(property)) {

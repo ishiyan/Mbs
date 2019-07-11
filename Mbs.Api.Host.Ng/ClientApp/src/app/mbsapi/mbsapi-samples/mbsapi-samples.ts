@@ -2,9 +2,9 @@ import { MbsApiSample } from './mbsapi-sample';
 
 export const samples: MbsApiSample[] = [
     {
-        name: 'Sample 1', route: 'sample-1'
+        name: 'Synthetic data', route: 'synthetic-data'
     },
     {
-        name: 'Sample 2', route: 'sample-2'
+        name: 'Sample 1', route: 'sample-1'
     }
 ];

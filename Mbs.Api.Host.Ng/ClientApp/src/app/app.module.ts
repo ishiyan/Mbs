@@ -6,6 +6,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
+import { ThemePickerModule } from './shared/theme-picker/theme-picker.module';
 import { MaterialModule } from './shared/material/material.module';
 import { MathJaxModule } from './shared/math-jax/math-jax.module';
 import { ToolbarModule } from './shared/toolbar/toolbar.module';
@@ -15,14 +16,15 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 @NgModule({
-    declarations: [
-        AppComponent
-    ],
-    imports: [
-        BrowserModule, BrowserAnimationsModule, HttpClientModule, FormsModule, FlexLayoutModule,
-        AppRoutingModule, MaterialModule, ToolbarModule, SnackBarModule, MbsModule, MathJaxModule
-    ],
-    providers: [],
-    bootstrap: [AppComponent]
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule, BrowserAnimationsModule, HttpClientModule, FormsModule, FlexLayoutModule,
+    AppRoutingModule, MaterialModule, ToolbarModule, SnackBarModule, MbsModule, MathJaxModule,
+    ThemePickerModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
 })
 export class AppModule { }

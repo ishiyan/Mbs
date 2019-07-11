@@ -2,14 +2,14 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { MbsApiComponent } from './mbsapi.component';
+import { SyntheticDataComponent } from './mbsapi-samples/synthetic-data/synthetic-data.component';
 import { Sample1Component } from './mbsapi-samples/sample-1/sample-1.component';
-import { Sample2Component } from './mbsapi-samples/sample-2/sample-2.component';
 
 const routes: Routes = [
     { path: '', component: MbsApiComponent, children: [
-        { path: '', component: Sample1Component },
+        { path: 'synthetic-data', component: SyntheticDataComponent },
         { path: 'sample-1', component: Sample1Component },
-        { path: 'sample-2', component: Sample2Component }
+        { path: '', component: SyntheticDataComponent }
     ]},
     { path: '**', redirectTo: '' }
 ];

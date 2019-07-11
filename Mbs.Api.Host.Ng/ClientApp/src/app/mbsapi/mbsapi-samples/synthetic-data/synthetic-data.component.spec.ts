@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Table2Component } from './table2.component';
+import { SyntheticDataComponent } from './synthetic-data.component';
 
 describe('Table2Component', () => {
-  let component: Table2Component;
-  let fixture: ComponentFixture<Table2Component>;
+  let component: SyntheticDataComponent;
+  let fixture: ComponentFixture<SyntheticDataComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ Table2Component ]
+      declarations: [ SyntheticDataComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(Table2Component);
+    fixture = TestBed.createComponent(SyntheticDataComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

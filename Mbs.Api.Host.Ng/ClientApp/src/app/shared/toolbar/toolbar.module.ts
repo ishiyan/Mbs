@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
 import { MaterialModule } from '../material/material.module';
+import { ThemePickerModule } from '../theme-picker/theme-picker.module';
 import { ToolbarComponent } from './toolbar.component';
 
 @NgModule({
@@ -13,7 +14,8 @@ import { ToolbarComponent } from './toolbar.component';
         RouterModule,
         MaterialModule,
         FlexLayoutModule,
-        FormsModule
+        FormsModule,
+        ThemePickerModule
     ],
     exports: [
         ToolbarComponent

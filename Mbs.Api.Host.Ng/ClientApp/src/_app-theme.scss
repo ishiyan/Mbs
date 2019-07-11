@@ -1,0 +1,16 @@
+@import '../node_modules/@angular/material/theming';
+
+@import 'app/shared/toolbar/toolbar-theme';
+@import 'app/shared/footer/footer-theme';
+
+@mixin material-app-theme($theme) {
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $warn: map-get($theme, warn);
+  $background: map-get($theme, background);
+  $foreground: map-get($theme, foreground);
+  $next-theme: mat-palette($mat-red);
+
+  @include toolbar-theme($theme);
+  @include footer-theme($theme);
+}

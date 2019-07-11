@@ -12,8 +12,8 @@ export class AppComponent {
 
     // {route-id, text} pairs
     public toolbarItems: any = {
-        ['tex']: 'TeX',
+        ['mbsapi']: 'Mbs',
         ['d3']: 'D3',
-        ['mbsapi']: 'MbsApi'
+        ['tex']: 'TeX'
     };
 }

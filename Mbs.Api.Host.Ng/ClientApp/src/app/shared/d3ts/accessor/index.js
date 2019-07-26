@@ -9,6 +9,7 @@ module.exports = function() {
     value: require('./value'),
     volume: require('./volume'),
     tick: require('./tick'),
+    quote: require('./quote'),
     trade: require('./trade'),
     supstance: require('./supstance')
   };

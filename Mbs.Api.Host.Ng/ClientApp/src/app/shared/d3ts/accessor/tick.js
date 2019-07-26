@@ -2,9 +2,9 @@
 
 module.exports = function() {
   var time = function(d) { return d.time; },
-      high = function(d) { return d.high; },
-      low = function(d) { return d.low; },
-      spread = function(d) { return d.spread; };
+      high = function(d) { return d.askPrice; }, // d.high
+      low = function(d) { return d.bidPrice; }, // d.low
+      spread = function(d) { return (d.askPrice - d.bidPrice)/2; }; // d.spread
 
   function accessor(d) {
     bind();

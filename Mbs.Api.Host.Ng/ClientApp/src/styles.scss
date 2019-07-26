@@ -1,24 +1,16 @@
-//@import 'https://fonts.googleapis.com/icon?family=Material+Icons';
-//@import 'https://fonts.googleapis.com/icon?family=Roboto';
-//@import 'https://fonts.googleapis.com/icon?family=Material+Icons';
-//@import 'https://fonts.googleapis.com/css?family=Roboto:300,400,500|Roboto+Mono:300';
-
-//@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
-//@import '~@angular/material/prebuilt-themes/indigo-pink';
-
 @import '~@angular/material/theming';
-@import './app-theme';
+@import './app_components_theme';
 
 // Include material core styles.
 @include mat-core();
 
-// Define the light theme.
+// Define the initial theme.
 $primary: mat-palette($mat-indigo);
 $accent:  mat-palette($mat-pink, A200, A100, A400);
 
 $theme: mat-light-theme($primary, $accent);
 @include angular-material-theme($theme);
-@include material-app-theme($theme);
+@include app_components_theme($theme);
 
 body {
  font-family: Roboto;

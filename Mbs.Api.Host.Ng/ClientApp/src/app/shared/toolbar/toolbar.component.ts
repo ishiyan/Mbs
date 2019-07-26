@@ -18,7 +18,7 @@ export class ToolbarComponent {
             'mbrane',
             sanitizer.bypassSecurityTrustResourceUrl('assets/img/mbrane-top.svg'));
       }
-    
+
     @Input() public set toolbarItems(input: any) {
         this.map = input;
         this.mapKeys = Object.keys(input);

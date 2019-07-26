@@ -1,3 +1,7 @@
+#Save to PNG
+https://stackoverflow.com/questions/36303964/save-d3-chart-as-image
+http://bl.ocks.org/Rokotyan/0556f8facbaf344507cdc45dc3622177
+
 #Misc
 https://github.com/manfredsteyer/angular-oauth2-oidc
 https://manfredsteyer.github.io/angular-oauth2-oidc/docs/additional-documentation/callback-after-login.html

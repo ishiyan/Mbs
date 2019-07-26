@@ -29,10 +29,10 @@ module.exports = function(d3_scale_linear, d3_extent, accessor_trade, plot, plot
       return function(d) {
         var price = accessor.p(d);
         if (isNaN(price)) return null;
-        var zero = 0; //y(0),
+        var zero = 0, // y(0),
           cy = y(price) - zero,
           cx = x(accessor.t(d)) - width/2,
-          r = 3.5;
+          r = 1.5;
 
         return 'M ' + (cx - r) + ',' + cy +
           ' a ' + r + ','  + r + ' 0 1,0 ' + r * 2 + ',0 a ' + r + ','  + r + ' 0 1,0 -' + r * 2 + ',0';

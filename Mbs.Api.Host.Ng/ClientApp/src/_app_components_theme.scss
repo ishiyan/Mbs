@@ -2,8 +2,10 @@
 
 @import 'app/shared/toolbar/toolbar-theme';
 @import 'app/shared/footer/footer-theme';
+@import 'app/shared/mbs/data/historical-data-chart-theme';
 
-@mixin material-app-theme($theme) {
+
+@mixin app_components_theme($theme) {
   $primary: map-get($theme, primary);
   $accent: map-get($theme, accent);
   $warn: map-get($theme, warn);
@@ -13,4 +15,5 @@
 
   @include toolbar-theme($theme);
   @include footer-theme($theme);
+  @include historical-data-chart-theme($theme);
 }

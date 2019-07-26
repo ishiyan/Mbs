@@ -14,7 +14,7 @@
     /// Only the following countries are included:
     /// </para>
     /// <para>
-    /// Austria, Belgium, Canada, Denmark, Finland, France, Germany, Iceland, Italy, Luxembourg, Norway, Portugal, Spain, Sweden, Switzerland, Netherlands, UnitedKingdom, UnitedStates, NoCountry.
+    /// Austria, Belgium, Canada, Denmark, Finland, France, Germany, Iceland, Italy, Ireland, Luxembourg, Norway, Portugal, Spain, Sweden, Switzerland, Netherlands, UnitedKingdom, UnitedStates, NoCountry.
     /// </para>
     /// </remarks>
     public enum EuronextMic
@@ -22,13 +22,13 @@
         /// <summary>EURONEXT - EURONEXT BRUSSELS</summary>
         Xbru,
 
-        /// <summary>EURONEXT GROWTH BRUSSELS</summary>
+        /// <summary>EURONEXT - ALTERNEXT BRUSSELS</summary>
         Alxb,
 
         /// <summary>EURONEXT - EASY NEXT</summary>
         Enxb,
 
-        /// <summary>EURONEXT ACCESS BRUSSELS</summary>
+        /// <summary>EURONEXT - MARCHE LIBRE BRUSSELS</summary>
         Mlxb,
 
         /// <summary>EURONEXT - TRADING FACILITY BRUSSELS</summary>
@@ -43,13 +43,13 @@
         /// <summary>EURONEXT - EURONEXT PARIS</summary>
         Xpar,
 
-        /// <summary>EURONEXT GROWTH PARIS</summary>
+        /// <summary>EURONEXT - ALTERNEXT PARIS</summary>
         Alxp,
 
         /// <summary>EURONEXT PARIS MATIF</summary>
         Xmat,
 
-        /// <summary>EURONEXT ACCESS PARIS</summary>
+        /// <summary>EURONEXT - MARCHE LIBRE PARIS</summary>
         Xmli,
 
         /// <summary>EURONEXT PARIS MONEP</summary>
@@ -61,10 +61,10 @@
         /// <summary>EURONEXT - EURONEXT LISBON</summary>
         Xlis,
 
-        /// <summary>EURONEXT GROWTH LISBON</summary>
+        /// <summary>EURONEXT - ALTERNEXT LISBON</summary>
         Alxl,
 
-        /// <summary>EURONEXT ACCESS LISBON</summary>
+        /// <summary>EURONEXT - EASYNEXT LISBON</summary>
         Enxl,
 
         /// <summary>EURONEXT - MERCADO DE FUTUROS E OPÇÕES</summary>
@@ -75,7 +75,8 @@
 
         /// <summary>EURONEXT - EURONEXT AMSTERDAM</summary>
         Xams,
-
+        /// <summary>EURONEXT - ALTERNEXT AMSTERDAM</summary>
+        Alxa,
         /// <summary>EURONEXT - TRADED BUT NOT LISTED AMSTERDAM</summary>
         Tnla,
 

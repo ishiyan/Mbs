@@ -45,6 +45,18 @@ export class ThemePickerComponent implements OnInit, OnDestroy {
       name: 'purple-green',
       isDark: true,
     },
+    {
+      primary: '#ffeb3b',
+      accent: '#FFC107',
+      name: 'yellow-amber',
+      isDark: true,
+    },
+    {
+      primary: '#795548',
+      accent: '#4caf50',
+      name: 'brown-green',
+      isDark: true,
+    },
   ];
 
   constructor(

@@ -4,7 +4,7 @@ import { objectName, waveformSamplesName, offsetSamplesName, repetitionsCountNam
 
 /** The waveform input parameters for the generators. */
 export class WaveformParameters {
-    private static readonly defaultWaveformSamples: number = 128;
+    private static readonly defaultWaveformSamples: number = 512;
     private static readonly defaultOffsetSamples: number = 0;
     private static readonly defaultRepetitionsCount: number = 0;
     private static readonly defaultNoiseAmplitudeFraction: number = 0.01;

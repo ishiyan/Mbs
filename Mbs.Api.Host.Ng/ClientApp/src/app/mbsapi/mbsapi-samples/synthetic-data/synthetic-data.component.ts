@@ -15,7 +15,6 @@ export class SyntheticDataComponent implements OnInit {
   syntheticDataParameters: SyntheticDataParameters = new SyntheticDataParameters();
   historicalData: HistoricalData;
   historicalDataName: string;
-  historicalDataMoniker: string;
 
   constructor(private element: ElementRef, private syntheticDataService: SyntheticDataService, private snackBarService: SnackBarService) {
   }
@@ -31,7 +30,6 @@ export class SyntheticDataComponent implements OnInit {
         next: data => {
           this.historicalData = data;
           this.historicalDataName = data.name;
-          this.historicalDataMoniker = data.moniker;
         },
         error: error => {
           this.historicalData = undefined;

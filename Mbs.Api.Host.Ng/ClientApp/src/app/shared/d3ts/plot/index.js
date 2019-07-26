@@ -1,27 +1,30 @@
 'use strict';
 
-module.exports = function(d3) {
+module.exports = function (d3) {
   var scale = require('../scale')(d3),
-      accessor = require('../accessor')(),
-      plot = require('./plot')(d3.line, d3.area, d3.curveMonotoneX, d3.select),
-      d3_functor = require('../util')().functor,
-      plotMixin = require('./plotmixin')(d3.scaleLinear, d3_functor, scale.financetime, plot.dataSelector, plot.barWidth),
-      candlestick = require('./candlestick')(d3.scaleLinear, d3.extent, accessor.ohlc, plot, plotMixin),
-      line = require('./line'),
-      area = require('./area'),
-      axisannotation = require('./axisannotation')(d3.axisTop, d3.scaleLinear, accessor.value, plot, plotMixin),
-      svg = require('../svg')(d3);
+    accessor = require('../accessor')(),
+    plot = require('./plot')(d3.line, d3.area, d3.curveMonotoneX, d3.select),
+    d3_functor = require('../util')().functor,
+    plotMixin = require('./plotmixin')(d3.scaleLinear, d3_functor, scale.financetime, plot.dataSelector, plot.barWidth),
+    candlestick = require('./candlestick')(d3.scaleLinear, d3.extent, accessor.ohlc, plot, plotMixin),
+    line = require('./line'),
+    area = require('./area'),
+    axisannotation = require('./axisannotation')(d3.axisTop, d3.scaleLinear, accessor.value, plot, plotMixin),
+    svg = require('../svg')(d3);
 
   function d3_event() {
     return d3.event;
   }
-      
+
   return {
     // area: area,
     ohlcarea: area(accessor.ohlc, plot, plotMixin),
     valuearea: area(accessor.value, plot, plotMixin),
     tradearea: area(accessor.trade, plot, plotMixin),
+    quotearea: area(accessor.quote, plot, plotMixin),
     axisannotation: axisannotation,
+    quotepoint: require('./quotepoint')(d3.scaleLinear, d3.extent, accessor.quote, plot, plotMixin),
+    quotebar: require('./quotebar')(d3.scaleLinear, d3.extent, accessor.quote, plot, plotMixin),
     candlestick: candlestick,
     tradepoint: require('./tradepoint')(d3.scaleLinear, d3.extent, accessor.trade, plot, plotMixin),
     valuepoint: require('./valuepoint')(d3.scaleLinear, d3.extent, accessor.value, plot, plotMixin),

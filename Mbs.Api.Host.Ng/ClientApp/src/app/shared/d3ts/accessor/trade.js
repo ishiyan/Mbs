@@ -3,7 +3,7 @@
 module.exports = function() {
   var time = function(d) { return d.time; },
       type = function(d) { return d.type; },
-      price = function(d) { return d.price; };
+      price = function(d) { return d.price; },
       volume = function(d) { return d.volume; };
 
   function accessor(d) {
@@ -39,7 +39,7 @@ module.exports = function() {
   };
 
   function bind() {
-    accessor.t = date;
+    accessor.t = time;
     accessor.typ = type;
     accessor.p = price;
     accessor.v = volume;

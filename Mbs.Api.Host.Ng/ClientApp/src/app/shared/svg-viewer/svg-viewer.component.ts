@@ -8,7 +8,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class SvgViewerComponent implements OnInit {
     @Input() src: string;
-    @Input() scaleToContainer: boolean;
+    @Input() scaleToContainer = false;
 
     constructor(private elementRef: ElementRef, private httpClient: HttpClient) { }
 
@@ -28,9 +28,7 @@ export class SvgViewerComponent implements OnInit {
     }
 
     private fetchAndInlineSvgContent(path: string): void {
-        const svgAbsPath = path.slice(path.indexOf('assets/') - 1);
-
-        this.httpClient.get(svgAbsPath, { responseType: 'text' }).subscribe(svgResponse => {
+        this.httpClient.get(path, { responseType: 'text' }).subscribe(svgResponse => {
             this.inlineSvgContent(svgResponse);
         });
     }

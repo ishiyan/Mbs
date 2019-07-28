@@ -4,6 +4,8 @@
             Chirp parameters
         </mat-panel-title>
     </mat-expansion-panel-header>
+    <div style="width:300px;height:auto;margin:0;padding:0"><app-svg-viewer src="assets/img/mb-chirp.svg" scaleToContainer="true" [ngClass]="!chirpParameters.isBiDirectional? 'shown' : 'hidden'"></app-svg-viewer></div>
+    <div style="width:300px;height:auto;margin:0;padding:0"><app-svg-viewer src="assets/img/mb-chirp-bidirectional.svg" scaleToContainer="true" [ngClass]="chirpParameters.isBiDirectional ? 'shown' : 'hidden'"></app-svg-viewer></div>
     <div>
         <span [appMathJax]="eq1">{{eq1}}</span>
         <span [appMathJax]="eq2">{{eq2}}</span>

@@ -6,6 +6,7 @@ import { RouterModule } from '@angular/router';
 
 import { MathJaxModule } from '../math-jax/math-jax.module';
 import { MaterialModule } from '../material/material.module';
+import { SvgViewerModule } from '../svg-viewer/svg-viewer.module';
 
 import { BusinessDayCalendarDescriptionComponent } from './time/business-day-calendar-description.component';
 import { TimeParametersComponent } from './data/generators/time-parameters.component';
@@ -34,7 +35,8 @@ import { HistoricalDataChartComponent } from './data/historical-data-chart.compo
     MaterialModule,
     FlexLayoutModule,
     FormsModule,
-    MathJaxModule
+    MathJaxModule,
+    SvgViewerModule
   ],
   exports: [
     BusinessDayCalendarDescriptionComponent, TimeParametersComponent, WaveformParametersComponent,

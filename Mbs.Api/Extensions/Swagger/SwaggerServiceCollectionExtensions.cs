@@ -50,8 +50,8 @@ namespace Mbs.Api.Extensions
                 options.UseReferencedDefinitionsForEnums();
                 options.ExampleFilters();
 
-                // options.OrderActionsBy((apiDesc) => $"{apiDesc.RelativePath}_{apiDesc.HttpMethod}");
-                options.TagActionsBy(p => new List<string> { p.GroupName });
+                options.OrderActionsBy((apiDesc) => $"{apiDesc.RelativePath}_{apiDesc.HttpMethod}");
+                /* options.TagActionsBy(p => new List<string> { p.GroupName }); */
 
                 var basePath = AppContext.BaseDirectory;
                 options.IncludeXmlComments(CombinePath(basePath, "Mbs"));

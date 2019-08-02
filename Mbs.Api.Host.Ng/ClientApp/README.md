@@ -1,3 +1,24 @@
+#Azure
+https://mbrane.visualstudio.com/IvanShiyan/_build?definitionId=10&_a=summary
+https://portal.azure.com/#@ivanshiyanalex.onmicrosoft.com/dashboard/private/5441bbe8-b3a7-4a41-a3b3-2932b0798271
+
+#Material colors
+https://material.io/tools/color/#!/?view.left=0&view.right=0&primary.color=3F51B5&secondary.color=9E9E9E
+
+#Material icons
+https://material.io/tools/icons/?search=fill&icon=remove_red_eye&style=baseline
+https://materialdesignicons.com/
+
+#D3
+https://github.com/glouwa/d3-hypertree/tree/master/src
+https://bl.ocks.org/mbostock/3035090
+
+#hexagons
+https://www.redblobgames.com/grids/hexagons/
+https://github.com/d3/d3-plugins/blob/master/hexbin/hexbin.js
+https://www.visualcinnamon.com/2013/07/self-organizing-maps-creating-hexagonal.html
+https://www.superdatascience.com/blogs/the-ultimate-guide-to-self-organizing-maps-soms
+
 #Save to PNG
 https://stackoverflow.com/questions/36303964/save-d3-chart-as-image
 http://bl.ocks.org/Rokotyan/0556f8facbaf344507cdc45dc3622177

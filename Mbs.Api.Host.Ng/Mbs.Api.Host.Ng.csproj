@@ -89,10 +89,10 @@
 
   <Target Name="CopyMathJax" BeforeTargets="BeforeBuild" AfterTargets="NpmInstall" Condition="!Exists('$(MathJaxAssets)/MathJax.js')">
     <Message Text="------ Started removing mathjax assets ------" Importance="high" />
-    <RemoveDir Directories="$(MathJaxAssets)" ContinueOnError="true" />
+    <!-- RemoveDir Directories="$(MathJaxAssets)" ContinueOnError="true" / -->
     <Message Text="------ Finished removing mathjax assets ------" Importance="high" />
     <Message Text="------ Started copying mathjax assets ------" Importance="high" />
-    <ItemGroup>
+    <!-- ItemGroup>
       <MathJaxFiles Include="$(MathJax)/MathJax.js" />
       <MathJaxConfigFiles Include="$(MathJax)/config/**/*" />
       <MathJaxExtensionsFiles Include="$(MathJax)/extensions/**/*" />
@@ -105,7 +105,7 @@
     <Copy SourceFiles="@(MathJaxExtensionsFiles)" DestinationFolder="$(MathJaxAssets)/extensions/%(RecursiveDir)" />
     <Copy SourceFiles="@(MathJaxJaxFiles)" DestinationFolder="$(MathJaxAssets)/jax/%(RecursiveDir)" />
     <Copy SourceFiles="@(MathJaxLocalizationFiles)" DestinationFolder="$(MathJaxAssets)/localization/%(RecursiveDir)" />
-    <Copy SourceFiles="@(MathJaxFontsFiles)" DestinationFolder="$(MathJaxAssets)/fonts/%(RecursiveDir)" />
+    <Copy SourceFiles="@(MathJaxFontsFiles)" DestinationFolder="$(MathJaxAssets)/fonts/%(RecursiveDir)" / -->
     <Message Text="------ Finished copying mathjax assets ------" Importance="high" />
   </Target>
 

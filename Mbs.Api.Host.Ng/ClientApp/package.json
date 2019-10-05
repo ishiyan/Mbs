@@ -40,7 +40,7 @@
     "@types/d3": "^5.7.2",
     "@types/hammerjs": "^2.0.36",
     "@types/mathjax": "0.0.35",
-    "@types/node": "~12.7.8",
+    "@types/node": "~12.7.11",
     "codelyzer": "^5.1.2",
     "jasmine-core": "~3.5.0",
     "jasmine-spec-reporter": "~4.2.1",

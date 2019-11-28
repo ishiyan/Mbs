@@ -30,7 +30,6 @@ RUN dotnet publish -c release -f netcoreapp3.0 -o published --self-contained fal
 
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.0-alpine AS runtime
 
-RUN apk cache clean
 ENV NET_CLI_TELEMETRY_OPTOUT 1
 WORKDIR /root/  
 COPY --from=builder /root/src/app/netcoreapp/Mbs.Api.Host.Ng/published .

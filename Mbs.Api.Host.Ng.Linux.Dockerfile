@@ -1,11 +1,17 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:3.0-alpine as builder  
+FROM mcr.microsoft.com/dotnet/core/sdk:3.0 as builder  
  
 ENV NET_CLI_TELEMETRY_OPTOUT 1
 RUN mkdir -p /root/src/app/netcoreapp
 WORKDIR /root/src/app/netcoreapp
 
 # set up node
-RUN apk add nodejs npm
+ENV NODE_VERSION 10.9.0
+ENV NODE_DOWNLOAD_SHA d061760884e4705adfc858eb669c44eb66cd57e8cdf6d5d57a190e76723af416
+RUN curl -SL "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.gz" --output nodejs.tar.gz \
+    && echo "$NODE_DOWNLOAD_SHA nodejs.tar.gz" | sha256sum -c - \
+    && tar -xzf "nodejs.tar.gz" -C /usr/local --strip-components=1 \
+    && rm nodejs.tar.gz \
+    && ln -s /usr/local/bin/node /usr/local/bin/nodejs
 
 # copy just the project file over
 # this prevents additional extraneous restores
@@ -28,9 +34,8 @@ WORKDIR /root/src/app/netcoreapp/Mbs.Api.Host.Ng
 RUN dotnet publish -c release -f netcoreapp3.0 -o published --self-contained false
 
 
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.0-alpine AS runtime
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.0 AS runtime
 
-RUN apk cache clean
 ENV NET_CLI_TELEMETRY_OPTOUT 1
 WORKDIR /root/  
 COPY --from=builder /root/src/app/netcoreapp/Mbs.Api.Host.Ng/published .

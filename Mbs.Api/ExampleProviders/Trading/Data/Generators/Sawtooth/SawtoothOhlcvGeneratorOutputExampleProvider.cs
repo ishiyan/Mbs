@@ -6,7 +6,7 @@ using Swashbuckle.AspNetCore.Filters;
 namespace Mbs.Api.ExampleProviders.Trading.Data.Generators.Sawtooth
 {
     /// <inheritdoc />
-    internal class SawtoothOhlcvGeneratorOutputExampleProvider : IExamplesProvider
+    internal class SawtoothOhlcvGeneratorOutputExampleProvider : IExamplesProvider<SyntheticDataGeneratorOutput<Ohlcv>>
     {
         internal const string Name = SawtoothOhlcvGenerator.WaveformName;
         internal const string Moniker = "100∙sawtooth(128, linear) + 10 + noise(ρn=0.01), v=100, ρb=0.2, ρs=0.3";
@@ -22,7 +22,7 @@ namespace Mbs.Api.ExampleProviders.Trading.Data.Generators.Sawtooth
         internal const double Close2 = 13.01;
 
         /// <inheritdoc />
-        public object GetExamples()
+        public SyntheticDataGeneratorOutput<Ohlcv> GetExamples()
         {
             return new SyntheticDataGeneratorOutput<Ohlcv>
             {

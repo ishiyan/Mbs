@@ -118,32 +118,24 @@ namespace Mbs.Trading.Data.Generators.Sawtooth
 
         private double CalculateRatio(SawtoothShape sawtoothShape)
         {
-            switch (Shape)
+            return Shape switch
             {
-                case SawtoothShape.Linear:
-                    return SampleAmplitude / lengthMinusOne;
-                case SawtoothShape.Quadratic:
-                    return SampleAmplitude / (lengthMinusOne * lengthMinusOne);
-                case SawtoothShape.Logarithmic:
-                    return sampleMaximum / SampleMinimum;
-                default:
-                    throw new ArgumentException($"Unknown sawtooth shape ${sawtoothShape}", nameof(sawtoothShape));
-            }
+                SawtoothShape.Linear => (SampleAmplitude / lengthMinusOne),
+                SawtoothShape.Quadratic => (SampleAmplitude / (lengthMinusOne * lengthMinusOne)),
+                SawtoothShape.Logarithmic => (sampleMaximum / SampleMinimum),
+                _ => throw new ArgumentException($"Unknown sawtooth shape ${sawtoothShape}", nameof(sawtoothShape))
+            };
         }
 
         private static string ShapeName(SawtoothShape sawtoothShape)
         {
-            switch (sawtoothShape)
+            return sawtoothShape switch
             {
-                case SawtoothShape.Linear:
-                    return "linear";
-                case SawtoothShape.Quadratic:
-                    return "quadratic";
-                case SawtoothShape.Logarithmic:
-                    return "logarithmic";
-                default:
-                    throw new ArgumentException($"Unknown sawtooth shape ${sawtoothShape}", nameof(sawtoothShape));
-            }
+                SawtoothShape.Linear => "linear",
+                SawtoothShape.Quadratic => "quadratic",
+                SawtoothShape.Logarithmic => "logarithmic",
+                _ => throw new ArgumentException($"Unknown sawtooth shape ${sawtoothShape}", nameof(sawtoothShape))
+            };
         }
 
         private void Initialize()

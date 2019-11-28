@@ -6,7 +6,7 @@ using Swashbuckle.AspNetCore.Filters;
 namespace Mbs.Api.ExampleProviders.Trading.Data.Generators.Chirp
 {
     /// <inheritdoc />
-    internal class ChirpTradeGeneratorOutputExampleProvider : IExamplesProvider
+    internal class ChirpTradeGeneratorOutputExampleProvider : IExamplesProvider<SyntheticDataGeneratorOutput<Trade>>
     {
         internal const string Name = ChirpTradeGenerator.WaveformName;
         internal const string Moniker = "100∙chirp(128 ➜ 16, 128, linear period) + 10 + noise(ρn=0.01), v=100";
@@ -15,7 +15,7 @@ namespace Mbs.Api.ExampleProviders.Trading.Data.Generators.Chirp
         internal const double Price2 = 210.63;
 
         /// <inheritdoc />
-        public object GetExamples()
+        public SyntheticDataGeneratorOutput<Trade> GetExamples()
         {
             return new SyntheticDataGeneratorOutput<Trade>
             {

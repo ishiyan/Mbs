@@ -50,7 +50,7 @@ namespace Mbs.Trading.Data.Historical
                 HttpResponseMessage response;
                 try
                 {
-                    var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+                    using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
                     cts.CancelAfter(timeoutMilliseconds);
                     response = await base.SendAsync(request, cts.Token);
                     if (response.IsSuccessStatusCode)

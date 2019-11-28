@@ -10,11 +10,11 @@ set msbuild=C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuil
 rem /fileLoggerParameters:NoItemAndPropertyList;{Summary|NoSummary};Verbosity={quiet|minimal|normal|detailed|diagnostic}
 set msbuildOptions=/t:Rebuild /noconlog /nologo /maxcpucount /fl /m /fileLoggerParameters:Summary;Verbosity=minimal;Append;Encoding=UTF-8;LogFile=
 
-set logfile=01.build.AnyCPU_Release.log
+set logfile=01.build.x64_Release.log
 if exist %logfile% (
  del %logfile%
 )
 echo ================================================================================================================ >"%logfile%"
-echo AnyCPU Release build>>"%logfile%"
+echo x64 Release build>>"%logfile%"
 echo ================================================================================================================>>"%logfile%"
-call "%msbuild%" %solution% %msbuildOptions%%logfile% /property:Configuration=Release /property:Platform="Any CPU"
+call "%msbuild%" %solution% %msbuildOptions%%logfile% /property:Configuration=Release /property:Platform="x64"

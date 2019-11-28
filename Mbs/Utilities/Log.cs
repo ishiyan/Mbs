@@ -2,6 +2,7 @@
 using System.Globalization;
 using Microsoft.Extensions.Logging;
 
+// ReSharper disable once CheckNamespace
 namespace Mbs
 {
     /// <summary>
@@ -10,6 +11,26 @@ namespace Mbs
     public static class Log
     {
         private static ILogger logger;
+        private static ILoggerFactory loggerFactory;
+
+        /// <summary>
+        /// Creates an <see cref="ILogger&lt;T&gt;"/> for a given type T.
+        /// </summary>
+        /// <typeparam name="T">A type to create a logger for.</typeparam>
+        /// <returns>An instance of the logger.</returns>
+        public static ILogger<T> CreateLogger<T>()
+        {
+            return loggerFactory.CreateLogger<T>();
+        }
+
+        /// <summary>
+        /// Sets the <see cref="ILoggerFactory"/>.
+        /// </summary>
+        /// <param name="factory">The <see cref="ILoggerFactory"/> to set.</param>
+        public static void SetLoggerFactory(ILoggerFactory factory)
+        {
+            loggerFactory = factory;
+        }
 
         /// <summary>
         /// Sets the <see cref="ILogger"/>.
@@ -114,7 +135,10 @@ namespace Mbs
         /// <param name="exception">An optional exception.</param>
         public static void Debug(string message, Exception exception = null)
         {
-            DoLogging(LogLevel.Debug, message, exception);
+            if (exception == null)
+                logger?.LogDebug(message);
+            else
+                logger?.LogDebug(message, exception);
         }
 
         /// <summary>
@@ -125,7 +149,10 @@ namespace Mbs
         /// <param name="exception">An optional exception.</param>
         public static void Trace(string message, Exception exception = null)
         {
-            DoLogging(LogLevel.Trace, message, exception);
+            if (exception == null)
+                logger?.LogTrace(message);
+            else
+                logger?.LogTrace(message, exception);
         }
 
         /// <summary>
@@ -136,7 +163,10 @@ namespace Mbs
         /// <param name="exception">An optional exception.</param>
         public static void Information(string message, Exception exception = null)
         {
-            DoLogging(LogLevel.Information, message, exception);
+            if (exception == null)
+                logger?.LogInformation(message);
+            else
+                logger?.LogInformation(message, exception);
         }
 
         /// <summary>
@@ -147,7 +177,10 @@ namespace Mbs
         /// <param name="exception">An optional exception.</param>
         public static void Warning(string message, Exception exception = null)
         {
-            DoLogging(LogLevel.Warning, message, exception);
+            if (exception == null)
+                logger?.LogWarning(message);
+            else
+                logger?.LogWarning(message, exception);
         }
 
         /// <summary>
@@ -158,7 +191,10 @@ namespace Mbs
         /// <param name="exception">An optional exception.</param>
         public static void Error(string message, Exception exception = null)
         {
-            DoLogging(LogLevel.Error, message, exception);
+            if (exception == null)
+                logger?.LogError(message);
+            else
+                logger?.LogError(message, exception);
         }
 
         /// <summary>
@@ -193,15 +229,10 @@ namespace Mbs
         /// <param name="exception">An optional exception.</param>
         public static void Critical(string message, Exception exception = null)
         {
-            DoLogging(LogLevel.Critical, message, exception);
-        }
-
-        private static void DoLogging(LogLevel logLevel, string message, Exception exception)
-        {
             if (exception == null)
-                logger?.Log(logLevel, message);
+                logger?.LogCritical(message);
             else
-                logger?.Log(logLevel, exception, message);
+                logger?.LogCritical(message, exception);
         }
     }
 }

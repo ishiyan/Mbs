@@ -1,25 +1,26 @@
 ﻿using System.IO;
 using System.Net.Http;
-using Microsoft.AspNetCore.Builder;
+//using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
+//using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.TestHost;
-using Microsoft.Extensions.PlatformAbstractions;
 
 namespace Mbs.Api.Host.IntegrationTests
 {
     internal class TestFixture
     {
+        // ReSharper disable once UnassignedGetOnlyAutoProperty
         public TestServer Server { get; }
 
+        // ReSharper disable once UnassignedGetOnlyAutoProperty
         public HttpClient Client { get; }
 
         public IWebHostBuilder WebHostBuilder { get; }
 
         public TestFixture()
         {
-            string CalculateRelativeContentRootPath() =>
-                Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "..", "..", "..", "..", "Mbs.Api.Host");
+            static string CalculateRelativeContentRootPath() =>
+                Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "..", "Mbs.Api.Host");
 
             // var s = CalculateRelativeContentRootPath();
             // var b = Directory.Exists(s);

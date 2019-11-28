@@ -11,16 +11,16 @@ using Mbs.Api.ExampleProviders.Trading.Data.Generators.RepetitiveSample;
 using Mbs.Api.ExampleProviders.Trading.Data.Generators.Sawtooth;
 using Mbs.Api.ExampleProviders.Trading.Data.Generators.Sinusoidal;
 using Mbs.Api.ExampleProviders.Trading.Data.Generators.Square;
-using Mbs.Api.Extensions.Swagger;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Filters;
-using Swashbuckle.AspNetCore.Swagger;
+//using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Swashbuckle.AspNetCore.SwaggerUI;
+using Microsoft.OpenApi.Models;
 
-namespace Mbs.Api.Extensions
+namespace Mbs.Api.Extensions.Swagger
 {
     /// <summary>
     /// Adds MbsApi Swashbuckle Swagger services to the dependency injection container.
@@ -42,12 +42,9 @@ namespace Mbs.Api.Extensions
                 IncludeDocPerVersion(options, assembly);
                 ApplyDocInclusions(options);
 
-                options.DescribeAllEnumsAsStrings();
-                options.DescribeStringEnumsInCamelCase();
                 options.DescribeAllParametersInCamelCase();
                 options.IgnoreObsoleteActions();
                 options.IgnoreObsoleteProperties();
-                options.UseReferencedDefinitionsForEnums();
                 options.ExampleFilters();
 
                 options.OrderActionsBy((apiDesc) => $"{apiDesc.RelativePath}_{apiDesc.HttpMethod}");
@@ -117,13 +114,13 @@ namespace Mbs.Api.Extensions
             var apiVersions = GetApiVersions(assembly);
             foreach (var apiVersion in apiVersions)
             {
-                options.SwaggerDoc($"v{apiVersion}", new Info
+                options.SwaggerDoc($"v{apiVersion}", new OpenApiInfo
                 {
                     Title = "mbs api",
                     Version = $"v{apiVersion}",
                     Description = "an api to access the mbs functionality",
-                    TermsOfService = "https://choosealicense.com/no-permission/",
-                    License = new License
+                    TermsOfService = new Uri("https://choosealicense.com/no-permission/"),
+                    License = new OpenApiLicense
                     {
                         Name = "no license is granted, only the copyright holder can use the api"
                     }
@@ -138,7 +135,10 @@ namespace Mbs.Api.Extensions
                 if (!apiDesc.TryGetMethodInfo(out MethodInfo methodInfo))
                     return false;
 
-                var versions = methodInfo.DeclaringType
+                var declaringType = methodInfo.DeclaringType;
+                var versions = declaringType == null ?
+                    new List<string>() :
+                    declaringType
                     .GetCustomAttributes(true)
                     .OfType<ApiVersionAttribute>()
                     .SelectMany(attr => attr.Versions);

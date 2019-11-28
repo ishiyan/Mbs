@@ -6,7 +6,7 @@ using Swashbuckle.AspNetCore.Filters;
 namespace Mbs.Api.ExampleProviders.Trading.Data.Generators.Sinusoidal
 {
     /// <inheritdoc />
-    internal class SinusoidalQuoteGeneratorOutputExampleProvider : IExamplesProvider
+    internal class SinusoidalQuoteGeneratorOutputExampleProvider : IExamplesProvider<SyntheticDataGeneratorOutput<Quote>>
     {
         internal const string Name = SinusoidalQuoteGenerator.WaveformName;
         internal const string Moniker = "100∙cos(2π∙t/16) + 10 + noise(ρn=0.01), ρs=0.1, as=10, bs=10";
@@ -18,7 +18,7 @@ namespace Mbs.Api.ExampleProviders.Trading.Data.Generators.Sinusoidal
         internal const double AskPrice2 = 223.82;
 
         /// <inheritdoc />
-        public object GetExamples()
+        public SyntheticDataGeneratorOutput<Quote> GetExamples()
         {
             return new SyntheticDataGeneratorOutput<Quote>
             {

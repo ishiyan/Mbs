@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 
-namespace Mbs.Api.Extensions
+namespace Mbs.Api.Extensions.Swagger
 {
     /// <summary>
     /// Registers MbsApi Swagger middleware in the Http pipeline.

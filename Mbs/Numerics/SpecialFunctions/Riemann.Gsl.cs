@@ -1,4 +1,5 @@
-﻿namespace Mbs.Numerics
+﻿// ReSharper disable once CheckNamespace
+namespace Mbs.Numerics
 {
     using System;
 
@@ -154,7 +155,7 @@
                 {
                     Complex fOld = f;
                     Complex fk = 1d - Complex.Pow(Primes[k], -z);
-                    f = f * fk;
+                    f *= fk;
                     if (f == fOld)
                         return 1d / f;
                 }

@@ -1,5 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 
+// ReSharper disable once CheckNamespace
 namespace Mbs.Numerics.Random
 {
     /// <summary>
@@ -301,6 +302,7 @@ namespace Mbs.Numerics.Random
         /// Simulates the little endian SIMD 128-bit left shift.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        // ReSharper disable once IdentifierTypo
         private void Lshift128(uint[] target, int source, int shift)
         {
             ulong th = ((ulong)sfmt[source + 3] << 32) | sfmt[source + 2];
@@ -319,6 +321,7 @@ namespace Mbs.Numerics.Random
         /// Simulates the little endian SIMD 128-bit right shift.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        // ReSharper disable once IdentifierTypo
         private void Rshift128(uint[] target, int source, int shift)
         {
             ulong th = ((ulong)sfmt[source + 3] << 32) | sfmt[source + 2];
@@ -367,6 +370,7 @@ namespace Mbs.Numerics.Random
             }
         }
 
+        // ReSharper disable once CommentTypo
         /// <summary>
         /// Certificate the period of 2ᵐᶱˣᵖ.
         /// </summary>
@@ -396,7 +400,7 @@ namespace Mbs.Numerics.Random
                         return;
                     }
 
-                    work = work << 1;
+                    work <<= 1;
                 }
             }
         }

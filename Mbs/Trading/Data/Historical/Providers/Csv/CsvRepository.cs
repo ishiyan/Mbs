@@ -5,11 +5,11 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Xml;
 using Mbs.Trading.Instruments;
 using Mbs.Trading.Time;
 
+// ReSharper disable once CheckNamespace
 namespace Mbs.Trading.Data.Historical
 {
     /// <summary>
@@ -161,95 +161,93 @@ namespace Mbs.Trading.Data.Historical
             CsvInfo csvInfo = null;
             try
             {
-                using (XmlReader xmlReader = XmlReader.Create(indexFile, XmlReaderSettings))
+                using XmlReader xmlReader = XmlReader.Create(indexFile, XmlReaderSettings);
+                var xmlLineInfo = (IXmlLineInfo)xmlReader;
+                while (xmlReader.Read())
                 {
-                    var xmlLineInfo = (IXmlLineInfo)xmlReader;
-                    while (xmlReader.Read())
+                    if (xmlReader.NodeType == XmlNodeType.Element &&
+                        xmlReader.LocalName == InstrumentElement)
                     {
-                        if (xmlReader.NodeType == XmlNodeType.Element &&
-                            xmlReader.LocalName == InstrumentElement)
+                        string symbol = xmlReader.GetAttribute(SymbolAttribute);
+                        if (string.IsNullOrEmpty(symbol))
                         {
-                            string symbol = xmlReader.GetAttribute(SymbolAttribute);
-                            if (string.IsNullOrEmpty(symbol))
-                            {
-                                Log.Error(MissingAttribute(SymbolAttribute, indexFile, xmlLineInfo.LineNumber));
-                                continue;
-                            }
+                            Log.Error(MissingAttribute(SymbolAttribute, indexFile, xmlLineInfo.LineNumber));
+                            continue;
+                        }
 
-                            string isin = xmlReader.GetAttribute(IsinAttribute);
-                            string mic = xmlReader.GetAttribute(MicAttribute);
-                            string key2 = Key(mic, symbol, isin);
-                            if (key != key2)
-                                continue;
-                            string file = xmlReader.GetAttribute(FileAttribute);
-                            if (string.IsNullOrEmpty(file))
-                            {
-                                Log.Error(MissingAttribute(FileAttribute, indexFile, xmlLineInfo.LineNumber));
-                                continue;
-                            }
+                        string isin = xmlReader.GetAttribute(IsinAttribute);
+                        string mic = xmlReader.GetAttribute(MicAttribute);
+                        string key2 = Key(mic, symbol, isin);
+                        if (key != key2)
+                            continue;
+                        string file = xmlReader.GetAttribute(FileAttribute);
+                        if (string.IsNullOrEmpty(file))
+                        {
+                            Log.Error(MissingAttribute(FileAttribute, indexFile, xmlLineInfo.LineNumber));
+                            continue;
+                        }
 
-                            if (!Path.IsPathRooted(file))
+                        if (!Path.IsPathRooted(file))
+                        {
+                            lock (RepositoryPathLock)
                             {
-                                lock (RepositoryPathLock)
-                                {
-                                    if (!string.IsNullOrWhiteSpace(repositoryPath))
-                                        file = Path.Combine(repositoryPath, file);
-                                }
+                                if (!string.IsNullOrWhiteSpace(repositoryPath))
+                                    file = Path.Combine(repositoryPath, file);
                             }
+                        }
 
-                            file = Path.GetFullPath(file);
-                            if (!File.Exists(file))
-                            {
-                                Log.Error(FileDoesNotExist(file, indexFile, xmlLineInfo.LineNumber));
-                                break;
-                            }
-
-                            string csvColumnIndices = xmlReader.GetAttribute(CsvColumnIndicesAttribute);
-                            if (string.IsNullOrWhiteSpace(csvColumnIndices))
-                            {
-                                Log.Error(MissingAttribute(CsvColumnIndicesAttribute, indexFile, xmlLineInfo.LineNumber));
-                                break;
-                            }
-
-                            string csvDateTimeFormat = xmlReader.GetAttribute(CsvDateTimeFormatAttribute);
-                            if (string.IsNullOrWhiteSpace(csvDateTimeFormat))
-                            {
-                                Log.Error(MissingAttribute(CsvDateTimeFormatAttribute, indexFile, xmlLineInfo.LineNumber));
-                                break;
-                            }
-
-                            string csvTimeGranularity = xmlReader.GetAttribute(CsvTimeGranularityAttribute);
-                            if (string.IsNullOrWhiteSpace(csvTimeGranularity))
-                            {
-                                Log.Error(MissingAttribute(CsvTimeGranularityAttribute, indexFile, xmlLineInfo.LineNumber));
-                                break;
-                            }
-
-                            string csvSeparatorCharacter = xmlReader.GetAttribute(CsvSeparatorCharacterAttribute);
-                            if (string.IsNullOrWhiteSpace(csvSeparatorCharacter))
-                            {
-                                Log.Error(MissingAttribute(CsvSeparatorCharacterAttribute, indexFile, xmlLineInfo.LineNumber));
-                                break;
-                            }
-
-                            string csvCommentCharacter = xmlReader.GetAttribute(CsvCommentCharacterAttribute);
-                            if (string.IsNullOrWhiteSpace(csvCommentCharacter))
-                            {
-                                Log.Error(MissingAttribute(CsvCommentCharacterAttribute, indexFile, xmlLineInfo.LineNumber));
-                                break;
-                            }
-
-                            string csvIsAdjustedData = xmlReader.GetAttribute(CsvIsAdjustedDataAttribute);
-                            csvInfo = new CsvInfo(
-                                file,
-                                csvColumnIndices,
-                                csvDateTimeFormat,
-                                csvTimeGranularity,
-                                csvSeparatorCharacter,
-                                csvCommentCharacter,
-                                csvIsAdjustedData);
+                        file = Path.GetFullPath(file);
+                        if (!File.Exists(file))
+                        {
+                            Log.Error(FileDoesNotExist(file, indexFile, xmlLineInfo.LineNumber));
                             break;
                         }
+
+                        string csvColumnIndices = xmlReader.GetAttribute(CsvColumnIndicesAttribute);
+                        if (string.IsNullOrWhiteSpace(csvColumnIndices))
+                        {
+                            Log.Error(MissingAttribute(CsvColumnIndicesAttribute, indexFile, xmlLineInfo.LineNumber));
+                            break;
+                        }
+
+                        string csvDateTimeFormat = xmlReader.GetAttribute(CsvDateTimeFormatAttribute);
+                        if (string.IsNullOrWhiteSpace(csvDateTimeFormat))
+                        {
+                            Log.Error(MissingAttribute(CsvDateTimeFormatAttribute, indexFile, xmlLineInfo.LineNumber));
+                            break;
+                        }
+
+                        string csvTimeGranularity = xmlReader.GetAttribute(CsvTimeGranularityAttribute);
+                        if (string.IsNullOrWhiteSpace(csvTimeGranularity))
+                        {
+                            Log.Error(MissingAttribute(CsvTimeGranularityAttribute, indexFile, xmlLineInfo.LineNumber));
+                            break;
+                        }
+
+                        string csvSeparatorCharacter = xmlReader.GetAttribute(CsvSeparatorCharacterAttribute);
+                        if (string.IsNullOrWhiteSpace(csvSeparatorCharacter))
+                        {
+                            Log.Error(MissingAttribute(CsvSeparatorCharacterAttribute, indexFile, xmlLineInfo.LineNumber));
+                            break;
+                        }
+
+                        string csvCommentCharacter = xmlReader.GetAttribute(CsvCommentCharacterAttribute);
+                        if (string.IsNullOrWhiteSpace(csvCommentCharacter))
+                        {
+                            Log.Error(MissingAttribute(CsvCommentCharacterAttribute, indexFile, xmlLineInfo.LineNumber));
+                            break;
+                        }
+
+                        string csvIsAdjustedData = xmlReader.GetAttribute(CsvIsAdjustedDataAttribute);
+                        csvInfo = new CsvInfo(
+                            file,
+                            csvColumnIndices,
+                            csvDateTimeFormat,
+                            csvTimeGranularity,
+                            csvSeparatorCharacter,
+                            csvCommentCharacter,
+                            csvIsAdjustedData);
+                        break;
                     }
                 }
             }
@@ -383,24 +381,23 @@ namespace Mbs.Trading.Data.Historical
                 yield break;
             }
 
-            using (IEnumerator<Ohlcv> enumerator = enumerable.GetEnumerator())
+            using IEnumerator<Ohlcv> enumerator = enumerable.GetEnumerator();
+            while (true)
             {
-                while (true)
+                try
                 {
-                    try
-                    {
-                        if (!enumerator.MoveNext())
-                            break;
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.Error(ErrorReadingFile(csvInfo.FilePath), ex);
+                    if (!enumerator.MoveNext())
                         break;
-                    }
-
-                    yield return enumerator.Current;
                 }
+                catch (Exception ex)
+                {
+                    Log.Error(ErrorReadingFile(csvInfo.FilePath), ex);
+                    break;
+                }
+
+                yield return enumerator.Current;
             }
+
 #pragma warning restore CA1031 // Do not catch general exception types
         }
 
@@ -412,36 +409,34 @@ namespace Mbs.Trading.Data.Historical
             string delimiter = csvInfo.SeparatorCharacter;
 
             long lineNumber = 0L;
-            using (var fileStream = File.Open(csvInfo.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            using (var bufferedStream = new BufferedStream(fileStream))
-            using (var streamReader = new StreamReader(bufferedStream, Encoding.UTF8))
+            using var fileStream = File.Open(csvInfo.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using var bufferedStream = new BufferedStream(fileStream);
+            using var streamReader = new StreamReader(bufferedStream, Encoding.UTF8);
+            string line;
+            while (null != (line = streamReader.ReadLine()))
             {
-                string line;
-                while (null != (line = streamReader.ReadLine()))
+                if (cancellationToken.IsCancellationRequested)
                 {
-                    if (cancellationToken.IsCancellationRequested)
-                    {
-                        Log.Warning($"{Prefix}: Cancellation requested in [{line}], line number {lineNumber}, file path {csvInfo.FilePath}");
-                        break;
-                    }
-
-                    ++lineNumber;
-                    if (line.Length == 0 || line[0] == commentChar)
-                        continue;
-
-                    var error = ParseOhlcvSpan(csvInfo, csvRequest, line, delimiter, hasVolume, hasHighLow, out Ohlcv ohlcv, out CsvEnumerationAction action);
-                    if (error == null)
-                    {
-                        if (action == CsvEnumerationAction.Continue)
-                            yield return ohlcv;
-                        else if (action == CsvEnumerationAction.Break)
-                            break;
-                        continue;
-                    }
-
-                    Log.Error($"{Prefix}: {error} in [{line}], line number {lineNumber}, file path {csvInfo.FilePath}");
+                    Log.Warning($"{Prefix}: Cancellation requested in [{line}], line number {lineNumber}, file path {csvInfo.FilePath}");
                     break;
                 }
+
+                ++lineNumber;
+                if (line.Length == 0 || line[0] == commentChar)
+                    continue;
+
+                var error = ParseOhlcvSpan(csvInfo, csvRequest, line, delimiter, hasVolume, hasHighLow, out Ohlcv ohlcv, out CsvEnumerationAction action);
+                if (error == null)
+                {
+                    if (action == CsvEnumerationAction.Continue)
+                        yield return ohlcv;
+                    else if (action == CsvEnumerationAction.Break)
+                        break;
+                    continue;
+                }
+
+                Log.Error($"{Prefix}: {error} in [{line}], line number {lineNumber}, file path {csvInfo.FilePath}");
+                break;
             }
         }
 
@@ -559,24 +554,23 @@ namespace Mbs.Trading.Data.Historical
                 yield break;
             }
 
-            using (IEnumerator<Scalar> enumerator = enumerable.GetEnumerator())
+            using IEnumerator<Scalar> enumerator = enumerable.GetEnumerator();
+            while (true)
             {
-                while (true)
+                try
                 {
-                    try
-                    {
-                        if (!enumerator.MoveNext())
-                            break;
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.Error(ErrorReadingFile(csvInfo.FilePath), ex);
+                    if (!enumerator.MoveNext())
                         break;
-                    }
-
-                    yield return enumerator.Current;
                 }
+                catch (Exception ex)
+                {
+                    Log.Error(ErrorReadingFile(csvInfo.FilePath), ex);
+                    break;
+                }
+
+                yield return enumerator.Current;
             }
+
 #pragma warning restore CA1031 // Do not catch general exception types
         }
 
@@ -586,36 +580,34 @@ namespace Mbs.Trading.Data.Historical
             string delimiter = csvInfo.SeparatorCharacter;
 
             long lineNumber = 0L;
-            using (var fileStream = File.Open(csvInfo.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            using (var bufferedStream = new BufferedStream(fileStream))
-            using (var streamReader = new StreamReader(bufferedStream, Encoding.UTF8))
+            using var fileStream = File.Open(csvInfo.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using var bufferedStream = new BufferedStream(fileStream);
+            using var streamReader = new StreamReader(bufferedStream, Encoding.UTF8);
+            string line;
+            while (null != (line = streamReader.ReadLine()))
             {
-                string line;
-                while (null != (line = streamReader.ReadLine()))
+                if (cancellationToken.IsCancellationRequested)
                 {
-                    if (cancellationToken.IsCancellationRequested)
-                    {
-                        Log.Warning($"{Prefix}: Cancellation requested in [{line}], line number {lineNumber}, file path {csvInfo.FilePath}");
-                        break;
-                    }
-
-                    ++lineNumber;
-                    if (line.Length == 0 || line[0] == commentChar)
-                        continue;
-
-                    var error = ParseScalarSpan(csvInfo, csvRequest, line, delimiter, out Scalar scalar, out CsvEnumerationAction action);
-                    if (error == null)
-                    {
-                        if (action == CsvEnumerationAction.Continue)
-                            yield return scalar;
-                        else if (action == CsvEnumerationAction.Break)
-                            break;
-                        continue;
-                    }
-
-                    Log.Error($"{Prefix}: {error} in [{line}], line number {lineNumber}, file path {csvInfo.FilePath}");
+                    Log.Warning($"{Prefix}: Cancellation requested in [{line}], line number {lineNumber}, file path {csvInfo.FilePath}");
                     break;
                 }
+
+                ++lineNumber;
+                if (line.Length == 0 || line[0] == commentChar)
+                    continue;
+
+                var error = ParseScalarSpan(csvInfo, csvRequest, line, delimiter, out Scalar scalar, out CsvEnumerationAction action);
+                if (error == null)
+                {
+                    if (action == CsvEnumerationAction.Continue)
+                        yield return scalar;
+                    else if (action == CsvEnumerationAction.Break)
+                        break;
+                    continue;
+                }
+
+                Log.Error($"{Prefix}: {error} in [{line}], line number {lineNumber}, file path {csvInfo.FilePath}");
+                break;
             }
         }
 
@@ -679,24 +671,23 @@ namespace Mbs.Trading.Data.Historical
                 yield break;
             }
 
-            using (IEnumerator<Trade> enumerator = enumerable.GetEnumerator())
+            using IEnumerator<Trade> enumerator = enumerable.GetEnumerator();
+            while (true)
             {
-                while (true)
+                try
                 {
-                    try
-                    {
-                        if (!enumerator.MoveNext())
-                            break;
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.Error(ErrorReadingFile(csvInfo.FilePath), ex);
+                    if (!enumerator.MoveNext())
                         break;
-                    }
-
-                    yield return enumerator.Current;
                 }
+                catch (Exception ex)
+                {
+                    Log.Error(ErrorReadingFile(csvInfo.FilePath), ex);
+                    break;
+                }
+
+                yield return enumerator.Current;
             }
+
 #pragma warning restore CA1031 // Do not catch general exception types
         }
 
@@ -707,36 +698,34 @@ namespace Mbs.Trading.Data.Historical
             string delimiter = csvInfo.SeparatorCharacter;
 
             long lineNumber = 0L;
-            using (var fileStream = File.Open(csvInfo.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            using (var bufferedStream = new BufferedStream(fileStream))
-            using (var streamReader = new StreamReader(bufferedStream, Encoding.UTF8))
+            using var fileStream = File.Open(csvInfo.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using var bufferedStream = new BufferedStream(fileStream);
+            using var streamReader = new StreamReader(bufferedStream, Encoding.UTF8);
+            string line;
+            while (null != (line = streamReader.ReadLine()))
             {
-                string line;
-                while (null != (line = streamReader.ReadLine()))
+                if (cancellationToken.IsCancellationRequested)
                 {
-                    if (cancellationToken.IsCancellationRequested)
-                    {
-                        Log.Warning($"{Prefix}: Cancellation requested in [{line}], line number {lineNumber}, file path {csvInfo.FilePath}");
-                        break;
-                    }
-
-                    ++lineNumber;
-                    if (line.Length == 0 || line[0] == commentChar)
-                        continue;
-
-                    var error = ParseTradeSpan(csvInfo, csvRequest, line, delimiter, hasVolume, out Trade trade, out CsvEnumerationAction action);
-                    if (error == null)
-                    {
-                        if (action == CsvEnumerationAction.Continue)
-                            yield return trade;
-                        else if (action == CsvEnumerationAction.Break)
-                            break;
-                        continue;
-                    }
-
-                    Log.Error($"{Prefix}: {error} in [{line}], line number {lineNumber}, file path {csvInfo.FilePath}");
+                    Log.Warning($"{Prefix}: Cancellation requested in [{line}], line number {lineNumber}, file path {csvInfo.FilePath}");
                     break;
                 }
+
+                ++lineNumber;
+                if (line.Length == 0 || line[0] == commentChar)
+                    continue;
+
+                var error = ParseTradeSpan(csvInfo, csvRequest, line, delimiter, hasVolume, out Trade trade, out CsvEnumerationAction action);
+                if (error == null)
+                {
+                    if (action == CsvEnumerationAction.Continue)
+                        yield return trade;
+                    else if (action == CsvEnumerationAction.Break)
+                        break;
+                    continue;
+                }
+
+                Log.Error($"{Prefix}: {error} in [{line}], line number {lineNumber}, file path {csvInfo.FilePath}");
+                break;
             }
         }
 
@@ -821,24 +810,23 @@ namespace Mbs.Trading.Data.Historical
                 yield break;
             }
 
-            using (IEnumerator<Quote> enumerator = enumerable.GetEnumerator())
+            using IEnumerator<Quote> enumerator = enumerable.GetEnumerator();
+            while (true)
             {
-                while (true)
+                try
                 {
-                    try
-                    {
-                        if (!enumerator.MoveNext())
-                            break;
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.Error(ErrorReadingFile(csvInfo.FilePath), ex);
+                    if (!enumerator.MoveNext())
                         break;
-                    }
-
-                    yield return enumerator.Current;
                 }
+                catch (Exception ex)
+                {
+                    Log.Error(ErrorReadingFile(csvInfo.FilePath), ex);
+                    break;
+                }
+
+                yield return enumerator.Current;
             }
+
 #pragma warning restore CA1031 // Do not catch general exception types
         }
 
@@ -849,36 +837,34 @@ namespace Mbs.Trading.Data.Historical
             string delimiter = csvInfo.SeparatorCharacter;
 
             long lineNumber = 0L;
-            using (var fileStream = File.Open(csvInfo.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            using (var bufferedStream = new BufferedStream(fileStream))
-            using (var streamReader = new StreamReader(bufferedStream, Encoding.UTF8))
+            using var fileStream = File.Open(csvInfo.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using var bufferedStream = new BufferedStream(fileStream);
+            using var streamReader = new StreamReader(bufferedStream, Encoding.UTF8);
+            string line;
+            while (null != (line = streamReader.ReadLine()))
             {
-                string line;
-                while (null != (line = streamReader.ReadLine()))
+                if (cancellationToken.IsCancellationRequested)
                 {
-                    if (cancellationToken.IsCancellationRequested)
-                    {
-                        Log.Warning($"{Prefix}: Cancellation requested in [{line}], line number {lineNumber}, file path {csvInfo.FilePath}");
-                        break;
-                    }
-
-                    ++lineNumber;
-                    if (line.Length == 0 || line[0] == commentChar)
-                        continue;
-
-                    var error = ParseQuoteSpan(csvInfo, csvRequest, line, delimiter, hasVolume, out Quote quote, out CsvEnumerationAction action);
-                    if (error == null)
-                    {
-                        if (action == CsvEnumerationAction.Continue)
-                            yield return quote;
-                        else if (action == CsvEnumerationAction.Break)
-                            break;
-                        continue;
-                    }
-
-                    Log.Error($"{Prefix}: {error} in [{line}], line number {lineNumber}, file path {csvInfo.FilePath}");
+                    Log.Warning($"{Prefix}: Cancellation requested in [{line}], line number {lineNumber}, file path {csvInfo.FilePath}");
                     break;
                 }
+
+                ++lineNumber;
+                if (line.Length == 0 || line[0] == commentChar)
+                    continue;
+
+                var error = ParseQuoteSpan(csvInfo, csvRequest, line, delimiter, hasVolume, out Quote quote, out CsvEnumerationAction action);
+                if (error == null)
+                {
+                    if (action == CsvEnumerationAction.Continue)
+                        yield return quote;
+                    else if (action == CsvEnumerationAction.Break)
+                        break;
+                    continue;
+                }
+
+                Log.Error($"{Prefix}: {error} in [{line}], line number {lineNumber}, file path {csvInfo.FilePath}");
+                break;
             }
         }
 

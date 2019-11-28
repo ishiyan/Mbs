@@ -61,16 +61,14 @@ namespace Mbs.UnitTests.Trading.Data.Historical.Providers
 
             Log.SetLogger(mockLogger);
 
-            using (var client = new HttpClient(retryingHandler))
-                using (var request = new HttpRequestMessage(HttpMethod.Get, url))
-                    using (var cancelSource = new CancellationTokenSource())
-                    {
-                        using (HttpResponseMessage response =
-                            await client.SendAsync(request, cancelSource.Token))
-                        using (Stream responseStream = await response.Content.ReadAsStreamAsync())
-                            using (var streamReader = new StreamReader(responseStream))
-                                return await streamReader.ReadToEndAsync();
-                    }
+            using var client = new HttpClient(retryingHandler);
+            using var request = new HttpRequestMessage(HttpMethod.Get, url);
+            using var cancelSource = new CancellationTokenSource();
+            using HttpResponseMessage response =
+                await client.SendAsync(request, cancelSource.Token);
+            using Stream responseStream = await response.Content.ReadAsStreamAsync();
+            using var streamReader = new StreamReader(responseStream);
+            return await streamReader.ReadToEndAsync();
         }
 
         // ReSharper disable InconsistentNaming
@@ -115,10 +113,10 @@ namespace Mbs.UnitTests.Trading.Data.Historical.Providers
         [TestMethod]
         public void RetryingHandler_LogPrefix_WhenSet_GetsCorrectValue()
         {
-            string LogPrefixAction() => "foo";
-            string LogPrefixActionAnother() => "bar";
+            static string LogPrefixAction() => "foo";
+            static string LogPrefixActionAnother() => "bar";
 
-            var retryingHandler = new RetryingHandler(new HttpClientHandler { UseDefaultCredentials = true })
+            using var retryingHandler = new RetryingHandler(new HttpClientHandler { UseDefaultCredentials = true })
             {
                 LogPrefix = LogPrefixAction
             };
@@ -130,10 +128,10 @@ namespace Mbs.UnitTests.Trading.Data.Historical.Providers
         [TestMethod]
         public void RetryingHandler_TimeoutSeconds_WhenSet_GetsCorrectValue()
         {
-            int TimeoutSecondsAction() => 42;
-            int TimeoutSecondsActionAnother() => 43;
+            static int TimeoutSecondsAction() => 42;
+            static int TimeoutSecondsActionAnother() => 43;
 
-            var retryingHandler = new RetryingHandler(new HttpClientHandler { UseDefaultCredentials = true })
+            using var retryingHandler = new RetryingHandler(new HttpClientHandler { UseDefaultCredentials = true })
             {
                 TimeoutSeconds = TimeoutSecondsAction
             };
@@ -145,10 +143,10 @@ namespace Mbs.UnitTests.Trading.Data.Historical.Providers
         [TestMethod]
         public void RetryingHandler_Retries_WhenSet_GetsCorrectValue()
         {
-            int RetriesAction() => 42;
-            int RetriesActionAnother() => 43;
+            static int RetriesAction() => 42;
+            static int RetriesActionAnother() => 43;
 
-            var retryingHandler = new RetryingHandler(new HttpClientHandler { UseDefaultCredentials = true })
+            using var retryingHandler = new RetryingHandler(new HttpClientHandler { UseDefaultCredentials = true })
             {
                 Retries = RetriesAction
             };

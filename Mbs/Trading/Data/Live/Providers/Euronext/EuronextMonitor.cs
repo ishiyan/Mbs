@@ -9,6 +9,7 @@ using Mbs.Trading.Holidays;
 using Mbs.Trading.Instruments;
 using Mbs.Trading.Time;
 
+// ReSharper disable once CheckNamespace
 namespace Mbs.Trading.Data.Live
 {
     /// <summary>
@@ -722,13 +723,13 @@ namespace Mbs.Trading.Data.Live
                 //           11111
                 // 012345678901234
                 entry = splitted[5];
-                if (!entry.StartsWith(@"price"":""", StringComparison.Ordinal) || '\"' != entry[entry.Length - 1])
+                if (!entry.StartsWith(@"price"":""", StringComparison.Ordinal) || '\"' != entry[^1])
                 {
                     Log.Error($"EuronextMonitor.Trade: invalid intraday js: invalid [price] splitted entry [{entry}] in [{str}], skipping");
                     return false;
                 }
 
-                entry = entry.Substring(8, entry.Length - 9); // 1,329.39
+                entry = entry[8..^1]; // 1,329.39
                 entry = entry.Replace(",", string.Empty, StringComparison.Ordinal); // 1329.39
                 if (!double.TryParse(entry, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out price))
                 {
@@ -747,13 +748,13 @@ namespace Mbs.Trading.Data.Live
                 }
                 else
                 {
-                    if (!entry.StartsWith(@"numberOfShares"":""", StringComparison.Ordinal) || '\"' != entry[entry.Length - 1])
+                    if (!entry.StartsWith(@"numberOfShares"":""", StringComparison.Ordinal) || '\"' != entry[^1])
                     {
                         Log.Error($"EuronextMonitor.Trade: invalid intraday js: invalid [numberOfShares] splitted entry [{entry}] in [{str}], skipping");
                         return false;
                     }
 
-                    entry = entry.Substring(17, entry.Length - 18); // 1,118.00 // 0,00
+                    entry = entry[17..^1]; // 1,118.00 // 0,00
                     entry = entry.Replace(",", string.Empty, StringComparison.Ordinal); // 1118.00 // 000
                     if (!double.TryParse(entry, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out volume))
                     {
@@ -768,9 +769,9 @@ namespace Mbs.Trading.Data.Live
                 //           111111111122
                 // 0123456789012345678901
                 entry = splitted[7];
-                if (entry != null && entry.StartsWith(@"TRADE_QUALIFIER"":""", StringComparison.Ordinal) && '\"' == entry[entry.Length - 1])
+                if (entry.StartsWith(@"TRADE_QUALIFIER"":""", StringComparison.Ordinal) && '\"' == entry[^1])
                 {
-                    entry = entry.Substring(18, entry.Length - 19);
+                    entry = entry[18..^1];
                     if (entry.StartsWith("Automatic indicative index", StringComparison.Ordinal) ||
                         entry.StartsWith("Options liquidation index", StringComparison.Ordinal) ||
                         entry.StartsWith("Closing Reference index", StringComparison.Ordinal) ||
@@ -857,7 +858,7 @@ namespace Mbs.Trading.Data.Live
                     return null;
                 }
 
-                json = json.Substring(0, json.Length - 3);
+                json = json[0..^3];
                 int i = json.IndexOf("[{", StringComparison.Ordinal);
                 if (i < 0)
                 {
@@ -867,7 +868,7 @@ namespace Mbs.Trading.Data.Live
 
                 json = json.Substring(i + 2);
                 var stack = new Stack<Trade>(1024);
-                bool beforeFirstTimeToFetch, ignore;
+                bool beforeFirstTimeToFetch;
                 DateTime firstTimeToFetch = dateTime;
 
                 // Log.Trace($"EuronextMonitor.Trade: firstTimeToFetch {firstTimeToFetch}");
@@ -875,7 +876,7 @@ namespace Mbs.Trading.Data.Live
                 Trade lastTrade = null;
                 while ((i = json.LastIndexOf("},{", StringComparison.Ordinal)) >= 0)
                 {
-                    if (!ParseJs(json.Substring(i + 3), ref dateTime, ref price, ref volume, firstTimeToFetch, out beforeFirstTimeToFetch, out ignore))
+                    if (!ParseJs(json.Substring(i + 3), ref dateTime, ref price, ref volume, firstTimeToFetch, out beforeFirstTimeToFetch, out var ignore))
                         return stack;
                     if (beforeFirstTimeToFetch)
                         return stack;
@@ -916,7 +917,7 @@ namespace Mbs.Trading.Data.Live
                 }
 
                 // Here we have the very first trade.
-                if (!ParseJs(json, ref dateTime, ref price, ref volume, firstTimeToFetch, out beforeFirstTimeToFetch, out ignore))
+                if (!ParseJs(json, ref dateTime, ref price, ref volume, firstTimeToFetch, out beforeFirstTimeToFetch, out _))
                     return stack;
                 if (json.Contains("Automatic indicative index", StringComparison.Ordinal))
                 {

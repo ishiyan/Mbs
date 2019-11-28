@@ -21,14 +21,13 @@ namespace EuronextLiveInstrumentMonitor
 
         internal static Type StringToType(string type)
         {
-            switch (type.ToUpper(CultureInfo.InvariantCulture))
+            return type.ToUpper(CultureInfo.InvariantCulture) switch
             {
-                case "OHLCV": return typeof(Ohlcv);
-                case "TRADE": return typeof(Trade);
-                case "QUOTE": return typeof(Quote);
-            }
-
-            throw new ArgumentException($"temporal entity {type} is not supported.", nameof(type));
+                "OHLCV" => typeof(Ohlcv),
+                "TRADE" => typeof(Trade),
+                "QUOTE" => typeof(Quote),
+                _ => throw new ArgumentException($"temporal entity {type} is not supported.", nameof(type))
+            };
         }
 
         internal static void Subscribe<T>(Instrument instrument, TimeGranularity timeGranularity, string type, ILogger logger)

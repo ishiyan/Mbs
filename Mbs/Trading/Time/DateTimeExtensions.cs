@@ -20,131 +20,50 @@ namespace Mbs.Trading.Time
         /// <returns>A new <see cref="DateTime"/> instance.</returns>
         public static DateTime Add(this DateTime dateTime, TimeGranularity granularity, int count)
         {
-            switch (granularity)
+            return granularity switch
             {
-                case TimeGranularity.Aperiodic:
-                    throw new ArgumentException("Cannot add aperiodic time granularities", nameof(granularity));
-
-                case TimeGranularity.Second1:
-                    return dateTime.AddSeconds(count);
-
-                case TimeGranularity.Second2:
-                    return dateTime.AddSeconds(count * 2);
-
-                case TimeGranularity.Second3:
-                    return dateTime.AddSeconds(count * 3);
-
-                case TimeGranularity.Second4:
-                    return dateTime.AddSeconds(count * 4);
-
-                case TimeGranularity.Second5:
-                    return dateTime.AddSeconds(count * 5);
-
-                case TimeGranularity.Second6:
-                    return dateTime.AddSeconds(count * 6);
-
-                case TimeGranularity.Second10:
-                    return dateTime.AddSeconds(count * 10);
-
-                case TimeGranularity.Second12:
-                    return dateTime.AddSeconds(count * 12);
-
-                case TimeGranularity.Second15:
-                    return dateTime.AddSeconds(count * 15);
-
-                case TimeGranularity.Second20:
-                    return dateTime.AddSeconds(count * 20);
-
-                case TimeGranularity.Second30:
-                    return dateTime.AddSeconds(count * 30);
-
-                case TimeGranularity.Minute1:
-                    return dateTime.AddMinutes(count);
-
-                case TimeGranularity.Minute2:
-                    return dateTime.AddMinutes(count * 2);
-
-                case TimeGranularity.Minute3:
-                    return dateTime.AddMinutes(count * 3);
-
-                case TimeGranularity.Minute4:
-                    return dateTime.AddMinutes(count * 4);
-
-                case TimeGranularity.Minute5:
-                    return dateTime.AddMinutes(count * 5);
-
-                case TimeGranularity.Minute6:
-                    return dateTime.AddMinutes(count * 6);
-
-                case TimeGranularity.Minute10:
-                    return dateTime.AddMinutes(count * 10);
-
-                case TimeGranularity.Minute12:
-                    return dateTime.AddMinutes(count * 12);
-
-                case TimeGranularity.Minute15:
-                    return dateTime.AddMinutes(count * 15);
-
-                case TimeGranularity.Minute20:
-                    return dateTime.AddMinutes(count * 20);
-
-                case TimeGranularity.Minute30:
-                    return dateTime.AddMinutes(count * 30);
-
-                case TimeGranularity.Hour1:
-                    return dateTime.AddHours(count);
-
-                case TimeGranularity.Hour2:
-                    return dateTime.AddHours(count * 2);
-
-                case TimeGranularity.Hour3:
-                    return dateTime.AddHours(count * 3);
-
-                case TimeGranularity.Hour4:
-                    return dateTime.AddHours(count * 4);
-
-                case TimeGranularity.Hour6:
-                    return dateTime.AddHours(count * 6);
-
-                case TimeGranularity.Hour8:
-                    return dateTime.AddHours(count * 8);
-
-                case TimeGranularity.Hour12:
-                    return dateTime.AddHours(count * 12);
-
-                case TimeGranularity.Day1:
-                    return dateTime.AddDays(count);
-
-                case TimeGranularity.Week1:
-                    return dateTime.AddDays(count * 7);
-
-                case TimeGranularity.Week2:
-                    return dateTime.AddDays(count * 14);
-
-                case TimeGranularity.Week3:
-                    return dateTime.AddDays(count * 21);
-
-                case TimeGranularity.Month1:
-                    return dateTime.AddMonths(count);
-
-                case TimeGranularity.Month2:
-                    return dateTime.AddMonths(count * 2);
-
-                case TimeGranularity.Month3:
-                    return dateTime.AddMonths(count * 3);
-
-                case TimeGranularity.Month4:
-                    return dateTime.AddMonths(count * 4);
-
-                case TimeGranularity.Month6:
-                    return dateTime.AddMonths(count * 6);
-
-                case TimeGranularity.Year1:
-                    return dateTime.AddYears(count);
-
-                default:
-                    throw new ArgumentException("Unknown time granularity", nameof(granularity));
-            }
+                TimeGranularity.Aperiodic => throw new ArgumentException("Cannot add aperiodic time granularity", nameof(granularity)),
+                TimeGranularity.Second1 => dateTime.AddSeconds(count),
+                TimeGranularity.Second2 => dateTime.AddSeconds(count * 2),
+                TimeGranularity.Second3 => dateTime.AddSeconds(count * 3),
+                TimeGranularity.Second4 => dateTime.AddSeconds(count * 4),
+                TimeGranularity.Second5 => dateTime.AddSeconds(count * 5),
+                TimeGranularity.Second6 => dateTime.AddSeconds(count * 6),
+                TimeGranularity.Second10 => dateTime.AddSeconds(count * 10),
+                TimeGranularity.Second12 => dateTime.AddSeconds(count * 12),
+                TimeGranularity.Second15 => dateTime.AddSeconds(count * 15),
+                TimeGranularity.Second20 => dateTime.AddSeconds(count * 20),
+                TimeGranularity.Second30 => dateTime.AddSeconds(count * 30),
+                TimeGranularity.Minute1 => dateTime.AddMinutes(count),
+                TimeGranularity.Minute2 => dateTime.AddMinutes(count * 2),
+                TimeGranularity.Minute3 => dateTime.AddMinutes(count * 3),
+                TimeGranularity.Minute4 => dateTime.AddMinutes(count * 4),
+                TimeGranularity.Minute5 => dateTime.AddMinutes(count * 5),
+                TimeGranularity.Minute6 => dateTime.AddMinutes(count * 6),
+                TimeGranularity.Minute10 => dateTime.AddMinutes(count * 10),
+                TimeGranularity.Minute12 => dateTime.AddMinutes(count * 12),
+                TimeGranularity.Minute15 => dateTime.AddMinutes(count * 15),
+                TimeGranularity.Minute20 => dateTime.AddMinutes(count * 20),
+                TimeGranularity.Minute30 => dateTime.AddMinutes(count * 30),
+                TimeGranularity.Hour1 => dateTime.AddHours(count),
+                TimeGranularity.Hour2 => dateTime.AddHours(count * 2),
+                TimeGranularity.Hour3 => dateTime.AddHours(count * 3),
+                TimeGranularity.Hour4 => dateTime.AddHours(count * 4),
+                TimeGranularity.Hour6 => dateTime.AddHours(count * 6),
+                TimeGranularity.Hour8 => dateTime.AddHours(count * 8),
+                TimeGranularity.Hour12 => dateTime.AddHours(count * 12),
+                TimeGranularity.Day1 => dateTime.AddDays(count),
+                TimeGranularity.Week1 => dateTime.AddDays(count * 7),
+                TimeGranularity.Week2 => dateTime.AddDays(count * 14),
+                TimeGranularity.Week3 => dateTime.AddDays(count * 21),
+                TimeGranularity.Month1 => dateTime.AddMonths(count),
+                TimeGranularity.Month2 => dateTime.AddMonths(count * 2),
+                TimeGranularity.Month3 => dateTime.AddMonths(count * 3),
+                TimeGranularity.Month4 => dateTime.AddMonths(count * 4),
+                TimeGranularity.Month6 => dateTime.AddMonths(count * 6),
+                TimeGranularity.Year1 => dateTime.AddYears(count),
+                _ => throw new ArgumentException("Unknown time granularity", nameof(granularity))
+            };
         }
 
         /// <summary>
@@ -155,131 +74,50 @@ namespace Mbs.Trading.Time
         /// <returns>A new <see cref="DateTime"/> instance.</returns>
         public static DateTime Add(this DateTime dateTime, TimeGranularity granularity)
         {
-            switch (granularity)
+            return granularity switch
             {
-                case TimeGranularity.Aperiodic:
-                    throw new ArgumentException("Cannot add aperiodic time granularities", nameof(granularity));
-
-                case TimeGranularity.Second1:
-                    return dateTime.AddSeconds(1);
-
-                case TimeGranularity.Second2:
-                    return dateTime.AddSeconds(2);
-
-                case TimeGranularity.Second3:
-                    return dateTime.AddSeconds(3);
-
-                case TimeGranularity.Second4:
-                    return dateTime.AddSeconds(4);
-
-                case TimeGranularity.Second5:
-                    return dateTime.AddSeconds(5);
-
-                case TimeGranularity.Second6:
-                    return dateTime.AddSeconds(6);
-
-                case TimeGranularity.Second10:
-                    return dateTime.AddSeconds(10);
-
-                case TimeGranularity.Second12:
-                    return dateTime.AddSeconds(12);
-
-                case TimeGranularity.Second15:
-                    return dateTime.AddSeconds(15);
-
-                case TimeGranularity.Second20:
-                    return dateTime.AddSeconds(20);
-
-                case TimeGranularity.Second30:
-                    return dateTime.AddSeconds(30);
-
-                case TimeGranularity.Minute1:
-                    return dateTime.AddMinutes(1);
-
-                case TimeGranularity.Minute2:
-                    return dateTime.AddMinutes(2);
-
-                case TimeGranularity.Minute3:
-                    return dateTime.AddMinutes(3);
-
-                case TimeGranularity.Minute4:
-                    return dateTime.AddMinutes(4);
-
-                case TimeGranularity.Minute5:
-                    return dateTime.AddMinutes(5);
-
-                case TimeGranularity.Minute6:
-                    return dateTime.AddMinutes(6);
-
-                case TimeGranularity.Minute10:
-                    return dateTime.AddMinutes(10);
-
-                case TimeGranularity.Minute12:
-                    return dateTime.AddMinutes(12);
-
-                case TimeGranularity.Minute15:
-                    return dateTime.AddMinutes(15);
-
-                case TimeGranularity.Minute20:
-                    return dateTime.AddMinutes(20);
-
-                case TimeGranularity.Minute30:
-                    return dateTime.AddMinutes(30);
-
-                case TimeGranularity.Hour1:
-                    return dateTime.AddHours(1);
-
-                case TimeGranularity.Hour2:
-                    return dateTime.AddHours(2);
-
-                case TimeGranularity.Hour3:
-                    return dateTime.AddHours(3);
-
-                case TimeGranularity.Hour4:
-                    return dateTime.AddHours(4);
-
-                case TimeGranularity.Hour6:
-                    return dateTime.AddHours(6);
-
-                case TimeGranularity.Hour8:
-                    return dateTime.AddHours(8);
-
-                case TimeGranularity.Hour12:
-                    return dateTime.AddHours(12);
-
-                case TimeGranularity.Day1:
-                    return dateTime.AddDays(1);
-
-                case TimeGranularity.Week1:
-                    return dateTime.AddDays(7);
-
-                case TimeGranularity.Week2:
-                    return dateTime.AddDays(14);
-
-                case TimeGranularity.Week3:
-                    return dateTime.AddDays(21);
-
-                case TimeGranularity.Month1:
-                    return dateTime.AddMonths(1);
-
-                case TimeGranularity.Month2:
-                    return dateTime.AddMonths(2);
-
-                case TimeGranularity.Month3:
-                    return dateTime.AddMonths(3);
-
-                case TimeGranularity.Month4:
-                    return dateTime.AddMonths(4);
-
-                case TimeGranularity.Month6:
-                    return dateTime.AddMonths(6);
-
-                case TimeGranularity.Year1:
-                    return dateTime.AddYears(1);
-
-                default:
-                    throw new ArgumentException("Unknown time granularity", nameof(granularity));
-            }
+                TimeGranularity.Aperiodic => throw new ArgumentException("Cannot add aperiodic time granularity", nameof(granularity)),
+                TimeGranularity.Second1 => dateTime.AddSeconds(1),
+                TimeGranularity.Second2 => dateTime.AddSeconds(2),
+                TimeGranularity.Second3 => dateTime.AddSeconds(3),
+                TimeGranularity.Second4 => dateTime.AddSeconds(4),
+                TimeGranularity.Second5 => dateTime.AddSeconds(5),
+                TimeGranularity.Second6 => dateTime.AddSeconds(6),
+                TimeGranularity.Second10 => dateTime.AddSeconds(10),
+                TimeGranularity.Second12 => dateTime.AddSeconds(12),
+                TimeGranularity.Second15 => dateTime.AddSeconds(15),
+                TimeGranularity.Second20 => dateTime.AddSeconds(20),
+                TimeGranularity.Second30 => dateTime.AddSeconds(30),
+                TimeGranularity.Minute1 => dateTime.AddMinutes(1),
+                TimeGranularity.Minute2 => dateTime.AddMinutes(2),
+                TimeGranularity.Minute3 => dateTime.AddMinutes(3),
+                TimeGranularity.Minute4 => dateTime.AddMinutes(4),
+                TimeGranularity.Minute5 => dateTime.AddMinutes(5),
+                TimeGranularity.Minute6 => dateTime.AddMinutes(6),
+                TimeGranularity.Minute10 => dateTime.AddMinutes(10),
+                TimeGranularity.Minute12 => dateTime.AddMinutes(12),
+                TimeGranularity.Minute15 => dateTime.AddMinutes(15),
+                TimeGranularity.Minute20 => dateTime.AddMinutes(20),
+                TimeGranularity.Minute30 => dateTime.AddMinutes(30),
+                TimeGranularity.Hour1 => dateTime.AddHours(1),
+                TimeGranularity.Hour2 => dateTime.AddHours(2),
+                TimeGranularity.Hour3 => dateTime.AddHours(3),
+                TimeGranularity.Hour4 => dateTime.AddHours(4),
+                TimeGranularity.Hour6 => dateTime.AddHours(6),
+                TimeGranularity.Hour8 => dateTime.AddHours(8),
+                TimeGranularity.Hour12 => dateTime.AddHours(12),
+                TimeGranularity.Day1 => dateTime.AddDays(1),
+                TimeGranularity.Week1 => dateTime.AddDays(7),
+                TimeGranularity.Week2 => dateTime.AddDays(14),
+                TimeGranularity.Week3 => dateTime.AddDays(21),
+                TimeGranularity.Month1 => dateTime.AddMonths(1),
+                TimeGranularity.Month2 => dateTime.AddMonths(2),
+                TimeGranularity.Month3 => dateTime.AddMonths(3),
+                TimeGranularity.Month4 => dateTime.AddMonths(4),
+                TimeGranularity.Month6 => dateTime.AddMonths(6),
+                TimeGranularity.Year1 => dateTime.AddYears(1),
+                _ => throw new ArgumentException("Unknown time granularity", nameof(granularity))
+            };
         }
 
         /// <summary>
@@ -291,8 +129,8 @@ namespace Mbs.Trading.Time
         public static DateTime AddBusinessDays(this DateTime dateTime, int days)
         {
             int sign = Math.Sign(days);
-            int daysAbsolutValue = sign * days;
-            for (int i = 0; i < daysAbsolutValue; ++i)
+            int daysAbsoluteValue = sign * days;
+            for (int i = 0; i < daysAbsoluteValue; ++i)
             {
                 DayOfWeek dayOfWeek;
                 do
@@ -315,8 +153,8 @@ namespace Mbs.Trading.Time
         public static DateTime AddEuronextTradingDays(this DateTime dateTime, int days)
         {
             int sign = Math.Sign(days);
-            int daysAbsolutValue = sign * days;
-            for (int i = 0; i < daysAbsolutValue; ++i)
+            int daysAbsoluteValue = sign * days;
+            for (int i = 0; i < daysAbsoluteValue; ++i)
             {
                 do
                 {

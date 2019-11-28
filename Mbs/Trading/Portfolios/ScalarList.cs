@@ -6,14 +6,14 @@ using Mbs.Trading.Data;
 namespace Mbs.Trading.Portfolios
 {
     /// <summary>
-    /// An updatable list of scalars.
+    /// An updateable list of scalars.
     /// </summary>
     internal class ScalarList
     {
         private readonly List<Scalar> list = new List<Scalar>();
         private readonly object updateLock = new object();
-        private Scalar scalar = new Scalar(new DateTime(0L), double.NaN);
-        private double valueOld;
+        private Scalar scalar = new Scalar(new DateTime(0L));
+        // private double valueOld;
 
         /// <summary>
         /// Gets the read-only collection of scalars.
@@ -89,7 +89,7 @@ namespace Mbs.Trading.Portfolios
                 {
                     scalar = new Scalar(dateTime, value + scalar.Value);
                     list.Add(scalar);
-                    valueOld = scalar.Value;
+                    //valueOld = scalar.Value;
                 }
             }
         }
@@ -101,7 +101,7 @@ namespace Mbs.Trading.Portfolios
         {
             lock (updateLock)
             {
-                scalar = new Scalar(new DateTime(0L), double.NaN);
+                scalar = new Scalar(new DateTime(0L));
                 list.Clear();
             }
         }

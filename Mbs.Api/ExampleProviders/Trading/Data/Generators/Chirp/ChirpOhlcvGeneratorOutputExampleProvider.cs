@@ -6,7 +6,7 @@ using Swashbuckle.AspNetCore.Filters;
 namespace Mbs.Api.ExampleProviders.Trading.Data.Generators.Chirp
 {
     /// <inheritdoc />
-    internal class ChirpOhlcvGeneratorOutputExampleProvider : IExamplesProvider
+    internal class ChirpOhlcvGeneratorOutputExampleProvider : IExamplesProvider<SyntheticDataGeneratorOutput<Ohlcv>>
     {
         internal const string Name = ChirpOhlcvGenerator.WaveformName;
         internal const string Moniker = "100∙chirp(128 ➜ 16, 128, linear period) + 10 + noise(ρn=0.01), v=100, ρb=0.2, ρs=0.3";
@@ -22,7 +22,7 @@ namespace Mbs.Api.ExampleProviders.Trading.Data.Generators.Chirp
         internal const double Close2 = 252.76;
 
         /// <inheritdoc />
-        public object GetExamples()
+        public SyntheticDataGeneratorOutput<Ohlcv> GetExamples()
         {
             return new SyntheticDataGeneratorOutput<Ohlcv>
             {

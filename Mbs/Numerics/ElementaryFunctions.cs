@@ -156,7 +156,7 @@ namespace Mbs.Numerics
                 if (0 != (n & 1))
                     num2 *= num;
                 num *= num;
-                n = n >> 1;
+                n >>= 1;
             }
             while (n > 0);
             if (flag)

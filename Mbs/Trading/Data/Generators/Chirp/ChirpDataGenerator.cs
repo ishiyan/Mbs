@@ -163,44 +163,30 @@ namespace Mbs.Trading.Data.Generators.Chirp
 
         private double CalculateRatio(ChirpSweep chirpSweep)
         {
-            switch (chirpSweep)
+            return chirpSweep switch
             {
-                case ChirpSweep.LinearPeriod:
-                    return (FinalPeriod - InitialPeriod) / lengthMinusOne;
-                case ChirpSweep.LinearFrequency:
-                    return (finalFrequency - initialFrequency) / lengthMinusOne;
-                case ChirpSweep.QuadraticPeriod:
-                    return (FinalPeriod - InitialPeriod) / (lengthMinusOne * lengthMinusOne);
-                case ChirpSweep.QuadraticFrequency:
-                    return (finalFrequency - initialFrequency) / (lengthMinusOne * lengthMinusOne);
-                case ChirpSweep.LogarithmicPeriod:
-                    return FinalPeriod / InitialPeriod;
-                case ChirpSweep.LogarithmicFrequency:
-                    return finalFrequency / initialFrequency;
-                default:
-                    throw new ArgumentException($"Unknown chirp sweep ${chirpSweep}", nameof(chirpSweep));
-            }
+                ChirpSweep.LinearPeriod => ((FinalPeriod - InitialPeriod) / lengthMinusOne),
+                ChirpSweep.LinearFrequency => ((finalFrequency - initialFrequency) / lengthMinusOne),
+                ChirpSweep.QuadraticPeriod => ((FinalPeriod - InitialPeriod) / (lengthMinusOne * lengthMinusOne)),
+                ChirpSweep.QuadraticFrequency => ((finalFrequency - initialFrequency) / (lengthMinusOne * lengthMinusOne)),
+                ChirpSweep.LogarithmicPeriod => (FinalPeriod / InitialPeriod),
+                ChirpSweep.LogarithmicFrequency => (finalFrequency / initialFrequency),
+                _ => throw new ArgumentException($"Unknown chirp sweep ${chirpSweep}", nameof(chirpSweep))
+            };
         }
 
         private static string SweepName(ChirpSweep chirpSweep)
         {
-            switch (chirpSweep)
+            return chirpSweep switch
             {
-                case ChirpSweep.LinearPeriod:
-                    return "linear period";
-                case ChirpSweep.LinearFrequency:
-                    return "linear freq";
-                case ChirpSweep.QuadraticPeriod:
-                    return "quadratic period";
-                case ChirpSweep.QuadraticFrequency:
-                    return "quadratic freq";
-                case ChirpSweep.LogarithmicPeriod:
-                    return "logarithmic period";
-                case ChirpSweep.LogarithmicFrequency:
-                    return "logarithmic freq";
-                default:
-                    throw new ArgumentException($"Unknown chirp shape ${chirpSweep}", nameof(chirpSweep));
-            }
+                ChirpSweep.LinearPeriod => "linear period",
+                ChirpSweep.LinearFrequency => "linear freq",
+                ChirpSweep.QuadraticPeriod => "quadratic period",
+                ChirpSweep.QuadraticFrequency => "quadratic freq",
+                ChirpSweep.LogarithmicPeriod => "logarithmic period",
+                ChirpSweep.LogarithmicFrequency => "logarithmic freq",
+                _ => throw new ArgumentException($"Unknown chirp shape ${chirpSweep}", nameof(chirpSweep))
+            };
         }
 
         private void Initialize()

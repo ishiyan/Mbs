@@ -6,7 +6,7 @@ using Swashbuckle.AspNetCore.Filters;
 namespace Mbs.Api.ExampleProviders.Trading.Data.Generators.FractionalBrownianMotion
 {
     /// <inheritdoc />
-    internal class FractionalBrownianMotionOhlcvGeneratorOutputExampleProvider : IExamplesProvider
+    internal class FractionalBrownianMotionOhlcvGeneratorOutputExampleProvider : IExamplesProvider<SyntheticDataGeneratorOutput<Ohlcv>>
     {
         internal const string Name = FractionalBrownianMotionOhlcvGenerator.WaveformName;
         internal const string Moniker = "fBm(Hosking, l=128, H=0.63) ∙ 100 + 10 + noise(ρn=0.01), v=100, ρb=0.2, ρs=0.3";
@@ -22,7 +22,7 @@ namespace Mbs.Api.ExampleProviders.Trading.Data.Generators.FractionalBrownianMot
         internal const double Close2 = 22.98;
 
         /// <inheritdoc />
-        public object GetExamples()
+        public SyntheticDataGeneratorOutput<Ohlcv> GetExamples()
         {
             return new SyntheticDataGeneratorOutput<Ohlcv>
             {

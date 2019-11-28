@@ -6,7 +6,7 @@ using Swashbuckle.AspNetCore.Filters;
 namespace Mbs.Api.ExampleProviders.Trading.Data.Generators.RepetitiveSample
 {
     /// <inheritdoc />
-    internal class RepetitiveSampleQuoteGeneratorOutputExampleProvider : IExamplesProvider
+    internal class RepetitiveSampleQuoteGeneratorOutputExampleProvider : IExamplesProvider<SyntheticDataGeneratorOutput<Quote>>
     {
         internal const string Name = RepetitiveSampleQuoteGenerator.WaveformName;
         internal const string Moniker = "repetitive quote sample (len=252)";
@@ -22,7 +22,7 @@ namespace Mbs.Api.ExampleProviders.Trading.Data.Generators.RepetitiveSample
         internal const double AskSize2 = 4955900;
 
         /// <inheritdoc />
-        public object GetExamples()
+        public SyntheticDataGeneratorOutput<Quote> GetExamples()
         {
             return new SyntheticDataGeneratorOutput<Quote>
             {

@@ -1,4 +1,5 @@
-﻿namespace Mbs.Numerics.Random
+﻿// ReSharper disable once CheckNamespace
+namespace Mbs.Numerics.Random
 {
     /// <summary>
     /// The Well44497b pseudo-random number generator as described in a paper by François Panneton, Pierre L'Ecuyer and Makoto Matsumoto.
@@ -100,8 +101,8 @@
             Index = indexRm1;
 
             // Add Matsumoto-Kurita tempering to get a maximally-equidistributed generator.
-            z4 = z4 ^ ((z4 << 7) & 0x93dd1400U);
-            z4 = z4 ^ ((z4 << 15) & 0xfa118000U);
+            z4 ^= ((z4 << 7) & 0x93dd1400U);
+            z4 ^= ((z4 << 15) & 0xfa118000U);
 
             return z4;
         }

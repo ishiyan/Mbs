@@ -1,14 +1,17 @@
 ﻿using System;
 using Mbs.Api.Extensions;
+using Mbs.Api.Extensions.ExceptionHandling;
+using Mbs.Api.Extensions.Swagger;
 using Mbs.Api.Host.Ng.Extensions;
 using Mbs.Api.Services.Trading.Instruments;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 // ReSharper disable UnusedMember.Global
@@ -36,19 +39,29 @@ namespace Mbs.Api.Host.Ng
             if (enableSwagger)
                 services.AddMbsApiSwagger("Mbs.Api.Host.Ng");
 
-            services.AddMvc()
-                .AddJsonOptions(options =>
+            services
+                .AddControllers()
+                /* use newtonsoft because swagger uses it anyway */
+                .AddNewtonsoftJson(options =>
                 {
+                    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                    options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
                     options.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
-                    options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
-                })
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+                });
+                /* use microsoft json; this still doesn't work together with swagger */
+                /*.AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.IgnoreNullValues = true;
+                    options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+                    options.JsonSerializerOptions.Converters.Add(new TimeSpanJsonConverter());
+                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase, false));
+                });*/
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(conf => conf.RootPath = "wwwroot");
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment environment, ILoggerFactory loggerFactory, IInstrumentListDataService instrumentList)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment environment, ILoggerFactory loggerFactory, IInstrumentListDataService instrumentList)
         {
             if (loggerFactory == null)
                 throw new ArgumentNullException(nameof(loggerFactory));
@@ -56,6 +69,7 @@ namespace Mbs.Api.Host.Ng
                 throw new ArgumentNullException(nameof(instrumentList));
 
             Log.SetLogger(loggerFactory.CreateLogger("Mbs"));
+            Log.SetLoggerFactory(loggerFactory);
             instrumentList.AddListFromJsonFile("euronext", "euronext.json");
 
             // Registered before static files to always set header.
@@ -66,8 +80,14 @@ namespace Mbs.Api.Host.Ng
                 app.UseMbsApiSwagger();
             /* app.UseAngularRouting(); */
 
+            app.UseStaticFiles();
             app.UseSpaStaticFiles();
-            app.UseMvcWithDefaultRoute();
+            app.UseRouting();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute("default", "{controller}/{action=Index}/{id?}");
+            });
+
             app.UseSpa(spa =>
             {
                 // See https://go.microsoft.com/fwlink/?linkid=864501

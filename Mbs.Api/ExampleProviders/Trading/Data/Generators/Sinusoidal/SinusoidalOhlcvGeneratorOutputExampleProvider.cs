@@ -6,7 +6,7 @@ using Swashbuckle.AspNetCore.Filters;
 namespace Mbs.Api.ExampleProviders.Trading.Data.Generators.Sinusoidal
 {
     /// <inheritdoc />
-    internal class SinusoidalOhlcvGeneratorOutputExampleProvider : IExamplesProvider
+    internal class SinusoidalOhlcvGeneratorOutputExampleProvider : IExamplesProvider<SyntheticDataGeneratorOutput<Ohlcv>>
     {
         internal const string Name = SinusoidalOhlcvGenerator.WaveformName;
         internal const string Moniker = "100∙cos(2π∙t/16) + 10 + noise(ρn=0.01), v=100, ρb=0.2, ρs=0.3";
@@ -22,7 +22,7 @@ namespace Mbs.Api.ExampleProviders.Trading.Data.Generators.Sinusoidal
         internal const double Close2 = 162.77;
 
         /// <inheritdoc />
-        public object GetExamples()
+        public SyntheticDataGeneratorOutput<Ohlcv> GetExamples()
         {
             return new SyntheticDataGeneratorOutput<Ohlcv>
             {

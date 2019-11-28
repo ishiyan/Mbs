@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
+// ReSharper disable once CheckNamespace
 namespace Mbs.Numerics
 {
     /// <summary>
@@ -9,7 +10,7 @@ namespace Mbs.Numerics
     public static partial class SpecialFunctions
     {
         /// <summary>
-        /// The natural logrithm of the gamma function,
+        /// The natural logarithm of the gamma function,
         /// <para><c>lnΓ(x) = ln∫̥˚˚ tˣ⁻¹e⁻ᵗdt</c>.</para>
         /// <para>Because <c>Γ(x)</c> grows rapidly for increasing positive <c>x</c>, it is often necessary to
         /// work with its logarithm in order to avoid overflow. This function returns accurate
@@ -100,7 +101,7 @@ namespace Mbs.Numerics
         }
 
         /// <summary>
-        /// The natural logrithm of the complex gamma function, <c>lnΓ(x)</c>.
+        /// The natural logarithm of the complex gamma function, <c>lnΓ(x)</c>.
         /// </summary>
         /// <param name="z">The complex argument, which must have a non-negative real part.</param>
         /// <returns>The complex value <c>lnΓ(x)</c>.</returns>
@@ -242,7 +243,7 @@ namespace Mbs.Numerics
         }
 
         /// <summary>
-        /// The psi function, <c>ψ(x)</c>, also called the digamma function, is the logrithmic derivative of the gamma function:
+        /// The psi function, <c>ψ(x)</c>, also called the digamma function, is the logarithmic derivative of the gamma function:
         /// <para><c>ψ(x) = d/dx ln Γ(x) = Γʹ(x)/Γ(x)</c>.</para>
         /// </summary>
         /// <param name="x">The real argument.</param>
@@ -283,7 +284,7 @@ namespace Mbs.Numerics
         /// <summary>
         /// Evaluates the digamma function for an integer argument.
         /// <para />
-        /// The psi function, <c>ψ(x)</c>, also called the digamma function, is the logrithmic derivative of the gamma function:
+        /// The psi function, <c>ψ(x)</c>, also called the digamma function, is the logarithmic derivative of the gamma function:
         /// <para />
         /// ψ(x) = d/dx ln Γ(x) = Γʹ(x)/Γ(x).
         /// </summary>
@@ -303,7 +304,7 @@ namespace Mbs.Numerics
         }
 
         /// <summary>
-        /// The complex psi function, <c>ψ(z)</c>, also called the digamma function, is the logrithmic derivative of the gamma function:
+        /// The complex psi function, <c>ψ(z)</c>, also called the digamma function, is the logarithmic derivative of the gamma function:
         /// <para><c>ψ(z) = d/dz ln Γ(z) = Γʹ(z)/Γ(z)</c>.</para>
         /// </summary>
         /// <param name="z">The complex argument.</param>
@@ -370,7 +371,7 @@ namespace Mbs.Numerics
             // Compute the minimum x required for our asymptotic series to converge
             // The original approximation was to say that, for 1 << k << n, the factorials approach e²ᵏ,
             // so to achieve convergence to 10⁻¹⁶ at the 8'th term we should need x ~ 10 e ~ 27.
-            // Unfortunately this estimate is both crude and an underestimate; for now i use an emperical relationship instead.
+            // Unfortunately this estimate is both crude and an underestimate; for now i use an empirical relationship instead.
             double xm = 16d + 2 * n;
 
             // By repeatedly using ψ(n,x) = ψ(n,x+1) - (-1)ⁿ n! / xⁿ⁺¹,
@@ -441,7 +442,7 @@ namespace Mbs.Numerics
         /// <para>This function changes rapidly from 1 to 0 around the point <c>x=a</c>.</para>
         /// <para>This function is the complement of the lower incomplete gamma function <c>P(a,x) = 1 - Q(a,x)</c> (<see cref="RegularizedGammaP"/>).</para>
         /// </summary>
-        /// <param name="a">The shape paraemter, which must be positive.</param>
+        /// <param name="a">The shape parameter, which must be positive.</param>
         /// <param name="x">The argument, which must be non-negative.</param>
         /// <returns>The value of <c>Γ(a,x)/Γ(x)</c>.</returns>
         public static double RegularizedGammaQ(double a, double x)
@@ -462,7 +463,7 @@ namespace Mbs.Numerics
         }
 
         /// <summary>
-        /// The full (non-normalised / non-regularized) lower incomplete Gamma function,
+        /// The full (non-normalized / non-regularized) lower incomplete Gamma function,
         /// <para><c>γ(a,x) = ∫̽˳ tᵃ⁻¹e⁻ᵗdt</c>.</para>
         /// <para>The lower incomplete gamma function is obtained by carrying out the gamma function integration from zero to some
         /// finite value <c>x</c>, instead of to infinity. Like the gamma function itself, this function gets large very quickly. For most
@@ -479,7 +480,7 @@ namespace Mbs.Numerics
         }
 
         /// <summary>
-        /// The full (non-normalised / non-regularized) upper incomplete Gamma function,
+        /// The full (non-normalized / non-regularized) upper incomplete Gamma function,
         /// <para><c>Γ(a,x) = ∫̊ₓ̊ tᵃ⁻¹e⁻ᵗdt</c>.</para>
         /// <para>The upper incomplete gamma function is obtained by carrying out the gamma function integration from finite value <c>x</c>
         /// to infinity. Like the gamma function itself, this function gets large very quickly. For most
@@ -638,14 +639,14 @@ namespace Mbs.Numerics
                 // the entries of one parity are the source (and are set to zero after being used), the of the other parity are the target.
                 for (int j = i; j >= 0; j -= 2)
                 {
-                    // Add -j times our coeffcient to the coefficient above.
+                    // Add -j times our coefficient to the coefficient above.
                     p[j + 1] += -j * p[j];
 
                     // Same for the coefficient below; we need not add since no one else has addressed it yet (since we are moving down).
                     if (j > 0)
                         p[j - 1] = -j * p[j];
 
-                    // We are done with this coefficeint; make it zero for the next time.
+                    // We are done with this coefficient; make it zero for the next time.
                     p[j] = 0d;
                 }
             }
@@ -754,14 +755,14 @@ namespace Mbs.Numerics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static double IncompleteGammaContinuedFraction(double a, double x)
         {
-            // Evaluates continued fraction for incomplete gamma function by modiﬁed Lentz’s method.
+            // Evaluates continued fraction for incomplete gamma function by modified Lentz’s method.
 
             // A number near the smallest representable floating-point number.
-            const double fpmin = 1.1016237598729697e-47;
+            const double fpMin = 1.1016237598729697e-47;
 
             double d = 1d - a + x;
-            if (Math.Abs(d) < fpmin)
-                d = fpmin;
+            if (Math.Abs(d) < fpMin)
+                d = fpMin;
             double p = 0d;
             double q = d;
             int i = 1;
@@ -771,11 +772,11 @@ namespace Mbs.Numerics
                 double u = i * (a - i);
                 double v = 2 * i + 1d - a + x;
                 p = v + u * p;
-                if (Math.Abs(p) < fpmin)
-                    p = fpmin;
+                if (Math.Abs(p) < fpMin)
+                    p = fpMin;
                 q = v + u / q;
-                if (Math.Abs(q) < fpmin)
-                    q = fpmin;
+                if (Math.Abs(q) < fpMin)
+                    q = fpMin;
                 p = 1d / p;
                 r = p * q;
                 if (Math.Abs(r - 1d) < double.Epsilon)
@@ -1011,7 +1012,7 @@ namespace Mbs.Numerics
                 }
 
                 v = Constants.Sqrt2 * Math.Sqrt(-Math.Log(v));
-                v = v - (3.31125922108741 + v * (11.6616720288968 + v * (4.28342155967104 + v * 0.213623493715853))) / (1d + v * (6.61053765625462 + v * (6.40691597760039 + v * (1.27364489782223 + v * 0.036117081018842))));
+                v -= (3.31125922108741 + v * (11.6616720288968 + v * (4.28342155967104 + v * 0.213623493715853))) / (1d + v * (6.61053765625462 + v * (6.40691597760039 + v * (1.27364489782223 + v * 0.036117081018842))));
                 if (flag)
                     v = -v;
                 double w = v * v;
@@ -1120,6 +1121,7 @@ namespace Mbs.Numerics
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        // ReSharper disable once IdentifierTypo
         private static double Rcomp(double a, double x)
         {
             if (a < 20d)
@@ -1133,6 +1135,7 @@ namespace Mbs.Numerics
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        // ReSharper disable once IdentifierTypo
         private static double Rlog(double x)
         {
             return x - 1d - Math.Log(x);

@@ -1101,7 +1101,7 @@ namespace Mbs.UnitTests.Numerics.SpecialFunctions
         /// <param name="b">The upper bound, must be positive.</param>
         /// <param name="n">Number of samples to generate.</param>
         /// <returns>An array of generated samples.</returns>
-        private static IEnumerable<double> GenerateUniformRealPositivaSamples(double a, double b, int n)
+        private static IEnumerable<double> GenerateUniformRealPositiveSamples(double a, double b, int n)
         {
             var rng = new Random(1);
             for (int i = 0; i < n; ++i)

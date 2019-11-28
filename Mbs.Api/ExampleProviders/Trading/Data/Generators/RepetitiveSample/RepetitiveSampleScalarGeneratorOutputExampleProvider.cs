@@ -6,7 +6,7 @@ using Swashbuckle.AspNetCore.Filters;
 namespace Mbs.Api.ExampleProviders.Trading.Data.Generators.RepetitiveSample
 {
     /// <inheritdoc />
-    internal class RepetitiveSampleScalarGeneratorOutputExampleProvider : IExamplesProvider
+    internal class RepetitiveSampleScalarGeneratorOutputExampleProvider : IExamplesProvider<SyntheticDataGeneratorOutput<Scalar>>
     {
         internal const string Name = RepetitiveSampleScalarGenerator.WaveformName;
         internal const string Moniker = "repetitive scalar sample (len=252)";
@@ -15,7 +15,7 @@ namespace Mbs.Api.ExampleProviders.Trading.Data.Generators.RepetitiveSample
         internal const double Price2 = 94.81;
 
         /// <inheritdoc />
-        public object GetExamples()
+        public SyntheticDataGeneratorOutput<Scalar> GetExamples()
         {
             return new SyntheticDataGeneratorOutput<Scalar>
             {

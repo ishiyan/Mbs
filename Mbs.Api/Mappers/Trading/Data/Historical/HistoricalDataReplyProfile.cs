@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using AutoMapper;
 using Mbs.Api.Models.Trading.Data.Historical;

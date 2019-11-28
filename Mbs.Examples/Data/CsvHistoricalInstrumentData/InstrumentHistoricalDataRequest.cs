@@ -35,19 +35,14 @@ namespace CsvHistoricalInstrumentData
                 if (Entity == null)
                     throw new ArgumentNullException(nameof(Entity));
 
-                switch (Entity.ToLowerInvariant())
+                return Entity.ToLowerInvariant() switch
                 {
-                    case "ohlcv":
-                        return typeof(Ohlcv);
-                    case "trade":
-                        return typeof(Trade);
-                    case "quote":
-                        return typeof(Quote);
-                    case "scalar":
-                        return typeof(Scalar);
-                }
-
-                throw new ArgumentException(nameof(Entity), $"Unknown entity type: {Entity}");
+                    "ohlcv" => typeof(Ohlcv),
+                    "trade" => typeof(Trade),
+                    "quote" => typeof(Quote),
+                    "scalar" => typeof(Scalar),
+                    _ => throw new ArgumentException(nameof(Entity), $"Unknown entity type: {Entity}")
+                };
             }
         }
 

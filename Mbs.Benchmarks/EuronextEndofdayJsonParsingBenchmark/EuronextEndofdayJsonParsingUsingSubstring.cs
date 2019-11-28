@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using Mbs;
 using Mbs.Trading.Data;
 
+// ReSharper disable once CheckNamespace
 namespace EuronextEndofdayJsonParsing
 {
     public static class EuronextEndofdayJsonParsingUsingSubstring
@@ -44,7 +45,9 @@ namespace EuronextEndofdayJsonParsing
 
         private static Ohlcv ParseJson(string str, TimeSpan? endofdayClosingTime, string isin)
         {
+            // ReSharper disable CommentTypo
             // "ISIN":"FR0010533075","MIC":"Euronext Paris, London","date":"29\/08\/2012","open":"5.85","high":"5.918","low":"5.84","close":"5.893","nymberofshares":"589,993","numoftrades":"1,467","turnover":"3,465,442.27","currency":"EUR"
+            // ReSharper restore CommentTypo
             string[] splitted = Regex.Split(str, @",""");
             if (7 >= splitted.Length)
             {
@@ -57,13 +60,15 @@ namespace EuronextEndofdayJsonParsing
             // "ISIN":"FR0010930636"
             //           11111111112
             // 012345678901234567890
-            if (!entry.ToUpperInvariant().StartsWith(@"""ISIN"":""", StringComparison.Ordinal) || '\"' != entry[entry.Length - 1])
+            if (!entry.ToUpperInvariant().StartsWith(@"""ISIN"":""", StringComparison.Ordinal) || '\"' != entry[^1])
             {
                 Log.Error($"{Prefix}: invalid endofday json: invalid [ISIN] splitted entry [{entry}] in [{str}], skipping.");
                 return null;
             }
 
+#pragma warning disable IDE0057 // Use range operator
             entry = entry.Substring(8, entry.Length - 9); // FR0010930636
+#pragma warning restore IDE0057 // Use range operator
             if (!string.Equals(entry, isin, StringComparison.InvariantCultureIgnoreCase))
             {
                 Log.Error($"{Prefix}: invalid endofday json: ISIN in instrument context [{isin}] differs from [ISIN] entry [{entry}] in [{str}], skipping.");
@@ -92,14 +97,16 @@ namespace EuronextEndofdayJsonParsing
             //           111111
             // 0123456789012345
             if (!entry.ToUpperInvariant().StartsWith(@"OPEN"":""", StringComparison.Ordinal)
-                || '\"' != entry[entry.Length - 1]
+                || '\"' != entry[^1]
                 || entry.ToUpperInvariant().Contains("NULL", StringComparison.Ordinal))
             {
                 Log.Error($"{Prefix}: invalid endofday json: invalid [open] splitted entry [{entry}] in [{str}], skipping.");
                 return null;
             }
 
+#pragma warning disable IDE0057 // Use range operator
             entry = entry.Substring(7, entry.Length - 8); // 1,329.39
+#pragma warning restore IDE0057 // Use range operator
             entry = entry.Replace(",", string.Empty, StringComparison.Ordinal); // 1329.39
             double open;
             try
@@ -118,14 +125,16 @@ namespace EuronextEndofdayJsonParsing
             //           11111
             // 012345678901234
             if (!entry.ToUpperInvariant().StartsWith(@"HIGH"":""", StringComparison.Ordinal)
-                || '\"' != entry[entry.Length - 1]
+                || '\"' != entry[^1]
                 || entry.ToUpperInvariant().Contains("NULL", StringComparison.Ordinal))
             {
                 Log.Error($"{Prefix}: Invalid endofday json: invalid [high] splitted entry [{entry}] in [{str}], skipping.");
                 return null;
             }
 
+#pragma warning disable IDE0057 // Use range operator
             entry = entry.Substring(7, entry.Length - 8); // 1,329.39
+#pragma warning restore IDE0057 // Use range operator
             entry = entry.Replace(",", string.Empty, StringComparison.Ordinal); // 1329.39
             double high;
             try
@@ -144,14 +153,16 @@ namespace EuronextEndofdayJsonParsing
             //           11111
             // 012345678902345
             if (!entry.ToUpperInvariant().StartsWith(@"LOW"":""", StringComparison.Ordinal)
-                || '\"' != entry[entry.Length - 1]
+                || '\"' != entry[^1]
                 || entry.ToUpperInvariant().Contains("NULL", StringComparison.Ordinal))
             {
                 Log.Error($"{Prefix}: invalid endofday json: invalid [low] splitted entry [{entry}] in [{str}], skipping.");
                 return null;
             }
 
+#pragma warning disable IDE0057 // Use range operator
             entry = entry.Substring(6, entry.Length - 7); // 1,329.39
+#pragma warning restore IDE0057 // Use range operator
             entry = entry.Replace(",", string.Empty, StringComparison.Ordinal); // 1329.39
             double low;
             try
@@ -170,14 +181,16 @@ namespace EuronextEndofdayJsonParsing
             //           1111111
             // 01234567890123456
             if (!entry.ToUpperInvariant().StartsWith(@"CLOSE"":""", StringComparison.Ordinal)
-                || '\"' != entry[entry.Length - 1]
+                || '\"' != entry[^1]
                 || entry.ToUpperInvariant().Contains("NULL", StringComparison.Ordinal))
             {
                 Log.Error($"{Prefix}: invalid endofday json: invalid [close] splitted entry [{entry}] in [{str}], skipping.");
                 return null;
             }
 
+#pragma warning disable IDE0057 // Use range operator
             entry = entry.Substring(8, entry.Length - 9); // 1,329.39
+#pragma warning restore IDE0057 // Use range operator
             entry = entry.Replace(",", string.Empty, StringComparison.Ordinal); // 1329.39
             double close;
             try
@@ -192,20 +205,26 @@ namespace EuronextEndofdayJsonParsing
 
             entry = splitted[7];
 
+            // ReSharper disable once CommentTypo
             // nymberofshares":"1,118.00"
+            // ReSharper disable once CommentTypo
             // nymberofshares":"0,00"
             //           111111111122
             // 0123456789012345678901
-            if (!(entry.ToUpperInvariant().StartsWith(@"NYMBEROFSHARES"":""", StringComparison.Ordinal)
+            // ReSharper disable StringLiteralTypo
+            if (!(entry.ToUpperInvariant().StartsWith(@"NYMBEROFSHARES"":""", StringComparison.Ordinal) 
                 || entry.ToUpperInvariant().StartsWith(@"NUMBEROFSHARES"":""", StringComparison.Ordinal))
-                || '\"' != entry[entry.Length - 1]
+                || '\"' != entry[^1]
                 || entry.ToUpperInvariant().Contains("NULL", StringComparison.Ordinal))
+                // ReSharper restore StringLiteralTypo
             {
                 Log.Error($"{Prefix}: invalid endofday json: invalid [numberOfShares] splitted entry [{entry}] in [{str}], skipping.");
                 return null;
             }
 
+#pragma warning disable IDE0057 // Use range operator
             entry = entry.Substring(17, entry.Length - 18); // 1,118.00 // 0,00
+#pragma warning restore IDE0057 // Use range operator
             entry = entry.Replace(",", string.Empty, StringComparison.Ordinal); // 1118.00 // 000
             double volume;
             try

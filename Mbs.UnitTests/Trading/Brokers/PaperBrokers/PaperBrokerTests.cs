@@ -90,29 +90,30 @@ namespace Mbs.UnitTests.Trading.Brokers.PaperBrokers
                 }
             });
             timeline.Replay();
+            //paperBroker.Dispose();
         }
 
         [TestMethod]
         public void PaperBroker_Timepiece_WhenSet_GetsCorrectValue()
         {
-            var target = new PaperBroker();
+            using var target = new PaperBroker();
             Assert.IsNull(target.Timepiece, "(1)");
 
             var timepiece = new SlaveStepTimepiece(new TimeSpan(9, 0, 0), new TimeSpan(17, 30, 0));
             target.Timepiece = timepiece;
             Assert.AreEqual(timepiece, target.Timepiece, "(2)");
 
-            target = new PaperBroker(timepiece, null, null, 0d, FillOnQuote.None, FillOnTrade.None, FillOnOhlcv.None);
-            Assert.AreEqual(timepiece, target.Timepiece, "(3)");
+            using var target2 = new PaperBroker(timepiece, null, null, 0d, FillOnQuote.None, FillOnTrade.None, FillOnOhlcv.None);
+            Assert.AreEqual(timepiece, target2.Timepiece, "(3)");
 
-            target.Timepiece = null;
+            target2.Timepiece = null;
             Assert.IsNull(target.Timepiece, "(4)");
         }
 
         [TestMethod]
         public void PaperBroker_SellSideAsynchronous_WhenSet_GetsCorrectValue()
         {
-            var target = new PaperBroker();
+            using var target = new PaperBroker();
             Assert.IsFalse(target.SellSideAsynchronous, "(1)");
 
             target.SellSideAsynchronous = true;
@@ -125,174 +126,174 @@ namespace Mbs.UnitTests.Trading.Brokers.PaperBrokers
         [TestMethod]
         public void PaperBroker_FillOnTrade_WhenSet_GetsCorrectValue()
         {
-            var target = new PaperBroker { FillOnTrade = FillOnTrade.Last };
-            Assert.AreEqual(FillOnTrade.Last, target.FillOnTrade, "(1)");
+            using var target1 = new PaperBroker { FillOnTrade = FillOnTrade.Last };
+            Assert.AreEqual(FillOnTrade.Last, target1.FillOnTrade, "(1)");
 
-            target.FillOnTrade = FillOnTrade.Next;
-            Assert.AreEqual(FillOnTrade.Next, target.FillOnTrade, "(2)");
+            target1.FillOnTrade = FillOnTrade.Next;
+            Assert.AreEqual(FillOnTrade.Next, target1.FillOnTrade, "(2)");
 
-            target.FillOnTrade = FillOnTrade.None;
-            Assert.AreEqual(FillOnTrade.None, target.FillOnTrade, "(3)");
+            target1.FillOnTrade = FillOnTrade.None;
+            Assert.AreEqual(FillOnTrade.None, target1.FillOnTrade, "(3)");
 
-            target = new PaperBroker(null, null, null, 0d, FillOnQuote.None, FillOnTrade.Last, FillOnOhlcv.None);
-            Assert.AreEqual(FillOnTrade.Last, target.FillOnTrade, "(4)");
+            using var target2 = new PaperBroker(null, null, null, 0d, FillOnQuote.None, FillOnTrade.Last, FillOnOhlcv.None);
+            Assert.AreEqual(FillOnTrade.Last, target2.FillOnTrade, "(4)");
 
-            target = new PaperBroker(null, null, null, 0d, FillOnQuote.None, FillOnTrade.Next, FillOnOhlcv.None);
-            Assert.AreEqual(FillOnTrade.Next, target.FillOnTrade, "(5)");
+            using var target3 = new PaperBroker(null, null, null, 0d, FillOnQuote.None, FillOnTrade.Next, FillOnOhlcv.None);
+            Assert.AreEqual(FillOnTrade.Next, target3.FillOnTrade, "(5)");
 
-            target = new PaperBroker(null, null, null, 0d, FillOnQuote.None, FillOnTrade.None, FillOnOhlcv.None);
-            Assert.AreEqual(FillOnTrade.None, target.FillOnTrade, "(6)");
+            using var target4 = new PaperBroker(null, null, null, 0d, FillOnQuote.None, FillOnTrade.None, FillOnOhlcv.None);
+            Assert.AreEqual(FillOnTrade.None, target4.FillOnTrade, "(6)");
         }
 
         [TestMethod]
         public void PaperBroker_FillOnQuote_WhenSet_GetsCorrectValue()
         {
-            var target = new PaperBroker { FillOnQuote = FillOnQuote.Last };
-            Assert.AreEqual(FillOnQuote.Last, target.FillOnQuote, "(1)");
+            using var target1 = new PaperBroker { FillOnQuote = FillOnQuote.Last };
+            Assert.AreEqual(FillOnQuote.Last, target1.FillOnQuote, "(1)");
 
-            target.FillOnQuote = FillOnQuote.Next;
-            Assert.AreEqual(FillOnQuote.Next, target.FillOnQuote, "(2)");
+            target1.FillOnQuote = FillOnQuote.Next;
+            Assert.AreEqual(FillOnQuote.Next, target1.FillOnQuote, "(2)");
 
-            target.FillOnQuote = FillOnQuote.None;
-            Assert.AreEqual(FillOnQuote.None, target.FillOnQuote, "(3)");
+            target1.FillOnQuote = FillOnQuote.None;
+            Assert.AreEqual(FillOnQuote.None, target1.FillOnQuote, "(3)");
 
-            target = new PaperBroker(null, null, null, 0d, FillOnQuote.Last, FillOnTrade.None, FillOnOhlcv.None);
-            Assert.AreEqual(FillOnQuote.Last, target.FillOnQuote, "(4)");
+            using var target2 = new PaperBroker(null, null, null, 0d, FillOnQuote.Last, FillOnTrade.None, FillOnOhlcv.None);
+            Assert.AreEqual(FillOnQuote.Last, target2.FillOnQuote, "(4)");
 
-            target = new PaperBroker(null, null, null, 0d, FillOnQuote.Next, FillOnTrade.None, FillOnOhlcv.None);
-            Assert.AreEqual(FillOnQuote.Next, target.FillOnQuote, "(5)");
+            using var target3 = new PaperBroker(null, null, null, 0d, FillOnQuote.Next, FillOnTrade.None, FillOnOhlcv.None);
+            Assert.AreEqual(FillOnQuote.Next, target3.FillOnQuote, "(5)");
 
-            target = new PaperBroker(null, null, null, 0d, FillOnQuote.None, FillOnTrade.None, FillOnOhlcv.None);
-            Assert.AreEqual(FillOnQuote.None, target.FillOnQuote, "(6)");
+            using var target4 = new PaperBroker(null, null, null, 0d, FillOnQuote.None, FillOnTrade.None, FillOnOhlcv.None);
+            Assert.AreEqual(FillOnQuote.None, target4.FillOnQuote, "(6)");
         }
 
         [TestMethod]
         public void PaperBroker_FillOnOhlcv_WhenSet_GetsCorrectValue()
         {
-            var target = new PaperBroker { FillOnOhlcv = FillOnOhlcv.LastClose };
-            Assert.AreEqual(FillOnOhlcv.LastClose, target.FillOnOhlcv, "(1)");
+            using var target1 = new PaperBroker { FillOnOhlcv = FillOnOhlcv.LastClose };
+            Assert.AreEqual(FillOnOhlcv.LastClose, target1.FillOnOhlcv, "(1)");
 
-            target.FillOnOhlcv = FillOnOhlcv.NextOpen;
-            Assert.AreEqual(FillOnOhlcv.NextOpen, target.FillOnOhlcv, "(2)");
+            target1.FillOnOhlcv = FillOnOhlcv.NextOpen;
+            Assert.AreEqual(FillOnOhlcv.NextOpen, target1.FillOnOhlcv, "(2)");
 
-            target.FillOnOhlcv = FillOnOhlcv.NextClose;
-            Assert.AreEqual(FillOnOhlcv.NextClose, target.FillOnOhlcv, "(3)");
+            target1.FillOnOhlcv = FillOnOhlcv.NextClose;
+            Assert.AreEqual(FillOnOhlcv.NextClose, target1.FillOnOhlcv, "(3)");
 
-            target.FillOnOhlcv = FillOnOhlcv.NextBest;
-            Assert.AreEqual(FillOnOhlcv.NextBest, target.FillOnOhlcv, "(4)");
+            target1.FillOnOhlcv = FillOnOhlcv.NextBest;
+            Assert.AreEqual(FillOnOhlcv.NextBest, target1.FillOnOhlcv, "(4)");
 
-            target.FillOnOhlcv = FillOnOhlcv.NextWorst;
-            Assert.AreEqual(FillOnOhlcv.NextWorst, target.FillOnOhlcv, "(5)");
+            target1.FillOnOhlcv = FillOnOhlcv.NextWorst;
+            Assert.AreEqual(FillOnOhlcv.NextWorst, target1.FillOnOhlcv, "(5)");
 
-            target.FillOnOhlcv = FillOnOhlcv.NextMedian;
-            Assert.AreEqual(FillOnOhlcv.NextMedian, target.FillOnOhlcv, "(6)");
+            target1.FillOnOhlcv = FillOnOhlcv.NextMedian;
+            Assert.AreEqual(FillOnOhlcv.NextMedian, target1.FillOnOhlcv, "(6)");
 
-            target.FillOnOhlcv = FillOnOhlcv.NextTypical;
-            Assert.AreEqual(FillOnOhlcv.NextTypical, target.FillOnOhlcv, "(7)");
+            target1.FillOnOhlcv = FillOnOhlcv.NextTypical;
+            Assert.AreEqual(FillOnOhlcv.NextTypical, target1.FillOnOhlcv, "(7)");
 
-            target.FillOnOhlcv = FillOnOhlcv.NextWeighted;
-            Assert.AreEqual(FillOnOhlcv.NextWeighted, target.FillOnOhlcv, "(8)");
+            target1.FillOnOhlcv = FillOnOhlcv.NextWeighted;
+            Assert.AreEqual(FillOnOhlcv.NextWeighted, target1.FillOnOhlcv, "(8)");
 
-            target.FillOnOhlcv = FillOnOhlcv.None;
-            Assert.AreEqual(FillOnOhlcv.None, target.FillOnOhlcv, "(9)");
+            target1.FillOnOhlcv = FillOnOhlcv.None;
+            Assert.AreEqual(FillOnOhlcv.None, target1.FillOnOhlcv, "(9)");
 
-            target = new PaperBroker(null, null, null, 0d, FillOnQuote.None, FillOnTrade.None, FillOnOhlcv.LastClose);
-            Assert.AreEqual(FillOnOhlcv.LastClose, target.FillOnOhlcv, "(10)");
+            using var target2 = new PaperBroker(null, null, null, 0d, FillOnQuote.None, FillOnTrade.None, FillOnOhlcv.LastClose);
+            Assert.AreEqual(FillOnOhlcv.LastClose, target2.FillOnOhlcv, "(10)");
 
-            target = new PaperBroker(null, null, null, 0d, FillOnQuote.None, FillOnTrade.None, FillOnOhlcv.NextOpen);
-            Assert.AreEqual(FillOnOhlcv.NextOpen, target.FillOnOhlcv, "(11)");
+            using var target3 = new PaperBroker(null, null, null, 0d, FillOnQuote.None, FillOnTrade.None, FillOnOhlcv.NextOpen);
+            Assert.AreEqual(FillOnOhlcv.NextOpen, target3.FillOnOhlcv, "(11)");
 
-            target = new PaperBroker(null, null, null, 0d, FillOnQuote.None, FillOnTrade.None, FillOnOhlcv.NextClose);
-            Assert.AreEqual(FillOnOhlcv.NextClose, target.FillOnOhlcv, "(12)");
+            using var target4 = new PaperBroker(null, null, null, 0d, FillOnQuote.None, FillOnTrade.None, FillOnOhlcv.NextClose);
+            Assert.AreEqual(FillOnOhlcv.NextClose, target4.FillOnOhlcv, "(12)");
 
-            target = new PaperBroker(null, null, null, 0d, FillOnQuote.None, FillOnTrade.None, FillOnOhlcv.NextBest);
-            Assert.AreEqual(FillOnOhlcv.NextBest, target.FillOnOhlcv, "(13)");
+            using var target5 = new PaperBroker(null, null, null, 0d, FillOnQuote.None, FillOnTrade.None, FillOnOhlcv.NextBest);
+            Assert.AreEqual(FillOnOhlcv.NextBest, target5.FillOnOhlcv, "(13)");
 
-            target = new PaperBroker(null, null, null, 0d, FillOnQuote.None, FillOnTrade.None, FillOnOhlcv.NextWorst);
-            Assert.AreEqual(FillOnOhlcv.NextWorst, target.FillOnOhlcv, "(14)");
+            using var target6 = new PaperBroker(null, null, null, 0d, FillOnQuote.None, FillOnTrade.None, FillOnOhlcv.NextWorst);
+            Assert.AreEqual(FillOnOhlcv.NextWorst, target6.FillOnOhlcv, "(14)");
 
-            target = new PaperBroker(null, null, null, 0d, FillOnQuote.None, FillOnTrade.None, FillOnOhlcv.NextMedian);
-            Assert.AreEqual(FillOnOhlcv.NextMedian, target.FillOnOhlcv, "(15)");
+            using var target7 = new PaperBroker(null, null, null, 0d, FillOnQuote.None, FillOnTrade.None, FillOnOhlcv.NextMedian);
+            Assert.AreEqual(FillOnOhlcv.NextMedian, target7.FillOnOhlcv, "(15)");
 
-            target = new PaperBroker(null, null, null, 0d, FillOnQuote.None, FillOnTrade.None, FillOnOhlcv.NextTypical);
-            Assert.AreEqual(FillOnOhlcv.NextTypical, target.FillOnOhlcv, "(16)");
+            using var target8 = new PaperBroker(null, null, null, 0d, FillOnQuote.None, FillOnTrade.None, FillOnOhlcv.NextTypical);
+            Assert.AreEqual(FillOnOhlcv.NextTypical, target8.FillOnOhlcv, "(16)");
 
-            target = new PaperBroker(null, null, null, 0d, FillOnQuote.None, FillOnTrade.None, FillOnOhlcv.NextWeighted);
-            Assert.AreEqual(FillOnOhlcv.NextWeighted, target.FillOnOhlcv, "(17)");
+            using var target9 = new PaperBroker(null, null, null, 0d, FillOnQuote.None, FillOnTrade.None, FillOnOhlcv.NextWeighted);
+            Assert.AreEqual(FillOnOhlcv.NextWeighted, target9.FillOnOhlcv, "(17)");
 
-            target = new PaperBroker(null, null, null, 0d, FillOnQuote.None, FillOnTrade.None, FillOnOhlcv.None);
-            Assert.AreEqual(FillOnOhlcv.None, target.FillOnOhlcv, "(18)");
+            using var target10 = new PaperBroker(null, null, null, 0d, FillOnQuote.None, FillOnTrade.None, FillOnOhlcv.None);
+            Assert.AreEqual(FillOnOhlcv.None, target10.FillOnOhlcv, "(18)");
         }
 
         [TestMethod]
         public void PaperBroker_DataPublisher_WhenSet_GetsCorrectValue()
         {
-            var target = new PaperBroker();
+            using var target = new PaperBroker();
             Assert.IsNull(target.DataPublisher, "(1)");
 
             var dataPublisher = new DataEmitter();
             target.DataPublisher = dataPublisher;
             Assert.AreEqual(dataPublisher, target.DataPublisher, "(2)");
 
-            target = new PaperBroker(null, dataPublisher, null, 0d, FillOnQuote.None, FillOnTrade.None, FillOnOhlcv.None);
-            Assert.AreEqual(dataPublisher, target.DataPublisher, "(3)");
+            using var target2 = new PaperBroker(null, dataPublisher, null, 0d, FillOnQuote.None, FillOnTrade.None, FillOnOhlcv.None);
+            Assert.AreEqual(dataPublisher, target2.DataPublisher, "(3)");
 
-            target.DataPublisher = null;
-            Assert.IsNull(target.DataPublisher, "(4)");
+            target2.DataPublisher = null;
+            Assert.IsNull(target2.DataPublisher, "(4)");
         }
 
         [TestMethod]
         public void PaperBroker_Commission_WhenSet_GetsCorrectValue()
         {
-            var target = new PaperBroker();
-            Assert.IsNull(target.Commission, "(1)");
+            using var target1 = new PaperBroker();
+            Assert.IsNull(target1.Commission, "(1)");
 
             ICommission commission = new MockCommission();
-            target.Commission = commission;
-            Assert.AreEqual(commission, target.Commission, "(2)");
+            target1.Commission = commission;
+            Assert.AreEqual(commission, target1.Commission, "(2)");
 
-            target = new PaperBroker(null, null, commission, 0d, FillOnQuote.None, FillOnTrade.None, FillOnOhlcv.None);
-            Assert.AreEqual(commission, target.Commission, "(3)");
+            using var target2 = new PaperBroker(null, null, commission, 0d, FillOnQuote.None, FillOnTrade.None, FillOnOhlcv.None);
+            Assert.AreEqual(commission, target2.Commission, "(3)");
 
-            target.Commission = null;
-            Assert.IsNull(target.Commission, "(4)");
+            target2.Commission = null;
+            Assert.IsNull(target2.Commission, "(4)");
         }
 
         [TestMethod]
         public void PaperBroker_FillQuantityRatio_WhenSet_GetsCorrectValue()
         {
-            var target = new PaperBroker();
-            Assert.AreEqual(0d, target.FillQuantityRatio, "(1)");
+            using var target1 = new PaperBroker();
+            Assert.AreEqual(0d, target1.FillQuantityRatio, "(1)");
 
-            target.FillQuantityRatio = 0.5d;
-            Assert.AreEqual(0.5d, target.FillQuantityRatio, "(2)");
+            target1.FillQuantityRatio = 0.5d;
+            Assert.AreEqual(0.5d, target1.FillQuantityRatio, "(2)");
 
-            target.FillQuantityRatio = 1d;
-            Assert.AreEqual(1d, target.FillQuantityRatio, "(3)");
+            target1.FillQuantityRatio = 1d;
+            Assert.AreEqual(1d, target1.FillQuantityRatio, "(3)");
 
-            target.FillQuantityRatio = 1.01d;
-            Assert.AreEqual(1d, target.FillQuantityRatio, "(4)");
+            target1.FillQuantityRatio = 1.01d;
+            Assert.AreEqual(1d, target1.FillQuantityRatio, "(4)");
 
-            target.FillQuantityRatio = 0d;
-            Assert.AreEqual(0d, target.FillQuantityRatio, "(5)");
+            target1.FillQuantityRatio = 0d;
+            Assert.AreEqual(0d, target1.FillQuantityRatio, "(5)");
 
-            target.FillQuantityRatio = -0.1d;
-            Assert.AreEqual(0d, target.FillQuantityRatio, "(6)");
+            target1.FillQuantityRatio = -0.1d;
+            Assert.AreEqual(0d, target1.FillQuantityRatio, "(6)");
 
-            target = new PaperBroker(null, null, null, 0d, FillOnQuote.None, FillOnTrade.None, FillOnOhlcv.None);
-            Assert.AreEqual(0d, target.FillQuantityRatio, "(7)");
+            using var target2 = new PaperBroker(null, null, null, 0d, FillOnQuote.None, FillOnTrade.None, FillOnOhlcv.None);
+            Assert.AreEqual(0d, target2.FillQuantityRatio, "(7)");
 
-            target = new PaperBroker(null, null, null, -0.1d, FillOnQuote.None, FillOnTrade.None, FillOnOhlcv.None);
-            Assert.AreEqual(0d, target.FillQuantityRatio, "(8)");
+            using var target3 = new PaperBroker(null, null, null, -0.1d, FillOnQuote.None, FillOnTrade.None, FillOnOhlcv.None);
+            Assert.AreEqual(0d, target3.FillQuantityRatio, "(8)");
 
-            target = new PaperBroker(null, null, null, 0.5d, FillOnQuote.None, FillOnTrade.None, FillOnOhlcv.None);
-            Assert.AreEqual(0.5d, target.FillQuantityRatio, "(9)");
+            using var target4 = new PaperBroker(null, null, null, 0.5d, FillOnQuote.None, FillOnTrade.None, FillOnOhlcv.None);
+            Assert.AreEqual(0.5d, target4.FillQuantityRatio, "(9)");
 
-            target = new PaperBroker(null, null, null, 1d, FillOnQuote.None, FillOnTrade.None, FillOnOhlcv.None);
-            Assert.AreEqual(1d, target.FillQuantityRatio, "(10)");
+            using var target5 = new PaperBroker(null, null, null, 1d, FillOnQuote.None, FillOnTrade.None, FillOnOhlcv.None);
+            Assert.AreEqual(1d, target5.FillQuantityRatio, "(10)");
 
-            target = new PaperBroker(null, null, null, 1.1d, FillOnQuote.None, FillOnTrade.None, FillOnOhlcv.None);
-            Assert.AreEqual(1d, target.FillQuantityRatio, "(11)");
+            using var target6 = new PaperBroker(null, null, null, 1.1d, FillOnQuote.None, FillOnTrade.None, FillOnOhlcv.None);
+            Assert.AreEqual(1d, target6.FillQuantityRatio, "(11)");
         }
 
         [TestMethod]
@@ -302,7 +303,7 @@ namespace Mbs.UnitTests.Trading.Brokers.PaperBrokers
             IDataPublisher dataPublisher = new DataEmitter();
             ICommission commission = new MockCommission();
 
-            var target = new PaperBroker(timepiece, dataPublisher, commission, 1d, FillOnQuote.Next, FillOnTrade.Last, FillOnOhlcv.NextOpen);
+            using var target = new PaperBroker(timepiece, dataPublisher, commission, 1d, FillOnQuote.Next, FillOnTrade.Last, FillOnOhlcv.NextOpen);
 
             Assert.AreEqual(timepiece, target.Timepiece, "(1)");
             Assert.AreEqual(dataPublisher, target.DataPublisher, "(2)");
@@ -316,7 +317,7 @@ namespace Mbs.UnitTests.Trading.Brokers.PaperBrokers
         [TestMethod]
         public void PaperBroker_Constructor_WhenConstructedWithoutArguments_PropertiesHaveCorrectValues()
         {
-            var target = new PaperBroker();
+            using var target = new PaperBroker();
 
             Assert.IsNull(target.Timepiece, "(1)");
             Assert.IsNull(target.DataPublisher, "(2)");

@@ -62,8 +62,7 @@ namespace Mbs.Numerics
                             return 0;
                         int n = -(int)(x - 0.5);
 
-                        // ReSharper disable once UnusedVariable
-                        return LnGammaSgnSing(n, x + n, out var sgn);
+                        return LnGammaSgnSing(n, x + n, out _);
                     }
 
                     value = LnGammaLanczos(z);

@@ -6,7 +6,7 @@ using Swashbuckle.AspNetCore.Filters;
 namespace Mbs.Api.ExampleProviders.Trading.Data.Generators.Square
 {
     /// <inheritdoc />
-    internal class SquareOhlcvGeneratorOutputExampleProvider : IExamplesProvider
+    internal class SquareOhlcvGeneratorOutputExampleProvider : IExamplesProvider<SyntheticDataGeneratorOutput<Ohlcv>>
     {
         internal const string Name = SquareOhlcvGenerator.WaveformName;
         internal const string Moniker = "100∙square(128) + 10 + noise(ρn=0.01), v=100, ρb=0.2, ρs=0.3";
@@ -22,7 +22,7 @@ namespace Mbs.Api.ExampleProviders.Trading.Data.Generators.Square
         internal const double Close2 = 252.76;
 
         /// <inheritdoc />
-        public object GetExamples()
+        public SyntheticDataGeneratorOutput<Ohlcv> GetExamples()
         {
             return new SyntheticDataGeneratorOutput<Ohlcv>
             {

@@ -6,7 +6,7 @@ using Swashbuckle.AspNetCore.Filters;
 namespace Mbs.Api.ExampleProviders.Trading.Data.Generators.FractionalBrownianMotion
 {
     /// <inheritdoc />
-    internal class FractionalBrownianMotionTradeGeneratorOutputExampleProvider : IExamplesProvider
+    internal class FractionalBrownianMotionTradeGeneratorOutputExampleProvider : IExamplesProvider<SyntheticDataGeneratorOutput<Trade>>
     {
         internal const string Name = FractionalBrownianMotionTradeGenerator.WaveformName;
         internal const string Moniker = "fBm(Hosking, l=128, H=0.63) ∙ 100 + 10 + noise(ρn=0.01), v=100";
@@ -15,7 +15,7 @@ namespace Mbs.Api.ExampleProviders.Trading.Data.Generators.FractionalBrownianMot
         internal const double Price2 = 19.15;
 
         /// <inheritdoc />
-        public object GetExamples()
+        public SyntheticDataGeneratorOutput<Trade> GetExamples()
         {
             return new SyntheticDataGeneratorOutput<Trade>
             {

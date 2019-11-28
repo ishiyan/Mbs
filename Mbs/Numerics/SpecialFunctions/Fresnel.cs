@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
+// ReSharper disable once CheckNamespace
 namespace Mbs.Numerics
 {
     /// <summary>
@@ -69,7 +70,7 @@ namespace Mbs.Numerics
 
         // The use of the asymptotic series doesn't appear to be strictly necessary; the
         // continued fraction converges quickly to the right result in just a few terms
-        // for arbitrarily large x; ahha! this is because the continued fraction is just the
+        // for arbitrarily large x; aha! this is because the continued fraction is just the
         // asymptotic series in that limit, down to the evaluation of sin(pi x²/2).
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static double FresnelSeriesC(double x)
@@ -80,7 +81,7 @@ namespace Mbs.Numerics
 
             // Pre-compute the factor the series is in.
             double x4 = x * x * Constants.PiOver2;
-            x4 = x4 * x4;
+            x4 *= x4;
 
             // Add corrections as needed.
             double f = df;
@@ -88,7 +89,7 @@ namespace Mbs.Numerics
             {
                 double fPrev = f;
                 df = -df * x4 / (2 * n) / (2 * n - 1);
-                f = f + df / (4 * n + 1);
+                f += df / (4 * n + 1);
                 if (Math.Abs(f - fPrev) < double.Epsilon)
                     return f;
             }
@@ -104,7 +105,7 @@ namespace Mbs.Numerics
 
             // Pre-compute the factor the series is in.
             double x4 = x * x * Constants.PiOver2;
-            x4 = x4 * x4;
+            x4 *= x4;
 
             // Add corrections as needed.
             double f = df / 3d;
@@ -112,7 +113,7 @@ namespace Mbs.Numerics
             {
                 double fPrev = f;
                 df = -df * x4 / (2 * n + 1) / (2 * n);
-                f = f + df / (4 * n + 3);
+                f += df / (4 * n + 3);
                 if (Math.Abs(f - fPrev) < double.Epsilon)
                     return f;
             }
@@ -136,7 +137,7 @@ namespace Mbs.Numerics
                 d = -d * (4 * n - 1) / x4;
                 f += d;
                 double gPrev = g;
-                d = d * (4 * n + 1);
+                d *= (4 * n + 1);
                 g += d;
                 if (Math.Abs(f - fPrev) < double.Epsilon && Math.Abs(g - gPrev) < double.Epsilon)
                     break;
@@ -146,7 +147,7 @@ namespace Mbs.Numerics
             }
 
             double px = Constants.Pi * x;
-            f = f / px;
+            f /= px;
             g = g / x2 / px;
             double xx = x * x / 4d;
             double sin = Sin(0d, xx);
@@ -174,7 +175,7 @@ namespace Mbs.Numerics
             {
                 Complex fPrev = f;
                 a = -(2 * k - 1) * (2 * k);
-                b = b + 4.0;
+                b += 4.0;
                 d = 1d / (b + a * d);
                 df = (b * d - 1d) * df;
                 f += df;

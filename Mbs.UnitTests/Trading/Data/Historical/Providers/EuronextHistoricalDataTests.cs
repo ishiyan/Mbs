@@ -112,7 +112,7 @@ namespace Mbs.UnitTests.Trading.Data.Historical.Providers
         private static Stream StreamFromText(string text)
         {
             var memoryStream = new MemoryStream();
-            var streamWriter = new StreamWriter(memoryStream);
+            using var streamWriter = new StreamWriter(memoryStream);
             streamWriter.Write(text);
             streamWriter.Flush();
             memoryStream.Seek(0, SeekOrigin.Begin);
@@ -619,17 +619,13 @@ namespace Mbs.UnitTests.Trading.Data.Historical.Providers
         public async Task EuronextHistoricalData_GetResponseStreamAsync_WhenValidStream_ReturnsStream()
         {
             const string data = "Hello, world!";
-            using (Stream stream = StreamFromText(data))
-            {
-                Stream returnedStream = await EuronextHistoricalDataAccessor.GetResponseStreamAsync(
-                    new HttpResponseMessage {Content = new StreamContent(stream)});
-                Assert.AreEqual(stream.Length, returnedStream.Length, "length");
-                using (var streamReader = new StreamReader(stream))
-                {
-                    string actual = await streamReader.ReadLineAsync();
-                    Assert.AreEqual(data, actual, "data");
-                }
-            }
+            await using Stream stream = StreamFromText(data);
+            Stream returnedStream = await EuronextHistoricalDataAccessor.GetResponseStreamAsync(
+                new HttpResponseMessage {Content = new StreamContent(stream)});
+            Assert.AreEqual(stream.Length, returnedStream.Length, "length");
+            using var streamReader = new StreamReader(stream);
+            string actual = await streamReader.ReadLineAsync();
+            Assert.AreEqual(data, actual, "data");
         }
 
         [TestMethod, ExpectedException(typeof(Exception), AllowDerivedTypes = true)]

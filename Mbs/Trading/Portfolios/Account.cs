@@ -180,7 +180,7 @@ namespace Mbs.Trading.Portfolios
         /// <inheritdoc/>
         public double Value(DateTime dateTime)
         {
-            var account = new Account(Holder, Currency, 0d, Timepiece, CurrencyConverter, null /*dataPublisher*/);
+            using var account = new Account(Holder, Currency, 0d, Timepiece, CurrencyConverter, null /*dataPublisher*/);
             lock (currencyPositionsLock)
             {
                 lock (transactionHistoryLock)

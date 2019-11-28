@@ -5,10 +5,10 @@ using Swashbuckle.AspNetCore.Filters;
 namespace Mbs.Api.ExampleProviders
 {
     /// <inheritdoc />
-    internal class InternalErrorExampleProvider : IExamplesProvider
+    internal class InternalErrorExampleProvider : IExamplesProvider<InternalError>
     {
         /// <inheritdoc />
-        public object GetExamples()
+        public InternalError GetExamples()
         {
             return new InternalError()
             {

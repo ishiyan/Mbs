@@ -20,6 +20,7 @@ namespace Mbs.Trading.Time
         /// <returns>A predicate to determine if a date is a business holiday.</returns>
         public static Func<DateTime, bool> BusinessHolidayPredicate(this BusinessDayCalendar calendar)
         {
+#pragma warning disable IDE0066 // Convert switch statement to expression
             switch (calendar)
             {
                 case BusinessDayCalendar.Target:
@@ -41,6 +42,7 @@ namespace Mbs.Trading.Time
                 case BusinessDayCalendar.Norway:
                     return dateTime => dateTime.IsNorwegianHoliday();
             }
+#pragma warning restore IDE0066 // Convert switch statement to expression
 
             return IsWeekend;
         }

@@ -6,7 +6,7 @@ using Swashbuckle.AspNetCore.Filters;
 namespace Mbs.Api.ExampleProviders.Trading.Data.Generators.Square
 {
     /// <inheritdoc />
-    internal class SquareTradeGeneratorOutputExampleProvider : IExamplesProvider
+    internal class SquareTradeGeneratorOutputExampleProvider : IExamplesProvider<SyntheticDataGeneratorOutput<Trade>>
     {
         internal const string Name = SquareTradeGenerator.WaveformName;
         internal const string Moniker = "100∙square(128) + 10 + noise(ρn=0.01), v=100";
@@ -15,7 +15,7 @@ namespace Mbs.Api.ExampleProviders.Trading.Data.Generators.Square
         internal const double Price2 = 110.58;
 
         /// <inheritdoc />
-        public object GetExamples()
+        public SyntheticDataGeneratorOutput<Trade> GetExamples()
         {
             return new SyntheticDataGeneratorOutput<Trade>
             {

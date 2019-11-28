@@ -1,7 +1,6 @@
-﻿using Mbs.Api.Extensions.ExceptionHandling;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 
-namespace Mbs.Api.Extensions
+namespace Mbs.Api.Extensions.ExceptionHandling
 {
     /// <summary>
     /// Adds <see cref="ExceptionHandlingMiddleware"/> to the <see cref="IApplicationBuilder"/> request execution pipeline.

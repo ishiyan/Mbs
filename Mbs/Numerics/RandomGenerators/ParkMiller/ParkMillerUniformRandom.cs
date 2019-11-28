@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
+// ReSharper disable once CheckNamespace
 namespace Mbs.Numerics.Random
 {
+    // ReSharper disable once CommentTypo
     /// <summary>
-    /// A uniform pseudo-random number renerator based on the Park–Miller (sometimes called Lehmer) algorithm.
+    /// A uniform pseudo-random number generator based on the Park–Miller (sometimes called Lehmer) algorithm.
     /// See https://en.wikipedia.org/wiki/Lehmer_random_number_generator.
     /// </summary>
     public sealed class ParkMillerUniformRandom : RandomGenerator
@@ -23,6 +25,7 @@ namespace Mbs.Numerics.Random
         /// </summary>
         private const long LongMax = 2147483647;
 
+        // ReSharper disable once IdentifierTypo
         private const long Ndiv = 1 + (LongMax - 1) / 32;
         private const long Iq = 127773;
         private const long Ir = 2836;
@@ -34,7 +37,7 @@ namespace Mbs.Numerics.Random
         /// <summary>
         /// 7⁵ = 16807, a primitive root modulo M₃₁.
         /// </summary>
-        private long g = 16807;
+        private readonly long g = 16807;
 
         private long x;
         private long y;
@@ -82,6 +85,7 @@ namespace Mbs.Numerics.Random
             // Load the shuffle table after 8 warm-ups.
             for (int j = TableSize + 7; j >= 0; --j)
             {
+                // ReSharper disable once CommentTypo
                 // Implement multiplicative congruential generator with Schrage's algorithm.
                 long k = y / Iq;
                 y = g * (y - k * Iq) - Ir * k;
@@ -119,6 +123,7 @@ namespace Mbs.Numerics.Random
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private ulong NextULong()
         {
+            // ReSharper disable once CommentTypo
             // Implement multiplicative congruential generator with Schrage's algorithm.
             long k = y / Iq;
             y = g * (y - k * Iq) - Ir * k;

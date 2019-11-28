@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
+// ReSharper disable once CheckNamespace
 namespace Mbs.Trading.Data
 {
     /// <summary>
@@ -112,17 +113,17 @@ namespace Mbs.Trading.Data
         /// <returns>The value of the price.</returns>
         public double Price(OhlcvPriceType priceType)
         {
-            switch (priceType)
+            return priceType switch
             {
-                case OhlcvPriceType.Closing: return Close;
-                case OhlcvPriceType.Highest: return High;
-                case OhlcvPriceType.Lowest: return Low;
-                case OhlcvPriceType.Opening: return Open;
-                case OhlcvPriceType.Median: return Median;
-                case OhlcvPriceType.Typical: return Typical;
-                case OhlcvPriceType.Weighted: return Weighted;
-                default: return double.NaN;
-            }
+                OhlcvPriceType.Closing => Close,
+                OhlcvPriceType.Highest => High,
+                OhlcvPriceType.Lowest => Low,
+                OhlcvPriceType.Opening => Open,
+                OhlcvPriceType.Median => Median,
+                OhlcvPriceType.Typical => Typical,
+                OhlcvPriceType.Weighted => Weighted,
+                _ => double.NaN
+            };
         }
 
         /// <summary>
@@ -132,18 +133,18 @@ namespace Mbs.Trading.Data
         /// <returns>The value of the component.</returns>
         public double Component(OhlcvComponent component)
         {
-            switch (component)
+            return component switch
             {
-                case OhlcvComponent.ClosingPrice: return Close;
-                case OhlcvComponent.HighestPrice: return High;
-                case OhlcvComponent.LowestPrice: return Low;
-                case OhlcvComponent.OpeningPrice: return Open;
-                case OhlcvComponent.MedianPrice: return Median;
-                case OhlcvComponent.TypicalPrice: return Typical;
-                case OhlcvComponent.WeightedPrice: return Weighted;
-                case OhlcvComponent.Volume: return Volume;
-                default: return double.NaN;
-            }
+                OhlcvComponent.ClosingPrice => Close,
+                OhlcvComponent.HighestPrice => High,
+                OhlcvComponent.LowestPrice => Low,
+                OhlcvComponent.OpeningPrice => Open,
+                OhlcvComponent.MedianPrice => Median,
+                OhlcvComponent.TypicalPrice => Typical,
+                OhlcvComponent.WeightedPrice => Weighted,
+                OhlcvComponent.Volume => Volume,
+                _ => double.NaN
+            };
         }
 
         /// <summary>
@@ -157,7 +158,7 @@ namespace Mbs.Trading.Data
         public bool IsFalling => Open > Close;
 
         /// <summary>
-        /// Uninitializes the bar data; the date and time remain unchanged.
+        /// Un-initializes the bar data; the date and time remain unchanged.
         /// </summary>
         public void Empty()
         {
@@ -200,7 +201,7 @@ namespace Mbs.Trading.Data
         }
 
         /// <summary>
-        /// Aggregates this bar with a next one in a continious sequence of bars.
+        /// Aggregates this bar with a next one in a continuous sequence of bars.
         /// The resulting date and time is the date and time of the last aggregated bar.
         /// </summary>
         /// <param name="other">A bar to aggregate with.</param>
@@ -226,7 +227,7 @@ namespace Mbs.Trading.Data
         }
 
         /// <summary>
-        /// Aggregates this bar with a next trade in a continious sequence of trades.
+        /// Aggregates this bar with a next trade in a continuous sequence of trades.
         /// The resulting date and time is the date and time of the last aggregated trade.
         /// </summary>
         /// <param name="trade">A trade to aggregate with.</param>
@@ -253,7 +254,7 @@ namespace Mbs.Trading.Data
         }
 
         /// <summary>
-        /// Aggregates this bar with a next scalar in a continious sequence of scalars.
+        /// Aggregates this bar with a next scalar in a continuous sequence of scalars.
         /// The resulting date and time is the date and time of the last aggregated scalar.
         /// </summary>
         /// <param name="scalar">A scalar to aggregate with.</param>

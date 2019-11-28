@@ -6,10 +6,10 @@ using Swashbuckle.AspNetCore.Filters;
 namespace Mbs.Api.ExampleProviders.Trading.Data.Generators
 {
     /// <inheritdoc />
-    internal class WaveformDataGeneratorBadRequestExampleProvider : IExamplesProvider
+    internal class WaveformDataGeneratorBadRequestExampleProvider : IExamplesProvider<InternalError>
     {
         /// <inheritdoc />
-        public object GetExamples()
+        public InternalError GetExamples()
         {
             var dic = new ModelStateDictionary();
             dic.AddModelError("WaveformParameters.NoiseAmplitudeFraction", "The field NoiseAmplitudeFraction must be in range [0, 1].");

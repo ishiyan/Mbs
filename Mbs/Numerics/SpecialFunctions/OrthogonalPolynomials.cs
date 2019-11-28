@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
+// ReSharper disable once CheckNamespace
 namespace Mbs.Numerics
 {
     /// <summary>
@@ -13,14 +14,14 @@ namespace Mbs.Numerics
         /// <para />
         /// Hermite polynomials are orthogonal on the interval (-∞,+∞) with the weight e⁻ˣˆ².
         /// <para />
-        /// They appear in the solution of the one-dimensional, quantum mehanical, harmonic oscilator.
+        /// They appear in the solution of the one-dimensional, quantum mechanical, harmonic oscillator.
         /// <para />
-        /// Statisticans' Hermite polynomials (see <see cref="HermiteHe"/>) are related to physicists' Hermite
-        /// polynomials via Hᵤ(x) = 2ᵘHᵤ(x √̅2). Staticians' Hermite polynomials
+        /// Statisticians' Hermite polynomials (see <see cref="HermiteHe"/>) are related to physicists' Hermite
+        /// polynomials via Hᵤ(x) = 2ᵘHᵤ(x √̅2). Statisticians' Hermite polynomials
         /// do not grow as quickly as physicists', and may therefore be preferable for large values of <paramref name="n"/>
         /// and <paramref name="x"/> which could overflow <see cref="double"/>.
         /// <para />
-        /// Recurrance: Hᵤ₊₁ = 2x Hᵤ - 2u Hᵤ₋₁.
+        /// Recurrence: Hᵤ₊₁ = 2x Hᵤ - 2u Hᵤ₋₁.
         /// </summary>
         /// <param name="n">The order, which must be non-negative.</param>
         /// <param name="x">The argument.</param>
@@ -50,8 +51,8 @@ namespace Mbs.Numerics
         /// Hermite polynomials are orthogonal on the interval (-∞,+∞) with a weight function
         /// equal to the standard normal probability distribution.
         /// <para />
-        /// Their orthonormality relation makes them a useful basis for expressing pertubations
-        /// arround a normal distribution.
+        /// Their orthonormality relation makes them a useful basis for expressing perturbations
+        /// around a normal distribution.
         /// <para />
         /// Physicists' Hermite polynomials (see <see cref="HermiteH"/>) are related to statisticians' Hermite
         /// polynomials via Hᵤ(x) = 2ᵘHᵤ(x √̅2).
@@ -111,7 +112,7 @@ namespace Mbs.Numerics
         /// <summary>
         /// The value of an associated Laguerre polynomial, Lᵤᵃ(x).
         /// <para />
-        /// The associated Laguerre polynomials are orthonogal on the interval [0,+∞) with the weight xᵃe⁻ˣ.
+        /// The associated Laguerre polynomials are orthonormal on the interval [0,+∞) with the weight xᵃe⁻ˣ.
         /// </summary>
         /// <param name="n">The order, which must be non-negative.</param>
         /// <param name="a">The associated order, which must be greater than -1.</param>
@@ -177,24 +178,16 @@ namespace Mbs.Numerics
         /// </summary>
         /// <param name="l">The order, which must be non-negative.</param>
         /// <param name="m">The associated order, which must lie between -l and l inclusive.</param>
-        /// <param name="x">The argument, which must lie on the closed interval betwen -1 and +1.</param>
+        /// <param name="x">The argument, which must lie on the closed interval between -1 and +1.</param>
         /// <returns>The value of Pᵤᵥ(x).</returns>
         /// <seealso href="http://en.wikipedia.org/wiki/Associated_Legendre_polynomials"/>
         public static double LegendreP(int l, int m, double x)
         {
             if (l < 0 || Math.Abs(m) > l || Math.Abs(x) > 1d)
                 return double.NaN;
-            double f;
-            if (l < 10)
-            {
-                // For low enough orders, we can can get the factorial quickly from a table look-up and without danger of overflow.
-                f = Math.Sqrt(Factorial(l + m) / Factorial(l - m));
-            }
-            else
-            {
-                // For higher orders, we must move into log space to avoid overflow.
-                f = Math.Exp((LnFactorial(l + m) - LnFactorial(l - m)) / 2d);
-            }
+            // For low enough orders, we can can get the factorial quickly from a table look-up and without danger of overflow.
+            // For higher orders, we must move into log space to avoid overflow.
+            var f = l < 10 ? Math.Sqrt(Factorial(l + m) / Factorial(l - m)) : Math.Exp((LnFactorial(l + m) - LnFactorial(l - m)) / 2d);
 
             if (m < 0)
             {
@@ -207,7 +200,7 @@ namespace Mbs.Numerics
         }
 
         /// <summary>
-        /// The value of a Cebyshev polynomial, Tᵢ(x).
+        /// The value of a Chebyshev polynomial, Tᵢ(x).
         /// <para />
         /// Chebyshev polynomials are orthogonal on the interval [-1,1] with the weight √̅1̅-̅x̅²̅ .
         /// <para />
@@ -244,20 +237,20 @@ namespace Mbs.Numerics
         /// <summary>
         /// The value of a Zernike polynomial, Rnm(ρ).
         /// <para />
-        /// Zernike polynomials are orthononal on the interval [0,1] with the weight ρ.
+        /// Zernike polynomials are orthonormal on the interval [0,1] with the weight ρ.
         /// <para />
         /// They are often used in optics to characterize the imperfections in a lens.
         /// In this context, the amplitude of each is associated with a name given in the following table.
         /// <table>
         ///     <tr><th>n</th><th>m</th><th>name</th></tr>
         ///     <tr><td>1</td><td>1</td><td>tilt</td></tr>
-        ///     <tr><td>2</td><td>0</td><td>defocus</td></tr>
+        ///     <tr><td>2</td><td>0</td><td>de-focus</td></tr>
         ///     <tr><td>2</td><td>2</td><td>astigmatism</td></tr>
         ///     <tr><td>3</td><td>1</td><td>coma</td></tr>
         ///     <tr><td>3</td><td>3</td><td>trefoil</td></tr>
         /// </table>
         /// </summary>
-        /// <param name="n">The order paramter, which must be non-negative.</param>
+        /// <param name="n">The order parameter, which must be non-negative.</param>
         /// <param name="m">The index parameter, which must lie between 0 and n.</param>
         /// <param name="rho">The argument, which must lie between 0 and 1.</param>
         /// <returns>The value of Rnm(ρ).</returns>
@@ -310,11 +303,11 @@ namespace Mbs.Numerics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static double LegendrePe(int l, int m, double x)
         {
-            // Renormalized associated legendre polynomials Pe{l,m} = sqrt((l-m)!/(l+m)!) P{l,m},
-            // unlike the unrenormalized P{l,m}, do not get too big.
+            // Re-normalized associated legendre polynomials Pe{l,m} = sqrt((l-m)!/(l+m)!) P{l,m},
+            // unlike the un-re-normalized P{l,m}, do not get too big.
             // This is not quite the same renormalization used by NR; it omits a factor sqrt((2l+1)/4π),
             // by omitting this factor, we avoid some unnecessary factors and divisions by 4π.
-            // The l-recurrsion (l-m) P{l,m} = x (2l-1) P{l-1,m} - (l+m-1) P{l-2,m} becomes
+            // The l-recursion (l-m) P{l,m} = x (2l-1) P{l-1,m} - (l+m-1) P{l-2,m} becomes
             // sqrt((l-m)(l+m)) P{l,m} = x (2l-1) P{l-1,m} - sqrt((l-1-m)(l-1+m)) P{l-2,m}
             // and is stable for increasing l.
             // The initial value P{m,m} = (-1)ᵐ (2m-1)!! (1-x²)^(m/2) becomes
@@ -364,7 +357,7 @@ namespace Mbs.Numerics
             {
                 double fOld = f;
                 df = df * (n + k - 1) * (n - k + 1) * xm / k / (2 * k - 1);
-                f = f + df;
+                f += df;
                 if (Math.Abs(f - fOld) < double.Epsilon)
                     return f;
             }

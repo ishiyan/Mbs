@@ -3,6 +3,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 
 namespace Mbs.Api.Extensions.ExceptionHandling
@@ -17,7 +18,7 @@ namespace Mbs.Api.Extensions.ExceptionHandling
         private const string TimeoutMessage = "A request timeout occurred. ";
         private const string ApplicationJson = "application/json";
 
-        private readonly IHostingEnvironment env;
+        private readonly IWebHostEnvironment env;
         private readonly RequestDelegate next;
 
         /// <summary>
@@ -25,7 +26,7 @@ namespace Mbs.Api.Extensions.ExceptionHandling
         /// </summary>
         /// <param name="next">The next handler in the chain.</param>
         /// <param name="env">A hosting environment.</param>
-        public ExceptionHandlingMiddleware(RequestDelegate next, IHostingEnvironment env)
+        public ExceptionHandlingMiddleware(RequestDelegate next, IWebHostEnvironment env)
         {
             this.next = next;
             this.env = env;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
+// ReSharper disable once CheckNamespace
 namespace Mbs.Numerics
 {
     /// <summary>
@@ -455,6 +456,7 @@ namespace Mbs.Numerics
         {
             double x = Constants.SqrtPi * y / 2d;
             double xx = x * x;
+            // ReSharper disable once IdentifierTypo
             double xxxx = xx * xx;
             double s = 1d + xx / 3d + 7d / 30d * xxxx + 127d / 630d * xxxx * xx;
             return x * s;

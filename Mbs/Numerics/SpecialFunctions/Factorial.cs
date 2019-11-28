@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
+// ReSharper disable once CheckNamespace
 namespace Mbs.Numerics
 {
     /// <summary>
@@ -20,11 +21,11 @@ namespace Mbs.Numerics
 
         /// <summary>
         /// The factorial of an integer n is the product of all integers from 1 to n.
-        /// <para>n! also has a combinatorial intrepretation as the number of permutations of n objects. For example, a set of 3
+        /// <para>n! also has a combinatorial interpretation as the number of permutations of n objects. For example, a set of 3
         /// objects (abc) has 3! = 6 permutations: (abc), (bac), (cba), (acb), (cab), (bca).</para>
         /// <para>Because n! grows extremely quickly with increasing n, we return the result as a double, even though
-        /// the value is always an integer (13! would overlow an int, 21! would overflow a long, 171! overflows even a double).</para>
-        /// <para>In order to deal with factorials of larger runbers, you can use the <see cref="LnFactorial"/> method, which
+        /// the value is always an integer (13! would overflow an int, 21! would overflow a long, 171! overflows even a double).</para>
+        /// <para>In order to deal with factorials of larger numbers, you can use the <see cref="LnFactorial"/> method, which
         /// returns accurate values of ln(n!) even for values of n for which n! would overflow a double.</para>
         /// <para>The factorial is generalized to non-integer arguments by the gamma function.</para>
         /// </summary>
@@ -41,11 +42,11 @@ namespace Mbs.Numerics
         }
 
         /// <summary>
-        /// The natural logrithm of the factorial of a positive integer, <c>ln(n!)</c>.
+        /// The natural logarithm of the factorial of a positive integer, <c>ln(n!)</c>.
         /// <para>This function provides accurate values of <c>ln(n!)</c> even for values of n which would cause <c>n!</c> to overflow.</para>
         /// </summary>
         /// <param name="n">The argument, which must be non-negative.</param>
-        /// <returns>The natrual logarithm of the factorial <c>ln(n!)</c>.</returns>
+        /// <returns>The natural logarithm of the factorial <c>ln(n!)</c>.</returns>
         public static double LnFactorial(int n)
         {
             if (n < 0)
@@ -130,7 +131,7 @@ namespace Mbs.Numerics
         private static long DoubleFactorialMultiply(int n)
         {
             long f = 1L;
-            for (int k = n; k > 1; k = k - 2)
+            for (int k = n; k > 1; k -= 2)
                 f *= k;
             return f;
         }

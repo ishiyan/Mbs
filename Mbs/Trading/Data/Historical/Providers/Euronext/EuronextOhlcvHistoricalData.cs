@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Mbs.Trading.Time;
 
+// ReSharper disable once CheckNamespace
 namespace Mbs.Trading.Data.Historical
 {
     /// <summary>
@@ -29,29 +30,19 @@ namespace Mbs.Trading.Data.Historical
             if (endDate > historicalDataRequest.EndDate)
                 endDate = historicalDataRequest.EndDate;
 
-            switch (historicalDataRequest.TimeGranularity)
+            return historicalDataRequest.TimeGranularity switch
             {
-                case TimeGranularity.Week1:
-                    return list.AggregateWeeks(startDate, endDate, 1);
-                case TimeGranularity.Week2:
-                    return list.AggregateWeeks(startDate, endDate, 2);
-                case TimeGranularity.Week3:
-                    return list.AggregateWeeks(startDate, endDate, 3);
-                case TimeGranularity.Month1:
-                    return list.AggregateMonths(startDate, endDate, 1);
-                case TimeGranularity.Month2:
-                    return list.AggregateMonths(startDate, endDate, 2);
-                case TimeGranularity.Month3:
-                    return list.AggregateMonths(startDate, endDate, 3);
-                case TimeGranularity.Month4:
-                    return list.AggregateMonths(startDate, endDate, 4);
-                case TimeGranularity.Month6:
-                    return list.AggregateMonths(startDate, endDate, 6);
-                case TimeGranularity.Year1:
-                    return list.AggregateYears(startDate, endDate, 1);
-            }
-
-            return list.Range(startDate, endDate);
+                TimeGranularity.Week1 => list.AggregateWeeks(startDate, endDate, 1),
+                TimeGranularity.Week2 => list.AggregateWeeks(startDate, endDate, 2),
+                TimeGranularity.Week3 => list.AggregateWeeks(startDate, endDate, 3),
+                TimeGranularity.Month1 => list.AggregateMonths(startDate, endDate, 1),
+                TimeGranularity.Month2 => list.AggregateMonths(startDate, endDate, 2),
+                TimeGranularity.Month3 => list.AggregateMonths(startDate, endDate, 3),
+                TimeGranularity.Month4 => list.AggregateMonths(startDate, endDate, 4),
+                TimeGranularity.Month6 => list.AggregateMonths(startDate, endDate, 6),
+                TimeGranularity.Year1 => list.AggregateYears(startDate, endDate, 1),
+                _ => list.Range(startDate, endDate)
+            };
         }
     }
 }

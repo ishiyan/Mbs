@@ -57,131 +57,50 @@ namespace Mbs.Trading.Time
         /// <returns>Returns the equivalent time span of this time granularity.</returns>
         public static TimeSpan TimeSpan(this TimeGranularity granularity)
         {
-            switch (granularity)
+            return granularity switch
             {
-                case TimeGranularity.Aperiodic:
-                    throw new ArgumentException("Aperiodic time granularities do not have a time span", nameof(granularity));
-
-                case TimeGranularity.Second1:
-                    return TimeSpans[0];
-
-                case TimeGranularity.Second2:
-                    return TimeSpans[1];
-
-                case TimeGranularity.Second3:
-                    return TimeSpans[2];
-
-                case TimeGranularity.Second4:
-                    return TimeSpans[3];
-
-                case TimeGranularity.Second5:
-                    return TimeSpans[4];
-
-                case TimeGranularity.Second6:
-                    return TimeSpans[5];
-
-                case TimeGranularity.Second10:
-                    return TimeSpans[6];
-
-                case TimeGranularity.Second12:
-                    return TimeSpans[7];
-
-                case TimeGranularity.Second15:
-                    return TimeSpans[8];
-
-                case TimeGranularity.Second20:
-                    return TimeSpans[9];
-
-                case TimeGranularity.Second30:
-                    return TimeSpans[10];
-
-                case TimeGranularity.Minute1:
-                    return TimeSpans[11];
-
-                case TimeGranularity.Minute2:
-                    return TimeSpans[12];
-
-                case TimeGranularity.Minute3:
-                    return TimeSpans[13];
-
-                case TimeGranularity.Minute4:
-                    return TimeSpans[14];
-
-                case TimeGranularity.Minute5:
-                    return TimeSpans[15];
-
-                case TimeGranularity.Minute6:
-                    return TimeSpans[16];
-
-                case TimeGranularity.Minute10:
-                    return TimeSpans[17];
-
-                case TimeGranularity.Minute12:
-                    return TimeSpans[18];
-
-                case TimeGranularity.Minute15:
-                    return TimeSpans[19];
-
-                case TimeGranularity.Minute20:
-                    return TimeSpans[20];
-
-                case TimeGranularity.Minute30:
-                    return TimeSpans[21];
-
-                case TimeGranularity.Hour1:
-                    return TimeSpans[22];
-
-                case TimeGranularity.Hour2:
-                    return TimeSpans[23];
-
-                case TimeGranularity.Hour3:
-                    return TimeSpans[24];
-
-                case TimeGranularity.Hour4:
-                    return TimeSpans[25];
-
-                case TimeGranularity.Hour6:
-                    return TimeSpans[26];
-
-                case TimeGranularity.Hour8:
-                    return TimeSpans[27];
-
-                case TimeGranularity.Hour12:
-                    return TimeSpans[28];
-
-                case TimeGranularity.Day1:
-                    return TimeSpans[29];
-
-                case TimeGranularity.Week1:
-                    return TimeSpans[30];
-
-                case TimeGranularity.Week2:
-                    return TimeSpans[31];
-
-                case TimeGranularity.Week3:
-                    return TimeSpans[32];
-
-                case TimeGranularity.Month1:
-                    return TimeSpans[33];
-
-                case TimeGranularity.Month2:
-                    return TimeSpans[34];
-
-                case TimeGranularity.Month3:
-                    return TimeSpans[35];
-
-                case TimeGranularity.Month4:
-                    return TimeSpans[36];
-
-                case TimeGranularity.Month6:
-                    return TimeSpans[37];
-
-                case TimeGranularity.Year1:
-                    return TimeSpans[38];
-
-                default:
-                    throw new ArgumentException("Unknown time granularity", nameof(granularity));
-            }
+                TimeGranularity.Aperiodic => throw new ArgumentException("Aperiodic time granularity does not have a time span", nameof(granularity)),
+                TimeGranularity.Second1 => TimeSpans[0],
+                TimeGranularity.Second2 => TimeSpans[1],
+                TimeGranularity.Second3 => TimeSpans[2],
+                TimeGranularity.Second4 => TimeSpans[3],
+                TimeGranularity.Second5 => TimeSpans[4],
+                TimeGranularity.Second6 => TimeSpans[5],
+                TimeGranularity.Second10 => TimeSpans[6],
+                TimeGranularity.Second12 => TimeSpans[7],
+                TimeGranularity.Second15 => TimeSpans[8],
+                TimeGranularity.Second20 => TimeSpans[9],
+                TimeGranularity.Second30 => TimeSpans[10],
+                TimeGranularity.Minute1 => TimeSpans[11],
+                TimeGranularity.Minute2 => TimeSpans[12],
+                TimeGranularity.Minute3 => TimeSpans[13],
+                TimeGranularity.Minute4 => TimeSpans[14],
+                TimeGranularity.Minute5 => TimeSpans[15],
+                TimeGranularity.Minute6 => TimeSpans[16],
+                TimeGranularity.Minute10 => TimeSpans[17],
+                TimeGranularity.Minute12 => TimeSpans[18],
+                TimeGranularity.Minute15 => TimeSpans[19],
+                TimeGranularity.Minute20 => TimeSpans[20],
+                TimeGranularity.Minute30 => TimeSpans[21],
+                TimeGranularity.Hour1 => TimeSpans[22],
+                TimeGranularity.Hour2 => TimeSpans[23],
+                TimeGranularity.Hour3 => TimeSpans[24],
+                TimeGranularity.Hour4 => TimeSpans[25],
+                TimeGranularity.Hour6 => TimeSpans[26],
+                TimeGranularity.Hour8 => TimeSpans[27],
+                TimeGranularity.Hour12 => TimeSpans[28],
+                TimeGranularity.Day1 => TimeSpans[29],
+                TimeGranularity.Week1 => TimeSpans[30],
+                TimeGranularity.Week2 => TimeSpans[31],
+                TimeGranularity.Week3 => TimeSpans[32],
+                TimeGranularity.Month1 => TimeSpans[33],
+                TimeGranularity.Month2 => TimeSpans[34],
+                TimeGranularity.Month3 => TimeSpans[35],
+                TimeGranularity.Month4 => TimeSpans[36],
+                TimeGranularity.Month6 => TimeSpans[37],
+                TimeGranularity.Year1 => TimeSpans[38],
+                _ => throw new ArgumentException("Unknown time granularity", nameof(granularity))
+            };
         }
 
         /// <summary>
@@ -211,23 +130,21 @@ namespace Mbs.Trading.Time
         /// <returns>Returns a value indicating whether this granularity is in seconds.</returns>
         public static bool IsSecond(this TimeGranularity granularity)
         {
-            switch (granularity)
+            return granularity switch
             {
-                case TimeGranularity.Second1:
-                case TimeGranularity.Second2:
-                case TimeGranularity.Second3:
-                case TimeGranularity.Second4:
-                case TimeGranularity.Second5:
-                case TimeGranularity.Second6:
-                case TimeGranularity.Second10:
-                case TimeGranularity.Second12:
-                case TimeGranularity.Second15:
-                case TimeGranularity.Second20:
-                case TimeGranularity.Second30:
-                    return true;
-                default:
-                    return false;
-            }
+                TimeGranularity.Second1 => true,
+                TimeGranularity.Second2 => true,
+                TimeGranularity.Second3 => true,
+                TimeGranularity.Second4 => true,
+                TimeGranularity.Second5 => true,
+                TimeGranularity.Second6 => true,
+                TimeGranularity.Second10 => true,
+                TimeGranularity.Second12 => true,
+                TimeGranularity.Second15 => true,
+                TimeGranularity.Second20 => true,
+                TimeGranularity.Second30 => true,
+                _ => false
+            };
         }
 
         /// <summary>
@@ -237,23 +154,21 @@ namespace Mbs.Trading.Time
         /// <returns>Returns a value indicating whether this granularity is in minutes.</returns>
         public static bool IsMinute(this TimeGranularity granularity)
         {
-            switch (granularity)
+            return granularity switch
             {
-                case TimeGranularity.Minute1:
-                case TimeGranularity.Minute2:
-                case TimeGranularity.Minute3:
-                case TimeGranularity.Minute4:
-                case TimeGranularity.Minute5:
-                case TimeGranularity.Minute6:
-                case TimeGranularity.Minute10:
-                case TimeGranularity.Minute12:
-                case TimeGranularity.Minute15:
-                case TimeGranularity.Minute20:
-                case TimeGranularity.Minute30:
-                    return true;
-                default:
-                    return false;
-            }
+                TimeGranularity.Minute1 => true,
+                TimeGranularity.Minute2 => true,
+                TimeGranularity.Minute3 => true,
+                TimeGranularity.Minute4 => true,
+                TimeGranularity.Minute5 => true,
+                TimeGranularity.Minute6 => true,
+                TimeGranularity.Minute10 => true,
+                TimeGranularity.Minute12 => true,
+                TimeGranularity.Minute15 => true,
+                TimeGranularity.Minute20 => true,
+                TimeGranularity.Minute30 => true,
+                _ => false
+            };
         }
 
         /// <summary>
@@ -263,19 +178,17 @@ namespace Mbs.Trading.Time
         /// <returns>Returns a value indicating whether this granularity is in hours.</returns>
         public static bool IsHour(this TimeGranularity granularity)
         {
-            switch (granularity)
+            return granularity switch
             {
-                case TimeGranularity.Hour1:
-                case TimeGranularity.Hour2:
-                case TimeGranularity.Hour3:
-                case TimeGranularity.Hour4:
-                case TimeGranularity.Hour6:
-                case TimeGranularity.Hour8:
-                case TimeGranularity.Hour12:
-                    return true;
-                default:
-                    return false;
-            }
+                TimeGranularity.Hour1 => true,
+                TimeGranularity.Hour2 => true,
+                TimeGranularity.Hour3 => true,
+                TimeGranularity.Hour4 => true,
+                TimeGranularity.Hour6 => true,
+                TimeGranularity.Hour8 => true,
+                TimeGranularity.Hour12 => true,
+                _ => false
+            };
         }
 
         /// <summary>
@@ -295,15 +208,13 @@ namespace Mbs.Trading.Time
         /// <returns>Returns a value indicating whether this granularity is in weeks.</returns>
         public static bool IsWeek(this TimeGranularity granularity)
         {
-            switch (granularity)
+            return granularity switch
             {
-                case TimeGranularity.Week1:
-                case TimeGranularity.Week2:
-                case TimeGranularity.Week3:
-                    return true;
-                default:
-                    return false;
-            }
+                TimeGranularity.Week1 => true,
+                TimeGranularity.Week2 => true,
+                TimeGranularity.Week3 => true,
+                _ => false
+            };
         }
 
         /// <summary>
@@ -313,17 +224,15 @@ namespace Mbs.Trading.Time
         /// <returns>Returns a value indicating whether this granularity is in months.</returns>
         public static bool IsMonth(this TimeGranularity granularity)
         {
-            switch (granularity)
+            return granularity switch
             {
-                case TimeGranularity.Month1:
-                case TimeGranularity.Month2:
-                case TimeGranularity.Month3:
-                case TimeGranularity.Month4:
-                case TimeGranularity.Month6:
-                    return true;
-                default:
-                    return false;
-            }
+                TimeGranularity.Month1 => true,
+                TimeGranularity.Month2 => true,
+                TimeGranularity.Month3 => true,
+                TimeGranularity.Month4 => true,
+                TimeGranularity.Month6 => true,
+                _ => false
+            };
         }
 
         /// <summary>
@@ -343,22 +252,20 @@ namespace Mbs.Trading.Time
         /// <returns>Returns a value indicating whether this granularity is equal or longer than a day.</returns>
         public static bool IsEndofday(this TimeGranularity granularity)
         {
-            switch (granularity)
+            return granularity switch
             {
-                case TimeGranularity.Day1:
-                case TimeGranularity.Week1:
-                case TimeGranularity.Week2:
-                case TimeGranularity.Week3:
-                case TimeGranularity.Month1:
-                case TimeGranularity.Month2:
-                case TimeGranularity.Month3:
-                case TimeGranularity.Month4:
-                case TimeGranularity.Month6:
-                case TimeGranularity.Year1:
-                    return true;
-                default:
-                    return false;
-            }
+                TimeGranularity.Day1 => true,
+                TimeGranularity.Week1 => true,
+                TimeGranularity.Week2 => true,
+                TimeGranularity.Week3 => true,
+                TimeGranularity.Month1 => true,
+                TimeGranularity.Month2 => true,
+                TimeGranularity.Month3 => true,
+                TimeGranularity.Month4 => true,
+                TimeGranularity.Month6 => true,
+                TimeGranularity.Year1 => true,
+                _ => false
+            };
         }
 
         /// <summary>
@@ -368,41 +275,39 @@ namespace Mbs.Trading.Time
         /// <returns>Returns a value indicating whether this granularity is less than a day.</returns>
         public static bool IsIntraday(this TimeGranularity granularity)
         {
-            switch (granularity)
+            return granularity switch
             {
-                case TimeGranularity.Second1:
-                case TimeGranularity.Second2:
-                case TimeGranularity.Second3:
-                case TimeGranularity.Second4:
-                case TimeGranularity.Second5:
-                case TimeGranularity.Second6:
-                case TimeGranularity.Second10:
-                case TimeGranularity.Second12:
-                case TimeGranularity.Second15:
-                case TimeGranularity.Second20:
-                case TimeGranularity.Second30:
-                case TimeGranularity.Minute1:
-                case TimeGranularity.Minute2:
-                case TimeGranularity.Minute3:
-                case TimeGranularity.Minute4:
-                case TimeGranularity.Minute5:
-                case TimeGranularity.Minute6:
-                case TimeGranularity.Minute10:
-                case TimeGranularity.Minute12:
-                case TimeGranularity.Minute15:
-                case TimeGranularity.Minute20:
-                case TimeGranularity.Minute30:
-                case TimeGranularity.Hour1:
-                case TimeGranularity.Hour2:
-                case TimeGranularity.Hour3:
-                case TimeGranularity.Hour4:
-                case TimeGranularity.Hour6:
-                case TimeGranularity.Hour8:
-                case TimeGranularity.Hour12:
-                    return true;
-                default:
-                    return false;
-            }
+                TimeGranularity.Second1 => true,
+                TimeGranularity.Second2 => true,
+                TimeGranularity.Second3 => true,
+                TimeGranularity.Second4 => true,
+                TimeGranularity.Second5 => true,
+                TimeGranularity.Second6 => true,
+                TimeGranularity.Second10 => true,
+                TimeGranularity.Second12 => true,
+                TimeGranularity.Second15 => true,
+                TimeGranularity.Second20 => true,
+                TimeGranularity.Second30 => true,
+                TimeGranularity.Minute1 => true,
+                TimeGranularity.Minute2 => true,
+                TimeGranularity.Minute3 => true,
+                TimeGranularity.Minute4 => true,
+                TimeGranularity.Minute5 => true,
+                TimeGranularity.Minute6 => true,
+                TimeGranularity.Minute10 => true,
+                TimeGranularity.Minute12 => true,
+                TimeGranularity.Minute15 => true,
+                TimeGranularity.Minute20 => true,
+                TimeGranularity.Minute30 => true,
+                TimeGranularity.Hour1 => true,
+                TimeGranularity.Hour2 => true,
+                TimeGranularity.Hour3 => true,
+                TimeGranularity.Hour4 => true,
+                TimeGranularity.Hour6 => true,
+                TimeGranularity.Hour8 => true,
+                TimeGranularity.Hour12 => true,
+                _ => false
+            };
         }
 
         /// <summary>
@@ -412,73 +317,60 @@ namespace Mbs.Trading.Time
         /// <returns>Returns the number of time units in the granularity.</returns>
         public static int NumberOfUnits(this TimeGranularity granularity)
         {
-            switch (granularity)
+            return granularity switch
             {
-                case TimeGranularity.Second1:
-                case TimeGranularity.Minute1:
-                case TimeGranularity.Hour1:
-                case TimeGranularity.Day1:
-                case TimeGranularity.Week1:
-                case TimeGranularity.Month1:
-                case TimeGranularity.Year1:
-                    return 1;
+                TimeGranularity.Second1 => 1,
+                TimeGranularity.Minute1 => 1,
+                TimeGranularity.Hour1 => 1,
+                TimeGranularity.Day1 => 1,
+                TimeGranularity.Week1 => 1,
+                TimeGranularity.Month1 => 1,
+                TimeGranularity.Year1 => 1,
 
-                case TimeGranularity.Second2:
-                case TimeGranularity.Minute2:
-                case TimeGranularity.Hour2:
-                case TimeGranularity.Week2:
-                case TimeGranularity.Month2:
-                    return 2;
+                TimeGranularity.Second2 => 2,
+                TimeGranularity.Minute2 => 2,
+                TimeGranularity.Hour2 => 2,
+                TimeGranularity.Week2 => 2,
+                TimeGranularity.Month2 => 2,
 
-                case TimeGranularity.Second3:
-                case TimeGranularity.Minute3:
-                case TimeGranularity.Hour3:
-                case TimeGranularity.Week3:
-                case TimeGranularity.Month3:
-                    return 3;
+                TimeGranularity.Second3 => 3,
+                TimeGranularity.Minute3 => 3,
+                TimeGranularity.Hour3 => 3,
+                TimeGranularity.Week3 => 3,
+                TimeGranularity.Month3 => 3,
 
-                case TimeGranularity.Second4:
-                case TimeGranularity.Minute4:
-                case TimeGranularity.Hour4:
-                case TimeGranularity.Month4:
-                    return 4;
+                TimeGranularity.Second4 => 4,
+                TimeGranularity.Minute4 => 4,
+                TimeGranularity.Hour4 => 4,
+                TimeGranularity.Month4 => 4,
 
-                case TimeGranularity.Second5:
-                case TimeGranularity.Minute5:
-                    return 5;
+                TimeGranularity.Second5 => 5,
+                TimeGranularity.Minute5 => 5,
 
-                case TimeGranularity.Second6:
-                case TimeGranularity.Minute6:
-                case TimeGranularity.Hour6:
-                case TimeGranularity.Month6:
-                    return 6;
+                TimeGranularity.Second6 => 6,
+                TimeGranularity.Minute6 => 6,
+                TimeGranularity.Hour6 => 6,
+                TimeGranularity.Month6 => 6,
 
-                case TimeGranularity.Hour8:
-                    return 8;
+                TimeGranularity.Hour8 => 8,
 
-                case TimeGranularity.Second10:
-                case TimeGranularity.Minute10:
-                    return 10;
+                TimeGranularity.Second10 => 10,
+                TimeGranularity.Minute10 => 10,
 
-                case TimeGranularity.Second12:
-                case TimeGranularity.Minute12:
-                case TimeGranularity.Hour12:
-                    return 12;
+                TimeGranularity.Second12 => 12,
+                TimeGranularity.Minute12 => 12,
+                TimeGranularity.Hour12 => 12,
 
-                case TimeGranularity.Second15:
-                case TimeGranularity.Minute15:
-                    return 15;
+                TimeGranularity.Second15 => 15,
+                TimeGranularity.Minute15 => 15,
 
-                case TimeGranularity.Second20:
-                case TimeGranularity.Minute20:
-                    return 20;
+                TimeGranularity.Second20 => 20,
+                TimeGranularity.Minute20 => 20,
 
-                case TimeGranularity.Second30:
-                case TimeGranularity.Minute30:
-                    return 30;
-            }
-
-            return 1;
+                TimeGranularity.Second30 => 30,
+                TimeGranularity.Minute30 => 30,
+                _ => 1
+            };
         }
     }
 }

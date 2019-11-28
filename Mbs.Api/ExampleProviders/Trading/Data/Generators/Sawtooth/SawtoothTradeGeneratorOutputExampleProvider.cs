@@ -6,7 +6,7 @@ using Swashbuckle.AspNetCore.Filters;
 namespace Mbs.Api.ExampleProviders.Trading.Data.Generators.Sawtooth
 {
     /// <inheritdoc />
-    internal class SawtoothTradeGeneratorOutputExampleProvider : IExamplesProvider
+    internal class SawtoothTradeGeneratorOutputExampleProvider : IExamplesProvider<SyntheticDataGeneratorOutput<Trade>>
     {
         internal const string Name = SawtoothTradeGenerator.WaveformName;
         internal const string Moniker = "100∙sawtooth(128, linear) + 10 + noise(ρn=0.01), v=100";
@@ -15,7 +15,7 @@ namespace Mbs.Api.ExampleProviders.Trading.Data.Generators.Sawtooth
         internal const double Price2 = 10.84;
 
         /// <inheritdoc />
-        public object GetExamples()
+        public SyntheticDataGeneratorOutput<Trade> GetExamples()
         {
             return new SyntheticDataGeneratorOutput<Trade>
             {

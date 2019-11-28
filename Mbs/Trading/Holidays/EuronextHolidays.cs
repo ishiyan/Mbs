@@ -14,6 +14,23 @@ namespace Mbs.Trading.Holidays
         /// <returns>True if the specified date is a EuroNext holiday.</returns>
         /// <remarks>
         /// <para>Sources:</para>
+        /// <para>EuroNext calendar of business days 2020.</para>
+        /// <list type="table">
+        /// <item><term>Wednesday 1 January 2020</term><description>New Year's Day</description></item>
+        /// <item><term>Friday 10 April 2020</term><description>Good Friday</description></item>
+        /// <item><term>Monday 13 April 2020</term><description>Easter Monday</description></item>
+        /// <item><term>Friday 1 May 2020</term><description>Labour Day</description></item>
+        /// <item><term>Friday 25 December 2020</term><description>Christmas Day</description></item>
+        /// </list>
+        /// <para>EuroNext calendar of business days 2019.</para>
+        /// <list type="table">
+        /// <item><term>Tuesday 1 January 2019</term><description>New Year's Day</description></item>
+        /// <item><term>Friday 19 April 2019</term><description>Good Friday</description></item>
+        /// <item><term>Monday 22 April 2019</term><description>Easter Monday</description></item>
+        /// <item><term>Wednesday 1 May 2019</term><description>Labour Day</description></item>
+        /// <item><term>Wednesday 25 December 2019</term><description>Christmas Day</description></item>
+        /// <item><term>Thursday 26 December 2019</term><description>Boxing Day</description></item>
+        /// </list>
         /// <para>EuroNext calendar of business days 2018.</para>
         /// <list type="table">
         /// <item><term>Monday 1 January 2018</term><description>New Year's Day</description></item>
@@ -186,8 +203,39 @@ namespace Mbs.Trading.Holidays
 
             int day = dateTime.Day;
             int month = dateTime.Month;
+#pragma warning disable IDE0066 // Convert switch statement to expression
             switch (dateTime.Year)
             {
+                case 2020:
+                    switch (month)
+                    {
+                        case 1:
+                            return day == 1; // Wednesday 1 January 2020
+                        case 4:
+                            return day == 10 || day == 13; // Friday 10 April 2020, Monday 13 April 2020
+                        case 5:
+                            return day == 1; // Friday 1 May 2020
+                        case 12:
+                            return day == 25; // Friday 25 December 2019
+                        default:
+                            return false;
+                    }
+
+                case 2019:
+                    switch (month)
+                    {
+                        case 1:
+                            return day == 1; // Tuesday 1 January 2019
+                        case 4:
+                            return day == 19 || day == 22; // Friday 19 April 2019, Monday 22 April 2019
+                        case 5:
+                            return day == 1; // Wednesday 1 May 2019
+                        case 12:
+                            return day == 25 || day == 26; // Wednesday 25 December 2019, Thursday 26 December 2019
+                        default:
+                            return false;
+                    }
+
                 case 2018:
                     switch (month)
                     {
@@ -457,6 +505,7 @@ namespace Mbs.Trading.Holidays
                             return false;
                     }
             }
+#pragma warning restore IDE0066 // Convert switch statement to expression
 
             switch (month)
             {

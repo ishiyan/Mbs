@@ -1,14 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <OutputType>Library</OutputType>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <Configurations>Debug;Release</Configurations>
+    <Platforms>x64</Platforms>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <LangVersion>Latest</LangVersion>
     <AssemblyName>Mbs</AssemblyName>
     <Description>Mbs library</Description>
     <Authors>Mbrane</Authors>
     <Company>Mbrane</Company>
-    <copyright>Copyright (c) 2019 Mbrane. All rights reserved.</copyright>
+    <copyright>Copyright (c) 2020 Mbrane. All rights reserved.</copyright>
     <AssemblyVersion>1.0.1</AssemblyVersion>
     <FileVersion>1.0.1.1</FileVersion>
     <NuspecFile>Mbs.nuspec</NuspecFile>
@@ -16,13 +19,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\Shared\GlobalSuppressions.cs" Link="GlobalSuppressions.cs" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.0.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.All" />
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.3" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118" PrivateAssets="All" />
+    <Compile Include="..\Shared\GlobalSuppressions.cs" Link="GlobalSuppressions.cs" />
   </ItemGroup>
 
 </Project>

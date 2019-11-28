@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Mbs.Trading.Instruments;
 using Mbs.Trading.Time;
 
+// ReSharper disable once CheckNamespace
 namespace Mbs.Trading.Data.Historical
 {
     /// <summary>
@@ -208,19 +209,13 @@ namespace Mbs.Trading.Data.Historical
             Log.Downloading(nameof(EuronextHistoricalData), url);
             try
             {
-                using (var request = new HttpRequestMessage(HttpMethod.Get, url))
-                {
-                    using (var cancelSource = new CancellationTokenSource())
-                    {
-                        request.Headers.Referrer = new Uri(referer);
-                        using (HttpResponseMessage response =
-                            await httpClient.SendAsync(request, cancelSource.Token))
-                        using (Stream responseStream = await GetResponseStreamAsync(response))
-                        {
-                            return await ReadResponseStreamAsync(responseStream);
-                        }
-                    }
-                }
+                using var request = new HttpRequestMessage(HttpMethod.Get, url);
+                using var cancelSource = new CancellationTokenSource();
+                request.Headers.Referrer = new Uri(referer);
+                using HttpResponseMessage response =
+                    await httpClient.SendAsync(request, cancelSource.Token);
+                await using Stream responseStream = await GetResponseStreamAsync(response);
+                return await ReadResponseStreamAsync(responseStream);
             }
             catch (Exception exception)
             {
@@ -428,7 +423,7 @@ namespace Mbs.Trading.Data.Historical
 
             var entry = span.Slice(0, i);
             if (!entry.StartsWith(entryInfo.PatternArray, StringComparison.Ordinal) ||
-                '\"' != entry[entry.Length - 1] || entry.Contains(EntryInfo.NullArray, StringComparison.Ordinal))
+                '\"' != entry[^1] || entry.Contains(EntryInfo.NullArray, StringComparison.Ordinal))
             {
                 Log.Error($"{Prefix} invalid [{entryInfo.Name}] splitted item [{entry.ToString()}] in [{span.ToString()}], {Skipping}");
                 value = double.NaN;
@@ -459,7 +454,7 @@ namespace Mbs.Trading.Data.Historical
             // ReSharper restore CommentTypo
             var entry = span.Slice(0, i);
             if (!(entry.StartsWith(EntryInfo.VolumePatternArray1, StringComparison.Ordinal) || entry.StartsWith(EntryInfo.VolumePatternArray2, StringComparison.Ordinal))
-                || '\"' != entry[entry.Length - 1]
+                || '\"' != entry[^1]
                 || entry.Contains(EntryInfo.NullArray, StringComparison.Ordinal))
             {
                 Log.Error($"{Prefix} {invalidItem} [{entry.ToString()}] in [{span.ToString()}], {Skipping}");
@@ -521,7 +516,7 @@ namespace Mbs.Trading.Data.Historical
             //           11111111112
             // 012345678901234567890
             var entry = span.Slice(0, i);
-            if (!entry.StartsWith(EntryInfo.IsinPatternArray, StringComparison.Ordinal) || '\"' != entry[entry.Length - 1])
+            if (!entry.StartsWith(EntryInfo.IsinPatternArray, StringComparison.Ordinal) || '\"' != entry[^1])
             {
                 Log.Error($"{Prefix} {invalidItem} [{entry.ToString()}] in [{span.ToString()}], {Skipping}");
                 return false;
@@ -601,7 +596,7 @@ namespace Mbs.Trading.Data.Historical
             // 0123456789012345678901
             // ReSharper restore CommentTypo
             span = span.Slice(i + EntryInfo.DelimiterArray.Length);
-            if (!TryParseVolumeSpan(span, out double volume, out i))
+            if (!TryParseVolumeSpan(span, out double volume, out _))
                 return null;
 
             return new Ohlcv(dateTime, open, high, low, close, volume);

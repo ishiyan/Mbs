@@ -2,11 +2,11 @@
 using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Text;
 using Mbs;
 using Mbs.Trading.Data;
 
+// ReSharper disable once CheckNamespace
 namespace EuronextEndofdayJsonParsing
 {
     public static class EuronextEndofdayJsonParsingUsingSpan
@@ -48,7 +48,7 @@ namespace EuronextEndofdayJsonParsing
 
         private class EntryInfo
         {
-            public static readonly char[] DefimiterArray = @",""".ToCharArray();
+            public static readonly char[] DelimiterArray = @",""".ToCharArray();
 
             public static readonly char[] NullArray = "null".ToCharArray();
 
@@ -56,8 +56,10 @@ namespace EuronextEndofdayJsonParsing
 
             public static readonly char[] DatePatternArray = @"date"":""".ToCharArray();
 
+            // ReSharper disable once StringLiteralTypo
             public static readonly char[] VolumePatternArray1 = @"nymberofshares"":""".ToCharArray();
 
+            // ReSharper disable once StringLiteralTypo
             public static readonly char[] VolumePatternArray2 = @"numberofshares"":""".ToCharArray();
 
             public string Name { get; }
@@ -87,7 +89,7 @@ namespace EuronextEndofdayJsonParsing
 
         private static bool TryParseDoubleSpan(ReadOnlySpan<char> str, EntryInfo entryInfo, out double value, out int i)
         {
-            i = str.IndexOf(EntryInfo.DefimiterArray, StringComparison.Ordinal);
+            i = str.IndexOf(EntryInfo.DelimiterArray, StringComparison.Ordinal);
             if (i < 0)
             {
                 Log.Error(
@@ -98,7 +100,7 @@ namespace EuronextEndofdayJsonParsing
 
             var entry = str.Slice(0, i);
             if (!entry.StartsWith(entryInfo.PatternArray, StringComparison.Ordinal) ||
-                '\"' != entry[entry.Length - 1] || entry.Contains(EntryInfo.NullArray, StringComparison.Ordinal))
+                '\"' != entry[^1] || entry.Contains(EntryInfo.NullArray, StringComparison.Ordinal))
             {
                 Log.Error(
                     $"{Prefix}: invalid endofday json: invalid [{entryInfo.Name}] splitted entry [{entry.ToString()}] in [{str.ToString()}], skipping.");
@@ -129,7 +131,7 @@ namespace EuronextEndofdayJsonParsing
 
         private static bool TryParseVolumeSpan(ReadOnlySpan<char> str, out double value, out int i)
         {
-            i = str.IndexOf(EntryInfo.DefimiterArray, StringComparison.Ordinal);
+            i = str.IndexOf(EntryInfo.DelimiterArray, StringComparison.Ordinal);
             if (i < 0)
             {
                 Log.Error(
@@ -138,13 +140,15 @@ namespace EuronextEndofdayJsonParsing
                 return false;
             }
 
+            // ReSharper disable once CommentTypo
             // nymberofshares":"1,118.00"
+            // ReSharper disable once CommentTypo
             // numberofshares":"0,00"
             //           1111111111222222
             // 01234567890123456789012345
             var entry = str.Slice(0, i);
             if (!(entry.StartsWith(EntryInfo.VolumePatternArray1, StringComparison.Ordinal) || entry.StartsWith(EntryInfo.VolumePatternArray2, StringComparison.Ordinal))
-                || '\"' != entry[entry.Length - 1]
+                || '\"' != entry[^1]
                 || entry.Contains(EntryInfo.NullArray, StringComparison.Ordinal))
             {
                 Log.Error($"{Prefix}: invalid endofday json: invalid [numberOfShares] splitted entry [{entry.ToString()}] in [{str.ToString()}], skipping.");
@@ -165,7 +169,7 @@ namespace EuronextEndofdayJsonParsing
 
         private static bool TryParseDateSpan(ReadOnlySpan<char> str, TimeSpan? endofdayClosingTime, out DateTime value, out int i)
         {
-            i = str.IndexOf(EntryInfo.DefimiterArray, StringComparison.Ordinal);
+            i = str.IndexOf(EntryInfo.DelimiterArray, StringComparison.Ordinal);
             if (i < 0)
             {
                 Log.Error(
@@ -199,7 +203,7 @@ namespace EuronextEndofdayJsonParsing
 
         private static bool TryParseIsinSpan(ReadOnlySpan<char> str, string isin, out int i)
         {
-            i = str.IndexOf(EntryInfo.DefimiterArray, StringComparison.Ordinal);
+            i = str.IndexOf(EntryInfo.DelimiterArray, StringComparison.Ordinal);
             if (i < 0)
             {
                 Log.Error($"{Prefix}: invalid endofday json: invalid [ISIN] splitted entry in [{new string(str.ToArray())}], skipping.");
@@ -210,7 +214,7 @@ namespace EuronextEndofdayJsonParsing
             //           11111111112
             // 012345678901234567890
             var entry = str.Slice(0, i);
-            if (!entry.StartsWith(EntryInfo.IsinPatternArray, StringComparison.Ordinal) || '\"' != entry[entry.Length - 1])
+            if (!entry.StartsWith(EntryInfo.IsinPatternArray, StringComparison.Ordinal) || '\"' != entry[^1])
             {
                 Log.Error($"{Prefix}: invalid endofday json: invalid [ISIN] splitted entry [{new string(entry.ToArray())}] in [{new string(str.ToArray())}], skipping.");
                 return false;
@@ -228,7 +232,9 @@ namespace EuronextEndofdayJsonParsing
 
         private static Ohlcv ParseJsonSpan(ReadOnlySpan<char> str, TimeSpan? endofdayClosingTime, string isin)
         {
+            // ReSharper disable CommentTypo
             // "ISIN":"FR0010533075","MIC":"Euronext Paris, London","date":"29\/08\/2012","open":"5.85","high":"5.918","low":"5.84","close":"5.893","nymberofshares":"589,993","numoftrades":"1,467","turnover":"3,465,442.27","currency":"EUR"
+            // ReSharper restore CommentTypo
             // "ISIN":"FR0010930636"
             //           11111111112
             // 012345678901234567890
@@ -238,8 +244,8 @@ namespace EuronextEndofdayJsonParsing
             // MIC":"Euronext Paris, London"
             //           1111111111222222222
             // 01234567890123456789012345678
-            str = str.Slice(i + EntryInfo.DefimiterArray.Length);
-            i = str.IndexOf(EntryInfo.DefimiterArray, StringComparison.Ordinal);
+            str = str.Slice(i + EntryInfo.DelimiterArray.Length);
+            i = str.IndexOf(EntryInfo.DelimiterArray, StringComparison.Ordinal);
             if (i < 0)
             {
                 Log.Error(
@@ -250,44 +256,46 @@ namespace EuronextEndofdayJsonParsing
             // date":"29\/08\/2012"
             //           1111111111
             // 01234567890123456789
-            str = str.Slice(i + EntryInfo.DefimiterArray.Length);
+            str = str.Slice(i + EntryInfo.DelimiterArray.Length);
             if (!TryParseDateSpan(str, endofdayClosingTime, out DateTime dateTime, out i))
                 return null;
 
             // open":"1,329.39"
             //           111111
             // 0123456789012345
-            str = str.Slice(i + EntryInfo.DefimiterArray.Length);
+            str = str.Slice(i + EntryInfo.DelimiterArray.Length);
             if (!TryParseDoubleSpan(str, Entries[0], out double open, out i)) // 1,329.39
                 return null;
 
             // high":"1,329.39"
             //           11111
             // 012345678901234
-            str = str.Slice(i + EntryInfo.DefimiterArray.Length);
+            str = str.Slice(i + EntryInfo.DelimiterArray.Length);
             if (!TryParseDoubleSpan(str, Entries[1], out double high, out i))
                 return null;
 
             // low":"1,329.39"
             //           11111
             // 012345678902345
-            str = str.Slice(i + EntryInfo.DefimiterArray.Length);
+            str = str.Slice(i + EntryInfo.DelimiterArray.Length);
             if (!TryParseDoubleSpan(str, Entries[2], out double low, out i))
                 return null;
 
             // close":"1,329.39"
             //           1111111
             // 01234567890123456
-            str = str.Slice(i + EntryInfo.DefimiterArray.Length);
+            str = str.Slice(i + EntryInfo.DelimiterArray.Length);
             if (!TryParseDoubleSpan(str, Entries[3], out double close, out i))
                 return null;
 
+            // ReSharper disable once CommentTypo
             // nymberofshares":"1,118.00"
+            // ReSharper disable once CommentTypo
             // numberofshares":"0,00"
             //           111111111122
             // 0123456789012345678901
-            str = str.Slice(i + EntryInfo.DefimiterArray.Length);
-            if (!TryParseVolumeSpan(str, out double volume, out i))
+            str = str.Slice(i + EntryInfo.DelimiterArray.Length);
+            if (!TryParseVolumeSpan(str, out double volume, out _))
                 return null;
 
             return new Ohlcv(dateTime, open, high, low, close, volume);

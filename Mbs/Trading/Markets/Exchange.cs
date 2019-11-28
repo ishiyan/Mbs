@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
-using Mbs.Trading.Instruments;
 
 namespace Mbs.Trading.Markets
 {
@@ -1884,36 +1883,36 @@ namespace Mbs.Trading.Markets
 
         private static ExchangeMic EuronextToMic(EuronextMic euronextMic)
         {
-            switch (euronextMic)
+            return euronextMic switch
             {
-                case EuronextMic.Xbru: return ExchangeMic.Xbru;
-                case EuronextMic.Alxb: return ExchangeMic.Alxb;
-                case EuronextMic.Enxb: return ExchangeMic.Enxb;
-                case EuronextMic.Mlxb: return ExchangeMic.Mlxb;
-                case EuronextMic.Tnlb: return ExchangeMic.Tnlb;
-                case EuronextMic.Vpxb: return ExchangeMic.Vpxb;
-                case EuronextMic.Xbrd: return ExchangeMic.Xbrd;
-                case EuronextMic.Xpar: return ExchangeMic.Xpar;
-                case EuronextMic.Alxp: return ExchangeMic.Alxp;
-                case EuronextMic.Xmat: return ExchangeMic.Xmat;
-                case EuronextMic.Xmli: return ExchangeMic.Xmli;
-                case EuronextMic.Xmon: return ExchangeMic.Xmon;
-                case EuronextMic.Xspm: return ExchangeMic.Xspm;
-                case EuronextMic.Xlis: return ExchangeMic.Xlis;
-                case EuronextMic.Alxl: return ExchangeMic.Alxl;
-                case EuronextMic.Enxl: return ExchangeMic.Enxl;
-                case EuronextMic.Mfox: return ExchangeMic.Mfox;
-                case EuronextMic.Wqxl: return ExchangeMic.Wqxl;
-                case EuronextMic.Xams: return ExchangeMic.Xams;
-                case EuronextMic.Tnla: return ExchangeMic.Tnla;
-                case EuronextMic.Xeuc: return ExchangeMic.Xeuc;
-                case EuronextMic.Xeue: return ExchangeMic.Xeue;
-                case EuronextMic.Xeui: return ExchangeMic.Xeui;
-                case EuronextMic.Xldn: return ExchangeMic.Xldn;
-                case EuronextMic.Xsmp: return ExchangeMic.Xsmp;
-                case EuronextMic.Ensy: return ExchangeMic.Ensy;
-                default: return ExchangeMic.Xxxx;
-            }
+                EuronextMic.Xbru => ExchangeMic.Xbru,
+                EuronextMic.Alxb => ExchangeMic.Alxb,
+                EuronextMic.Enxb => ExchangeMic.Enxb,
+                EuronextMic.Mlxb => ExchangeMic.Mlxb,
+                EuronextMic.Tnlb => ExchangeMic.Tnlb,
+                EuronextMic.Vpxb => ExchangeMic.Vpxb,
+                EuronextMic.Xbrd => ExchangeMic.Xbrd,
+                EuronextMic.Xpar => ExchangeMic.Xpar,
+                EuronextMic.Alxp => ExchangeMic.Alxp,
+                EuronextMic.Xmat => ExchangeMic.Xmat,
+                EuronextMic.Xmli => ExchangeMic.Xmli,
+                EuronextMic.Xmon => ExchangeMic.Xmon,
+                EuronextMic.Xspm => ExchangeMic.Xspm,
+                EuronextMic.Xlis => ExchangeMic.Xlis,
+                EuronextMic.Alxl => ExchangeMic.Alxl,
+                EuronextMic.Enxl => ExchangeMic.Enxl,
+                EuronextMic.Mfox => ExchangeMic.Mfox,
+                EuronextMic.Wqxl => ExchangeMic.Wqxl,
+                EuronextMic.Xams => ExchangeMic.Xams,
+                EuronextMic.Tnla => ExchangeMic.Tnla,
+                EuronextMic.Xeuc => ExchangeMic.Xeuc,
+                EuronextMic.Xeue => ExchangeMic.Xeue,
+                EuronextMic.Xeui => ExchangeMic.Xeui,
+                EuronextMic.Xldn => ExchangeMic.Xldn,
+                EuronextMic.Xsmp => ExchangeMic.Xsmp,
+                EuronextMic.Ensy => ExchangeMic.Ensy,
+                _ => ExchangeMic.Xxxx
+            };
         }
 
         private static bool IsEuronextMic(ExchangeMic mic)

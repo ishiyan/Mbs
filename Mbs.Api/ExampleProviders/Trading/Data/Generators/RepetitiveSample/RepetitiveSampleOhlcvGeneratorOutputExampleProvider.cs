@@ -6,7 +6,7 @@ using Swashbuckle.AspNetCore.Filters;
 namespace Mbs.Api.ExampleProviders.Trading.Data.Generators.RepetitiveSample
 {
     /// <inheritdoc />
-    internal class RepetitiveSampleOhlcvGeneratorOutputExampleProvider : IExamplesProvider
+    internal class RepetitiveSampleOhlcvGeneratorOutputExampleProvider : IExamplesProvider<SyntheticDataGeneratorOutput<Ohlcv>>
     {
         internal const string Name = RepetitiveSampleOhlcvGenerator.WaveformName;
         internal const string Moniker = "repetitive ohlcv sample (len=252)";
@@ -24,7 +24,7 @@ namespace Mbs.Api.ExampleProviders.Trading.Data.Generators.RepetitiveSample
         internal const double Volume2 = 4955900;
 
         /// <inheritdoc />
-        public object GetExamples()
+        public SyntheticDataGeneratorOutput<Ohlcv> GetExamples()
         {
             return new SyntheticDataGeneratorOutput<Ohlcv>
             {

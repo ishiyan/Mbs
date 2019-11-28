@@ -1,4 +1,4 @@
-FROM microsoft/dotnet:2.2-sdk as builder  
+FROM microsoft/dotnet:3.0-sdk as builder  
  
 RUN mkdir -p /root/src/app/netcoreapp
 WORKDIR /root/src/app/netcoreapp
@@ -30,11 +30,11 @@ COPY Mbs.Api Mbs.Api/
 COPY Mbs Mbs/
 COPY Shared Shared/
 WORKDIR /root/src/app/netcoreapp/Mbs.Api.Host.Ng
-RUN dotnet publish -c release -f netcoreapp2.2 -o published
+RUN dotnet publish -c release -f netcoreapp3.0 -o published --self-contained false
 
 
-FROM microsoft/dotnet:2.2-aspnetcore-runtime
+FROM microsoft/dotnet:3.0-aspnetcore-runtime
 
 WORKDIR /root/  
 COPY --from=builder /root/src/app/netcoreapp/Mbs.Api.Host.Ng/published .
-ENTRYPOINT ["dotnet", "Mbs.Api.Host.Ng.dll"]
+ENTRYPOINT ["./Mbs.Api.Host.Ng"]

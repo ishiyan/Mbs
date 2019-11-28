@@ -6,7 +6,7 @@ using Swashbuckle.AspNetCore.Filters;
 namespace Mbs.Api.ExampleProviders.Trading.Data.Generators.GeometricBrownianMotion
 {
     /// <inheritdoc />
-    internal class GeometricBrownianMotionQuoteGeneratorOutputExampleProvider : IExamplesProvider
+    internal class GeometricBrownianMotionQuoteGeneratorOutputExampleProvider : IExamplesProvider<SyntheticDataGeneratorOutput<Quote>>
     {
         internal const string Name = GeometricBrownianMotionQuoteGenerator.WaveformName;
         internal const string Moniker = "gBm(l=128, μ=0.003, σ=0.3) ∙ 100 + 10 + noise(ρn=0.01), ρs=0.1, as=10, bs=10";
@@ -18,7 +18,7 @@ namespace Mbs.Api.ExampleProviders.Trading.Data.Generators.GeometricBrownianMoti
         internal const double AskPrice2 = 24.07;
 
         /// <inheritdoc />
-        public object GetExamples()
+        public SyntheticDataGeneratorOutput<Quote> GetExamples()
         {
             return new SyntheticDataGeneratorOutput<Quote>
             {

@@ -1,5 +1,6 @@
 ﻿using System;
 
+// ReSharper disable once CheckNamespace
 namespace Mbs.Numerics
 {
     /// <summary>
@@ -81,7 +82,7 @@ namespace Mbs.Numerics
                 ans += Math.Pow(k + a, -s);
             for (int j = 0; j <= jmax; ++j)
             {
-                double delta = HzetaCoeff[j + 1] * scp * pcp;
+                double delta = HurwitzZetaCoefficients[j + 1] * scp * pcp;
                 ans += delta;
                 if (Math.Abs(delta / ans) < 0.5 * Constants.DoubleEpsilon)
                     break;
@@ -133,7 +134,7 @@ namespace Mbs.Numerics
             {
                 Complex fOld = f;
                 Complex fk = 1d - Complex.Pow(Primes[k], -z);
-                f = f * fk;
+                f *= fk;
                 if (f == fOld)
                     return 1d / f;
             }
@@ -144,7 +145,7 @@ namespace Mbs.Numerics
         /// <summary>
         /// Coefficients for Maclaurin summation in HurwitzZeta(), B₂ᵢ/(2i)!.
         /// </summary>
-        private static readonly double[] HzetaCoeff =
+        private static readonly double[] HurwitzZetaCoefficients =
         {
             1.00000000000000000000000000000,
             0.083333333333333333333333333333,

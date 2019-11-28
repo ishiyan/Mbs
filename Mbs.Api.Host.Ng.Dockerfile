@@ -1,4 +1,4 @@
-FROM microsoft/dotnet:3.0-sdk as builder  
+FROM mcr.microsoft.com/dotnet/core/sdk:3.0 as builder  
  
 RUN mkdir -p /root/src/app/netcoreapp
 WORKDIR /root/src/app/netcoreapp
@@ -33,7 +33,7 @@ WORKDIR /root/src/app/netcoreapp/Mbs.Api.Host.Ng
 RUN dotnet publish -c release -f netcoreapp3.0 -o published --self-contained false
 
 
-FROM microsoft/dotnet:3.0-aspnetcore-runtime
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.0 AS runtime
 
 WORKDIR /root/  
 COPY --from=builder /root/src/app/netcoreapp/Mbs.Api.Host.Ng/published .

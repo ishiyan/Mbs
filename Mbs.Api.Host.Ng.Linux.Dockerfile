@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:3.0 as builder  
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1 as builder  
  
 ENV NET_CLI_TELEMETRY_OPTOUT 1
 RUN mkdir -p /root/src/app/netcoreapp
@@ -31,10 +31,10 @@ COPY Mbs.Api Mbs.Api/
 COPY Mbs Mbs/
 COPY Shared Shared/
 WORKDIR /root/src/app/netcoreapp/Mbs.Api.Host.Ng
-RUN dotnet publish -c release -f netcoreapp3.0 -o published --self-contained false
+RUN dotnet publish -c release -f netcoreapp3.1 -o published --self-contained false
 
 
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.0 AS runtime
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1 AS runtime
 
 ENV NET_CLI_TELEMETRY_OPTOUT 1
 WORKDIR /root/  

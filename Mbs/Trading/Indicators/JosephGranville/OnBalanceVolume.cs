@@ -2,7 +2,7 @@
 using Mbs.Trading.Data;
 using Mbs.Trading.Indicators.Abstractions;
 
-namespace Mbs.Trading.Indicators
+namespace Mbs.Trading.Indicators.JosephGranville
 {
     /// <summary>
     /// On-Balance Volume (OBV) is a momentum indicator that relates price change to a volume. It adds a period's volume when the close is up and subtracts the period's volume when the close is down. A cumulative total of the volume additions and subtractions forms the OBV line.

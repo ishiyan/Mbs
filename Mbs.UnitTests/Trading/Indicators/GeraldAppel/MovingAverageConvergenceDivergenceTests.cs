@@ -5,8 +5,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Mbs.Trading.Data;
 using Mbs.Trading.Indicators;
 using Mbs.Trading.Indicators.Abstractions;
+using Mbs.Trading.Indicators.GeraldAppel;
 
-namespace Mbs.UnitTests.Trading.Indicators
+namespace Mbs.UnitTests.Trading.Indicators.GeraldAppel
 {
     [TestClass]
     public class MovingAverageConvergenceDivergenceTests

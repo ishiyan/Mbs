@@ -3,7 +3,7 @@ using System.Globalization;
 using Mbs.Trading.Data;
 using Mbs.Trading.Indicators.Abstractions;
 
-namespace Mbs.Trading.Indicators
+namespace Mbs.Trading.Indicators.GeorgeLane
 {
     /// <summary>
     /// Developed by George C. Lane in the late 1950s, the Stochastic Oscillator is a momentum indicator that shows

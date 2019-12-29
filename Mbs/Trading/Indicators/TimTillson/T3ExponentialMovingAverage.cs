@@ -3,7 +3,7 @@ using System.Globalization;
 using Mbs.Trading.Data;
 using Mbs.Trading.Indicators.Abstractions;
 
-namespace Mbs.Trading.Indicators
+namespace Mbs.Trading.Indicators.TimTillson
 {
     /// <summary>
     /// The T3 Exponential Moving Average is a smoothing indicator with less lag than a straight exponential moving average.
@@ -52,7 +52,7 @@ namespace Mbs.Trading.Indicators
         public double SmoothingFactor { get; }
 
         /// <summary>
-        /// The ν-factor the T3 exponential moving average, <c>0 ≤ ν ≤ 1</c>.
+        /// The ν-factor of the T3 exponential moving average, <c>0 ≤ ν ≤ 1</c>.
         /// </summary>
         public double VFactor { get; }
 

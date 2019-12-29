@@ -3,7 +3,7 @@ using System.Globalization;
 using Mbs.Trading.Data;
 using Mbs.Trading.Indicators.Abstractions;
 
-namespace Mbs.Trading.Indicators
+namespace Mbs.Trading.Indicators.JohnBollinger
 {
     /// <summary>
     /// Bollinger bands are a type of price envelope invented by John Bollinger in the 1980s. Bollinger bands consist of:

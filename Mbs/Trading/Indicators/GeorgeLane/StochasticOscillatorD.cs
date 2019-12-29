@@ -2,7 +2,7 @@
 using Mbs.Trading.Data;
 using Mbs.Trading.Indicators.Abstractions;
 
-namespace Mbs.Trading.Indicators
+namespace Mbs.Trading.Indicators.GeorgeLane
 {
     /// <summary>
     /// A facade class to represent the %D (fast) value of the parent Stochastic Oscillator indicator instance as a Value property and to simulate the update.

@@ -3,7 +3,7 @@ using System.Globalization;
 using Mbs.Trading.Data;
 using Mbs.Trading.Indicators.Abstractions;
 
-namespace Mbs.Trading.Indicators
+namespace Mbs.Trading.Indicators.GeraldAppel
 {
     /// <summary>
     /// Developed by Gerald Appel in the late 1970s, Moving Average Convergence/Divergence (MACD) shows the difference between a fast and slow exponential moving average (EMA) of closing prices.

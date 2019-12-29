@@ -2,7 +2,7 @@
 using Mbs.Trading.Data;
 using Mbs.Trading.Indicators.Abstractions;
 
-namespace Mbs.Trading.Indicators
+namespace Mbs.Trading.Indicators.IgorLivshin
 {
     /// <summary>
     /// The Balance of Market Power, created by Igor Livshin, is an indicator that captures the struggles of bulls vs. bears throughout the trading day.

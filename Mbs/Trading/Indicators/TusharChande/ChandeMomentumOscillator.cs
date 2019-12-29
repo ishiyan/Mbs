@@ -4,7 +4,7 @@ using System.Globalization;
 using Mbs.Trading.Data;
 using Mbs.Trading.Indicators.Abstractions;
 
-namespace Mbs.Trading.Indicators
+namespace Mbs.Trading.Indicators.TusharChande
 {
     /// <summary>
     /// Chande Momentum Oscillator (CMO) is a momentum oscillator invented by the technical analyst Tushar Chande.

@@ -2,41 +2,41 @@
 using Mbs.Trading.Data;
 using Mbs.Trading.Indicators.Abstractions;
 
-namespace Mbs.Trading.Indicators
+namespace Mbs.Trading.Indicators.GeorgeLane
 {
     /// <summary>
-    /// A facade class to represent the %K-%D(fast) band of the parent Stochastic Oscillator indicator as a Value property and to simulate the update.
+    /// A facade class to represent the %D(fast)-%Dˢˡᵒʷ band of the parent Stochastic Oscillator indicator as a Value property and to simulate the update.
     /// <para />
     /// Assumes the parent Stochastic Oscillator indicator is updated before the update on this class is called.
     /// </summary>
-    public sealed class StochasticOscillatorKdBand : Indicator, IBandIndicator
+    public sealed class StochasticOscillatorDdBand : Indicator, IBandIndicator
     {
         #region Members and accessors
         /// <summary>
-        /// The current Stochastic Oscillator %K-%D(fast) band.
-        /// The <c>first</c> band element is the %K value, the <c>second</c> band element is the %D(fast) value.
+        /// The current  Stochastic Oscillator %D(fast)-%Dˢˡᵒʷ band.
+        /// The <c>first</c> band element is the %D(fast) value, the <c>second</c> band element is the %Dˢˡᵒʷ value.
         /// </summary>
-        public Band Value => Parent.KdBand;
+        public Band Value => Parent.DdBand;
 
         /// <summary>
         /// The parent <c>StochasticOscillator</c> instance.
         /// </summary>
         public StochasticOscillator Parent { get; }
 
-        private const string Sto = "STO%K%D";
-        private const string StoFull = "Stochastic Oscillator %K - %D (fast) band";
+        private const string Sto = "STO%D%Ds";
+        private const string StoFull = "Stochastic Oscillator %D(fast) - %Dslow band";
         #endregion
 
         #region Construction
         /// <summary>
-        /// Constructs a new instance of the <see cref="StochasticOscillatorKdBand"/> class.
+        /// Constructs a new instance of the <see cref="StochasticOscillatorDdBand"/> class.
         /// </summary>
         /// <param name="stochasticOscillator">The parent StochasticOscillator line indicator.</param>
-        public StochasticOscillatorKdBand(StochasticOscillator stochasticOscillator)
+        public StochasticOscillatorDdBand(StochasticOscillator stochasticOscillator)
             : base(Sto, StoFull, stochasticOscillator.OhlcvComponent)
         {
             Parent = stochasticOscillator;
-            Moniker = stochasticOscillator.Moniker.Insert(3, "%K%D");
+            Moniker = stochasticOscillator.Moniker.Insert(3, "%D%Ds");
         }
         #endregion
 
@@ -53,8 +53,8 @@ namespace Mbs.Trading.Indicators
 
         #region Update
         /// <summary>
-        /// Updates the Stochastic Oscillator %K-%D(fast) band.
-        /// The <c>first</c> band element is the %K value, the <c>second</c> band element is the %D(fast) value.
+        /// Updates the Stochastic Oscillator %D(fast)-%Dˢˡᵒʷ band.
+        /// The <c>first</c> band element is the %D(fast) value, the <c>second</c> band element is the %Dˢˡᵒʷ value.
         /// The Stochastic Oscillator indicator can be updated only with <c>ohlcv</c> samples.
         /// In this case, the same sample value is used as a substitute for <c>High</c>, <c>Low</c> and <c>Close</c> of an Ohlcv.
         /// </summary>
@@ -67,8 +67,8 @@ namespace Mbs.Trading.Indicators
         }
 
         /// <summary>
-        /// Updates the Stochastic Oscillator %K-%D(fast) band.
-        /// The <c>first</c> band element is the %K value, the <c>second</c> band element is the %D(fast) value.
+        /// Updates the Stochastic Oscillator %D(fast)-%Dˢˡᵒʷ band.
+        /// The <c>first</c> band element is the %D(fast) value, the <c>second</c> band element is the %Dˢˡᵒʷ value.
         /// The Stochastic Oscillator indicator can be updated only with <c>ohlcv</c> samples.
         /// In this case, the same scalar value is used as a substitute for <c>High</c>, <c>Low</c> and <c>Close</c> of an Ohlcv.
         /// </summary>
@@ -81,8 +81,8 @@ namespace Mbs.Trading.Indicators
         }
 
         /// <summary>
-        /// Updates the Stochastic Oscillator %K-%D(fast) band.
-        /// The <c>first</c> band element is the %K value, the <c>second</c> band element is the %D(fast) value.
+        /// Updates the Stochastic Oscillator %D(fast)-%Dˢˡᵒʷ band.
+        /// The <c>first</c> band element is the %D(fast) value, the <c>second</c> band element is the %Dˢˡᵒʷ value.
         /// </summary>
         /// <param name="sampleClose">The <c>close</c> value of a new sample.</param>
         /// <param name="sampleHigh">The <c>high</c> value of a new sample.</param>
@@ -99,12 +99,12 @@ namespace Mbs.Trading.Indicators
                 if (!primed)
                     primed = Parent.IsPrimed;
             }
-            return Parent.KdBand;
+            return Parent.DdBand;
         }
 
         /// <summary>
-        /// Updates the Stochastic Oscillator %K-%D(fast) band.
-        /// The <c>first</c> band element is the %K value, the <c>second</c> band element is the %D(fast) value.
+        /// Updates the Stochastic Oscillator %D(fast)-%Dˢˡᵒʷ band.
+        /// The <c>first</c> band element is the %D(fast) value, the <c>second</c> band element is the %Dˢˡᵒʷ value.
         /// </summary>
         /// <param name="ohlcv">A new ohlcv.</param>
         /// <returns>The new value of the indicator.</returns>

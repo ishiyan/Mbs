@@ -3,7 +3,7 @@ using System.Globalization;
 using Mbs.Trading.Data;
 using Mbs.Trading.Indicators.Abstractions;
 
-namespace Mbs.Trading.Indicators
+namespace Mbs.Trading.Indicators.PatrickMulloy
 {
     /// <summary>
     /// The Double Exponential Moving Average (DEMA) is a smoothing indicator with less lag than a straight exponential moving average.

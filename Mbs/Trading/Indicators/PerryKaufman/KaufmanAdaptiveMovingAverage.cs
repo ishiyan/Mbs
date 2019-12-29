@@ -5,7 +5,7 @@ using System.Globalization;
 using Mbs.Trading.Data;
 using Mbs.Trading.Indicators.Abstractions;
 
-namespace Mbs.Trading.Indicators
+namespace Mbs.Trading.Indicators.PerryKaufman
 {
     /// <summary>
     /// Kaufman's adaptive moving average (KAMA) is an EMA with the <c>α</c> (smoothing factor) being changed with each new sample within the fastest and the slowest boundaries.

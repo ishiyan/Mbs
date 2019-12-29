@@ -3,7 +3,7 @@ using System.Globalization;
 using Mbs.Trading.Data;
 using Mbs.Trading.Indicators.Abstractions;
 
-namespace Mbs.Trading.Indicators
+namespace Mbs.Trading.Indicators.LarryWilliams
 {
     /// <summary>
     /// Developed by Larry Williams, Williams %R is a momentum indicator that is the inverse of the Stochastic Oscillator.
@@ -28,7 +28,7 @@ namespace Mbs.Trading.Indicators
 
         private double value = double.NaN;
         /// <summary>
-        /// The current value of the <c>%E</c> or <c>NaN</c> if not primed.
+        /// The current value of the <c>%R</c> or <c>NaN</c> if not primed.
         /// </summary>
         public double Value { get { lock (updateLock) { return value; } } }
 

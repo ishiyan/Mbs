@@ -2,7 +2,7 @@
 using Mbs.Trading.Data;
 using Mbs.Trading.Indicators.Abstractions;
 
-namespace Mbs.Trading.Indicators
+namespace Mbs.Trading.Indicators.GeraldAppel
 {
     /// <summary>
     /// A facade class to represent the signal of the master Moving Average Convergence/Divergence indicator as a Value property and to simulate the update.

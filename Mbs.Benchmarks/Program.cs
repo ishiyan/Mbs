@@ -1,12 +1,15 @@
 ﻿using EuronextEndofdayJsonParsing;
+using Mbs.Benchmarks.Indicators;
 
-namespace Benchmark
+namespace Mbs.Benchmarks
 {
     public static class Program
     {
         public static void Main()
         {
-            EuronextEndofdayJsonParsingBenchmark.Run();
+            // EuronextEndofdayJsonParsingBenchmark.Run();
+            // IndicatorFactoryCreationBenchmarks.Run();
+            ArrayCopyVersusForLoopBenchmarks.Run();
         }
     }
 }

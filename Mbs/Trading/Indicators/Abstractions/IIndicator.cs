@@ -1,4 +1,7 @@
-﻿namespace Mbs.Trading.Indicators.Abstractions
+﻿using System.Collections.Generic;
+using Mbs.Trading.Data;
+
+namespace Mbs.Trading.Indicators.Abstractions
 {
     /// <summary>
     /// An indicator interface.
@@ -6,28 +9,46 @@
     public interface IIndicator
     {
         /// <summary>
-        /// Identifies the indicator.
+        /// Resets the indicator.
         /// </summary>
-        string Name { get; }
+        void Reset();
 
         /// <summary>
-        /// Identifies an instance of the indicator.
-        /// </summary>
-        string Moniker { get; }
-
-        /// <summary>
-        /// Describes the indicator.
-        /// </summary>
-        string Description { get; }
-
-        /// <summary>
-        /// Is the indicator primed.
+        /// If indicator is primed.
         /// </summary>
         bool IsPrimed { get; }
 
         /// <summary>
-        /// Resets the indicator.
+        /// Describes output data of an indicator.
         /// </summary>
-        void Reset();
+        IndicatorMetadata Metadata { get; }
+
+        /// <summary>
+        /// Updates the value of the indicator given the next <see cref="Scalar"/> sample.
+        /// </summary>
+        /// <param name="sample">The next sample to update the indicator.</param>
+        /// <returns>The updated data.</returns>
+        IndicatorOutput Update(Scalar sample);
+
+        /// <summary>
+        /// Updates the value of the indicator given the next <see cref="Ohlcv"/> sample.
+        /// </summary>
+        /// <param name="sample">The next sample to update the indicator.</param>
+        /// <returns>The updated data.</returns>
+        IndicatorOutput Update(Ohlcv sample);
+
+        /// <summary>
+        /// Updates the value of the indicator given the next sequence of <see cref="Scalar"/> samples.
+        /// </summary>
+        /// <param name="samples">>The next samples to update the indicator.</param>
+        /// <returns>The updated data.</returns>
+        IEnumerable<IndicatorOutput> Update(IEnumerable<Scalar> samples);
+
+        /// <summary>
+        /// Updates the value of the indicator given the next sequence of <see cref="Ohlcv"/> samples.
+        /// </summary>
+        /// <param name="samples">>The next samples to update the indicator.</param>
+        /// <returns>The updated data.</returns>
+        IEnumerable<IndicatorOutput> Update(IEnumerable<Ohlcv> samples);
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
+using static System.FormattableString;
+
 using Mbs.Trading.Data;
 using Mbs.Trading.Indicators.Abstractions;
 
@@ -24,91 +24,116 @@ namespace Mbs.Trading.Indicators
     /// <para>❶ Use a simple average of the first 'period'. This is the most widely documented approach.</para>
     /// <para>❷ Use first sample value as a seed. This is used in Metastock.</para>
     /// </summary>
-    public sealed class ExponentialMovingAverage : LineIndicator
+    public sealed class ExponentialMovingAverage : ScalarIndicator
     {
-        #region Members and accessors
         /// <summary>
-        /// The length (<c>ℓ</c>) of the exponential moving average. The equivalent smoothing factor (<c>α</c>) is
-        /// <para><c>α = 2/(ℓ + 1), 0 &lt; α ≤ 1, 1 ≤ ℓ</c></para>
+        /// The parameters to create the indicator based on length.
         /// </summary>
-        public int Length { get; }
+        public class ParametersLength
+        {
+            /// <summary>
+            /// The length (the number of time periods) of the exponential moving average, should be greater than 1.
+            /// </summary>
+            public int Length;
+
+            /// <summary>
+            /// If the very first exponential moving average value is a simple average of the first 'period' (the most widely documented approach) or the first input value (used in Metastock).
+            /// </summary>
+            public bool FirstIsAverage = true;
+
+            /// <summary>
+            /// The <see cref="Ohlcv"/> component to use when calculating indicator from an <see cref="Ohlcv"/> data.
+            /// </summary>
+            public OhlcvComponent OhlcvComponent = OhlcvComponent.ClosingPrice;
+        }
 
         /// <summary>
-        /// The smoothing factor (<c>α</c>) of the exponential moving average. The equivalent length (<c>ℓ</c>) is
-        /// <para><c>ℓ = 2/α - 1, 0 &lt; α ≤ 1, 1 ≤ ℓ</c></para>
+        /// The parameters to create the indicator based on smoothing factor.
         /// </summary>
-        public double SmoothingFactor { get; }
+        public class ParametersSmoothingFactor
+        {
+            /// <summary>
+            /// The smoothing factor, <c>α</c>, of the exponential moving average.
+            /// The equivalent length <c>ℓ</c> is
+            /// <para><c>ℓ = 2/α - 1, 0 &lt; α ≤ 1, 1 ≤ ℓ</c></para>
+            /// </summary>
+            public double SmoothingFactor;
+
+            /// <summary>
+            /// If the very first exponential moving average value is a simple average of the first 'period' (the most widely documented approach) or the first input value (used in Metastock).
+            /// </summary>
+            public bool FirstIsAverage = true;
+
+            /// <summary>
+            /// The <see cref="Ohlcv"/> component to use when calculating indicator from an <see cref="Ohlcv"/> data.
+            /// </summary>
+            public OhlcvComponent OhlcvComponent = OhlcvComponent.ClosingPrice;
+        }
 
         /// <summary>
-        /// The current value of the exponential moving average, or <c>NaN</c> if not primed.
-        /// The indicator is not primed during the first <c>ℓ-1</c> updates, where the <c>ℓ</c> is the length.
+        /// Identifies possible outputs of the indicator.
         /// </summary>
-        public double Value { get { lock (updateLock) { return primed ? value : double.NaN; } } }
-
-        /// <summary>
-        /// If the very first EMA value is a simple average of the first 'period' (the most widely documented approach) or the first input value (used in Metastock).
-        /// </summary>
-        public bool FirstIsAverage { get; }
-
-        private int count;
-        private double sum;
-        private double value = double.NaN;
+        public enum OutputKind
+        {
+            /// <summary>
+            /// The scalar value of the the exponential moving average.
+            /// </summary>
+            Value
+        }
 
         private const double Epsilon = 0.00000001;
-        private const string Ema = "ema";
-        private const string EmaFull = "Exponential Moving Average";
-        #endregion
 
-        #region Construction
+        private readonly string name;
+        private readonly string description;
+        private readonly int length;
+        private readonly double smoothingFactor;
+        private readonly bool firstIsAverage;
+
+        private double value = double.NaN;
+        private double sum;
+        private int count;
+        private bool primed;
+
         /// <summary>
-        /// Constructs a new instance of the class.
+        /// Constructs a new instance of the <see cref="ExponentialMovingAverage"/> class based on length.
         /// </summary>
-        /// <param name="length">The length, <c>ℓ</c>, of the exponential moving average.
-        /// The equivalent smoothing factor <c>α</c> is
-        /// <para><c>α = 2/(ℓ + 1), 0 &lt; α ≤ 1, 1 ≤ ℓ</c></para>
-        /// </param>
-        /// <param name="firstIsAverage">If the very first EMA value is a simple average of the first 'period' (the most widely documented approach) or the first input value (used in Metastock).</param>
-        /// <param name="ohlcvComponent">The Ohlcv component.</param>
-        public ExponentialMovingAverage(int length, bool firstIsAverage = true, OhlcvComponent ohlcvComponent = OhlcvComponent.ClosingPrice)
-            : base(Ema, EmaFull, ohlcvComponent)
+        /// <param name="parameters">Parameters to create the indicator based on length.</param>
+        public ExponentialMovingAverage(ParametersLength parameters)
+            : base(parameters.OhlcvComponent)
         {
-            if (1 > length)
-                throw new ArgumentOutOfRangeException(nameof(length));
-            Length = length;
-            FirstIsAverage = firstIsAverage;
-            SmoothingFactor = 2d / (1 + length);
-            Moniker = string.Concat(Ema, length.ToString(CultureInfo.InvariantCulture));
+            if (1 > parameters.Length)
+                throw new ArgumentOutOfRangeException(nameof(parameters.Length), "Should be positive.");
+            length = parameters.Length;
+            firstIsAverage = parameters.FirstIsAverage;
+            smoothingFactor = 2d / (1 + length);
+            name = Invariant($"ema({length},{parameters.OhlcvComponent.ToShortString()})");
+            description = string.Concat("Exponential moving average ", name);
         }
 
         /// <summary>
-        /// Constructs a new instance of the class.
+        /// Constructs a new instance of the <see cref="ExponentialMovingAverage"/> class based on smoothing factor.
         /// </summary>
-        /// <param name="smoothingFactor">The smoothing factor, <c>α</c>, of the exponential moving average.
-        /// The equivalent length <c>ℓ</c> is
-        /// <para><c>ℓ = 2/α - 1, 0 &lt; α ≤ 1, 1 ≤ ℓ</c></para>
-        /// </param>
-        /// <param name="firstIsAverage">If the very first EMA value is a simple average of the first 'period' (the most widely documented approach) or the first input value (used in Metastock).</param>
-        /// <param name="ohlcvComponent">The Ohlcv component.</param>
-        public ExponentialMovingAverage(double smoothingFactor, bool firstIsAverage = true, OhlcvComponent ohlcvComponent = OhlcvComponent.ClosingPrice)
-            : base(Ema, EmaFull, ohlcvComponent)
+        /// <param name="parameters">Parameters to create the indicator based on smoothing factor.</param>
+        public ExponentialMovingAverage(ParametersSmoothingFactor parameters)
+            : base(parameters.OhlcvComponent)
         {
+            smoothingFactor = parameters.SmoothingFactor;
             if (0d > smoothingFactor || 1d < smoothingFactor)
-                throw new ArgumentOutOfRangeException(nameof(smoothingFactor));
-            SmoothingFactor = smoothingFactor;
+                throw new ArgumentOutOfRangeException(nameof(parameters.SmoothingFactor), "Should be in range [0, 1].");
             if (Epsilon > smoothingFactor)
-                Length = int.MaxValue;
+                length = int.MaxValue;
             else
-                Length = (int)Math.Round(2d / smoothingFactor) - 1;
-            FirstIsAverage = firstIsAverage;
-            Moniker = string.Concat(Ema, Length.ToString(CultureInfo.InvariantCulture));
+                length = (int)Math.Round(2d / smoothingFactor) - 1;
+            firstIsAverage = parameters.FirstIsAverage;
+            name = Invariant($"ema({length},{parameters.OhlcvComponent.ToShortString()})");
+            description = string.Concat("Exponential moving average ", name);
         }
-        #endregion
 
-        #region Reset
+        #region IIndicator implementation
         /// <inheritdoc />
         public override void Reset()
         {
-            lock (updateLock)
+            lock (UpdateLock)
             {
                 primed = false;
                 count = 0;
@@ -116,151 +141,73 @@ namespace Mbs.Trading.Indicators
                 value = double.NaN;
             }
         }
-        #endregion
 
-        #region Update
         /// <inheritdoc />
-        public override double Update(double sample)
+        public override bool IsPrimed { get { lock (UpdateLock) { return primed; } } }
+
+        /// <inheritdoc />
+        public override IndicatorMetadata Metadata
         {
-            if (double.IsNaN(sample))
-                return sample;
-            lock (updateLock)
+            get
             {
-                if (primed)
-                    value += (sample - value) * SmoothingFactor;
-                else
+                return new IndicatorMetadata
                 {
-                    if (FirstIsAverage)
+                    IndicatorType = IndicatorType.ExponentialMovingAverage,
+                    Outputs = new []
                     {
-                        sum += sample;
-                        if (Length == ++count)
+                        new Metadata
                         {
-                            primed = true;
-                            value = sum / Length;
+                            Kind = (int)OutputKind.Value,
+                            Type = IndicatorOutputType.Scalar,
+                            Name = name,
+                            Description = description
                         }
-                        else
-                            return double.NaN;
                     }
-                    else
-                    {
-                        if (1 == ++count)
-                            value = sample;
-                        else
-                            value += (sample - value) * SmoothingFactor;
-                        if (Length == count)
-                            primed = true;
-                        else
-                            return double.NaN;
-                    }
-                }
-                return value;
+                };
             }
         }
         #endregion
 
-        #region Calculate
         /// <summary>
-        /// Calculates the exponential moving average from the input array using the formula:
-        /// <para><c>EMAᵢ = EMAᵢ₋₁ + α(Pᵢ - EMAᵢ₋₁), 0 &lt; α ≤ 1</c></para>
-        /// The indicator is primed after the first update.
-        /// </summary>
-        /// <param name="sampleList">The sample list.</param>
-        /// <param name="length">The length, <c>ℓ</c>, of the exponential moving average.
-        /// The equivalent smoothing factor <c>α</c> is
-        /// <para><c>α = 2/(ℓ + 1), 0 &lt; α ≤ 1, 1 ≤ ℓ</c></para>
-        /// </param>
-        /// <param name="firstIsAverage">If the very first EMA value is a simple average of the first 'period' (the most widely documented approach) or the first input value (used in Metastock).</param>
-        /// <returns>A list of the exponential moving average values.</returns>
-        public static List<double> Calculate(List<double> sampleList, int length, bool firstIsAverage = true)
-        {
-            if (1 > length)
-                throw new ArgumentOutOfRangeException(nameof(length));
-            double smoothingFactor = 2d / (1d + length);
-            int count = sampleList.Count;
-            var resultList = new List<double>(count);
-            if (count < length)
-            {
-                for (int i = 0; i < count; ++i)
-                    resultList.Add(double.NaN);
-            }
-            else
-            {
-                int length1 = length - 1;
-                for (int i = 0; i < length1; ++i)
-                    resultList.Add(double.NaN);
-                double value = sampleList[0];
-                if (firstIsAverage)
-                {
-                    for (int i = 1; i < length; ++i)
-                        value += sampleList[i];
-                    value /= length;
-                }
-                else
-                {
-                    for (int i = 1; i < length; ++i)
-                        value += (sampleList[i] - value) * smoothingFactor;
-                }
-                resultList.Add(value);
-                for (int i = length; i < count; ++i)
-                {
-                    value += (sampleList[i] - value) * smoothingFactor;
-                    resultList.Add(value);
-                }
-            }
-            return resultList;
-        }
-
-        /// <summary>
-        /// Calculates the exponential moving average from the input array using the formula:
+        /// Updates the value of the exponential moving average from the input array using the formula:
         /// <para><c>EMAᵢ = EMAᵢ₋₁ + α(Pᵢ - EMAᵢ₋₁), 0 ≤ α ≤ 1</c></para>
         /// The indicator is primed after the first update.
         /// </summary>
-        /// <param name="sampleList">The sample list.</param>
-        /// <param name="smoothingFactor">The smoothing factor, <c>α</c>, of the exponential moving average.
-        /// The equivalent length <c>ℓ</c> is
-        /// <para><c>ℓ = 2/α - 1, 0 &lt; α ≤ 1, 1 ≤ ℓ</c></para>
-        /// </param>
-        /// <param name="firstIsAverage">If the very first EMA value is a simple average of the first 'period' (the most widely documented approach) or the first input value (used in Metastock).</param>
-        /// <returns>A list of the exponential moving average values.</returns>
-        public static List<double> Calculate(List<double> sampleList, double smoothingFactor, bool firstIsAverage = true)
+        /// <param name="sample">A new sample.</param>
+        /// <returns>A new value of the indicator.</returns>
+        protected override double Update(double sample)
         {
-            if (0d > smoothingFactor || 1d < smoothingFactor)
-                throw new ArgumentOutOfRangeException(nameof(smoothingFactor));
-            int count = sampleList.Count;
-            var resultList = new List<double>(count);
-            int length = (Epsilon > smoothingFactor) ?
-                int.MaxValue : ((int)Math.Round(2d / smoothingFactor) - 1);
-            if (count < length)
-            {
-                for (int i = 0; i < count; ++i)
-                    resultList.Add(double.NaN);
-            }
+            if (double.IsNaN(sample))
+                return sample;
+            if (primed)
+                value += (sample - value) * smoothingFactor;
             else
             {
-                int length1 = length - 1;
-                for (int i = 0; i < length1; ++i)
-                    resultList.Add(double.NaN);
-                double value = sampleList[0];
                 if (firstIsAverage)
                 {
-                    for (int i = 1; i < length; ++i)
-                        value += sampleList[i];
-                    value /= length;
+                    sum += sample;
+                    if (length == ++count)
+                    {
+                        primed = true;
+                        value = sum / length;
+                    }
+                    else
+                        return double.NaN;
                 }
                 else
                 {
-                    for (int i = 1; i < length; ++i)
-                        value += (sampleList[i] - value) * smoothingFactor;
-                }
-                resultList.Add(value);
-                for (int i = length; i < count; ++i)
-                {
-                    value += (sampleList[i] - value) * smoothingFactor;
-                    resultList.Add(value);
+                    if (1 == ++count)
+                        value = sample;
+                    else
+                        value += (sample - value) * smoothingFactor;
+                    if (length == count)
+                        primed = true;
+                    else
+                        return double.NaN;
                 }
             }
-            return resultList;
+
+            return value;
         }
-        #endregion
     }
 }

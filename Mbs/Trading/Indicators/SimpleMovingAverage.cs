@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
+using static System.FormattableString;
+
 using Mbs.Trading.Data;
 using Mbs.Trading.Indicators.Abstractions;
 
@@ -14,178 +14,141 @@ namespace Mbs.Trading.Indicators
     /// <para><c>SMAᵢ = SMAᵢ₋₁ + (Pᵢ - Pᵢ₋ℓ) / ℓ</c>, where <c>ℓ</c> is the length.</para>
     /// <para>The indicator is not primed during the first <c>ℓ-1</c> updates.</para>
     /// </summary>
-    public sealed class SimpleMovingAverage : Indicator, ILineIndicator
+    public sealed class SimpleMovingAverage : ScalarIndicator
     {
-        #region Members and accessors
         /// <summary>
-        /// The length (the number of time periods) of the simple moving average.
+        /// The parameters to create the indicator.
         /// </summary>
-        public int Length { get; }
+        public class Parameters
+        {
+            /// <summary>
+            /// The length (the number of time periods) of the simple moving average, should be greater than 1.
+            /// </summary>
+            public int Length;
+
+            /// <summary>
+            /// The <see cref="Ohlcv"/> component to use when calculating indicator from an <see cref="Ohlcv"/> data.
+            /// </summary>
+            public OhlcvComponent OhlcvComponent = OhlcvComponent.ClosingPrice;
+        }
+
+        /// <summary>
+        /// Identifies possible outputs of the indicator.
+        /// </summary>
+        public enum OutputKind
+        {
+            /// <summary>
+            /// The scalar value of the the simple moving average.
+            /// </summary>
+            Value
+        }
+
+        private readonly string name;
+        private readonly string description;
+        private readonly int length;
+        private readonly int lastIndex;
+        private readonly double[] window;
+        private readonly bool useArrayCopy;
 
         private double value = double.NaN;
-        /// <summary>
-        /// The current value of the the simple moving average, or <c>NaN</c> if not primed.
-        /// The indicator is not primed during the first <c>ℓ-1</c> updates, where e <c>ℓ</c> is the length.
-        /// </summary>
-        public double Value { get { lock (updateLock) { return value; } } }
-
-        private readonly int lastIndex;
-        private int windowCount;
-        private readonly double[] window;
         private double windowSum;
+        private int windowCount;
+        private bool primed;
 
-        private const string Sma = "SMA";
-        private const string SmaFull = "Simple Moving Average";
-        private const string ArgumentLength = "length";
-        #endregion
-
-        #region Construction
         /// <summary>
         /// Constructs a new instance of the <see cref="SimpleMovingAverage"/> class.
         /// </summary>
-        /// <param name="length">The number of time periods of the simple moving average.</param>
-        /// <param name="ohlcvComponent">The Ohlcv component.</param>
-        public SimpleMovingAverage(int length, OhlcvComponent ohlcvComponent = OhlcvComponent.ClosingPrice)
-            : base(Sma, SmaFull, ohlcvComponent)
+        /// <param name="parameters">Parameters to create the indicator.</param>
+        public SimpleMovingAverage(Parameters parameters)
+            : base(parameters.OhlcvComponent)
         {
-            if (2 > length)
-                throw new ArgumentOutOfRangeException(ArgumentLength);
-            Length = length;
+            if (2 > parameters.Length)
+                throw new ArgumentOutOfRangeException(nameof(parameters.Length), "Should be greater than 1.");
+            length = parameters.Length;
             lastIndex = length - 1;
             window = new double[length];
-            Moniker = string.Concat(Sma, length.ToString(CultureInfo.InvariantCulture));
+            useArrayCopy = length > 32;
+            name = Invariant($"sma({length},{parameters.OhlcvComponent.ToShortString()})");
+            description = string.Concat("Simple moving average ", name);
         }
-        #endregion
 
-        #region Reset
+        #region IIndicator implementation
         /// <inheritdoc />
         public override void Reset()
         {
-            lock (updateLock)
+            lock (UpdateLock)
             {
-                primed = false;
                 windowCount = 0;
                 windowSum = 0d;
                 value = double.NaN;
+                primed = false;
+            }
+        }
+
+        /// <inheritdoc />
+        public override bool IsPrimed { get { lock (UpdateLock) { return primed; } } }
+
+        /// <inheritdoc />
+        public override IndicatorMetadata Metadata
+        {
+            get
+            {
+                return new IndicatorMetadata
+                {
+                    IndicatorType = IndicatorType.SimpleMovingAverage,
+                    Outputs = new []
+                    {
+                        new Metadata
+                        {
+                            Kind = (int)OutputKind.Value,
+                            Type = IndicatorOutputType.Scalar,
+                            Name = name,
+                            Description = description
+                        }
+                    }
+                };
             }
         }
         #endregion
 
-        #region Update
         /// <summary>
         /// Updates the value of the simple moving average using the formula:
         /// <para><c>SMAᵢ = SMAᵢ₋₁ + (Pᵢ - Pᵢ₋ℓ) / ℓ</c>, where <c>ℓ</c> is the length.</para>
         /// The indicator is not primed during the first <c>ℓ-1</c> updates.
         /// </summary>
         /// <param name="sample">A new sample.</param>
-        /// <returns>The new value of the indicator.</returns>
-        public double Update(double sample)
+        /// <returns>A new value of the indicator.</returns>
+        protected override double Update(double sample)
         {
             if (double.IsNaN(sample))
                 return sample;
-            lock (updateLock)
+            if (primed)
             {
-                if (primed)
+                windowSum += sample - window[0];
+                if (useArrayCopy)
                 {
-                    windowSum += sample - window[0];
                     Array.Copy(window, 1, window, 0, lastIndex);
-                    //for (int i = 0; i < lastIndex; )
-                    //    window[i] = window[++i];
-                    window[lastIndex] = sample;
-                    value = windowSum / Length;
                 }
-                else // Not primed.
+                else
                 {
-                    windowSum += sample;
-                    window[windowCount] = sample;
-                    if (Length == ++windowCount)
-                    {
-                        primed = true;
-                        value = windowSum / windowCount;
-                    }
+                    for (int i = 0; i < lastIndex; )
+                        window[i] = window[++i];
                 }
-                return value;
+
+                window[lastIndex] = sample;
+                value = windowSum / length;
             }
-        }
-
-        /// <summary>
-        /// Updates the value of the simple moving average using the formula:
-        /// <para><c>SMAᵢ = SMAᵢ₋₁ + (Pᵢ - Pᵢ₋ℓ) / ℓ</c>, where <c>ℓ</c> is the length.</para>
-        /// The indicator is not primed during the first <c>ℓ-1</c> updates.
-        /// </summary>
-        /// <param name="sample">A new sample.</param>
-        /// <param name="dateTime">A date-time of the new sample.</param>
-        /// <returns>The new value of the indicator.</returns>
-        public Scalar Update(double sample, DateTime dateTime) => new Scalar(dateTime, Update(sample));
-
-        /// <summary>
-        /// Updates the value of the simple moving average using the formula:
-        /// <para><c>SMAᵢ = SMAᵢ₋₁ + (Pᵢ - Pᵢ₋ℓ) / ℓ</c>, where <c>ℓ</c> is the length.</para>
-        /// The indicator is not primed during the first <c>ℓ-1</c> updates.
-        /// </summary>
-        /// <param name="scalar">A new <see cref="Scalar"/>.</param>
-        /// <returns>The new value of the indicator.</returns>
-        public Scalar Update(Scalar scalar) => new Scalar(scalar.Time, Update(scalar.Value));
-
-        /// <summary>
-        /// Updates the value of the simple moving average using the formula:
-        /// <para><c>SMAᵢ = SMAᵢ₋₁ + (Pᵢ - Pᵢ₋ℓ) / ℓ</c>, where <c>ℓ</c> is the length.</para>
-        /// The indicator is not primed during the first <c>ℓ-1</c> updates.
-        /// </summary>
-        /// <param name="ohlcv">A new <see cref="Ohlcv"/>.</param>
-        /// <returns>The new value of the indicator.</returns>
-        public Scalar Update(Ohlcv ohlcv) => new Scalar(ohlcv.Time, Update(ohlcv.Component(OhlcvComponent)));
-        #endregion
-
-        #region Calculate
-        /// <summary>
-        /// Calculates the simple moving average from the input array using the formula:
-        /// <para><c>SMAᵢ = SMAᵢ₋₁ + (Pᵢ - Pᵢ₋ℓ) / ℓ</c>, where <c>ℓ</c> is the length.</para>
-        /// The indicator is not primed during the first <c>ℓ-1</c> updates.
-        /// </summary>
-        /// <param name="sampleList">The sample list.</param>
-        /// <param name="length">The number of time periods of the simple moving average.</param>
-        /// <returns>A list of the simple moving average values.</returns>
-        public static List<double> Calculate(List<double> sampleList, int length)
-        {
-            if (2 > length)
-                throw new ArgumentOutOfRangeException(ArgumentLength);
-            int i, count = sampleList.Count;
-            var resultList = new List<double>(count);
-            if (count < length)
+            else // Not primed.
             {
-                for (i = 0; i < count; i++)
-                    resultList.Add(double.NaN);
-            }
-            else
-            {
-                double v, sum = 0d, w = length;
-                int l = length - 1;
-                for (i = 0; i < l;)
+                windowSum += sample;
+                window[windowCount] = sample;
+                if (length == ++windowCount)
                 {
-                    v = sampleList[i++];
-                    if (!double.IsNaN(v))
-                        sum += v;
-                    resultList.Add(double.NaN);
-                }
-                v = sampleList[l];
-                if (!double.IsNaN(v))
-                    sum += v;
-                resultList.Add(sum / w);
-                l = 0;
-                for (i = length; i < count;)
-                {
-                    v = sampleList[i++];
-                    if (!double.IsNaN(v))
-                        sum += v;
-                    v = sampleList[l++];
-                    if (!double.IsNaN(v))
-                        sum -= v;
-                    resultList.Add(sum / w);
+                    primed = true;
+                    value = windowSum / windowCount;
                 }
             }
-            return resultList;
+            return value;
         }
-        #endregion
     }
 }

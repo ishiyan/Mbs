@@ -1,282 +1,422 @@
 ﻿using System;
-using System.Globalization;
+using System.Collections.Generic;
+using static System.FormattableString;
+
 using Mbs.Trading.Data;
 using Mbs.Trading.Indicators.Abstractions;
+using Mbs.Trading.Indicators.Statistics;
 
 namespace Mbs.Trading.Indicators.JohnBollinger
 {
     /// <summary>
-    /// Bollinger bands are a type of price envelope invented by John Bollinger in the 1980s. Bollinger bands consist of:
+    /// Bollinger Bands are a type of price envelope invented by John Bollinger in the 1980s. Bollinger bands consist of:
     /// <para>❶ a middle band being an <c>ℓ</c>-period moving average (MA)</para>
     /// <para>❷ an upper band at <c>K</c> times an <c>ℓ</c>-period standard deviation <c>σ</c> above the middle band (<c>MA + Kσ</c>)</para>
     /// <para>❸ an lower band at <c>K</c> times an <c>ℓ</c>-period standard deviation <c>σ</c> below the middle band (<c>MA - Kσ</c>)</para>
-    /// <para>Typical values for <c>ℓ</c> and <c>Kĸ</c> are 20 and 2, respectively. The default choice for the average is a simple moving average, but other types of averages can be employed as needed.</para>
+    /// <para>Typical values for <c>ℓ</c> and <c>K</c> are 20 and 2, respectively. The default choice for the average is a simple moving average, but other types of averages can be employed as needed.</para>
     /// <para>Exponential moving averages are a common second choice. Usually the same period is used for both the middle band and the calculation of standard deviation.</para>
     /// </summary>
-    public sealed class BollingerBands : Indicator, IBandIndicator
+    public sealed class BollingerBands : IIndicator
     {
-        #region Members and accessors
+        /// <summary>
+        /// The parameters to create the indicator.
+        /// </summary>
+        public class Parameters
+        {
+            /// <summary>
+            /// The length (the number of time periods) to calculate the standard deviation.
+            /// <para />
+            /// Typically this should be equal to the length of the moving average.
+            /// </summary>
+            public int StandardDeviationLength = 20;
+
+            /// <summary>
+            /// The <see cref="Ohlcv"/> component to use when calculating standard deviation from an <see cref="Ohlcv"/> data.
+            /// </summary>
+            public OhlcvComponent StandardDeviationOhlcvComponent = OhlcvComponent.ClosingPrice;
+
+            /// <summary>
+            /// If the estimate of the standard deviation is based on the unbiased sample variance or on the population variance.
+            /// </summary>
+            public bool StandardDeviationIsUnbiased = false;
+
+            /// <summary>
+            /// The multiplier to multiply the standard deviation.
+            /// </summary>
+            public double Multiplier = 2.0;
+
+            /// <summary>
+            /// The parameters to create a middle moving average.
+            /// <para />
+            /// Typically the length of the moving average should be equal to the length used to calculate the standard deviation.
+            /// </summary>
+            public IndicatorInput MovingAverageParameters = new IndicatorInput
+            {
+                IndicatorType = IndicatorType.SimpleMovingAverage,
+                Parameters = new SimpleMovingAverage.Parameters { Length = 20, OhlcvComponent = OhlcvComponent.ClosingPrice },
+                OutputKinds = new []{ (int)SimpleMovingAverage.OutputKind.Value }
+            };
+
+            /// <summary>
+            /// The <see cref="Ohlcv"/> component to use when calculating <c>%B</c> value from an <see cref="Ohlcv"/> data.
+            /// </summary>
+            public OhlcvComponent PercentBOhlcvComponent = OhlcvComponent.ClosingPrice;
+        }
+
+        /// <summary>
+        /// Identifies possible outputs of the indicator.
+        /// </summary>
+        public enum OutputKind
+        {
+            /// <summary>
+            /// The <see cref="Scalar"/> value of the the middle moving average.
+            /// </summary>
+            MiddleMovingAverageValue,
+
+            /// <summary>
+            /// The <see cref="Scalar"/> value of the standard deviation.
+            /// </summary>
+            StandardDeviationValue,
+
+            /// <summary>
+            /// The <see cref="Scalar"/> value of the the lower Bollinger band.
+            /// </summary>
+            LowerBandValue,
+
+            /// <summary>
+            /// The <see cref="Scalar"/> value of the the upper Bollinger band.
+            /// </summary>
+            UpperBandValue,
+
+            /// <summary>
+            /// The <see cref="Scalar"/> value of the the %B.
+            /// <para/>
+            /// It measures the price (an input to the moving average) relative to the upper and lower band.
+            /// <para/>
+            /// <c>%B = (Price - LowerBand) / (UpperBand - LowerBand)</c>.
+            /// </summary>
+            PercentBandValue,
+
+            /// <summary>
+            /// The <see cref="Scalar"/> value of the the Bollinger BandWidth.
+            /// <para/>
+            /// It measures the percentage difference between the upper band and the lower band.
+            /// <para/>
+            /// <c>BandWidth = (UpperBand - LowerBand) / MiddleMovingAverage</c>.
+            /// </summary>
+            BandWidthValue,
+
+            /// <summary>
+            /// The <see cref="Band"/> containing the lower and the upper band values.
+            /// </summary>
+            LowerUpperBand
+        }
+
+        private readonly object updateLock = new object();
+        private readonly double multiplier;
+        private readonly OhlcvComponent percentBOhlcvComponent;
+        private readonly OhlcvComponent stdevOhlcvComponent;
+        private readonly IIndicator movingAverageIndicator;
+        private readonly StandardDeviation standardDeviationIndicator;
+        private readonly string name;
+        private readonly string description;
+        private readonly string percentBandName;
+        private readonly string percentBandDescription;
+        private readonly List<OutputKind> outputs;
+        private double movingAverageValue = double.NaN;
+        private double stdevValue = double.NaN;
         private double upperValue = double.NaN;
-        /// <summary>
-        /// The upper value.
-        /// </summary>
-        public double UpperValue { get { lock (updateLock) { return upperValue; } } }
-
-        private double middleValue = double.NaN;
-        /// <summary>
-        /// The middle value.
-        /// </summary>
-        public double MiddleValue { get { lock (updateLock) { return middleValue; } } }
-
         private double lowerValue = double.NaN;
-        /// <summary>
-        /// The lower value.
-        /// </summary>
-        public double LowerValue { get { lock (updateLock) { return lowerValue; } } }
-
-        private readonly double upperMultiplier;
-        /// <summary>
-        /// The upper multiplier.
-        /// </summary>
-        public double UpperMultiplier { get { lock (updateLock) { return upperMultiplier; } } }
-
-        private readonly double lowerMultiplier;
-        /// <summary>
-        /// The lower multiplier.
-        /// </summary>
-        public double LowerMultiplier { get { lock (updateLock) { return lowerMultiplier; } } }
+        private double bandWidthValue = double.NaN;
+        private double percentBandValue = double.NaN;
+        private bool primed;
 
         /// <summary>
-        /// Tells how wide the Bollinger Bands are on a normalized basis: <c>BandWidth = (upper - lower) / middle</c>.
+        /// Constructs a new instance of the <see cref="BollingerBands"/> class.
         /// </summary>
-        public double BandWidthValue
+        /// <param name="parameters">Parameters to create the indicator.</param>
+        /// <param name="outputKinds">Outputs of the indicator.</param>
+        public BollingerBands(Parameters parameters, int[] outputKinds)
         {
-            get
+            if (2 > parameters.StandardDeviationLength)
+                throw new ArgumentOutOfRangeException(nameof(parameters.StandardDeviationLength), "Should be greater than 1.");
+
+            var standardDeviationLength = parameters.StandardDeviationLength;
+            stdevOhlcvComponent = parameters.StandardDeviationOhlcvComponent;
+            try
             {
-                lock (updateLock)
+                standardDeviationIndicator = new StandardDeviation(new StandardDeviation.Parameters
                 {
-                    return (Math.Abs(middleValue) < double.Epsilon) ?
-                        1d : (upperValue - lowerValue) / middleValue;
-                }
+                    Length = standardDeviationLength,
+                    OhlcvComponent = stdevOhlcvComponent,
+                    IsUnbiased = parameters.StandardDeviationIsUnbiased
+                });
             }
-        }
-
-        /// <summary>
-        /// Equals 1 at the upper band and 0 at the lower band: <c>PercentBand = MiddleValue - LowerValue) / (UpperValue - LowerValue)</c>.
-        /// </summary>
-        public double PercentBandValue
-        {
-            get
+            catch (Exception ex)
             {
-                lock (updateLock)
-                {
-                    double temp = upperValue - lowerValue;
-                    return (Math.Abs(temp) < double.Epsilon) ? 1d :
-                        (middleValue - lowerValue) / temp;
-                }
+                throw new ArgumentOutOfRangeException(
+                    $"Failed to create standard deviation indicator of length {standardDeviationLength}.", ex);
             }
-        }
 
-        /// <summary>
-        /// The standard deviation value.
-        /// </summary>
-        public double StandardDeviationValue
-        {
-            get
+            multiplier = parameters.Multiplier;
+            percentBOhlcvComponent = parameters.PercentBOhlcvComponent;
+            try
             {
-                lock (updateLock)
-                {
-                    return standardDeviation.Value;
-                }
+                movingAverageIndicator = IndicatorFactory.Create(parameters.MovingAverageParameters);
             }
+            catch (Exception ex)
+            {
+                throw new ArgumentOutOfRangeException("Failed to create moving average indicator.", ex);
+            }
+
+            var maMetaData = movingAverageIndicator.Metadata;
+            if (maMetaData.Outputs.Length != 1)
+                throw new ArgumentOutOfRangeException(
+                    $"Moving average indicator of type '{maMetaData.IndicatorType}' should have a single output specified.");
+
+            if (maMetaData.Outputs[0].Type != IndicatorOutputType.Scalar)
+                throw new ArgumentOutOfRangeException(
+                    $"Moving average indicator of type '{maMetaData.IndicatorType}' should have a scalar as the only output.");
+
+            var stdevMetaData = standardDeviationIndicator.Metadata;
+            if (stdevMetaData.Outputs.Length != 1)
+                throw new ArgumentOutOfRangeException(
+                    $"Standard deviation indicator should have a single output specified.");
+
+            if (stdevMetaData.Outputs[0].Type != IndicatorOutputType.Scalar)
+                throw new ArgumentOutOfRangeException(
+                    $"Standard deviation indicator should have a scalar as the only output.");
+
+            name = Invariant($"bb({stdevMetaData.Outputs[0].Name},{multiplier},{maMetaData.Outputs[0].Name})");
+            description = string.Concat("Bollinger Bands ", name);
+            percentBandName = Invariant($"%b({percentBOhlcvComponent.ToShortString()})-{name}");
+            percentBandDescription = Invariant($"%B({percentBOhlcvComponent.ToShortString()}) of {description}");
+
+            outputs = ConvertOutputKinds(outputKinds);
         }
 
-        /// <summary>
-        /// The standard deviation look-back length.
-        /// </summary>
-        public int StandardDeviationLength { get; }
-
-        /// <summary>
-        /// If the estimate of the variance is the unbiased sample variance or the population variance. The default value is true.
-        /// </summary>
-        public bool IsUnbiased => standardDeviation.IsUnbiased;
-
-        /// <summary>
-        /// The source line indicator.
-        /// </summary>
-        public ILineIndicator SourceLineIndicator { get; }
-
-        private readonly bool hasUpperMultiplier;
-        private readonly bool hasLowerMultiplier;
-        private readonly StandardDeviation standardDeviation;
-
-        private const string Bb = "BBands";
-        private const string BbFull = "Bollinger Bands";
-        #endregion
-
-        #region Construction
-        /// <summary>
-        /// Constructs a new instance of the <see cref="BollingerBands"/> object.
-        /// </summary>
-        /// <param name="sourceLineIndicator">The line indicator which serves as an input source.</param>
-        /// <param name="length">The standard deviation look-back length.</param>
-        /// <param name="multiplier">The lower and upper band multiplier.</param>
-        /// <param name="unbiased">If the estimate of the variance is the unbiased sample variance or the population variance. The default value is true.</param>
-        public BollingerBands(ILineIndicator sourceLineIndicator, int length, double multiplier, bool unbiased = true)
-            : this(sourceLineIndicator, length, multiplier, multiplier, unbiased)
-        {
-        }
-
-        /// <summary>
-        /// Constructs a new instance of the <see cref="BollingerBands"/> object.
-        /// </summary>
-        /// <param name="ohlcvComponent">The ohlcv component.</param>
-        /// <param name="length">The standard deviation look-back length.</param>
-        /// <param name="multiplier">The lower and upper band multiplier.</param>
-        public BollingerBands(OhlcvComponent ohlcvComponent, int length, double multiplier)
-            : this(ohlcvComponent, length, multiplier, multiplier)
-        {
-        }
-
-        /// <summary>
-        /// Constructs a new instance of the <see cref="BollingerBands"/> object.
-        /// </summary>
-        /// <param name="ohlcvComponent">The ohlcv component.</param>
-        /// <param name="length">The standard deviation look-back length.</param>
-        /// <param name="multiplier">The lower and upper band multiplier.</param>
-        /// <param name="unbiased">If the estimate of the variance is the unbiased sample variance or the population variance. The default value is true.</param>
-        public BollingerBands(OhlcvComponent ohlcvComponent, int length, double multiplier, bool unbiased)
-            : this(ohlcvComponent, length, multiplier, multiplier, unbiased)
-        {
-        }
-
-        /// <summary>
-        /// Constructs a new instance of the <see cref="BollingerBands"/> object.
-        /// </summary>
-        /// <param name="sourceLineIndicator">The line indicator which serves as an input source.</param>
-        /// <param name="length">The standard deviation look-back length.</param>
-        /// <param name="lowerMultiplier">The lower band multiplier.</param>
-        /// <param name="upperMultiplier">The upper band multiplier.</param>
-        /// <param name="unbiased">If the estimate of the variance is the unbiased sample variance or the population variance. The default value is true.</param>
-        public BollingerBands(ILineIndicator sourceLineIndicator, int length, double lowerMultiplier = 1d, double upperMultiplier = 1d, bool unbiased = true)
-            : base(Bb, BbFull)
-        {
-            if (2 > length)
-                throw new ArgumentOutOfRangeException(nameof(length));
-            StandardDeviationLength = length;
-            this.lowerMultiplier = lowerMultiplier;
-            this.upperMultiplier = upperMultiplier;
-            hasLowerMultiplier = Math.Abs(1d - lowerMultiplier) > double.Epsilon;
-            hasUpperMultiplier = Math.Abs(1d - upperMultiplier) > double.Epsilon;
-            SourceLineIndicator = sourceLineIndicator;
-            standardDeviation = new StandardDeviation(length, unbiased);
-            Moniker = string.Concat(Bb, length.ToString(CultureInfo.InvariantCulture), "[", sourceLineIndicator.Moniker, "]");
-        }
-
-        /// <summary>
-        /// Constructs a new instance of the <see cref="BollingerBands"/> object.
-        /// </summary>
-        /// <param name="ohlcvComponent">The ohlcv component.</param>
-        /// <param name="length">The standard deviation look-back length.</param>
-        /// <param name="lowerMultiplier">The lower band multiplier.</param>
-        /// <param name="upperMultiplier">The upper band multiplier.</param>
-        /// <param name="unbiased">If the estimate of the variance is the unbiased sample variance or the population variance. The default value is true.</param>
-        public BollingerBands(OhlcvComponent ohlcvComponent, int length, double lowerMultiplier = 1d, double upperMultiplier = 1d, bool unbiased = true)
-            : base(Bb, BbFull, ohlcvComponent)
-        {
-            if (2 > length)
-                throw new ArgumentOutOfRangeException(nameof(length));
-            StandardDeviationLength = length;
-            this.lowerMultiplier = lowerMultiplier;
-            this.upperMultiplier = upperMultiplier;
-            hasLowerMultiplier = Math.Abs(1d - lowerMultiplier) > double.Epsilon;
-            hasUpperMultiplier = Math.Abs(1d - upperMultiplier) > double.Epsilon;
-            standardDeviation = new StandardDeviation(length, unbiased);
-            Moniker = string.Concat(Bb, length.ToString(CultureInfo.InvariantCulture));
-        }
-        #endregion
-
-        #region Reset
+        #region IIndicator implementation
         /// <inheritdoc />
-        public override void Reset()
+        public void Reset()
         {
             lock (updateLock)
             {
-                primed = false;
+                movingAverageValue = double.NaN;
+                stdevValue = double.NaN;
                 lowerValue = double.NaN;
-                middleValue = double.NaN;
                 upperValue = double.NaN;
-                standardDeviation.Reset();
-                SourceLineIndicator?.Reset();
+                bandWidthValue = double.NaN;
+                percentBandValue = double.NaN;
+                primed = false;
+                movingAverageIndicator.Reset();
+                standardDeviationIndicator.Reset();
             }
         }
-        #endregion
 
-        #region Update
-        private Band DoUpdate(double sample, DateTime dateTime)
+        /// <inheritdoc />
+        public bool IsPrimed { get { lock (updateLock) { return primed; } } }
+
+        /// <inheritdoc />
+        public IndicatorMetadata Metadata
         {
+            get
+            {
+                var result = new IndicatorMetadata
+                {
+                    IndicatorType = IndicatorType.BollingerBands,
+                    Outputs = new Metadata[outputs.Count]
+                };
+
+                for (int i = 0; i < outputs.Count; ++i)
+                {
+                    var metadata = new Metadata {Kind = (int) outputs[i], Type = IndicatorOutputType.Scalar};
+                    result.Outputs[i] = metadata;
+
+                    switch (outputs[i])
+                    {
+                        case OutputKind.LowerUpperBand:
+                            metadata.Type = IndicatorOutputType.Band;
+                            metadata.Name = name;
+                            metadata.Description = description;
+                            break;
+
+                        case OutputKind.MiddleMovingAverageValue:
+                            metadata.Name = string.Concat("ma-", name);
+                            metadata.Description = string.Concat("Moving Average used by ", description);
+                            break;
+
+                        case OutputKind.LowerBandValue:
+                            metadata.Name = string.Concat("lo-", name);
+                            metadata.Description = string.Concat("Lower Band of ", description);
+                            break;
+
+                        case OutputKind.UpperBandValue:
+                            metadata.Name = string.Concat("up-", name);
+                            metadata.Description = string.Concat("Upper Band of ", description);
+                            break;
+
+                        case OutputKind.StandardDeviationValue:
+                            metadata.Name = string.Concat("stdev-", name);
+                            metadata.Description = string.Concat("Standard Deviation of ", description);
+                            break;
+
+                        case OutputKind.BandWidthValue:
+                            metadata.Name = string.Concat("bw-", name);
+                            metadata.Description = string.Concat("Band Width of ", description);
+                            break;
+
+                        case OutputKind.PercentBandValue:
+                            metadata.Name = percentBandName;
+                            metadata.Description = percentBandDescription;
+                            break;
+                    }
+                }
+
+                return result;
+            }
+        }
+
+        /// <inheritdoc />
+        public IndicatorOutput Update(Scalar sample)
+        {
+            double v = sample.Value;
+            return Update(new Ohlcv(sample.Time, v, v, v, v));
+        }
+
+        /// <inheritdoc />
+        public IndicatorOutput Update(Ohlcv sample)
+        {
+            var outputData = new IndicatorOutput { Outputs = new object[outputs.Count] };
             lock (updateLock)
             {
-                if (double.IsNaN(sample))
-                    return new Band(dateTime);
-                middleValue = sample;
-                double temp = standardDeviation.Update(sample);
-                if (!primed)
-                {
-                    primed = standardDeviation.IsPrimed;
-                    if (null != SourceLineIndicator)
-                    {
-                        if (primed && !SourceLineIndicator.IsPrimed)
-                            primed = false;
-                    }
-                    if (!primed)
-                        return new Band(dateTime);
-                }
-                lowerValue = sample - (hasLowerMultiplier ? temp * lowerMultiplier : temp);
-                upperValue = sample + (hasUpperMultiplier ? temp * upperMultiplier : temp);
-                return new Band(dateTime, upperValue, lowerValue);
+                Calculate(sample);
+                FillOutput(outputData, sample.Time);
             }
+
+            return outputData;
         }
 
-        /// <summary>
-        /// Updates the indicator.
-        /// </summary>
-        /// <param name="sample">A new sample.</param>
-        /// <param name="dateTime">A date-time of the new sample.</param>
-        /// <returns>The updated value of the indicator.</returns>
-        public Band Update(double sample, DateTime dateTime)
+        /// <inheritdoc />
+        public IEnumerable<IndicatorOutput> Update(IEnumerable<Scalar> samples)
         {
-            if (null != SourceLineIndicator)
-                sample = SourceLineIndicator.Update(sample);
-            return DoUpdate(sample, dateTime);
-        }
-
-        /// <summary>
-        /// Updates the indicator.
-        /// </summary>
-        /// <param name="sample">A new <c>scalar</c> sample.</param>
-        /// <returns>The updated value of the indicator.</returns>
-        public Band Update(Scalar sample)
-        {
-            if (null != SourceLineIndicator)
-                sample = SourceLineIndicator.Update(sample);
-            return DoUpdate(sample.Value, sample.Time);
-        }
-
-        /// <summary>
-        /// Updates the indicator.
-        /// </summary>
-        /// <param name="sample">A new <c>ohlcv</c> sample.</param>
-        /// <returns>The updated value of the indicator.</returns>
-        public Band Update(Ohlcv sample)
-        {
-            if (null != SourceLineIndicator)
+            var list = new List<IndicatorOutput>();
+            lock (updateLock)
             {
-                Scalar scalar = SourceLineIndicator.Update(sample);
-                return DoUpdate(scalar.Value, scalar.Time);
+                foreach (var sample in samples)
+                {
+                    var outputData = new IndicatorOutput { Outputs = new object[outputs.Count] };
+                    double v = sample.Value;
+                    Calculate(new Ohlcv(sample.Time, v, v, v, v));
+                    FillOutput(outputData, sample.Time);
+                    list.Add(outputData);
+                }
             }
-            return DoUpdate(sample.Component(OhlcvComponent), sample.Time);
+
+            return list;
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<IndicatorOutput> Update(IEnumerable<Ohlcv> samples)
+        {
+            var list = new List<IndicatorOutput>();
+            lock (updateLock)
+            {
+                foreach (var sample in samples)
+                {
+                    var outputData = new IndicatorOutput { Outputs = new object[outputs.Count] };
+                    Calculate(sample);
+                    FillOutput(outputData, sample.Time);
+                    list.Add(outputData);
+                }
+            }
+
+            return list;
         }
         #endregion
+
+        private void FillOutput(IndicatorOutput outputData, DateTime time)
+        {
+            for (int i = 0; i < outputs.Count; ++i)
+            {
+                switch (outputs[i])
+                {
+                    case OutputKind.LowerUpperBand:
+                        outputData.Outputs[i] = new Band(time, lowerValue, upperValue);
+                        break;
+
+                    case OutputKind.MiddleMovingAverageValue:
+                        outputData.Outputs[i] = new Scalar(time, movingAverageValue);
+                        break;
+
+                    case OutputKind.LowerBandValue:
+                        outputData.Outputs[i] = new Scalar(time, lowerValue);
+                        break;
+
+                    case OutputKind.UpperBandValue:
+                        outputData.Outputs[i] = new Scalar(time, upperValue);
+                        break;
+
+                    case OutputKind.StandardDeviationValue:
+                        outputData.Outputs[i] = new Scalar(time, stdevValue);
+                        break;
+
+                    case OutputKind.BandWidthValue:
+                        outputData.Outputs[i] = new Scalar(time, bandWidthValue);
+                        break;
+
+                    case OutputKind.PercentBandValue:
+                        outputData.Outputs[i] = new Scalar(time, percentBandValue);
+                        break;
+                }
+            }
+        }
+
+        private void Calculate(Ohlcv sample)
+        {
+            var movingAverageOutput = movingAverageIndicator.Update(sample);
+            movingAverageValue = ((Scalar)movingAverageOutput.Outputs[0]).Value;
+            stdevValue = standardDeviationIndicator.UpdateSample(sample.Component(stdevOhlcvComponent));
+
+            if (double.IsNaN(stdevValue))
+            {
+                lowerValue = double.NaN;
+                upperValue = double.NaN;
+                bandWidthValue = double.NaN;
+                percentBandValue = double.NaN;
+                return;
+            }
+
+            if (!primed)
+            {
+                primed = standardDeviationIndicator.IsPrimed && movingAverageIndicator.IsPrimed;
+                if (!primed)
+                    return;
+            }
+
+            var delta = stdevValue * multiplier;
+            lowerValue = movingAverageValue - delta;
+            upperValue = movingAverageValue + delta;
+            delta = upperValue - lowerValue;
+            bandWidthValue = movingAverageValue < double.Epsilon ? 1d : delta / movingAverageValue;
+            percentBandValue = delta < double.Epsilon ? 1d : (sample.Component(percentBOhlcvComponent) - lowerValue) / delta;
+        }
+
+        private static List<OutputKind> ConvertOutputKinds(int[] outputKinds)
+        {
+            var list = new List<OutputKind>();
+            foreach (var outputKind in outputKinds)
+            {
+                try
+                {
+                    list.Add((OutputKind) outputKind);
+                }
+                catch (Exception ex)
+                {
+                    throw new ArgumentOutOfRangeException(Invariant($"Output kind {outputKind} does not match any value in {nameof(OutputKind)} enumeration"), ex);
+                }
+            }
+
+            return list;
+        }
     }
 }

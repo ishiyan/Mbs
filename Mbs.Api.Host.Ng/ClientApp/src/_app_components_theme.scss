@@ -4,6 +4,7 @@
 @import 'app/shared/footer/footer-theme';
 @import 'app/shared/svg-viewer/svg-viewer-theme';
 @import 'app/shared/mbs/data/historical-data-chart-theme';
+@import 'app/d3/d3-samples/sample-6/ohlcv-chart/ohlcv-chart-theme';
 
 
 @mixin app_components_theme($theme) {
@@ -18,4 +19,5 @@
   @include footer-theme($theme);
   @include svg-viewer-theme($theme);
   @include historical-data-chart-theme($theme);
+  @include ohlcv-chart-theme($theme);
 }

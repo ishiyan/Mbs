@@ -48,7 +48,12 @@ This shows the absolute difference.
 This difference is then divided by the middle band, which normalizes the value.
 This normalized Bandwidth can then be compared across different timeframes or with the BandWidth values for other securities.
 
-
+Narrow BandWidth is relative. BandWidth values should be gauged relative to prior BandWidth values over a period of time.
+It is important to get a good look-back period to define BandWidth range for a particular ETF, index or stock.
+For example, an eight- to twelve-month chart will show BandWidth highs and lows over a significant timeframe.
+BandWidth is considered narrow as it approaches the lows of this range and wide as it approaches the high end.
+[img/bbw-2-a.png]
+[img/bbw-2-b.png]
 
 # PercentB (%B) Indicator
 
@@ -66,3 +71,33 @@ There are six basic relationship levels:
 
 Calculation: %B = (Price - Lower Band)/(Upper Band - Lower Band)
 
+
+# BB Trend Indicator
+
+https://www.mql5.com/en/market/product/30223#description
+
+BBTrend is a relatively new indicator developed by John Bollinger to work with Bollinger Bands™. It is one of only a few indicators that can signal both strength and direction making it a very valuable tool for traders.
+
+## Calculations
+
+The calculations are fairly simple. The default periods of 20 and 50 are shown, but these can be changed through the parameters.
+
+- Lower = MathAbs(lowerBB(20) - lowerBB(50))
+- Upper = MathAbs(upperBB(20) - upperBB(50))
+- BBTrend = (lower - upper) / middleBB(20)
+
+## Interpretation
+
+- Bullish trend = BBTrend above zero
+- Bearish trend = BBTrend below zero
+
+The degree above or below zero determines the strength or momentum behind the trend.
+
+## Parameters
+
+- Shorter Bands Period – the shorter period for the Bollinger Bands used in the calculation.
+- Longer Bands Period – the longer period for the Bollinger Bands used in the calculation.
+- iBands Shift – “shift” used by both the longer and shorter Bollinger Bands (iBands) calculations.
+- iBands Deviation – “deviation” used by both the longer and shorter Bollinger Bands (iBands) calculations.
+
+[img/bb-trend-indicator-screen.png]

@@ -23,26 +23,23 @@ module.exports = function (d3) {
 
     const convertLayout = function(config, referenceWidth) {
         const layout = {
-            totalWidth: 0,
-            totalHeight: 0,
-            left: config.margin.left,
-            width: lengthToPx(config.width, referenceWidth) - config.margin.left - config.margin.right,
-            chart: {}
+            totalWidth: 0, // inclusive margin
+            totalHeight: 0, // inclusive margin
+            left: config.margin.left, // left margin
+            width: lengthToPx(config.width, referenceWidth) - config.margin.left - config.margin.right, // content width
+            chart: { top: config.margin.top }
         };
-        layout.totalWidth = layout.width + config.margin.left + config.margin.right;
-
-        let top = config.margin.top;
-        let height = lengthToPx(config.heightChart, layout.width);
-    
-        layout.chart.top = top;
+        const width = layout.width;
+        layout.totalWidth = width + config.margin.left + config.margin.right;
+        let height = lengthToPx(config.heightChart, width);    
         layout.chart.height = height;
-        top += height;
+        let top = layout.chart.top + height;
 
         if (config.heightIndicatorPanes && config.heightIndicatorPanes.length > 0) {
           const length = config.heightIndicatorPanes.length;
           layout.indicatorPanes = [];
           for (let i = 0; i < length; ++i) {
-              height = lengthToPx(config.heightIndicatorPanes[i], layout.width);
+              height = lengthToPx(config.heightIndicatorPanes[i], width);
               const pane = {};
               pane.top = top;
               pane.height = height;
@@ -54,7 +51,7 @@ module.exports = function (d3) {
         if (config.heightNavigation) {
             layout.navigation = {
                 top: top,
-                height: lengthToPx(config.heightNavigation, layout.width)
+                height: lengthToPx(config.heightNavigation, width)
             };
             top += layout.navigation.height;
         }

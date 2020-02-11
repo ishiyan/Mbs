@@ -1,6 +1,6 @@
 import { Injectable, NgZone } from '@angular/core';
-import { MatSnackBar, MatSnackBarConfig } from '@angular/material';
-import { MatSnackBarRef, SimpleSnackBar } from '@angular/material';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
+import { MatSnackBarRef, SimpleSnackBar } from '@angular/material/snack-bar';
 
 export class SnackBarMessage {
     message: string;

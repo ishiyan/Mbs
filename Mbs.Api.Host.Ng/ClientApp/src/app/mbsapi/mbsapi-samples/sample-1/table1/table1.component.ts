@@ -19,7 +19,7 @@ import { Instrument } from '../../../../shared/mbs/instruments/instrument';
       ],
 })
 export class Table1Component implements OnInit {
-    @ViewChild('container', { static: false }) container: ElementRef;
+    @ViewChild('container') container: ElementRef;
 
     public InstrumentType = InstrumentType;
     public ExchangeMic = ExchangeMic;

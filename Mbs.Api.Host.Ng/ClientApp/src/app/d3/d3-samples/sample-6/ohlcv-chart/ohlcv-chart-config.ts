@@ -18,7 +18,7 @@ export class OhlcvChartConfig {
      * Can be either a positive number of pixels or a percentage string (e.g. '45%') of a reference width.
      * If undefined, the navigation pane will not be created.
      */
-    public heightNavigationPane?: string | number | undefined;
+    public heightNavigationPane?: string | number | undefined = undefined;
 
     /**
      * An optional array of heights of indicator panes.
@@ -47,69 +47,15 @@ export class OhlcvChartConfig {
     /** An optional array of indicator panes. */
     public indicatorPanes: OhlcvChartConfig.Pane[] = [];
 
+    /** If crosshair should be  visible */
+    public crosshair: boolean = false;
+
+    /** If volume in price pane should be  visible */
+    public volumeInPricePane: boolean = false;
+
     /** The width of a vertical axis in pixels including annotation. */
     public static readonly verticalAxisWidth: number = 30;
 
-
-
-    /** Calculates chart layout from the configuration. */
-    public static configToLayout(config: OhlcvChartConfig, referenceWidth: number): OhlcvChartLayout {
-        const marginLeft = config.margin.left + (config.axisLeft ? OhlcvChartConfig.verticalAxisWidth : 0);
-        const marginRight = config.margin.right +  (config.axisRight ? OhlcvChartConfig.verticalAxisWidth : 0);
-        const marginTop = config.margin.top + 10;
-        const marginBottom = config.margin.bottom + 10;
-        const layout = new OhlcvChartLayout();
-        layout.axisLeft = config.axisLeft;
-        layout.axisRight = config.axisRight;
-        layout.left = marginLeft;
-        layout.totalWidth = OhlcvChartConfig.valueToPixels(config.width, referenceWidth);
-        const width: number = layout.totalWidth - marginLeft - marginRight;
-        layout.width = width;
-
-        let height: number = OhlcvChartConfig.valueToPixels(0/*config.heightPricePane*/, width);
-        let top: number = marginTop;
-        layout.pricePane = new OhlcvChartLayout.PaneLayout();
-        layout.pricePane.top = top;
-        layout.pricePane.height = height;
-        top += height;
-
-        if (config.heightIndicatorPanes && config.heightIndicatorPanes.length > 0) {
-            const length = config.heightIndicatorPanes.length;
-            layout.indicatorPanes = new Array<OhlcvChartLayout.PaneLayout>(length);
-            for (let i = 0; i < length; ++i) {
-                height = OhlcvChartConfig.valueToPixels(config.heightIndicatorPanes[i], width);
-                const pane = new OhlcvChartLayout.PaneLayout();
-                pane.top = top;
-                pane.height = height;
-                layout.indicatorPanes[i] = pane;
-                top += height;
-            }
-        }
-
-        if (config.heightNavigationPane) {
-            layout.navigationPane = new OhlcvChartLayout.PaneLayout();
-            layout.navigationPane.top = top;
-            height = OhlcvChartConfig.valueToPixels(config.heightNavigationPane, width);
-            layout.navigationPane.height = height;
-            top += height;
-        }
-
-        layout.totalHeight = top + marginBottom;
-        return layout;
-    }
-    
-    private static valueToPixels(value: number | string, reference: number) : number {
-        if (typeof value == 'number') {
-            return +value;
-        }
-
-        const numeric = value.match(/\d+/);
-        if (value.endsWith('%')) {
-            return +numeric / 100 * reference;
-        }
-
-        return +numeric;
-    } 
 }
 
 export namespace OhlcvChartConfig {
@@ -171,6 +117,9 @@ export namespace OhlcvChartConfig {
 
         /** Data array. */
         public data: Ohlcv[] = [];        
+        
+        /** If data is displayed as candlesticks or as bars */
+        public candlesticks: boolean = true;
     }    
 
     /** Describes a pane. */

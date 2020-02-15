@@ -7,5 +7,5 @@ export class Band {
   lower: number;
 
   /** A higher value of the band. */
-  higher: number;
+  upper: number;
 }

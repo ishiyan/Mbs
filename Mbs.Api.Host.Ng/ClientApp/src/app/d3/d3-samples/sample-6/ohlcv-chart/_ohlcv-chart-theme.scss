@@ -110,7 +110,9 @@
       // stroke: mat-color($primary);
 
       fill: none;
-      stroke: $line-color;
+
+      // set in code
+      // stroke: $line-color;
     }
     path.area {
       fill: mat-color($background, unselected-chip, 0.5);

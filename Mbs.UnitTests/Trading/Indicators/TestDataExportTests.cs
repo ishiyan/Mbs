@@ -189,7 +189,8 @@ namespace Mbs.UnitTests.Trading.Indicators
             for (int i = 0; i < 252; ++i)
             {
                 scalarArray[i] = new Scalar { Time = date, Value = Close[i] };
-                list.Add(Invariant($"    {{ time: new Date({date.Year}, {date.Month}, {date.Day}), open: {Open[i]}, high: {High[i]}, low: {Low[i]}, close: {Close[i]}, volume: {Volume[i]} }},"));
+                // Javascript Date constructor accepts zero-based months.
+                list.Add(Invariant($"    {{ time: new Date({date.Year}, {date.Month - 1}, {date.Day}), open: {Open[i]}, high: {High[i]}, low: {Low[i]}, close: {Close[i]}, volume: {Volume[i]} }},"));
                 date = date.AddDays(1);
                 while (date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday)
                     date = date.AddDays(1);
@@ -219,8 +220,9 @@ namespace Mbs.UnitTests.Trading.Indicators
             {
                 var comma3 = i == outputs.Count - 1 ? "" : ",";
                 var ohlcv = new Ohlcv(scalarArray[i].Time, Open[i], High[i], Low[i], Close[i], Volume[i]);
+                // Javascript Date constructor accepts zero-based months.
                 var str = Invariant(
-                    $"    {{ ohlcv: {{time:new Date({ohlcv.Time.Year},{ohlcv.Time.Month},{ohlcv.Time.Day}),open:{ohlcv.Open},high:{ohlcv.High},low:{ohlcv.Low},close:{ohlcv.Close},volume:{ohlcv.Volume}}}, indicators:[");
+                    $"    {{ ohlcv: {{time:new Date({ohlcv.Time.Year},{ohlcv.Time.Month - 1},{ohlcv.Time.Day}),open:{ohlcv.Open},high:{ohlcv.High},low:{ohlcv.Low},close:{ohlcv.Close},volume:{ohlcv.Volume}}}, indicators:[");
                 for (int k = 0; k < 1; ++k)
                 {
                     var comma2 = k == 0 ? "" : ",";
@@ -260,7 +262,8 @@ namespace Mbs.UnitTests.Trading.Indicators
                     for (int i = 0; i < 252; ++i)
                     {
                         var band = (Band)outputs[i].Outputs[j];
-                        list.Add(Invariant($"    {{ time: new Date({band.Time.Year}, {band.Time.Month}, {band.Time.Day}), lower: {band.FirstValue}, upper: {band.SecondValue} }},"));
+                        // Javascript Date constructor accepts zero-based months.
+                        list.Add(Invariant($"    {{ time: new Date({band.Time.Year}, {band.Time.Month - 1}, {band.Time.Day}), lower: {band.FirstValue}, upper: {band.SecondValue} }},"));
                     }
                 }
                 else
@@ -269,7 +272,8 @@ namespace Mbs.UnitTests.Trading.Indicators
                     for (int i = 0; i < 252; ++i)
                     {
                         var scalar = (Scalar)outputs[i].Outputs[j];
-                        list.Add(Invariant($"    {{ time: new Date({scalar.Time.Year}, {scalar.Time.Month}, {scalar.Time.Day}), value: {scalar.Value} }},"));
+                        // Javascript Date constructor accepts zero-based months.
+                        list.Add(Invariant($"    {{ time: new Date({scalar.Time.Year}, {scalar.Time.Month - 1}, {scalar.Time.Day}), value: {scalar.Value} }},"));
                     }
                 }
                 list.Add("];");

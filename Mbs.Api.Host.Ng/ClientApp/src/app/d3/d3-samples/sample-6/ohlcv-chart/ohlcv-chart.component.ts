@@ -54,19 +54,24 @@ export class OhlcvChartComponent implements OnInit {
             ]},
         indicatorPanes: [
             {height: '60', valueFormat: ',.2f', valueTicks: 5, valueMarginPercentageFactor: 0.01,
-                bands: [], horizontals: [],
-                lines: [
+                bands: [], horizontals: [
+                    {value: 0, color: 'red', width: 0.5, dash: ''},
+                    {value: 1, color: 'red', width: 0.5, dash: ''}
+                ], lines: [
                     {name: '%b(c)-bb(stdev.p(20,c),2,sma(20,c))', data: dataTestPercentB, indicator: 0, output: 0, color: 'green', width: 1, dash: '', interpolation: 'natural'}
                 ]},
             {height: '60', valueFormat: ',.2f', valueTicks: 3, valueMarginPercentageFactor: 0.01,
-                bands: [], horizontals: [],
-                lines: [
+                bands: [], horizontals: [
+                ], lines: [
                     {name: 'bw(c)-bb(stdev.p(20,c),2,sma(20,c))', data: dataTestBw, indicator: 0, output: 0, color: 'blue', width: 1, dash: '', interpolation: 'natural'}
                 ]}            
         ],
         crosshair: true,
         volumeInPricePane: true
     }
+
+    private static minDate = new Date(-8640000000000000);
+    private static maxDate = new Date(8640000000000000);
 
     readonly ohlcvViewCandlesticks = ohlcvViewCandlesticks;
     readonly ohlcvViewBars = ohlcvViewBars;
@@ -432,7 +437,7 @@ export class OhlcvChartComponent implements OnInit {
         for (let i = 0; i < config.bands.length; ++i) {
             const band = config.bands[i];
             const indicatorBand = new OhlcvChartComponent.IndicatorBand();
-            indicatorBand.path = pane.group.append('g').attr('class', `band-${i}`).attr('clip-path', clipUrl).append('path')            
+            indicatorBand.path = pane.group.append('g').attr('class', `band-${i}`).attr('clip-path', clipUrl).append('path')
                 .attr('fill', band.color);
             indicatorBand.area = d3.area()
                 .curve(OhlcvChartComponent.convertInterpolation(band.interpolation))
@@ -444,10 +449,29 @@ export class OhlcvChartComponent implements OnInit {
             pane.indicatorBands.push(indicatorBand);
         }
 
+        for (let i = 0; i < config.horizontals.length; ++i) {
+            const horizontal = config.horizontals[i];
+            const indicatorHorizontal = new OhlcvChartComponent.IndicatorHorizontal();
+            indicatorHorizontal.path = pane.group.append('g').attr('class', `horizontal-${i}`).attr('clip-path', clipUrl).append('path')
+                .attr('stroke', horizontal.color)
+                .attr('stroke-width', horizontal.width)
+                .attr('stroke-dasharray', horizontal.dash)
+                .attr('stroke-linejoin', 'round')
+                .attr('stroke-linecap', 'round')
+                .attr('fill', 'none');
+            const value = horizontal.value;
+            indicatorHorizontal.value = value;
+            indicatorHorizontal.data = [{time: OhlcvChartComponent.minDate, value: value}, {time: OhlcvChartComponent.maxDate, value: value}];
+            indicatorHorizontal.line = d3.line()
+                .x(d => { const w: any = d; return timeScale(w.time)})
+                .y(d => { return pane.yPrice(value)});
+            pane.indicatorHorizontals.push(indicatorHorizontal);
+        }
+
         for (let i = 0; i < config.lines.length; ++i) {
             const line = config.lines[i];
             const indicatorLine = new OhlcvChartComponent.IndicatorLine();
-            indicatorLine.path = pane.group.append('g').attr('class', `line-${i}`).attr('clip-path', clipUrl).append('path')            
+            indicatorLine.path = pane.group.append('g').attr('class', `line-${i}`).attr('clip-path', clipUrl).append('path')
                 .attr('stroke', line.color)
                 .attr('stroke-width', line.width)
                 .attr('stroke-dasharray', line.dash)
@@ -525,7 +549,7 @@ export class OhlcvChartComponent implements OnInit {
         for (let i = 0; i < config.bands.length; ++i) {
             const band = config.bands[i];
             const indicatorBand = new OhlcvChartComponent.IndicatorBand();
-            indicatorBand.path = pane.group.append('g').attr('class', `band-${i}`).attr('clip-path', clipUrl).append('path')            
+            indicatorBand.path = pane.group.append('g').attr('class', `band-${i}`).attr('clip-path', clipUrl).append('path')
                 .attr('fill', band.color);
             indicatorBand.area = d3.area()
                 .curve(OhlcvChartComponent.convertInterpolation(band.interpolation))
@@ -537,10 +561,29 @@ export class OhlcvChartComponent implements OnInit {
             pane.indicatorBands.push(indicatorBand);
         }
 
+        for (let i = 0; i < config.horizontals.length; ++i) {
+            const horizontal = config.horizontals[i];
+            const indicatorHorizontal = new OhlcvChartComponent.IndicatorHorizontal();
+            indicatorHorizontal.path = pane.group.append('g').attr('class', `horizontal-${i}`).attr('clip-path', clipUrl).append('path')
+                .attr('stroke', horizontal.color)
+                .attr('stroke-width', horizontal.width)
+                .attr('stroke-dasharray', horizontal.dash)
+                .attr('stroke-linejoin', 'round')
+                .attr('stroke-linecap', 'round')
+                .attr('fill', 'none');
+            const value = horizontal.value;
+            indicatorHorizontal.value = value;
+            indicatorHorizontal.data = [{time: OhlcvChartComponent.minDate, value: value}, {time: OhlcvChartComponent.maxDate, value: value}];
+            indicatorHorizontal.line = d3.line()
+                .x(d => { const w: any = d; return timeScale(w.time)})
+                .y(d => { return pane.yValue(value)});
+            pane.indicatorHorizontals.push(indicatorHorizontal);
+        }
+
         for (let i = 0; i < config.lines.length; ++i) {
             const line = config.lines[i];
             const indicatorLine = new OhlcvChartComponent.IndicatorLine();
-            indicatorLine.path = pane.group.append('g').attr('class', `line-${i}`).attr('clip-path', clipUrl).append('path')            
+            indicatorLine.path = pane.group.append('g').attr('class', `line-${i}`).attr('clip-path', clipUrl).append('path')
                 .attr('stroke', line.color)
                 .attr('stroke-width', line.width)
                 .attr('stroke-dasharray', line.dash)
@@ -688,6 +731,7 @@ export namespace OhlcvChartComponent {
         priceAccessor: any;
         volume: any;
         indicatorBands: OhlcvChartComponent.IndicatorBand[] = [];
+        indicatorHorizontals: OhlcvChartComponent.IndicatorHorizontal[] = [];
         indicatorLines: OhlcvChartComponent.IndicatorLine[] = [];
 
         public draw(timePane: TimePane): void {
@@ -715,6 +759,11 @@ export namespace OhlcvChartComponent {
                     }
                 }
             }
+            for (let i = 0; i < this.indicatorHorizontals.length; ++i) {
+                const value = this.indicatorHorizontals[i].value;
+                if (minPrice > value) minPrice = value;
+                if (maxPrice < value) maxPrice = value;    
+            }
             for (let i = 0; i < this.indicatorLines.length; ++i) {
                 const data = this.indicatorLines[i].data;
                 for (let j = 0; j < data.length; ++j) {
@@ -737,11 +786,16 @@ export namespace OhlcvChartComponent {
                 indicatorBand.path.attr('d', indicatorBand.area);
             }
 
+            // draw horizontals above bands but below lines
             this.groupPrice.call(this.priceShape);
             if (this.volume) {
                 this.groupVolume.call(this.volume);
             }
 
+            for (let i = 0; i < this.indicatorHorizontals.length; ++i) {
+                const indicatorHorizontal = this.indicatorHorizontals[i];
+                indicatorHorizontal.path.attr('d', indicatorHorizontal.line);
+            }
             for (let i = 0; i < this.indicatorLines.length; ++i) {
                 const indicatorLine = this.indicatorLines[i];
                 indicatorLine.path.attr('d', indicatorLine.line);
@@ -808,6 +862,11 @@ export namespace OhlcvChartComponent {
                     }
                 }
             }
+            for (let i = 0; i < this.indicatorHorizontals.length; ++i) {
+                const value = this.indicatorHorizontals[i].value;
+                if (minValue > value) minValue = value;
+                if (maxValue < value) maxValue = value;    
+            }
             for (let i = 0; i < this.indicatorLines.length; ++i) {
                 const data = this.indicatorLines[i].data;
                 for (let j = 0; j < data.length; ++j) {
@@ -830,6 +889,11 @@ export namespace OhlcvChartComponent {
                 indicatorBand.path.attr('d', indicatorBand.area);
             }
 
+            // draw horizontals above bands but below lines
+            for (let i = 0; i < this.indicatorHorizontals.length; ++i) {
+                const indicatorHorizontal = this.indicatorHorizontals[i];
+                indicatorHorizontal.path.attr('d', indicatorHorizontal.line);
+            }
             for (let i = 0; i < this.indicatorLines.length; ++i) {
                 const indicatorLine = this.indicatorLines[i];
                 indicatorLine.path.attr('d', indicatorLine.line);
@@ -848,6 +912,10 @@ export namespace OhlcvChartComponent {
                 const indicatorBand = this.indicatorBands[i];
                 indicatorBand.path.datum(indicatorBand.data);
             }
+            for (let i = 0; i < this.indicatorHorizontals.length; ++i) {
+                const indicatorHorizontal = this.indicatorHorizontals[i];
+                indicatorHorizontal.path.datum(indicatorHorizontal.data);
+            }    
             for (let i = 0; i < this.indicatorLines.length; ++i) {
                 const indicatorLine = this.indicatorLines[i];
                 indicatorLine.path.datum(indicatorLine.data);
@@ -887,6 +955,7 @@ export namespace OhlcvChartComponent {
     }
 
     export class IndicatorHorizontal {
+        data: Scalar[];
         value: number;
         line: any;
         path: any;

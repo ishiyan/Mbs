@@ -119,6 +119,45 @@ export namespace OhlcvChartConfig {
         public interpolation: string = 'natural';
     }    
 
+    /** Describes an area in a pane between a line and a constant value. */
+    export class LineAreaData {
+        /** A name of the data. */
+        public name: string = '';
+
+        /** Data array. */
+        public data: Scalar[] = [];        
+
+        /** An index of an indicator in the output data. */
+        public indicator: number = 0;
+
+        /** An index of an output within an indicator in the output data. */
+        public output: number = 0;
+
+        /** A constant limiting value. */
+        public value: number = 0;
+
+        /** A fill color of an area. */
+        public color: string = '#00000011';
+
+        /**
+         *  The fill color of an area may be very transprent and its visibility on a legend may be poor.
+         *  This allows to specify a legend color different from the fill color.
+         */
+        public legendColor?: string;
+
+        /** An erea edge interpoltion method:  
+         * - linear
+         * - natural
+         * - basis
+         * - camullRom
+         * - cardinal
+         * - step
+         * - stepBefore
+         * - stepAfter
+        */
+       public interpolation: string = 'natural';
+    }    
+
     /** Describes a band in a pane. */
     export class BandData {
         /** A name of the data. */
@@ -189,6 +228,9 @@ export namespace OhlcvChartConfig {
 
         /** An array of indicator bands on this pane. */
         public bands: BandData[] = [];
+
+        /** An array of indicator line areas on this pane. */
+        public lineAreas: LineAreaData[] = [];
 
         /** An array of indicator bands on this pane. */
         public horizontals: HorizontalData[] = [];

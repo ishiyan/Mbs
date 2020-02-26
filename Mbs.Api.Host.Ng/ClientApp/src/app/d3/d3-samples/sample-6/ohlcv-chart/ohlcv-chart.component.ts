@@ -47,21 +47,23 @@ export class OhlcvChartComponent implements OnInit {
             height: '30%', valueFormat: ',.2f', valueMarginPercentageFactor: 0.01,
             bands: [
                 {name: 'bb(stdev.p(20,c),2,sma(20,c))', data: dataTestBb, indicator: 0, output: 0, color: '#00ff004f', legendColor: '#00ff00', interpolation: 'natural'},
-            ], horizontals: [], lines: [
+            ], lineAreas: [], horizontals: [], lines: [
                 {name: 'sma(20,c)', data: dataTestMa, indicator: 0, output: 0, color: 'red', width: 1, dash: '', interpolation: 'natural'}
                 //{name: 'lo-bb(stdev.p(20,c),2,sma(20,c))', data: dataTestLo, indicator: 0, output: 0, color: 'blue', width: 0.5, dash: '', interpolation: 'cardinal'},
                 //{name: 'up-bb(stdev.p(20,c),2,sma(20,c))', data: dataTestUp, indicator: 0, output: 0, color: 'blue', width: 0.5, dash: '', interpolation: 'linear'}
             ]},
         indicatorPanes: [
             {height: '60', valueFormat: ',.2f', valueTicks: 5, valueMarginPercentageFactor: 0.01,
-                bands: [], horizontals: [
+                bands: [], lineAreas: [], horizontals: [
                     {value: 0, color: 'red', width: 0.5, dash: ''},
                     {value: 1, color: 'red', width: 0.5, dash: ''}
                 ], lines: [
                     {name: '%b(c)-bb(stdev.p(20,c),2,sma(20,c))', data: dataTestPercentB, indicator: 0, output: 0, color: 'green', width: 1, dash: '', interpolation: 'natural'}
                 ]},
             {height: '60', valueFormat: ',.2f', valueTicks: 3, valueMarginPercentageFactor: 0.01,
-                bands: [], horizontals: [
+                bands: [], lineAreas: [
+                    {name: 'bw(c)-bb(stdev.p(20,c),2,sma(20,c))', data: dataTestBw, indicator: 0, output: 0, color: '#0000ff4f', legendColor: '#0000ff', value: 0.3, interpolation: 'step'}
+                ], horizontals: [
                 ], lines: [
                     {name: 'bw(c)-bb(stdev.p(20,c),2,sma(20,c))', data: dataTestBw, indicator: 0, output: 0, color: 'blue', width: 1, dash: '', interpolation: 'natural'}
                 ]}            
@@ -113,6 +115,8 @@ export class OhlcvChartComponent implements OnInit {
           sanitizer.bypassSecurityTrustResourceUrl('assets/img/mb-bars.svg'));
     }
 
+    private currentSelection: any = null;
+
     @HostListener('window:resize', [])
     render() {
         const chartId = '#chart';
@@ -152,16 +156,35 @@ export class OhlcvChartComponent implements OnInit {
             }
         }
 
+        const setCurrentSelection = x => { this.currentSelection = x; };
+
         function brushed(): void {
             const zoomable = timePane.timeScale.zoomable();
             const zoomableNav = navPane.timeScale.zoomable();
             zoomable.domain(zoomableNav.domain());
-            if (d3.event.selection !== null) {
-                zoomable.domain(d3.event.selection.map(zoomable.invert));
+            if (!d3.event.selection) {
+                setCurrentSelection(null);
+                draw();
+            } else {
+                setCurrentSelection(d3.event.selection);
             }
-            draw();
         }
 
+        function brushing(): void {
+            if (d3.event.selection) {
+                const sel = d3.event.selection;
+                if (sel[1] - sel[0] > 10) {
+                    setCurrentSelection(sel);
+                    const zoomable = timePane.timeScale.zoomable();
+                    const zoomableNav = navPane.timeScale.zoomable();
+                    zoomable.domain(zoomableNav.domain());
+                    zoomable.domain(d3.event.selection.map(zoomable.invert));
+                    draw();
+                }
+            }
+        }
+
+        navPane.brush.on('brush', brushing);
         navPane.brush.on('end', brushed);
 
         // data begin ----------------------------------
@@ -187,12 +210,18 @@ export class OhlcvChartComponent implements OnInit {
             indicatorPanes[i].setIndicatorDatum();
         }
 
-        navPane.group.select('g.area').datum(cfg.ohlcv.data).call(navPane.area);
+        navPane.areaSelection.datum(cfg.ohlcv.data).call(navPane.area);
 
         // Associate the brush with the scale and render the brush only AFTER a domain has been applied
-        navPane.group.select('g.pane').call(navPane.brush).selectAll('rect').attr('height', lv.navigationPane.height);
+        navPane.paneSelection.call(navPane.brush).selectAll('rect').attr('height', lv.navigationPane.height);
 
-        timePane.timeScale.zoomable().domain(navPane.timeScale.zoomable().domain());
+        if (this.currentSelection != null) {
+            navPane.brush.move(navPane.paneSelection, this.currentSelection);
+            const zoomable = timePane.timeScale.zoomable();
+            const zoomableNav = navPane.timeScale.zoomable();
+            zoomable.domain(zoomableNav.domain());
+            zoomable.domain(this.currentSelection.map(zoomable.invert));
+        }
         draw();
     }
 
@@ -311,6 +340,29 @@ export class OhlcvChartComponent implements OnInit {
             l += w + whitespaceBetweenAxisAndLegend;
         }
 
+        for (let i = 0; i < pane.lineAreas.length; ++i) {
+            const lineArea = pane.lineAreas[i];
+            const t = g.append('text')
+                .attr('font-size', '10px')
+                .attr('font-family', 'sans-serif')
+                .style('fill', lineArea.legendColor ? lineArea.legendColor : lineArea.color)
+                .attr("x", l)
+                .attr("y", top)
+                .text(' ◼ ' + lineArea.name);
+            const r = t.node().getBoundingClientRect();
+            if (height === 0) {
+                height = r.height;
+            }
+            const w = r.width;
+            if (l + w > width) {
+                l = left;
+                top += r.height;
+                height += r.height;
+                t.attr("x", l).attr("y", top);
+            }
+            l += w + whitespaceBetweenAxisAndLegend;
+        }
+
         for (let i = 0; i < pane.lines.length; ++i) {
             const line = pane.lines[i];
             const t = g.append('text')
@@ -405,7 +457,20 @@ export class OhlcvChartComponent implements OnInit {
     }
 
     public downloadPng(): void {
-        Downloader.download(Downloader.rasterizeToPng(Downloader.getChildElementById(this.container.nativeElement.parentNode, 'chart')), 'ohlcv_chart.png');
+        const last = dataTestOhlcv[dataTestOhlcv.length - 1];
+        const next = new Ohlcv();
+        next.time = last.time;
+        //next.time.setDate(last.time.getDate() + 1);
+        next.time = new Date(last.time.getFullYear(), last.time.getMonth(), last.time.getDay()+1)
+        next.open = last.open + 1;
+        next.high = last.high + 1;
+        next.low = last.low - 1;
+        next.close = last.close - 1;
+        next.volume = last.volume + 100;
+        console.log(next);
+        dataTestOhlcv.push(next);
+        this.render();
+        //Downloader.download(Downloader.rasterizeToPng(Downloader.getChildElementById(this.container.nativeElement.parentNode, 'chart')), 'ohlcv_chart.png');
     }
 
     private static createPricePane(cfg: OhlcvChartConfig, lh: OhlcvChartComponent.HorizontalLayout,
@@ -447,6 +512,23 @@ export class OhlcvChartComponent implements OnInit {
                 .y1(d => { const w: any = d; return pane.yPrice(w.upper)});
             indicatorBand.data = band.data;
             pane.indicatorBands.push(indicatorBand);
+        }
+
+        for (let i = 0; i < config.lineAreas.length; ++i) {
+            const lineArea = config.lineAreas[i];
+            const value = lineArea.value;
+            const indicatorLineArea = new OhlcvChartComponent.IndicatorLineArea();
+            indicatorLineArea.path = pane.group.append('g').attr('class', `linearea-${i}`).attr('clip-path', clipUrl).append('path')
+                .attr('fill', lineArea.color);
+                indicatorLineArea.area = d3.area()
+                .curve(OhlcvChartComponent.convertInterpolation(lineArea.interpolation))
+                .defined(d => { const w: any = d; return !isNaN(w.value); })
+                .x(d => { const w: any = d; return timeScale(w.time)})
+                .y0(d => { const w: any = d; return pane.yPrice(w.value)})
+                .y1(d => { const w: any = d; return pane.yPrice(value)});
+            indicatorLineArea.data = lineArea.data;
+            indicatorLineArea.value = lineArea.value;
+            pane.indicatorLineAreas.push(indicatorLineArea);
         }
 
         for (let i = 0; i < config.horizontals.length; ++i) {
@@ -561,6 +643,23 @@ export class OhlcvChartComponent implements OnInit {
             pane.indicatorBands.push(indicatorBand);
         }
 
+        for (let i = 0; i < config.lineAreas.length; ++i) {
+            const lineArea = config.lineAreas[i];
+            const value = lineArea.value;
+            const indicatorLineArea = new OhlcvChartComponent.IndicatorLineArea();
+            indicatorLineArea.path = pane.group.append('g').attr('class', `linearea-${i}`).attr('clip-path', clipUrl).append('path')
+                .attr('fill', lineArea.color);
+                indicatorLineArea.area = d3.area()
+                .curve(OhlcvChartComponent.convertInterpolation(lineArea.interpolation))
+                .defined(d => { const w: any = d; return !isNaN(w.value); })
+                .x(d => { const w: any = d; return timeScale(w.time)})
+                .y0(d => { const w: any = d; return pane.yValue(w.value)})
+                .y1(d => { const w: any = d; return pane.yValue(value)});
+            indicatorLineArea.data = lineArea.data;
+            indicatorLineArea.value = lineArea.value;
+            pane.indicatorLineAreas.push(indicatorLineArea);
+        }
+
         for (let i = 0; i < config.horizontals.length; ++i) {
             const horizontal = config.horizontals[i];
             const indicatorHorizontal = new OhlcvChartComponent.IndicatorHorizontal();
@@ -655,8 +754,8 @@ export class OhlcvChartComponent implements OnInit {
         pane.area = d3ts.plot.ohlcarea().xScale(pane.timeScale).yScale(pane.priceScale);
 
         pane.group = svg.append('g').attr('class', 'nav').attr('transform', `translate(${lh.content.left}, ${lv.navigationPane.top})`);
-        pane.group.append('g').attr('class', 'area');
-        pane.group.append('g').attr('class', 'pane');
+        pane.areaSelection = pane.group.append('g').attr('class', 'area');
+        pane.paneSelection = pane.group.append('g').attr('class', 'pane');
 
         return pane;    
     }
@@ -731,6 +830,7 @@ export namespace OhlcvChartComponent {
         priceAccessor: any;
         volume: any;
         indicatorBands: OhlcvChartComponent.IndicatorBand[] = [];
+        indicatorLineAreas: OhlcvChartComponent.IndicatorLineArea[] = [];
         indicatorHorizontals: OhlcvChartComponent.IndicatorHorizontal[] = [];
         indicatorLines: OhlcvChartComponent.IndicatorLine[] = [];
 
@@ -759,6 +859,20 @@ export namespace OhlcvChartComponent {
                     }
                 }
             }
+            for (let i = 0; i < this.indicatorLineAreas.length; ++i) {
+                const data = this.indicatorLineAreas[i].data;
+                const value = this.indicatorLineAreas[i].value;
+                for (let j = 0; j < data.length; ++j) {
+                    const d = data[j];
+                    const t = +d.time;
+                    if (min <= t && t <= max) {
+                        if (minPrice > d.value) minPrice = d.value;
+                        if (maxPrice < d.value) maxPrice = d.value;    
+                        if (minPrice > value) minPrice = value;
+                        if (maxPrice < value) maxPrice = value;    
+                    }
+                }
+            }
             for (let i = 0; i < this.indicatorHorizontals.length; ++i) {
                 const value = this.indicatorHorizontals[i].value;
                 if (minPrice > value) minPrice = value;
@@ -780,13 +894,17 @@ export namespace OhlcvChartComponent {
             maxPrice *= this.yMarginFactorTop;
             this.yPrice.domain([minPrice, maxPrice]).nice();
 
-            // Draw bands below price and lines.
+            // Draw bands and areas below price and lines.
             for (let i = 0; i < this.indicatorBands.length; ++i) {
                 const indicatorBand = this.indicatorBands[i];
                 indicatorBand.path.attr('d', indicatorBand.area);
             }
+            for (let i = 0; i < this.indicatorLineAreas.length; ++i) {
+                const indicatorLineArea = this.indicatorLineAreas[i];
+                indicatorLineArea.path.attr('d', indicatorLineArea.area);
+            }
 
-            // draw horizontals above bands but below lines
+            // Draw horizontals above bands and areas but below price and lines.
             this.groupPrice.call(this.priceShape);
             if (this.volume) {
                 this.groupVolume.call(this.volume);
@@ -818,6 +936,14 @@ export namespace OhlcvChartComponent {
                 const indicatorBand = this.indicatorBands[i];
                 indicatorBand.path.datum(indicatorBand.data);
             }
+            for (let i = 0; i < this.indicatorLineAreas.length; ++i) {
+                const indicatorLineArea = this.indicatorLineAreas[i];
+                indicatorLineArea.path.datum(indicatorLineArea.data);
+            }
+            for (let i = 0; i < this.indicatorHorizontals.length; ++i) {
+                const indicatorHorizontal = this.indicatorHorizontals[i];
+                indicatorHorizontal.path.datum(indicatorHorizontal.data);
+            }    
             for (let i = 0; i < this.indicatorLines.length; ++i) {
                 const indicatorLine = this.indicatorLines[i];
                 indicatorLine.path.datum(indicatorLine.data);
@@ -835,6 +961,7 @@ export namespace OhlcvChartComponent {
         yAxisLeft: any;
         yAxisRight: any;
         indicatorBands: OhlcvChartComponent.IndicatorBand[] = [];
+        indicatorLineAreas: OhlcvChartComponent.IndicatorLineArea[] = [];
         indicatorHorizontals: OhlcvChartComponent.IndicatorHorizontal[] = [];
         indicatorLines: OhlcvChartComponent.IndicatorLine[] = [];
 
@@ -862,6 +989,20 @@ export namespace OhlcvChartComponent {
                     }
                 }
             }
+            for (let i = 0; i < this.indicatorLineAreas.length; ++i) {
+                const data = this.indicatorLineAreas[i].data;
+                const value = this.indicatorLineAreas[i].value;
+                for (let j = 0; j < data.length; ++j) {
+                    const d = data[j];
+                    const t = +d.time;
+                    if (min <= t && t <= max) {
+                        if (minValue > d.value) minValue = d.value;
+                        if (maxValue < d.value) maxValue = d.value;    
+                        if (minValue > value) minValue = value;
+                        if (maxValue < value) maxValue = value;    
+                    }
+                }
+            }
             for (let i = 0; i < this.indicatorHorizontals.length; ++i) {
                 const value = this.indicatorHorizontals[i].value;
                 if (minValue > value) minValue = value;
@@ -883,13 +1024,17 @@ export namespace OhlcvChartComponent {
             maxValue *= this.yMarginFactorTop;
             this.yValue.domain([minValue, maxValue]).nice();
 
-            // draw bands below lines
+            // Draw bands and areas below lines.
             for (let i = 0; i < this.indicatorBands.length; ++i) {
                 const indicatorBand = this.indicatorBands[i];
                 indicatorBand.path.attr('d', indicatorBand.area);
             }
+            for (let i = 0; i < this.indicatorLineAreas.length; ++i) {
+                const indicatorLineArea = this.indicatorLineAreas[i];
+                indicatorLineArea.path.attr('d', indicatorLineArea.area);
+            }
 
-            // draw horizontals above bands but below lines
+            // Draw horizontals above bands and areas but below lines.
             for (let i = 0; i < this.indicatorHorizontals.length; ++i) {
                 const indicatorHorizontal = this.indicatorHorizontals[i];
                 indicatorHorizontal.path.attr('d', indicatorHorizontal.line);
@@ -912,6 +1057,10 @@ export namespace OhlcvChartComponent {
                 const indicatorBand = this.indicatorBands[i];
                 indicatorBand.path.datum(indicatorBand.data);
             }
+            for (let i = 0; i < this.indicatorLineAreas.length; ++i) {
+                const indicatorLineArea = this.indicatorLineAreas[i];
+                indicatorLineArea.path.datum(indicatorLineArea.data);
+            }
             for (let i = 0; i < this.indicatorHorizontals.length; ++i) {
                 const indicatorHorizontal = this.indicatorHorizontals[i];
                 indicatorHorizontal.path.datum(indicatorHorizontal.data);
@@ -929,6 +1078,8 @@ export namespace OhlcvChartComponent {
         timeScale: any;
         brush: any;
         area: any;
+        areaSelection: any;
+        paneSelection: any;
     }
 
     export class TimePane {
@@ -945,6 +1096,13 @@ export namespace OhlcvChartComponent {
     export class IndicatorLine {
         data: Scalar[];
         line: any;
+        path: any;
+    }
+
+    export class IndicatorLineArea {
+        data: Scalar[];
+        value: number;
+        area: any;
         path: any;
     }
 

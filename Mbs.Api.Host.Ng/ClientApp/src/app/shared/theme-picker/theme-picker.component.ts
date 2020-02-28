@@ -20,12 +20,12 @@ export class ThemePickerComponent implements OnInit, OnDestroy {
   currentTheme: Theme;
 
   themes: Theme[] = [
-    {
+    /*{
       primary: '#673AB7',
       accent: '#FFC107',
       name: 'deeppurple-amber',
       isDark: false,
-    },
+    },*/
     {
       primary: '#3F51B5',
       accent: '#E91E63',
@@ -33,7 +33,7 @@ export class ThemePickerComponent implements OnInit, OnDestroy {
       isDark: false,
       isDefault: true,
     },
-    {
+    /*{
       primary: '#E91E63',
       accent: '#607D8B',
       name: 'pink-bluegrey',
@@ -50,7 +50,7 @@ export class ThemePickerComponent implements OnInit, OnDestroy {
       accent: '#FFC107',
       name: 'yellow-amber',
       isDark: true,
-    },
+    },*/
     {
       primary: '#795548',
       accent: '#4caf50',

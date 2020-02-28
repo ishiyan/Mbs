@@ -18,7 +18,7 @@ module.exports = function(d3_scale_linear, d3_extent, accessor_ohlc, plot, plotM
     }
 
     candlestick.refresh = function(g) {
-      g.selectAll('path.candle.body').attr('d', bodyPathGenerator);
+      g.selectAll('path.candle.body').attr('d', bodyPathGenerator).style('stroke-width', wickWidthGenerator);
       g.selectAll('path.candle.wick').attr('d', wickGenerator).style('stroke-width', wickWidthGenerator);
     };
 

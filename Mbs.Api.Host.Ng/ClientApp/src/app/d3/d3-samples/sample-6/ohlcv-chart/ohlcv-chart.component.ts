@@ -42,11 +42,11 @@ export class OhlcvChartComponent implements OnInit {
         axisLeft: true,
         axisRight: true,
         margin: {left: 0, top: 0, right: 0, bottom: 0},
-        ohlcv: {name: 'BRILL@XAMS', data: dataTestOhlcv, candlesticks: false},
+        ohlcv: {name: 'BRILL@XAMS', data: dataTestOhlcv, candlesticks: true},
         pricePane: {
             height: '30%', valueFormat: ',.2f', valueMarginPercentageFactor: 0.01,
             bands: [
-                {name: 'bb(stdev.p(20,c),2,sma(20,c))', data: dataTestBb, indicator: 0, output: 0, color: '#00ff004f', legendColor: '#00ff00', interpolation: 'natural'},
+                {name: 'bb(stdev.p(20,c),2,sma(20,c))', data: dataTestBb, indicator: 0, output: 0, color: 'rgba(0,255,0,0.3)', legendColor: 'rgba(0,200,0,1)', interpolation: 'natural'},
             ], lineAreas: [], horizontals: [], lines: [
                 {name: 'sma(20,c)', data: dataTestMa, indicator: 0, output: 0, color: 'red', width: 1, dash: '', interpolation: 'natural'}
                 //{name: 'lo-bb(stdev.p(20,c),2,sma(20,c))', data: dataTestLo, indicator: 0, output: 0, color: 'blue', width: 0.5, dash: '', interpolation: 'cardinal'},
@@ -62,10 +62,10 @@ export class OhlcvChartComponent implements OnInit {
                 ]},
             {height: '60', valueFormat: ',.2f', valueTicks: 3, valueMarginPercentageFactor: 0.01,
                 bands: [], lineAreas: [
-                    {name: 'bw(c)-bb(stdev.p(20,c),2,sma(20,c))', data: dataTestBw, indicator: 0, output: 0, color: '#0000ff4f', legendColor: '#0000ff', value: 0.3, interpolation: 'step'}
+                    {name: 'bw(c)-bb(stdev.p(20,c),2,sma(20,c))', data: dataTestBw, indicator: 0, output: 0, color: 'rgba(0,0,255,0.3)', legendColor: '#0000ff', value: 0.3, interpolation: 'natural'}
                 ], horizontals: [
                 ], lines: [
-                    {name: 'bw(c)-bb(stdev.p(20,c),2,sma(20,c))', data: dataTestBw, indicator: 0, output: 0, color: 'blue', width: 1, dash: '', interpolation: 'natural'}
+                    //{name: 'bw(c)-bb(stdev.p(20,c),2,sma(20,c))', data: dataTestBw, indicator: 0, output: 0, color: 'blue', width: 1, dash: '', interpolation: 'natural'}
                 ]}            
         ],
         crosshair: true,
@@ -491,13 +491,6 @@ export class OhlcvChartComponent implements OnInit {
         pane.group = svg.append('g').attr('class', 'price-pane').attr('transform', `translate(${lh.content.left}, ${lv.pricePane.top})`);
         pane.group.append('clipPath').attr('id', clip).append('rect').attr('x', 0).attr('y', pane.yPrice(1))
             .attr('width', lh.content.width).attr('height', pane.yPrice(0) - pane.yPrice(1));
-        pane.groupPrice = pane.group.append('g').attr('class', 'price').attr('clip-path', clipUrl);
-
-        if (isVolume) {
-            pane.yVolume = d3.scaleLinear().range([pane.yPrice(0), pane.yPrice(0.3)]);
-            pane.volume = d3ts.plot.volume().xScale(timeScale).yScale(pane.yVolume);
-            pane.groupVolume = pane.group.append('g').attr('class', 'volume').attr('clip-path', clipUrl);
-        }
 
         for (let i = 0; i < config.bands.length; ++i) {
             const band = config.bands[i];
@@ -529,6 +522,14 @@ export class OhlcvChartComponent implements OnInit {
             indicatorLineArea.data = lineArea.data;
             indicatorLineArea.value = lineArea.value;
             pane.indicatorLineAreas.push(indicatorLineArea);
+        }
+
+        pane.groupPrice = pane.group.append('g').attr('class', 'price').attr('clip-path', clipUrl);
+
+        if (isVolume) {
+            pane.yVolume = d3.scaleLinear().range([pane.yPrice(0), pane.yPrice(0.3)]);
+            pane.volume = d3ts.plot.volume().xScale(timeScale).yScale(pane.yVolume);
+            pane.groupVolume = pane.group.append('g').attr('class', 'volume').attr('clip-path', clipUrl);
         }
 
         for (let i = 0; i < config.horizontals.length; ++i) {

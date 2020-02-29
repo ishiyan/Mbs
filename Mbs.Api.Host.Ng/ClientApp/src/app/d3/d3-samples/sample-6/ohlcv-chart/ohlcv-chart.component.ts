@@ -51,6 +51,9 @@ export class OhlcvChartComponent implements OnInit {
                 {name: 'sma(20,c)', data: dataTestMa, indicator: 0, output: 0, color: 'red', width: 1, dash: '', interpolation: 'natural'}
                 //{name: 'lo-bb(stdev.p(20,c),2,sma(20,c))', data: dataTestLo, indicator: 0, output: 0, color: 'blue', width: 0.5, dash: '', interpolation: 'cardinal'},
                 //{name: 'up-bb(stdev.p(20,c),2,sma(20,c))', data: dataTestUp, indicator: 0, output: 0, color: 'blue', width: 0.5, dash: '', interpolation: 'linear'}
+            ], arrows: [
+                {name: 'sell', down: true, time: dataTestOhlcv[25].time, /*value: dataTestOhlcv[25].high,*/ indicator: 0, output: 0, color: 'rgb(255,0,0)'},
+                {name: 'buy', down: false, time: dataTestOhlcv[26].time, /*value: dataTestOhlcv[26].low,*/ indicator: 0, output: 0, color: 'rgb(0,255,0)'}
             ]},
         indicatorPanes: [
             {height: '60', valueFormat: ',.2f', valueTicks: 5, valueMarginPercentageFactor: 0.01,
@@ -59,14 +62,14 @@ export class OhlcvChartComponent implements OnInit {
                     {value: 1, color: 'red', width: 0.5, dash: ''}
                 ], lines: [
                     {name: '%b(c)-bb(stdev.p(20,c),2,sma(20,c))', data: dataTestPercentB, indicator: 0, output: 0, color: 'green', width: 1, dash: '', interpolation: 'natural'}
-                ]},
+                ], arrows: []},
             {height: '60', valueFormat: ',.2f', valueTicks: 3, valueMarginPercentageFactor: 0.01,
                 bands: [], lineAreas: [
                     {name: 'bw(c)-bb(stdev.p(20,c),2,sma(20,c))', data: dataTestBw, indicator: 0, output: 0, color: 'rgba(0,0,255,0.3)', legendColor: '#0000ff', value: 0.3, interpolation: 'natural'}
                 ], horizontals: [
                 ], lines: [
                     //{name: 'bw(c)-bb(stdev.p(20,c),2,sma(20,c))', data: dataTestBw, indicator: 0, output: 0, color: 'blue', width: 1, dash: '', interpolation: 'natural'}
-                ]}            
+                ], arrows: []}
         ],
         crosshair: true,
         volumeInPricePane: true
@@ -570,6 +573,27 @@ export class OhlcvChartComponent implements OnInit {
             pane.indicatorLines.push(indicatorLine);
         }
 
+        let gArrows;
+        for (let i = 0; i < config.arrows.length; ++i) {
+            if (!gArrows) {
+                gArrows = pane.group.append('g').attr('class', `arrows`).attr('clip-path', clipUrl);
+            }
+            const arrow = config.arrows[i];
+            const indicatorArrow = new OhlcvChartComponent.IndicatorArrow();
+            indicatorArrow.path = gArrows.append('path')
+                .attr('stroke-width', 0)
+                .attr('fill', arrow.color);
+            const price = OhlcvChartComponent.getArrowPrice(cfg.ohlcv.data, arrow);
+            indicatorArrow.arrow = d3ts.svg.arrow()
+                .orient(arrow.down ? 'down' : 'up')
+                .x(d => timeScale(arrow.time))
+                .y(d => {
+                    const p = pane.yPrice(price);
+                    return arrow.down ? p - 3 : p + 3;
+                });
+            pane.indicatorArrows.push(indicatorArrow);
+        }
+
         if (cfg.axisLeft) {
             pane.yAxisLeft = d3.axisLeft(pane.yPrice).tickFormat(d3.format(config.valueFormat));
             if (config.valueTicks) {
@@ -788,6 +812,29 @@ export class OhlcvChartComponent implements OnInit {
             default: return d3.curveLinear;
         }
     }
+
+    private static findOhlcv(data: Ohlcv[], time: Date): Ohlcv | null {
+        for (let i = 0; i < data.length; ++i) {
+            const d = data[i];
+            if (+d.time >= +time) {
+                return d;
+            }
+        }
+        return null;
+    }
+
+    private static getArrowPrice(data: Ohlcv[], arrow: OhlcvChartConfig.ArrowData): number {
+        if (arrow.value) {
+            return + arrow.value;
+        }
+
+        const ohlcv = OhlcvChartComponent.findOhlcv(data, arrow.time);
+        if (ohlcv != null) {
+            return arrow.down ? ohlcv.high : ohlcv.low;
+        }
+
+        return 0;
+    }
 }
 
 export namespace OhlcvChartComponent {
@@ -834,6 +881,7 @@ export namespace OhlcvChartComponent {
         indicatorLineAreas: OhlcvChartComponent.IndicatorLineArea[] = [];
         indicatorHorizontals: OhlcvChartComponent.IndicatorHorizontal[] = [];
         indicatorLines: OhlcvChartComponent.IndicatorLine[] = [];
+        indicatorArrows: OhlcvChartComponent.IndicatorArrow[] = [];
 
         public draw(timePane: TimePane): void {
             const datum = this.groupPrice.datum();
@@ -918,6 +966,15 @@ export namespace OhlcvChartComponent {
             for (let i = 0; i < this.indicatorLines.length; ++i) {
                 const indicatorLine = this.indicatorLines[i];
                 indicatorLine.path.attr('d', indicatorLine.line);
+            }
+
+            let slotWidth = this.priceShape.width()(timePane.timeScale);
+            const arrowWidth = slotWidth < 12 ? 12 : slotWidth;
+            const arrowHeight = arrowWidth * 5 / 4;
+            for (let i = 0; i < this.indicatorArrows.length; ++i) {
+                const indicatorArrow = this.indicatorArrows[i];
+                indicatorArrow.arrow.width(arrowWidth).height(arrowHeight);
+                indicatorArrow.path.attr('d', indicatorArrow.arrow);
             }
 
             // Using refresh method is more efficient as it does not perform any data joins
@@ -1117,6 +1174,11 @@ export namespace OhlcvChartComponent {
         data: Scalar[];
         value: number;
         line: any;
+        path: any;
+    }
+
+    export class IndicatorArrow {
+        arrow: any;
         path: any;
     }
 }

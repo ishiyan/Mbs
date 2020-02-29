@@ -194,6 +194,30 @@ export namespace OhlcvChartConfig {
        public interpolation: string = 'natural';
     }    
 
+    /** Describes an vertical arrow in a pane. */
+    export class ArrowData {
+        /** A name of the arrow. */
+        public name: string = '';
+
+        /** Is an arrow points up or down. */
+        public down: boolean;
+
+        /** Arrow time. */
+        public time: Date;        
+
+        /** An optional value to which the arrow points. */
+        public value?: number;
+
+        /** An index of an indicator in the output data. */
+        public indicator: number = 0;
+
+        /** An index of an output within an indicator in the output data. */
+        public output: number = 0;
+
+        /** A color of the arrow. */
+        public color: string = 'purple';
+    }    
+
     /** Describes an ohlcv data. */
     export class OhlcvData {
         /** A name of the data. */
@@ -237,5 +261,8 @@ export namespace OhlcvChartConfig {
 
         /** An array of indicator lines on this pane. */
         public lines: LineData[] = [];
+
+        /** An array of arrows on this pane. */
+        public arrows: ArrowData[] = [];
   }    
 }

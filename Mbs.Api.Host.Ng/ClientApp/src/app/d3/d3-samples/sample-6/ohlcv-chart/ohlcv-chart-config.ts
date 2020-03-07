@@ -2,6 +2,7 @@ import { Ohlcv } from './ohlcv';
 import { Scalar } from './scalar';
 import { Band } from './band';
 import { OhlcvChartLayout } from './ohlcv-chart-layout';
+import { Heatmap } from './heatmap';
 
 /** Describes an ohlcv chart layout configuration. */
 export class OhlcvChartConfig {
@@ -13,6 +14,12 @@ export class OhlcvChartConfig {
     */
     public width: string | number;
 
+    /** An optional minimal width in pixels including margins. */
+    public widthMin?: number | undefined = undefined;
+
+    /** An optional maximal width in pixels including margins. */
+    public widthMax?: number | undefined = undefined;
+
     /**
      * An optional height of the navigation pane.
      * Can be either a positive number of pixels or a percentage string (e.g. '45%') of a reference width.
@@ -20,12 +27,11 @@ export class OhlcvChartConfig {
      */
     public heightNavigationPane?: string | number | undefined = undefined;
 
-    /**
-     * An optional array of heights of indicator panes.
-     * Each height can be either a positive number of pixels or a percentage string (e.g. '45%') of a reference width.
-     * If undefined or empty, indicator panes will not be created.
-     */
-    public heightIndicatorPanes?: Array<(string | number)> | undefined = undefined;
+    /** An optional minimal height of the navigation pane in pixels. */
+    public heightNavigationPaneMin?: number | undefined = undefined;
+
+    /** An optional maximal height of the navigation pane in pixels. */
+    public heightNavigationPaneMax?: number | undefined = undefined;
 
     /** A d3.timeFormat specifier for time ticks and annotations. */
     public timeFormat: string = '%Y-%m-%d';
@@ -194,6 +200,55 @@ export namespace OhlcvChartConfig {
        public interpolation: string = 'natural';
     }    
 
+    /** Describes a band in a pane. */
+    export class HeatmapData {
+        /** A name of the data. */
+        public name: string = '';
+
+        /** Data array. */
+        public data: Heatmap[] = [];        
+
+        /** An index of an indicator in the output data. */
+        public indicator: number = 0;
+
+        /** An index of an output within an indicator in the output data. */
+        public output: number = 0;
+
+        /** An intensity gradient:  
+         * - Viridis
+         * - Inferno
+         * - Magma
+         * - Plasma
+         * - Cividis
+         * - Warm
+         * - Cool
+         * - Rainbow
+         * - CubehelixDefault
+         * - BuGn
+         * - BuPu
+         * - GnBu
+         * - OrRd
+         * - PuBuGn
+         * - PuBu
+         * - PuRd
+         * - RdPu
+         * - YlGnBu
+         * - YlGn
+         * - YlOrBr
+         * - YlOrRd
+         * - Blues
+         * - Greens
+         * - Greys
+         * - Oranges
+         * - Purples
+         * - Reds
+         */
+       public gradient: string = 'viridis';
+
+       /** If to invert the gradient. */
+       public invertGradient: boolean = false;
+    }    
+
     /** Describes an vertical arrow in a pane. */
     export class ArrowData {
         /** A name of the arrow. */
@@ -238,6 +293,12 @@ export namespace OhlcvChartConfig {
          */
         public height: string | number = 0;
 
+        /** An optional minimal height of the pane in pixels. */
+        public heightMin?: number | undefined = undefined;
+
+        /** An optional maximal height of the pane in pixels. */
+        public heightMax?: number | undefined = undefined;
+
         /** A d3.format specifier for value ticks and annotations on the pane. */
         public valueFormat: string = ',.2f';
 
@@ -249,6 +310,9 @@ export namespace OhlcvChartConfig {
          * This allows to add space between the top / bottom of the pane and the max / min values.
          */
         public valueMarginPercentageFactor: number = 0;
+
+        /** An optional heatmap on this pane. */
+        public heatmap?: HeatmapData;
 
         /** An array of indicator bands on this pane. */
         public bands: BandData[] = [];

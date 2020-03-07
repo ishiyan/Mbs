@@ -7,6 +7,7 @@ import * as d3ts from '../../../../shared/d3ts';
 import { Ohlcv } from './ohlcv';
 import { Scalar } from './scalar';
 import { Band } from './band';
+import { Heatmap } from './heatmap';
 //import { dataOhlcvDaily } from './data-ohlcv-daily';
 import { dataTestOhlcv } from './data-test-ohlcv';
 import { dataTestBb } from './data-test-bb';
@@ -18,6 +19,9 @@ import { dataTestBw } from './data-test-bw';
 import { OhlcvChartConfig } from './ohlcv-chart-config';
 import { Downloader } from './downloader';
 import { curveStep } from 'd3';
+import { dataTestGoertzel1 } from './data-test-goertzel_1';
+import { dataTestGoertzel10 } from './data-test-goertzel_10';
+import { config } from 'rxjs';
 
 const ohlcvViewCandlesticks = 0;
 const ohlcvViewBars = 1;
@@ -36,21 +40,21 @@ export class OhlcvChartComponent implements OnInit {
     @Input() svgheight: any;
   
     private config: OhlcvChartConfig = {
-        width: '100%',
-        heightNavigationPane: 30,
+        width: '100%', // widthMin: 500, widthMax: 700,
+        heightNavigationPane: 30, // heightNavigationPaneMin: 20, heightNavigationPaneMax: 60,
         timeFormat: '%Y-%m-%d',
         axisLeft: true,
         axisRight: true,
         margin: {left: 0, top: 0, right: 0, bottom: 0},
         ohlcv: {name: 'BRILL@XAMS', data: dataTestOhlcv, candlesticks: true},
         pricePane: {
-            height: '30%', valueFormat: ',.2f', valueMarginPercentageFactor: 0.01,
+            height: '30%', valueFormat: ',.2f', valueMarginPercentageFactor: 0.01, // heightMin: 100, heightMax: 300,
             bands: [
                 {name: 'bb(stdev.p(20,c),2,sma(20,c))', data: dataTestBb, indicator: 0, output: 0, color: 'rgba(0,255,0,0.3)', legendColor: 'rgba(0,200,0,1)', interpolation: 'natural'},
             ], lineAreas: [], horizontals: [], lines: [
-                {name: 'sma(20,c)', data: dataTestMa, indicator: 0, output: 0, color: 'red', width: 1, dash: '', interpolation: 'natural'}
-                //{name: 'lo-bb(stdev.p(20,c),2,sma(20,c))', data: dataTestLo, indicator: 0, output: 0, color: 'blue', width: 0.5, dash: '', interpolation: 'cardinal'},
-                //{name: 'up-bb(stdev.p(20,c),2,sma(20,c))', data: dataTestUp, indicator: 0, output: 0, color: 'blue', width: 0.5, dash: '', interpolation: 'linear'}
+                {name: 'sma(20,c)', data: dataTestMa, indicator: 0, output: 0, color: 'red', width: 1, dash: '', interpolation: 'natural'},
+                {name: 'lo-bb(stdev.p(20,c),2,sma(20,c))', data: dataTestLo, indicator: 0, output: 0, color: 'blue', width: 0.5, dash: '5,5', interpolation: 'cardinal'},
+                {name: 'up-bb(stdev.p(20,c),2,sma(20,c))', data: dataTestUp, indicator: 0, output: 0, color: 'blue', width: 0.5, dash: '2,2', interpolation: 'linear'}
             ], arrows: [
                 {name: 'sell', down: true, time: dataTestOhlcv[25].time, /*value: dataTestOhlcv[25].high,*/ indicator: 0, output: 0, color: 'rgb(255,0,0)'},
                 {name: 'buy', down: false, time: dataTestOhlcv[26].time, /*value: dataTestOhlcv[26].low,*/ indicator: 0, output: 0, color: 'rgb(0,255,0)'}
@@ -67,9 +71,14 @@ export class OhlcvChartComponent implements OnInit {
                 bands: [], lineAreas: [
                     {name: 'bw(c)-bb(stdev.p(20,c),2,sma(20,c))', data: dataTestBw, indicator: 0, output: 0, color: 'rgba(0,0,255,0.3)', legendColor: '#0000ff', value: 0.3, interpolation: 'natural'}
                 ], horizontals: [
+                    {value: 0.3, color: 'blue', width: 0.5, dash: ''}
                 ], lines: [
                     //{name: 'bw(c)-bb(stdev.p(20,c),2,sma(20,c))', data: dataTestBw, indicator: 0, output: 0, color: 'blue', width: 1, dash: '', interpolation: 'natural'}
-                ], arrows: []}
+                ], arrows: []},
+            {height: '120', valueFormat: ',.2f', valueTicks: 5, valueMarginPercentageFactor: 0, // heightMin: 50, heightMax: 100,
+                heatmap: {
+                    name: 'goertzel(64, [2,64,1/10], sdc, agc 0.991)', gradient: 'Viridis', invertGradient: false, data: dataTestGoertzel1, indicator: 0, output: 0
+                }, bands: [], lineAreas: [], horizontals: [], lines: [], arrows: []}
         ],
         crosshair: true,
         volumeInPricePane: true
@@ -77,6 +86,22 @@ export class OhlcvChartComponent implements OnInit {
 
     private static minDate = new Date(-8640000000000000);
     private static maxDate = new Date(8640000000000000);
+ 
+    private menuVisible = true;
+    get viewMenu() {
+        return this.menuVisible;
+    }
+    set viewMenu(value: boolean) {
+        this.menuVisible = value;
+    }
+
+    private downloadSvgVisible = true;
+    get viewDownloadSvg() {
+        return this.downloadSvgVisible;
+    }
+    set viewDownloadSvg(value: boolean) {
+        this.downloadSvgVisible = value;
+    }
 
     readonly ohlcvViewCandlesticks = ohlcvViewCandlesticks;
     readonly ohlcvViewBars = ohlcvViewBars;
@@ -119,6 +144,27 @@ export class OhlcvChartComponent implements OnInit {
     }
 
     private currentSelection: any = null;
+
+    public downloadSvg(): void {
+        Downloader.download(Downloader.serializeToSvg(Downloader.getChildElementById(this.container.nativeElement.parentNode, 'chart')), 'ohlcv_chart.svg');
+    }
+
+    public downloadPng(): void {
+        const last = dataTestOhlcv[dataTestOhlcv.length - 1];
+        const next = new Ohlcv();
+        next.time = last.time;
+        //next.time.setDate(last.time.getDate() + 1);
+        next.time = new Date(last.time.getFullYear(), last.time.getMonth(), last.time.getDay()+1)
+        next.open = last.open + 1;
+        next.high = last.high + 1;
+        next.low = last.low - 1;
+        next.close = last.close - 1;
+        next.volume = last.volume + 100;
+        console.log(next);
+        dataTestOhlcv.push(next);
+        this.render();
+        //Downloader.download(Downloader.rasterizeToPng(Downloader.getChildElementById(this.container.nativeElement.parentNode, 'chart')), 'ohlcv_chart.png');
+    }
 
     @HostListener('window:resize', [])
     render() {
@@ -170,6 +216,8 @@ export class OhlcvChartComponent implements OnInit {
                 draw();
             } else {
                 setCurrentSelection(d3.event.selection);
+                zoomable.domain(d3.event.selection.map(zoomable.invert));                
+                draw(); // comment out if 'brush' event handler is enabled
             }
         }
 
@@ -177,7 +225,7 @@ export class OhlcvChartComponent implements OnInit {
             if (d3.event.selection) {
                 const sel = d3.event.selection;
                 if (sel[1] - sel[0] > 10) {
-                    setCurrentSelection(sel);
+                    // setCurrentSelection(sel);
                     const zoomable = timePane.timeScale.zoomable();
                     const zoomableNav = navPane.timeScale.zoomable();
                     zoomable.domain(zoomableNav.domain());
@@ -187,7 +235,7 @@ export class OhlcvChartComponent implements OnInit {
             }
         }
 
-        navPane.brush.on('brush', brushing);
+        // navPane.brush.on('brush', brushing); // comment out to disable real-time zooming
         navPane.brush.on('end', brushed);
 
         // data begin ----------------------------------
@@ -195,6 +243,7 @@ export class OhlcvChartComponent implements OnInit {
         //console.log(OhlcvChartComponent.firstTime(cfg));
         //console.log(OhlcvChartComponent.lastTime(cfg));
         //timePane.timeScale.domain([OhlcvChartComponent.firstTime(cfg), OhlcvChartComponent.lastTime(cfg)]);
+        //navPane.timeScale.domain([OhlcvChartComponent.firstTime(cfg), OhlcvChartComponent.lastTime(cfg)]);
         navPane.timeScale.domain(timePane.timeScale.domain());
         pricePane.yPrice.domain(d3ts.scale.plot.ohlc(cfg.ohlcv.data, pricePane.priceAccessor).domain());
 
@@ -248,7 +297,13 @@ export class OhlcvChartComponent implements OnInit {
     }
 
     private static layoutHorizontal(cfg: OhlcvChartConfig, referenceWidth: number): OhlcvChartComponent.HorizontalLayout {
-        const totalWidth: number = OhlcvChartComponent.valueToPixels(cfg.width, referenceWidth);
+        let totalWidth: number = OhlcvChartComponent.valueToPixels(cfg.width, referenceWidth);
+        if (cfg.widthMin && cfg.widthMin > totalWidth) {
+            totalWidth = cfg.widthMin;
+        }
+        if (cfg.widthMax && cfg.widthMax < totalWidth) {
+            totalWidth = cfg.widthMax;
+        }
 
         const chartLeft: number = cfg.margin.left;
         const chartWidth: number = totalWidth - chartLeft - cfg.margin.right;
@@ -268,7 +323,14 @@ export class OhlcvChartComponent implements OnInit {
             lh.content.width, cfg.pricePane, cfg.ohlcv.name);
         const l = new OhlcvChartComponent.VerticalLayout();
         l.pricePane.top = cfg.margin.top + heightPricePaneLegend;
-        l.pricePane.height = OhlcvChartComponent.valueToPixels(cfg.pricePane.height, lh.content.width);
+        let q = OhlcvChartComponent.valueToPixels(cfg.pricePane.height, lh.content.width);
+        if (cfg.pricePane.heightMin && cfg.pricePane.heightMin > q) {
+            q = cfg.pricePane.heightMin;
+        }
+        if (cfg.pricePane.heightMax && cfg.pricePane.heightMax < q) {
+            q = cfg.pricePane.heightMax;
+        }
+        l.pricePane.height = q;
 
         let top = l.pricePane.top + l.pricePane.height;        
         if (cfg.indicatorPanes && cfg.indicatorPanes.length) {
@@ -278,7 +340,14 @@ export class OhlcvChartComponent implements OnInit {
                 const legendHeight: number = OhlcvChartComponent.appendLegend(svg, top, lineHeight, lh.content.left,
                     lh.content.width, pane, undefined);
                 block.top = top + legendHeight;
-                block.height = OhlcvChartComponent.valueToPixels(pane.height, lh.content.width);
+                q = OhlcvChartComponent.valueToPixels(pane.height, lh.content.width);
+                if (pane.heightMin && pane.heightMin > q) {
+                    q = pane.heightMin;
+                }
+                if (pane.heightMax && pane.heightMax < q) {
+                    q = pane.heightMax;
+                }
+                block.height = q;
                 l.indicatorPanes.push(block);
                 top = block.top + block.height;
             }
@@ -290,8 +359,15 @@ export class OhlcvChartComponent implements OnInit {
 
         if (cfg.heightNavigationPane) {
             l.navigationPane.top = top;
-            l.navigationPane.height = OhlcvChartComponent.valueToPixels(cfg.heightNavigationPane, lh.content.width);
-            top += l.navigationPane.height;
+            q = OhlcvChartComponent.valueToPixels(cfg.heightNavigationPane, lh.content.width);
+            if (cfg.heightNavigationPaneMin && cfg.heightNavigationPaneMin > q) {
+                q = cfg.heightNavigationPaneMin;
+            }
+            if (cfg.heightNavigationPaneMax && cfg.heightNavigationPaneMax < q) {
+                q = cfg.heightNavigationPaneMax;
+            }
+            l.navigationPane.height = q;
+            top += q;
         }
 
         l.height = top + cfg.margin.bottom;
@@ -302,6 +378,7 @@ export class OhlcvChartComponent implements OnInit {
         pane: OhlcvChartConfig.Pane, instrument: string = ''): number {
         g = g.append('g').attr('class', 'legend');
         const whitespaceBetweenAxisAndLegend = 8;
+        const whitespaceBetweenLegendItems = 5;
 
         top += lineHeight / 2;
         left += whitespaceBetweenAxisAndLegend;
@@ -309,35 +386,57 @@ export class OhlcvChartComponent implements OnInit {
         let height = 0;
 
         if (instrument && instrument.length > 0) {
-            const t = g.append('text')
-                .attr('font-size', '10px')
-                .attr('font-family', 'sans-serif')
-                .attr('x', l)
-                .attr('y', top)
-                .text(` ${instrument} `);
+            const t = OhlcvChartComponent.appendText(g, l, top, ` ${instrument} `);
             const r = t.node().getBoundingClientRect();
             l += r.width + whitespaceBetweenAxisAndLegend;
             height = r.height;
         }
 
-        for (let i = 0; i < pane.bands.length; ++i) {
-            const band = pane.bands[i];
-            const t = g.append('text')
-                .attr('font-size', '10px')
-                .attr('font-family', 'sans-serif')
-                .style('fill', band.legendColor ? band.legendColor : band.color)
-                .attr("x", l)
-                .attr("y", top)
-                .text(' ◼ ' + band.name);
+        if (pane.heatmap) {
+            const len = 50;
+            const hei = 6;
+            const q = g.append('image').attr('x', l).attr('y', top - hei)
+                .attr('width', len).attr('height', hei).attr('preserveAspectRatio', 'none')
+                .attr('xlink:href',
+                    OhlcvChartComponent.ramp(OhlcvChartComponent.convertGradient(pane.heatmap.gradient), pane.heatmap.invertGradient, len, hei).toDataURL());
+            const d1 = len + whitespaceBetweenLegendItems;
+            l += d1;
+            const t = OhlcvChartComponent.appendText(g, l, top, pane.heatmap.name);
             const r = t.node().getBoundingClientRect();
             if (height === 0) {
                 height = r.height;
             }
             const w = r.width;
             if (l + w > width) {
-                l = left;
                 top += r.height;
                 height += r.height;
+                q.attr("x", left).attr("y", top - hei);
+                l = left + d1;
+                t.attr("x", l).attr("y", top);
+            }
+            l += w + whitespaceBetweenAxisAndLegend;
+        }
+
+        for (let i = 0; i < pane.bands.length; ++i) {
+            const band = pane.bands[i];
+            const len = 20;
+            const hei = 6;
+            const q = g.append('rect').attr('x', l).attr('y', top - hei)
+                .attr('width', len).attr('height', hei).attr('stroke-width', 0).attr('fill', band.color);
+            const d1 = len + whitespaceBetweenLegendItems;
+            l += d1;
+
+            const t = OhlcvChartComponent.appendText(g, l, top, band.name);
+            const r = t.node().getBoundingClientRect();
+            if (height === 0) {
+                height = r.height;
+            }
+            const w = r.width;
+            if (l + w > width) {
+                top += r.height;
+                height += r.height;
+                q.attr("x", left).attr("y", top - hei);
+                l = left + d1;
                 t.attr("x", l).attr("y", top);
             }
             l += w + whitespaceBetweenAxisAndLegend;
@@ -345,22 +444,24 @@ export class OhlcvChartComponent implements OnInit {
 
         for (let i = 0; i < pane.lineAreas.length; ++i) {
             const lineArea = pane.lineAreas[i];
-            const t = g.append('text')
-                .attr('font-size', '10px')
-                .attr('font-family', 'sans-serif')
-                .style('fill', lineArea.legendColor ? lineArea.legendColor : lineArea.color)
-                .attr("x", l)
-                .attr("y", top)
-                .text(' ◼ ' + lineArea.name);
+            const len = 20;
+            const hei = 6;
+            const q = g.append('rect').attr('x', l).attr('y', top - hei)
+                .attr('width', len).attr('height', hei).attr('stroke-width', 0).attr('fill', lineArea.color);
+            const d1 = len + whitespaceBetweenLegendItems;
+            l += d1;
+
+            const t = OhlcvChartComponent.appendText(g, l, top, lineArea.name);
             const r = t.node().getBoundingClientRect();
             if (height === 0) {
                 height = r.height;
             }
             const w = r.width;
             if (l + w > width) {
-                l = left;
                 top += r.height;
                 height += r.height;
+                q.attr("x", left).attr("y", top - hei);
+                l = left + d1;
                 t.attr("x", l).attr("y", top);
             }
             l += w + whitespaceBetweenAxisAndLegend;
@@ -368,22 +469,25 @@ export class OhlcvChartComponent implements OnInit {
 
         for (let i = 0; i < pane.lines.length; ++i) {
             const line = pane.lines[i];
-            const t = g.append('text')
-                .attr('font-size', '10px')
-                .attr('font-family', 'sans-serif')
-                .style('fill', line.color)
-                .attr("x", l)
-                .attr("y", top)
-                .text(' ― ' + line.name);
+            const len = 20;
+            const hei = (6 - line.width) / 2;
+            const q = g.append('line').attr('x1', l).attr('y1', top - hei)
+                .attr('x2', l + len).attr('y2', top - hei).attr('stroke-width', line.width)
+                .attr('stroke', line.color).attr('stroke-dasharray', line.dash).attr('fill', 'none');
+            const d1 = len + whitespaceBetweenLegendItems;
+            l += d1;
+
+            const t = OhlcvChartComponent.appendText(g, l, top, line.name);
             const r = t.node().getBoundingClientRect();
             if (height === 0) {
                 height = r.height;
             }
             const w = r.width;
             if (l + w > width) {
-                l = left;
                 top += r.height;
                 height += r.height;
+                q.attr("x1", left).attr("y1", top - hei).attr("x2", left + len).attr("y", top - hei);
+                l = left + d1;
                 t.attr("x", l).attr("y", top);
             }
             l += w + whitespaceBetweenAxisAndLegend;
@@ -452,28 +556,17 @@ export class OhlcvChartComponent implements OnInit {
                     time = t;
             }
         }
-        return time;
+        //return time;
+        return new Date(time.getFullYear(), time.getMonth(), time.getDay()+10);
     }
 
-    public downloadSvg(): void {
-        Downloader.download(Downloader.serializeToSvg(Downloader.getChildElementById(this.container.nativeElement.parentNode, 'chart')), 'ohlcv_chart.svg');
-    }
-
-    public downloadPng(): void {
-        const last = dataTestOhlcv[dataTestOhlcv.length - 1];
-        const next = new Ohlcv();
-        next.time = last.time;
-        //next.time.setDate(last.time.getDate() + 1);
-        next.time = new Date(last.time.getFullYear(), last.time.getMonth(), last.time.getDay()+1)
-        next.open = last.open + 1;
-        next.high = last.high + 1;
-        next.low = last.low - 1;
-        next.close = last.close - 1;
-        next.volume = last.volume + 100;
-        console.log(next);
-        dataTestOhlcv.push(next);
-        this.render();
-        //Downloader.download(Downloader.rasterizeToPng(Downloader.getChildElementById(this.container.nativeElement.parentNode, 'chart')), 'ohlcv_chart.png');
+    private static appendText(group: any, left: number, top: number, text: string): any {
+        return group.append('text')
+        .attr('font-size', '10px')
+        .attr('font-family', 'sans-serif')
+        .attr("x", left)
+        .attr("y", top)
+        .text(text);
     }
 
     private static createPricePane(cfg: OhlcvChartConfig, lh: OhlcvChartComponent.HorizontalLayout,
@@ -527,14 +620,6 @@ export class OhlcvChartComponent implements OnInit {
             pane.indicatorLineAreas.push(indicatorLineArea);
         }
 
-        pane.groupPrice = pane.group.append('g').attr('class', 'price').attr('clip-path', clipUrl);
-
-        if (isVolume) {
-            pane.yVolume = d3.scaleLinear().range([pane.yPrice(0), pane.yPrice(0.3)]);
-            pane.volume = d3ts.plot.volume().xScale(timeScale).yScale(pane.yVolume);
-            pane.groupVolume = pane.group.append('g').attr('class', 'volume').attr('clip-path', clipUrl);
-        }
-
         for (let i = 0; i < config.horizontals.length; ++i) {
             const horizontal = config.horizontals[i];
             const indicatorHorizontal = new OhlcvChartComponent.IndicatorHorizontal();
@@ -571,6 +656,14 @@ export class OhlcvChartComponent implements OnInit {
                 .y(d => { const w: any = d; return pane.yPrice(w.value)});
             indicatorLine.data = line.data;
             pane.indicatorLines.push(indicatorLine);
+        }
+
+        pane.groupPrice = pane.group.append('g').attr('class', 'price').attr('clip-path', clipUrl);
+
+        if (isVolume) {
+            pane.yVolume = d3.scaleLinear().range([pane.yPrice(0), pane.yPrice(0.3)]);
+            pane.volume = d3ts.plot.volume().xScale(timeScale).yScale(pane.yVolume);
+            pane.groupVolume = pane.group.append('g').attr('class', 'volume').attr('clip-path', clipUrl);
         }
 
         let gArrows;
@@ -652,6 +745,17 @@ export class OhlcvChartComponent implements OnInit {
         pane.group = svg.append('g').attr('class', 'indicator-pane').attr('transform', `translate(${lh.content.left}, ${block.top})`);
         pane.group.append('clipPath').attr('id', clip).append('rect').attr('x', 0).attr('y', pane.yValue(1))
             .attr('width', lh.content.width).attr('height', pane.yValue(0) - pane.yValue(1));
+
+        if (config.heatmap) {
+            const heatmap = config.heatmap;
+            const indicatorHeatmap = new OhlcvChartComponent.IndicatorHeatmap();
+            indicatorHeatmap.path = pane.group.append('g').attr('class', `heatmap`).attr('clip-path', clipUrl);
+            indicatorHeatmap.invertGradient = heatmap.invertGradient;
+            indicatorHeatmap.gradient = OhlcvChartComponent.convertGradient(heatmap.gradient);
+            indicatorHeatmap.data = heatmap.data;
+            indicatorHeatmap.height = block.height;
+            pane.indicatorHeatmap = indicatorHeatmap;            
+        }
 
         for (let i = 0; i < config.bands.length; ++i) {
             const band = config.bands[i];
@@ -835,6 +939,55 @@ export class OhlcvChartComponent implements OnInit {
 
         return 0;
     }
+
+    private static ramp(color: any, invertGradient: boolean, width: number, height: number): HTMLCanvasElement {
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        canvas.style.width = width + 'px';
+        canvas.style.height = height + 'px';
+        canvas.style.imageRendering = 'pixelated';
+        const context = canvas.getContext('2d');
+        const k = 1 / (width - 1);
+        for (let i = 0; i < width; ++i) {
+            context.fillStyle = color(invertGradient ? (1 - i * k) : (i * k));
+            context.fillRect(i, 0, 1, height);
+        }
+
+        return canvas;
+    }
+
+    private static convertGradient(gradient: string): any {
+        switch (gradient.toLowerCase()) {
+            case 'viridis': return d3.interpolateViridis;
+            case 'inferno': return d3.interpolateInferno;
+            case 'magma': return d3.interpolateMagma;
+            case 'plasma': return d3.interpolatePlasma;
+            case 'warm': return d3.interpolateWarm;
+            case 'cool': return d3.interpolateCool;
+            case 'rainbow': return d3.interpolateRainbow;
+            case 'cubehelixdefault': return d3.interpolateCubehelixDefault;
+            case 'bugn': return d3.interpolateBuGn;
+            case 'bupu': return d3.interpolateBuPu;
+            case 'gnbu': return d3.interpolateGnBu;
+            case 'orrd': return d3.interpolateOrRd;
+            case 'pubugn': return d3.interpolatePuBuGn;
+            case 'pubu': return d3.interpolatePuBu;
+            case 'purd': return d3.interpolatePuRd;
+            case 'rdpu': return d3.interpolateRdPu;
+            case 'ylgnbu': return d3.interpolateYlGnBu;
+            case 'ylgn': return d3.interpolateYlGn;
+            case 'ylorbr': return d3.interpolateYlOrBr;
+            case 'ylorrd': return d3.interpolateYlOrRd;
+            case 'blues': return d3.interpolateBlues;
+            case 'greens': return d3.interpolateGreens;
+            case 'greys': return d3.interpolateGreys;
+            case 'oranges': return d3.interpolateOranges;
+            case 'purples': return d3.interpolatePurples;
+            case 'reds': return d3.interpolateReds;
+            default: return d3.interpolateGreys;
+        }
+    }
 }
 
 export namespace OhlcvChartComponent {
@@ -886,7 +1039,6 @@ export namespace OhlcvChartComponent {
         public draw(timePane: TimePane): void {
             const datum = this.groupPrice.datum();
             const datumLastIndex = datum.length - 1;
-
             const timeDomain: [number, number] = timePane.timeScale.zoomable().domain();
             let min = Math.round(timeDomain[0]);
             let max = Math.round(timeDomain[1]);
@@ -968,7 +1120,7 @@ export namespace OhlcvChartComponent {
                 indicatorLine.path.attr('d', indicatorLine.line);
             }
 
-            let slotWidth = this.priceShape.width()(timePane.timeScale);
+            const slotWidth = this.priceShape.width()(timePane.timeScale);
             const arrowWidth = slotWidth < 12 ? 12 : slotWidth;
             const arrowHeight = arrowWidth * 5 / 4;
             for (let i = 0; i < this.indicatorArrows.length; ++i) {
@@ -1018,6 +1170,7 @@ export namespace OhlcvChartComponent {
         yMarginFactorBottom: number;
         yAxisLeft: any;
         yAxisRight: any;
+        indicatorHeatmap?: OhlcvChartComponent.IndicatorHeatmap;
         indicatorBands: OhlcvChartComponent.IndicatorBand[] = [];
         indicatorLineAreas: OhlcvChartComponent.IndicatorLineArea[] = [];
         indicatorHorizontals: OhlcvChartComponent.IndicatorHorizontal[] = [];
@@ -1026,7 +1179,6 @@ export namespace OhlcvChartComponent {
         public draw(timePane: TimePane, pricePane: PricePane): void {
             const datum = pricePane.groupPrice.datum();
             const datumLastIndex = datum.length - 1;
-
             const timeDomain: [number, number] = timePane.timeScale.zoomable().domain();
             let min = Math.round(timeDomain[0]);
             let max = Math.round(timeDomain[1]);
@@ -1036,6 +1188,29 @@ export namespace OhlcvChartComponent {
             max = +datum[max].time;
             let minValue = Number.MAX_VALUE;
             let maxValue = Number.MIN_VALUE;
+            let minIntensity = Number.MAX_VALUE;
+            let maxIntensity = Number.MIN_VALUE;
+            if (this.indicatorHeatmap) {
+                const data = this.indicatorHeatmap.data;
+                if (data.length > 0) {
+                    const paramFirst = data[0].parameterFirst;
+                    const paramLast = data[0].parameterLast;
+                    minValue = Math.min(paramFirst, paramLast);
+                    maxValue = Math.max(paramFirst, paramLast);
+                    for (let j = 0; j < data.length; ++j) {
+                        const d = data[j];
+                        const t = +d.time;
+                        if (min <= t && t <= max && d.values.length > 0) {
+                            if (minIntensity > d.valueMin) minIntensity = d.valueMin;
+                            if (maxIntensity < d.valueMax) maxIntensity = d.valueMax;
+                        }
+                    }
+                    if (maxIntensity === Number.MIN_VALUE || minIntensity === Number.MAX_VALUE) {
+                        minIntensity = 0;
+                        maxIntensity = 0;
+                    }
+                }
+            }
             for (let i = 0; i < this.indicatorBands.length; ++i) {
                 const data = this.indicatorBands[i].data;
                 for (let j = 0; j < data.length; ++j) {
@@ -1078,9 +1253,43 @@ export namespace OhlcvChartComponent {
                     }
                 }
             }
-            minValue *= this.yMarginFactorBottom;
-            maxValue *= this.yMarginFactorTop;
-            this.yValue.domain([minValue, maxValue]).nice();
+            if (this.indicatorHeatmap) {
+                this.yValue.domain([minValue, maxValue]);
+            } else {
+                minValue *= this.yMarginFactorBottom;
+                maxValue *= this.yMarginFactorTop;
+                this.yValue.domain([minValue, maxValue]).nice();
+            }
+
+            if (this.indicatorHeatmap) {
+                this.indicatorHeatmap.path.selectAll('image').remove();
+                const data = this.indicatorHeatmap.data;
+                if (data.length > 0) {
+                    const slotWidth = 1 + (data.length > 1 ?
+                        timePane.timeScale(data[1].time) - timePane.timeScale(data[0].time) :
+                        pricePane.priceShape.width()(timePane.timeScale));
+                    const h = this.indicatorHeatmap.height;
+                    const gradient = this.indicatorHeatmap.gradient;
+                    const invertGradient = this.indicatorHeatmap.invertGradient;
+                    const periodFirst = data[0].parameterFirst;
+                    const periodLast = data[0].parameterLast;
+                    const periodRes = data[0].parameterResolution;
+                    const periodInverted = periodFirst > periodLast;
+                    const periodMin = Math.min(periodFirst, periodLast);
+                    for (let j = 0; j < data.length; ++j) {
+                        const d = data[j];
+                        const t = +d.time;
+                        if (min <= t && t <= max && d.values.length > 0) {
+                            const xMid = timePane.timeScale(t);
+                            const xMin = xMid - slotWidth / 2;
+                            const img = this.heatColumn(d, periodMin, periodRes, periodInverted, d.valueMin, d.valueMax, gradient, invertGradient, slotWidth, h);
+                            this.indicatorHeatmap.path.append('image').attr('x', xMin).attr('width', slotWidth)
+                                .attr('y', 0).attr('height', h).attr('preserveAspectRatio', 'none')
+                                .attr('xlink:href', img.toDataURL());
+                        }
+                    }
+                }
+            }
 
             // Draw bands and areas below lines.
             for (let i = 0; i < this.indicatorBands.length; ++i) {
@@ -1128,6 +1337,35 @@ export namespace OhlcvChartComponent {
                 indicatorLine.path.datum(indicatorLine.data);
             }    
         }
+
+        private heatColumn(heatmap: Heatmap, periodMin: number, periodRes: number, periodInverted: boolean, min: number, max: number, color: any, invertColor: boolean, width: number, height: number): HTMLCanvasElement {
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            canvas.style.width = width + 'px';
+            canvas.style.height = height + 'px';
+            canvas.style.imageRendering = 'pixelated';
+            const context = canvas.getContext('2d');
+            const y = this.yValue;
+            const heat = heatmap.values;
+            if (min != 0 && max != 1) {
+                const delta = max - min;
+                for (let i = 0; i < height; ++i) {
+                    const index = Math.round((y.invert(i) - periodMin) * periodRes);
+                    const value = (heat[index] - min) / delta;
+                    context.fillStyle = color(invertColor ? 1 - value : value);
+                    context.fillRect(0, periodInverted ? height - i : i, width, 1);
+                }    
+            } else {
+                for (let i = 0; i < height; ++i) {
+                    const index = Math.round((y.invert(i) - periodMin) * periodRes);
+                    const value = heat[index];
+                    context.fillStyle = color(invertColor ? 1 - value : value);
+                    context.fillRect(0, periodInverted ? height - i : i, width, 1);
+                }
+            }
+            return canvas;
+        }    
     }
 
     export class NavPane {
@@ -1180,5 +1418,13 @@ export namespace OhlcvChartComponent {
     export class IndicatorArrow {
         arrow: any;
         path: any;
+    }
+
+    export class IndicatorHeatmap {
+        data: Heatmap[];
+        gradient: any;
+        invertGradient: boolean;
+        path: any;
+        height: number;
     }
 }

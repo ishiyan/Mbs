@@ -7,6 +7,7 @@ using static System.FormattableString;
 
 using Mbs.Trading.Data;
 using Mbs.Trading.Indicators.Abstractions;
+using Mbs.Trading.Indicators.GeraldGoertzel;
 using Mbs.Trading.Indicators.JohnBollinger;
 
 namespace Mbs.UnitTests.Trading.Indicators
@@ -176,7 +177,7 @@ namespace Mbs.UnitTests.Trading.Indicators
         #endregion
 
         [TestMethod]
-        public void Foo()
+        public void ExportBb()
         {
             var scalarArray = new Scalar[Close.Length];
             var date = new DateTime(2011, 1, 1);
@@ -278,6 +279,109 @@ namespace Mbs.UnitTests.Trading.Indicators
                 }
                 list.Add("];");
                 File.WriteAllLines(Invariant($"{FilePrefix}_output_{j}.ts"), list);
+            }
+        }
+
+        [TestMethod]
+        public void Test()
+        {
+            var ohlcvArray = new Ohlcv[Close.Length];
+            var date = new DateTime(2011, 1, 1);
+            while (date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday)
+                date = date.AddDays(1);
+            for (int i = 0; i < 252; ++i)
+            {
+                ohlcvArray[i] = new Ohlcv { Time = date, Open = Open[i], High = High[i], Low = Low[i], Close = Close[i], Volume = Volume[i] };
+                // Javascript Date constructor accepts zero-based months.
+                date = date.AddDays(1);
+                while (date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday)
+                    date = date.AddDays(1);
+            }
+
+            var parameters1 = new GoertzelSpectrum.Parameters { PeriodResolution = 10, MaxPeriod = 64 };
+            var target1 = new GoertzelSpectrum(parameters1, new[] { 0 });
+            var outputs = target1.Update(ohlcvArray).ToList();
+            var length = ((HeatMap) outputs[^1].Outputs[0]).Values.Length;
+
+            var res = target1.PeriodResolution;
+            var min = Math.Min(target1.MinParameterValue, target1.MaxParameterValue);
+            var max = Math.Max(target1.MinParameterValue, target1.MaxParameterValue);
+
+            var plus = new double[length];
+            var minus = new double[length];
+            for (int i = 0; i < length; ++i)
+            {
+                plus[i] = min + i / res;
+                minus[length - 1 - i] = max - i / res;
+            }
+            for (int i = 0; i < length; ++i)
+            {
+                var s = $"{i}, plus = {plus[i]}, minus = {minus[i]}";
+                Console.WriteLine(s);
+            }
+        }
+
+        [TestMethod]
+        public void ExportGoertzelSpectrum()
+        {
+            var ohlcvArray = new Ohlcv[Close.Length];
+            var date = new DateTime(2011, 1, 1);
+            while (date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday)
+                date = date.AddDays(1);
+            for (int i = 0; i < 252; ++i)
+            {
+                ohlcvArray[i] = new Ohlcv { Time = date, Open = Open[i], High = High[i], Low = Low[i], Close = Close[i], Volume = Volume[i] };
+                // Javascript Date constructor accepts zero-based months.
+                date = date.AddDays(1);
+                while (date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday)
+                    date = date.AddDays(1);
+            }
+
+            var parameters = new GoertzelSpectrum.Parameters{ PeriodResolution = 10, MaxPeriod = 28, IsSpectralDilationCompensation = false };
+            var target = new GoertzelSpectrum(parameters, new[] { 0, 1, 2, 3 });
+            var metadata = target.Metadata;
+            var outputs = target.Update(ohlcvArray).ToList();
+
+            var list = new List<string>();
+            for (int j = 0; j < 4; ++j)
+            {
+                list.Clear();
+                list.Add(Invariant($"// kind: {metadata.Outputs[j].Kind}"));
+                list.Add(Invariant($"// name: {metadata.Outputs[j].Name}"));
+                list.Add(Invariant($"// description: {metadata.Outputs[j].Description}"));
+
+                list.Add($"export const data_{j}: HeatMap[] = [");
+                for (int i = 0; i < outputs.Count; ++i)
+                {
+                    var heatMap = (HeatMap)outputs[i].Outputs[j];
+                    // Javascript Date constructor accepts zero-based months.
+                    var line = Invariant($"    {{ time: new Date({heatMap.Time.Year}, {heatMap.Time.Month - 1}, {heatMap.Time.Day}), parameterFirst: {heatMap.ParameterFirst}, parameterLast: {heatMap.ParameterLast}, parameterResolution: {heatMap.ParameterResolution}, valueMin: {heatMap.ValueMin}, valueMax: {heatMap.ValueMax}, ");
+
+                    var array = "values: [";
+                    if (heatMap.Values == null)
+                        array += "]";
+                    else
+                    {
+                        for (int k = 0; k < heatMap.Values.Length; ++k)
+                        {
+                            array += Invariant($"{heatMap.Values[k]}");
+                            if (k < heatMap.Values.Length - 1)
+                            {
+                                array += ", ";
+                            }
+                        }
+                        array += "]";
+                    }
+
+                    line += array;
+                    line += "}";
+                    if (i < outputs.Count - 1)
+                        line += ",";
+
+                    list.Add(line);
+                }
+                list.Add("];");
+                File.WriteAllLines(Invariant($"{FilePrefix}_output_goertzel_{j}.ts"), list);
             }
         }
     }

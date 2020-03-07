@@ -126,6 +126,11 @@ namespace Mbs.Trading.Indicators.Abstractions
         StandardDeviation,
 
         /// <summary>
+        /// Goertzel power spectrum (GOERTZEL).
+        /// </summary>
+        GoertzelSpectrum,
+
+        /// <summary>
         /// Unknown indicator.
         /// </summary>
         Unknown,

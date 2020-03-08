@@ -22,7 +22,7 @@ export class Downloader {
     public static getChildElementById(parentNativeElement: any, id: string): any {
         const siblings = parentNativeElement.children;
         let child = null;
-        for (var i = siblings.length; --i;) {
+        for (let i = siblings.length; --i;) {
             if (siblings[i].id && siblings[i].id === id) {
                 child = siblings[i].children[0];
                 break;
@@ -74,18 +74,18 @@ export class Downloader {
             context.drawImage(image, 0, 0, rect.width, rect.height);
             context.canvas.toBlob(resolve);
         };
-        
+
         image.src = URL.createObjectURL(Downloader.serializeToSvg(svgNativeElement));
         return promise;
     }
 
     private static context2d(width: number, height: number): any {
         const dpi = devicePixelRatio;
-        var canvas = document.createElement('canvas');
+        const canvas = document.createElement('canvas');
         canvas.width = width * dpi;
         canvas.height = height * dpi;
         canvas.style.width = width + 'px';
-        var context = canvas.getContext('2d');
+        const context = canvas.getContext('2d');
         context.scale(dpi, dpi);
         return context;
     }

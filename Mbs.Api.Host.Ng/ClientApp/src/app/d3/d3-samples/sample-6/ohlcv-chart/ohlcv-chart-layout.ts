@@ -25,13 +25,13 @@ export class OhlcvChartLayout {
     /** An optional navigation pane layout. */
     public navigationPane?: OhlcvChartLayout.PaneLayout | undefined;
 
-    public axisLeft: boolean = true;
+    public axisLeft = true;
 
-    public axisRight: boolean = false;
+    public axisRight = false;
 }
 
 export namespace OhlcvChartLayout {
-    
+
     /** Describes a pane layout. */
     export class PaneLayout {
         /** Pane top in pixels. */
@@ -39,7 +39,5 @@ export namespace OhlcvChartLayout {
 
         /** Pane height in pixels. */
         public height: number;
-
-        
-    }    
+    }
 }

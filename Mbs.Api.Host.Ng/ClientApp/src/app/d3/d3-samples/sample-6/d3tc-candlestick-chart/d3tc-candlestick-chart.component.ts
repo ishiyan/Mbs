@@ -1,3 +1,5 @@
+// DELETE
+// tslint:disable
 import { Component, OnInit, ElementRef, ViewChild, Input, HostListener, ViewEncapsulation } from '@angular/core';
 import * as d3 from 'd3';
 import * as d3ts from '../../../../shared/d3ts';
@@ -295,3 +297,4 @@ export class D3tcCandlestickChartComponent implements OnInit {
         return this.ohlcvView == ohlcvViewCandlesticks ? d3ts.plot.candlestick() : d3ts.plot.ohlc();
     }    
 }
+// tslint:enable

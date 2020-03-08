@@ -6,6 +6,8 @@ import { Heatmap } from './heatmap';
 
 /** Describes an ohlcv chart layout configuration. */
 export class OhlcvChartConfig {
+    /** The width of a vertical axis in pixels including annotation. */
+    public static readonly verticalAxisWidth = 50;
 
     /**
      * Total width of a chart including margins.
@@ -34,13 +36,13 @@ export class OhlcvChartConfig {
     public heightNavigationPaneMax?: number | undefined = undefined;
 
     /** A d3.timeFormat specifier for time ticks and annotations. */
-    public timeFormat: string = '%Y-%m-%d';
+    public timeFormat = '%Y-%m-%d';
 
     /** If left axis should be visible on the price and indicator panes. */
-    public axisLeft: boolean = true;
+    public axisLeft = true;
 
     /** If right axis should be visible on the price and indicator panes. */
-    public axisRight: boolean = false;
+    public axisRight = false;
 
     /** The margins of the chart, exclusive space needed for annotation. */
     public margin: OhlcvChartConfig.Margin = new OhlcvChartConfig.Margin();
@@ -54,65 +56,61 @@ export class OhlcvChartConfig {
     public indicatorPanes: OhlcvChartConfig.Pane[] = [];
 
     /** If crosshair should be  visible */
-    public crosshair: boolean = false;
+    public crosshair = false;
 
     /** If volume in price pane should be  visible */
-    public volumeInPricePane: boolean = false;
-
-    /** The width of a vertical axis in pixels including annotation. */
-    public static readonly verticalAxisWidth: number = 45;
-
+    public volumeInPricePane = false;
 }
 
 export namespace OhlcvChartConfig {
 
     /** The margins of the chart, exclusive space needed for annotation. */
     export class Margin {
-        public left: number = 0;
-        public top: number = 0;
-        public right: number = 0;
-        public bottom: number = 0;
-    }    
+        public left = 0;
+        public top = 0;
+        public right = 0;
+        public bottom = 0;
+    }
 
     /** Describes a horizontal line in a pane. */
     export class HorizontalData {
         /** Data value. */
-        public value: number = 0;        
+        public value = 0;
 
         /** A color of the line stroke. */
-        public color: string = 'black';
+        public color = 'black';
 
         /** A width of the line stroke in pixels. */
-        public width: number = 1;
+        public width = 1;
 
         /** A dash array of the line stroke, e.g. '5,5' or '20,10,5,5,5,10' or empty if no dashes. */
-        public dash: string = '';
-    }    
+        public dash = '';
+    }
 
     /** Describes a line in a pane. */
     export class LineData {
         /** A name of the data. */
-        public name: string = '';
+        public name = '';
 
         /** Data array. */
-        public data: Scalar[] = [];        
+        public data: Scalar[] = [];
 
         /** An index of an indicator in the output data. */
-        public indicator: number = 0;
+        public indicator = 0;
 
         /** An index of an output within an indicator in the output data. */
-        public output: number = 0;
+        public output = 0;
 
         /** A color of the line stroke. */
-        public color: string = 'black';
+        public color = 'black';
 
         /** A width of the line stroke in pixels. */
-        public width: number = 1;
+        public width = 1;
 
         /** A dash array of the line stroke, e.g. '5,5' or '20,10,5,5,5,10' or empty if no dashes. */
-        public dash: string = '';
+        public dash = '';
 
-        /** A line curve interpoltion method:  
+        /** A line curve interpoltion method:
          * - linear
          * - natural
          * - basis
@@ -122,28 +120,28 @@ export namespace OhlcvChartConfig {
          * - stepBefore
          * - stepAfter
         */
-        public interpolation: string = 'natural';
-    }    
+        public interpolation = 'natural';
+    }
 
     /** Describes an area in a pane between a line and a constant value. */
     export class LineAreaData {
         /** A name of the data. */
-        public name: string = '';
+        public name = '';
 
         /** Data array. */
-        public data: Scalar[] = [];        
+        public data: Scalar[] = [];
 
         /** An index of an indicator in the output data. */
-        public indicator: number = 0;
+        public indicator = 0;
 
         /** An index of an output within an indicator in the output data. */
-        public output: number = 0;
+        public output = 0;
 
         /** A constant limiting value. */
-        public value: number = 0;
+        public value = 0;
 
         /** A fill color of an area. */
-        public color: string = '#00000011';
+        public color = '#00000011';
 
         /**
          *  The fill color of an area may be very transprent and its visibility on a legend may be poor.
@@ -151,7 +149,7 @@ export namespace OhlcvChartConfig {
          */
         public legendColor?: string;
 
-        /** An erea edge interpoltion method:  
+        /** An erea edge interpoltion method:
          * - linear
          * - natural
          * - basis
@@ -161,25 +159,25 @@ export namespace OhlcvChartConfig {
          * - stepBefore
          * - stepAfter
         */
-       public interpolation: string = 'natural';
-    }    
+       public interpolation = 'natural';
+    }
 
     /** Describes a band in a pane. */
     export class BandData {
         /** A name of the data. */
-        public name: string = '';
+        public name = '';
 
         /** Data array. */
-        public data: Band[] = [];        
+        public data: Band[] = [];
 
         /** An index of an indicator in the output data. */
-        public indicator: number = 0;
+        public indicator = 0;
 
         /** An index of an output within an indicator in the output data. */
-        public output: number = 0;
+        public output = 0;
 
         /** A fill color of the band. */
-        public color: string = '#00000011';
+        public color = '#00000011';
 
         /**
          *  The fill color of the band may be very transprent and its visibility on a legend may be poor.
@@ -187,7 +185,7 @@ export namespace OhlcvChartConfig {
          */
         public legendColor?: string;
 
-        /** A band edge interpoltion method:  
+        /** A band edge interpoltion method:
          * - linear
          * - natural
          * - basis
@@ -197,24 +195,24 @@ export namespace OhlcvChartConfig {
          * - stepBefore
          * - stepAfter
         */
-       public interpolation: string = 'natural';
-    }    
+       public interpolation = 'natural';
+    }
 
     /** Describes a band in a pane. */
     export class HeatmapData {
         /** A name of the data. */
-        public name: string = '';
+        public name = '';
 
         /** Data array. */
-        public data: Heatmap[] = [];        
+        public data: Heatmap[] = [];
 
         /** An index of an indicator in the output data. */
-        public indicator: number = 0;
+        public indicator = 0;
 
         /** An index of an output within an indicator in the output data. */
-        public output: number = 0;
+        public output = 0;
 
-        /** An intensity gradient:  
+        /** An intensity gradient:
          * - Viridis
          * - Inferno
          * - Magma
@@ -243,47 +241,47 @@ export namespace OhlcvChartConfig {
          * - Purples
          * - Reds
          */
-       public gradient: string = 'viridis';
+       public gradient = 'viridis';
 
        /** If to invert the gradient. */
-       public invertGradient: boolean = false;
-    }    
+       public invertGradient = false;
+    }
 
     /** Describes an vertical arrow in a pane. */
     export class ArrowData {
         /** A name of the arrow. */
-        public name: string = '';
+        public name = '';
 
         /** Is an arrow points up or down. */
         public down: boolean;
 
         /** Arrow time. */
-        public time: Date;        
+        public time: Date;
 
         /** An optional value to which the arrow points. */
         public value?: number;
 
         /** An index of an indicator in the output data. */
-        public indicator: number = 0;
+        public indicator = 0;
 
         /** An index of an output within an indicator in the output data. */
-        public output: number = 0;
+        public output = 0;
 
         /** A color of the arrow. */
-        public color: string = 'purple';
-    }    
+        public color: string;
+    }
 
     /** Describes an ohlcv data. */
     export class OhlcvData {
         /** A name of the data. */
-        public name: string = '';
+        public name = '';
 
         /** Data array. */
-        public data: Ohlcv[] = [];        
-        
+        public data: Ohlcv[] = [];
+
         /** If data is displayed as candlesticks or as bars */
-        public candlesticks: boolean = true;
-    }    
+        public candlesticks = true;
+    }
 
     /** Describes a pane. */
     export class Pane {
@@ -300,7 +298,7 @@ export namespace OhlcvChartConfig {
         public heightMax?: number | undefined = undefined;
 
         /** A d3.format specifier for value ticks and annotations on the pane. */
-        public valueFormat: string = ',.2f';
+        public valueFormat = ',.2f';
 
         /** An optional number of ticks in the value axis. */
         public valueTicks?: number;
@@ -309,7 +307,7 @@ export namespace OhlcvChartConfig {
          * A percentage factor (e.g., 0.05) to add to a lower and upper parts of a value axis.
          * This allows to add space between the top / bottom of the pane and the max / min values.
          */
-        public valueMarginPercentageFactor: number = 0;
+        public valueMarginPercentageFactor = 0;
 
         /** An optional heatmap on this pane. */
         public heatmap?: HeatmapData;
@@ -328,5 +326,5 @@ export namespace OhlcvChartConfig {
 
         /** An array of arrows on this pane. */
         public arrows: ArrowData[] = [];
-  }    
+  }
 }

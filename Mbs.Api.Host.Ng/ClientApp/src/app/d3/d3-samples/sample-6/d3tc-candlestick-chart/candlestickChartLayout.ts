@@ -1,3 +1,5 @@
+// DELETE
+// tslint:disable
 /** Describes a candlestick chart layout. */
 export class CandlestickChartLayout {
 
@@ -24,7 +26,7 @@ export class CandlestickChartLayout {
 }
 
 export namespace CandlestickChartLayout {
-    
+
     /** Describes a pane layout. */
     export class PaneLayout {
         /** Pane top in pixels. */
@@ -32,5 +34,6 @@ export namespace CandlestickChartLayout {
 
         /** Pane height in pixels. */
         public height: number;
-    }    
+    }
 }
+// tslint:enable

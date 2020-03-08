@@ -1,3 +1,5 @@
+// DELETE
+// tslint:disable
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { D3tcCandlestickChartComponent } from './d3tc-candlestick-chart.component';
@@ -23,3 +25,4 @@ describe('D3tcCandlestickChartComponent', () => {
     expect(component).toBeTruthy();
   });
 });
+// tslint:enable

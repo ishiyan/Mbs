@@ -1,3 +1,5 @@
+// DELETE
+// tslint:disable
 import { CandlestickChartLayout } from './candlestickChartLayout';
 
 /** Describes a candlestick chart layout configuration. */
@@ -95,3 +97,4 @@ export class CandlestickChartLayoutConfig {
         return +numeric;
     } 
 }
+// tslint:enable

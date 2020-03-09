@@ -28,6 +28,8 @@ import { HistoricalDataTableComponent } from './data/historical-data-table.compo
 import { HistoricalDataDownloadComponent } from './data/historical-data-download.component';
 import { HistoricalDataChartComponent } from './data/historical-data-chart.component';
 
+import { OhlcvChartComponent } from './charts/ohlcv-chart/ohlcv-chart.component';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -43,14 +45,16 @@ import { HistoricalDataChartComponent } from './data/historical-data-chart.compo
     OhlcvParametersComponent, QuoteParametersComponent, TradeParametersComponent,
     FractionalBrownianMotionParametersComponent, GeometricBrownianMotionParametersComponent, ChirpParametersComponent,
     SawtoothParametersComponent, SquareParametersComponent, SinusoidalParametersComponent, SyntheticDataParametersComponent,
-    HistoricalDataTableComponent, HistoricalDataDownloadComponent, HistoricalDataChartComponent
+    HistoricalDataTableComponent, HistoricalDataDownloadComponent, HistoricalDataChartComponent,
+    OhlcvChartComponent
   ],
   declarations: [
     BusinessDayCalendarDescriptionComponent, TimeParametersComponent, WaveformParametersComponent,
     OhlcvParametersComponent, QuoteParametersComponent, TradeParametersComponent,
     FractionalBrownianMotionParametersComponent, GeometricBrownianMotionParametersComponent, ChirpParametersComponent,
     SawtoothParametersComponent, SquareParametersComponent, SinusoidalParametersComponent, SyntheticDataParametersComponent,
-    HistoricalDataTableComponent, HistoricalDataDownloadComponent, HistoricalDataChartComponent
+    HistoricalDataTableComponent, HistoricalDataDownloadComponent, HistoricalDataChartComponent,
+    OhlcvChartComponent
   ],
   providers: [
     SyntheticDataService

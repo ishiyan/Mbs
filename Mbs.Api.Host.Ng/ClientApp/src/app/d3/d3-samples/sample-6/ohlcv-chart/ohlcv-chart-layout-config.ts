@@ -1,7 +1,7 @@
 import { OhlcvChartLayout } from './ohlcv-chart-layout';
 
 /** Describes an ohlcv chart layout configuration. */
-export class OhlcvChartLayoutConfig {
+export class OhlcvChartLayoutConfigZZZ {
 
     /**
      * Total width of a chart including margins.

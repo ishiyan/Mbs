@@ -1,7 +1,7 @@
-import { Ohlcv } from './ohlcv';
-import { Scalar } from './scalar';
-import { Band } from './band';
-import { Heatmap } from './heatmap';
+import { Ohlcv } from '../entities/ohlcv';
+import { Scalar } from '../entities/scalar';
+import { Band } from '../entities/band';
+import { Heatmap } from '../entities/heatmap';
 
 /** Describes an ohlcv chart layout configuration. */
 export class OhlcvChartConfig {

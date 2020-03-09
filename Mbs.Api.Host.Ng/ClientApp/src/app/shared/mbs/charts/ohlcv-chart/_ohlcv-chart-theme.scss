@@ -1,0 +1,83 @@
+@mixin ohlcv-chart-theme($theme) {
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $warn: map-get($theme, warn);
+  $background: map-get($theme, background);
+  $foreground: map-get($theme, foreground);
+  $is-dark-theme: map-get($theme, is-dark);
+
+  app-ohlcv-chart {
+
+    .mat-button-toggle {
+      .svg-icon {
+        stroke: mat-color($foreground, hint-text);
+      }
+    }
+    .mat-button-toggle-appearance-standard {
+      .svg-icon {
+        stroke: mat-color($foreground, primary-text);
+      }
+    }
+    .mat-button-toggle-checked {
+      .svg-icon {
+        stroke: mat-color($foreground, secondary-text);
+      }
+      &.mat-button-toggle-appearance-standard {
+        .svg-icon {
+          stroke: mat-color($foreground, primary-text);
+        }
+      }
+    }
+    .mat-button-toggle-disabled {
+      .svg-icon {
+        stroke: mat-color($foreground, disabled-button);
+      }
+    }
+
+    // red: #c60; green: #6c0;
+    // red: #FF0000; green: #00AA00;
+    //$line-color: mat-color($foreground, primary-text);//if($is-dark-theme, white, black);
+    $line-color: mat-color($foreground, text);
+
+    text {
+      fill: $line-color;
+    }
+    path.candle {
+      stroke: black;
+    }
+    path.candle.up {
+      fill: white;
+    }
+    path.candle.down {
+      fill: black;
+    }
+    path.ohlc.up {
+      fill: none;
+      stroke: $line-color;
+    }
+    path.ohlc.down {
+      fill: none;
+      stroke: $line-color;
+    }
+    path.volume {
+      // fill: if($is-dark-theme, mat-color($foreground, darker), mat-color($foreground, darker));
+      fill: mat-color($foreground, divider, 0.1);
+    }
+    path.area {
+      fill: mat-color($background, unselected-chip, 0.5);
+    }
+    rect.selection {
+      fill: mat-color($foreground, divider, 0.3);
+      stroke: none;
+    }
+    .extent {
+      stroke: mat-color($background);
+    }
+    .crosshair path.wire {
+      stroke: mat-color($foreground, divider);
+    }
+    .crosshair .axisannotation path {
+      fill: mat-color($background, unselected-chip);
+    }
+  }
+}

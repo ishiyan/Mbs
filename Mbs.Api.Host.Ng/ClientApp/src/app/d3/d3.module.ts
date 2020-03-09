@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
+import { MbsModule } from '../shared/mbs/mbs.module';
 import { FooterModule } from '../shared/footer/footer.module';
 import { MaterialModule } from '../shared/material/material.module';
 import { D3RoutingModule } from './d3-routing.module';
@@ -39,7 +40,6 @@ import { HilbertPathsComponent } from './d3-samples/sample-5/hilbert-paths/hilbe
 import { HilbertStocksComponent } from './d3-samples/sample-5/hilbert-stocks/hilbert-stocks.component';
 import { Sample6Component } from './d3-samples/sample-6/sample-6.component';
 import { D3tcCandlestickChartComponent } from './d3-samples/sample-6/d3tc-candlestick-chart/d3tc-candlestick-chart.component';
-import { OhlcvChartComponent } from './d3-samples/sample-6/ohlcv-chart/ohlcv-chart.component';
 import { Sample7Component } from './d3-samples/sample-7/sample-7.component';
 import { D3tcHorizonChartInteractiveComponent
      } from './d3-samples/sample-7/d3tc-horizon-chart-interactive/d3tc-horizon-chart-interactive.component';
@@ -51,7 +51,7 @@ import { RealTimeChartComponent } from './d3-samples/sample-8/real-time-chart/re
 @NgModule({
     imports: [
         CommonModule, FormsModule, FlexLayoutModule,
-        D3RoutingModule, MaterialModule, FooterModule
+        D3RoutingModule, MaterialModule, FooterModule, MbsModule
     ],
     declarations: [
         D3Component, Sample1Component, Sample2Component, BarchartComponent, BrushHandlesComponent, BrushHandles2Component,
@@ -61,7 +61,7 @@ import { RealTimeChartComponent } from './d3-samples/sample-8/real-time-chart/re
         D3tcCloseComponent, D3tcVolumeComponent, D3tcBrushComponent, D3tcAxisAnnotationsComponent, D3tcCrosshairComponent,
         D3tcSupportResistanceComponent, D3tcTrendlinesComponent, D3tcZoomingComponent, D3tcFeedComponent,
         D3tcTradeArrowsComponent, D3tcMultipleSmallPlotsComponent, Sample5Component, HilbertCurveComponent, HilbertPathsComponent,
-        HilbertStocksComponent, Sample6Component, D3tcCandlestickChartComponent, OhlcvChartComponent,
+        HilbertStocksComponent, Sample6Component, D3tcCandlestickChartComponent,
         Sample7Component, D3tcHorizonChartInteractiveComponent, D3tcHorizonChartBandsComponent, D3tcHorizonChartSingleComponent,
         Sample8Component, RealTimeChartComponent
     ]

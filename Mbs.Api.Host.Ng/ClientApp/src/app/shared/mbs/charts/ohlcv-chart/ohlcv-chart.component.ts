@@ -2,24 +2,24 @@ import { Component, OnInit, ElementRef, ViewChild, Input, HostListener } from '@
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material/icon';
 import * as d3 from 'd3';
-import * as d3ts from '../../../../shared/d3ts';
+import * as d3ts from '../d3ts';
 
-import { Ohlcv } from './ohlcv';
-import { Scalar } from './scalar';
-import { Band } from './band';
-import { Heatmap } from './heatmap';
+import { Ohlcv } from '../entities/ohlcv';
+import { Scalar } from '../entities/scalar';
+import { Band } from '../entities/band';
+import { Heatmap } from '../entities/heatmap';
 import { OhlcvChartConfig } from './ohlcv-chart-config';
-import { Downloader } from './downloader';
+import { Downloader } from '../downloader';
 
-import { dataTestOhlcv } from './data-test-ohlcv';
-import { dataTestBb } from './data-test-bb';
-import { dataTestMa } from './data-test-ma';
-import { dataTestLo } from './data-test-lo';
-import { dataTestUp } from './data-test-up';
-import { dataTestPercentB } from './data-test-percentb';
-import { dataTestBw } from './data-test-bw';
-import { dataTestGoertzel1 } from './data-test-goertzel_1';
-import { dataTestGoertzel10 } from './data-test-goertzel_10';
+import { dataTestOhlcv } from './test-data/data-test-ohlcv';
+import { dataTestBb } from './test-data/data-test-bb';
+import { dataTestMa } from './test-data/data-test-ma';
+import { dataTestLo } from './test-data/data-test-lo';
+import { dataTestUp } from './test-data/data-test-up';
+import { dataTestPercentB } from './test-data/data-test-percentb';
+import { dataTestBw } from './test-data/data-test-bw';
+import { dataTestGoertzel1 } from './test-data/data-test-goertzel_1';
+import { dataTestGoertzel10 } from './test-data/data-test-goertzel_10';
 
 const ohlcvViewCandlesticks = 0;
 const ohlcvViewBars = 1;
@@ -28,7 +28,7 @@ const ohlcvViewBars = 1;
 const verticalAxisWidth = 30;
 
 @Component({
-    selector: 'app-ohlcv-chart',
+    selector: 'app-mbs-ohlcv-chart',
     templateUrl: './ohlcv-chart.component.html',
     styleUrls: ['./ohlcv-chart.component.scss']
 })

@@ -1,12 +1,13 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { TemporalEntityKind } from './entities/temporal-entity-kind.enum';
-import { HistoricalData } from './historical-data';
-import { Ohlcv } from './entities/ohlcv';
-import { Quote } from '@angular/compiler';
-import { Trade } from './entities/trade';
-import { Scalar } from './entities/scalar';
+
+import { TemporalEntityKind } from '../../data/entities/temporal-entity-kind.enum';
+import { HistoricalData } from '../../data/historical-data';
+import { Ohlcv } from '../../data/entities/ohlcv';
+import { Quote } from '../../data/entities/quote';
+import { Trade } from '../../data/entities/trade';
+import { Scalar } from '../../data/entities/scalar';
 
 @Component({
   selector: 'app-mbs-data-historical-data-table',

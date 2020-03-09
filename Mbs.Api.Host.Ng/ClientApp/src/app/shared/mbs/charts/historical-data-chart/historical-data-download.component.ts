@@ -1,7 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { DatePipe, DecimalPipe } from '@angular/common';
-import { TemporalEntityKind } from './entities/temporal-entity-kind.enum';
-import { HistoricalData } from './historical-data';
+
+import { TemporalEntityKind } from '../../data//entities/temporal-entity-kind.enum';
+import { HistoricalData } from '../../data/historical-data';
 
 @Component({
   selector: 'app-mbs-data-historical-data-download',

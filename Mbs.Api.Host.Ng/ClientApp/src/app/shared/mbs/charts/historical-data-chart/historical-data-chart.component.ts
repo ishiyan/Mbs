@@ -2,10 +2,11 @@ import { Component, OnInit, ElementRef, ViewChild, Input, ViewEncapsulation, Hos
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material/icon';
 import * as d3 from 'd3';
-import * as d3ts from '../../../shared/d3ts';
+import * as d3ts from '../d3ts';
+
 // import * as saveAsPng from '../utils/save-svg-chart';
-import { HistoricalData } from './historical-data';
-import { TemporalEntityKind } from './entities/temporal-entity-kind.enum';
+import { HistoricalData } from '../../data/historical-data';
+import { TemporalEntityKind } from '../../data/entities/temporal-entity-kind.enum';
 
 const ohlcvViewCandlesticks = 0;
 const ohlcvViewBars = 1;

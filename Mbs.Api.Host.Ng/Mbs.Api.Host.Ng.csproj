@@ -115,7 +115,7 @@
   <Target Name="NgBuildProd" BeforeTargets="Build" Condition="$(AllowNgBuild) And '$(Configuration)' == 'Release'">
     <Message Text="------ Starting ng cli production build ------" Importance="high" />
     <Exec Command="$(Ng) --version" WorkingDirectory="$(SpaRoot)" />
-    <Exec Command="$(Ng) build --prod --aot --optimization --build-optimizer" WorkingDirectory="$(SpaRoot)" />
+    <Exec Command="$(Ng) build  --prod=true --aot=true --optimization=true --build-optimizer=true --extract-licenses=true --common-chunk=true" WorkingDirectory="$(SpaRoot)" />
     <Message Text="------ Finished ng cli production build ------" Importance="high" />
   </Target>
 

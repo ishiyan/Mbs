@@ -24,9 +24,10 @@ import { SquareParametersComponent } from './data/generators/square/square-param
 import { SinusoidalParametersComponent } from './data/generators/sinusoidal/sinusoidal-parameters.component';
 import { SyntheticDataParametersComponent } from './data/generators/synthetic-data-parameters.component';
 import { SyntheticDataService } from './data/generators/synthetic-data.service';
-import { HistoricalDataTableComponent } from './data/historical-data-table.component';
-import { HistoricalDataDownloadComponent } from './data/historical-data-download.component';
-import { HistoricalDataChartComponent } from './data/historical-data-chart.component';
+
+import { HistoricalDataTableComponent } from './charts/historical-data-chart/historical-data-table.component';
+import { HistoricalDataDownloadComponent } from './charts/historical-data-chart/historical-data-download.component';
+import { HistoricalDataChartComponent } from './charts/historical-data-chart/historical-data-chart.component';
 
 import { OhlcvChartComponent } from './charts/ohlcv-chart/ohlcv-chart.component';
 

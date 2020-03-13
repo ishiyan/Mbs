@@ -29,18 +29,18 @@ type: Microsoft.ContainerInstance/containerGroups
 
 Deploy using the following command:
 
-```shell
+```bash
 az container create --resource-group mbrane --file deploy-aci.yaml
 ```
 
 View deployment state:
 
-```shell
+```bash
 az container show --resource-group mbrane -name mbs-aci --output table
 ```
 
 View container logs:
 
-```shell
+```bash
 az container logs --resource-group mbrane -name mbs-aci --container-name mbs-aci
 ```

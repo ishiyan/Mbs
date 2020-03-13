@@ -5,9 +5,6 @@ import { Heatmap } from '../entities/heatmap';
 
 /** Describes an ohlcv chart layout configuration. */
 export class OhlcvChartConfig {
-    /** The width of a vertical axis in pixels including annotation. */
-    public static readonly verticalAxisWidth = 50;
-
     /**
      * Total width of a chart including margins.
      * Defines the width of all chart panes.
@@ -21,6 +18,9 @@ export class OhlcvChartConfig {
     /** An optional maximal width in pixels including margins. */
     public widthMax?: number | undefined = undefined;
 
+    /** An optional navigation pane. */
+    public navigationPane?: OhlcvChartConfig.NavigationPane | undefined = new OhlcvChartConfig.NavigationPane();
+
     /**
      * An optional height of the navigation pane.
      * Can be either a positive number of pixels or a percentage string (e.g. '45%') of a reference width.
@@ -28,14 +28,14 @@ export class OhlcvChartConfig {
      */
     public heightNavigationPane?: string | number | undefined = undefined;
 
-    /** An optional minimal height of the navigation pane in pixels. */
-    public heightNavigationPaneMin?: number | undefined = undefined;
+    /** An optional d3.timeFormat specifier for time axis annotations, e.g. '%Y-%m-%d'. */
+    public timeAnnotationFormat?: string | undefined = undefined;
 
-    /** An optional maximal height of the navigation pane in pixels. */
-    public heightNavigationPaneMax?: number | undefined = undefined;
+    /** An optional d3.timeFormat specifier for time axis ticks, e.g. '%Y-%m-%d'. */
+    public timeTicksFormat?: string | undefined = undefined;
 
-    /** A d3.timeFormat specifier for time ticks and annotations. */
-    public timeFormat = '%Y-%m-%d';
+    /** An optional number of ticks in the time axis. */
+    public timeTicks?: number | undefined = undefined;
 
     /** If left axis should be visible on the price and indicator panes. */
     public axisLeft = true;
@@ -57,7 +57,7 @@ export class OhlcvChartConfig {
     /** If crosshair should be  visible */
     public crosshair = false;
 
-    /** If volume in price pane should be  visible */
+    /** If volume in price pane should be visible */
     public volumeInPricePane = false;
 }
 
@@ -325,5 +325,35 @@ export namespace OhlcvChartConfig {
 
         /** An array of arrows on this pane. */
         public arrows: ArrowData[] = [];
+  }
+
+    /** Describes a navigation pane. */
+    export class NavigationPane {
+        /**
+         * A height of the pane.
+         * Can be either a positive number of pixels or a percentage string (e.g. '45%') of a reference width.
+         */
+        public height: string | number = 30;
+
+        /** An optional minimal height of the pane in pixels. */
+        public heightMin?: number | undefined = undefined;
+
+        /** An optional maximal height of the pane in pixels. */
+        public heightMax?: number | undefined = undefined;
+
+        /** If navigation pane has closing price line. */
+        public hasLine = true;
+
+        /** If navigation pane has closing price area. */
+        public hasArea = false;
+
+        /** If navigation pane has time axis. */
+        public hasTimeAxis = true;
+
+        /** An optional d3.timeFormat specifier for time axis ticks, e.g. '%Y-%m-%d'. */
+        public timeTicksFormat?: string | undefined = undefined;
+
+        /** An optional number of ticks in the time axis. */
+        public timeTicks?: number | undefined = undefined;
   }
 }

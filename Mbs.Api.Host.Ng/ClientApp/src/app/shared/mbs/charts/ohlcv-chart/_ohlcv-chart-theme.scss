@@ -66,6 +66,9 @@
     path.area {
       fill: mat-color($background, unselected-chip, 0.5);
     }
+    path.line {
+      stroke: $line-color;
+    }
     rect.selection {
       fill: mat-color($foreground, divider, 0.3);
       stroke: none;

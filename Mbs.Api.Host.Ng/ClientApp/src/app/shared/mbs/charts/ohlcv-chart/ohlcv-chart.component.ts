@@ -4,8 +4,8 @@ import { MatIconRegistry } from '@angular/material/icon';
 import * as d3 from 'd3';
 import * as d3ts from '../d3ts';
 
-import { Ohlcv } from '../entities/ohlcv';
-import { Scalar } from '../entities/scalar';
+import { Ohlcv } from '../../data/entities/ohlcv';
+import { Scalar } from '../../data/entities/scalar';
 import { Band } from '../entities/band';
 import { Heatmap } from '../entities/heatmap';
 import { OhlcvChartConfig } from './ohlcv-chart-config';
@@ -56,6 +56,28 @@ const legendLineImageHeight = 6;
 const defaultWhitespaceBetweenTimeTicks = 100;
 /** Default number of pixels between value ticks on vertical value axis. */
 const defaultWhitespaceBetweenValueTicks = 20;
+/** The minimal date. */
+const minDate = new Date(-8640000000000000);
+/** The maximal date. */
+const maxDate = new Date(8640000000000000);
+/** The text to place before the SVG line when exporting chart as SVG. */
+const textBeforeSvg = `<html><meta charset="utf-8"><style>
+  text { fill: black; font-family: Arial, Helvetica, sans-serif; }
+  path.candle { stroke: black; }
+  path.candle.up { fill: white; }
+  path.candle.down { fill: black; }
+  path.ohlc.up { fill: none; stroke: black; }
+  path.ohlc.down { fill: none; stroke: black; }
+  path.volume { fill: lightgrey; }
+  path.area { fill: lightgrey; }
+  path.line { stroke: black; }
+  rect.selection { fill: darkgrey; }
+</style><body>
+`;
+/** The text to place after the SVG line when exporting chart as SVG. */
+const textAfterSvg = `
+</body></html>
+`;
 
 @Component({
     selector: 'app-mbs-ohlcv-chart',
@@ -63,9 +85,6 @@ const defaultWhitespaceBetweenValueTicks = 20;
     styleUrls: ['./ohlcv-chart.component.scss']
 })
 export class OhlcvChartComponent implements OnInit {
-    private static minDate = new Date(-8640000000000000);
-    private static maxDate = new Date(8640000000000000);
-
     @ViewChild('container', { static: true }) container: ElementRef;
     @Input() svgheight: any;
 
@@ -84,7 +103,7 @@ export class OhlcvChartComponent implements OnInit {
         margin: {left: 0, top: 0, right: 0, bottom: 0},
         ohlcv: {name: 'BRILL@XAMS', data: dataTestOhlcv, candlesticks: true},
         pricePane: {
-            height: '30%', valueFormat: ',.2f', /*valueTicks: 10,*/ valueMarginPercentageFactor: 0.01, // heightMin: 100, heightMax: 300,
+            height: '30%', valueFormat: ',.2f', /*valueTicks: 10,*/ valueMarginPercentageFactor: 0.01, // heightMin: 300, heightMax: 300,
             bands: [
                 { name: 'bb(stdev.p(20,c),2,sma(20,c))', data: dataTestBb, indicator: 0, output: 0,
                   color: 'rgba(0,255,0,0.3)', legendColor: 'rgba(0,200,0,1)', interpolation: 'natural' },
@@ -189,7 +208,8 @@ export class OhlcvChartComponent implements OnInit {
     private currentSelection: any = null;
 
     public downloadSvg(): void {
-        Downloader.download(Downloader.serializeToSvg(Downloader.getChildElementById(this.container.nativeElement.parentNode, 'chart')), 'ohlcv_chart.svg');
+        Downloader.download(Downloader.serializeToSvg(Downloader.getChildElementById(this.container.nativeElement.parentNode, 'chart'),
+            textBeforeSvg, textAfterSvg), 'ohlcv_chart.html');
     }
 
     public downloadPng(): void {
@@ -694,7 +714,7 @@ export class OhlcvChartComponent implements OnInit {
             const value = horizontal.value;
             indicatorHorizontal.value = value;
             indicatorHorizontal.data =
-                [{time: OhlcvChartComponent.minDate, value: value}, {time: OhlcvChartComponent.maxDate, value: value}];
+                [{time: minDate, value: value}, {time: maxDate, value: value}];
             indicatorHorizontal.line = d3.line()
                 .x(d => { const w: any = d; return timeScale(w.time); })
                 .y(d => pane.yPrice(value));
@@ -871,7 +891,7 @@ export class OhlcvChartComponent implements OnInit {
             const value = horizontal.value;
             indicatorHorizontal.value = value;
             indicatorHorizontal.data =
-                [{time: OhlcvChartComponent.minDate, value: value}, {time: OhlcvChartComponent.maxDate, value: value}];
+                [{time: minDate, value: value}, {time: maxDate, value: value}];
             indicatorHorizontal.line = d3.line()
                 .x(d => { const w: any = d; return timeScale(w.time); })
                 .y(d => pane.yValue(value));

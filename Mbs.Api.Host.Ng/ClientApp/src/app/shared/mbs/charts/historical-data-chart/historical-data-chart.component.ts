@@ -4,7 +4,7 @@ import { MatIconRegistry } from '@angular/material/icon';
 import * as d3 from 'd3';
 import * as d3ts from '../d3ts';
 
-// import * as saveAsPng from '../utils/save-svg-chart';
+import { Downloader } from '../downloader';
 import { HistoricalData } from '../../data/historical-data';
 import { TemporalEntityKind } from '../../data/entities/temporal-entity-kind.enum';
 
@@ -20,6 +20,26 @@ const tradeViewDots = 1;
 const tradeViewArea = 2;
 const quoteViewBars = 0;
 const quoteViewDots = 1;
+
+/** The text to place before the SVG line when exporting chart as SVG. */
+const textBeforeSvg = `<html><meta charset="utf-8"><style>
+  text { fill: black; font-family: Arial, Helvetica, sans-serif; }
+  path.candle { stroke: black; }
+  path.candle.up { fill: white; }
+  path.candle.down { fill: black; }
+  path.ohlc.up { fill: none; stroke: black; }
+  path.ohlc.down { fill: none; stroke: black; }
+  path.volume { fill: lightgrey; }
+  path.point { fill: none; stroke: black; }
+  path.area { fill: lightgrey; }
+  path.line { stroke: black; }
+  rect.selection { fill: darkgrey; }
+</style><body>
+`;
+/** The text to place after the SVG line when exporting chart as SVG. */
+const textAfterSvg = `
+</body></html>
+`;
 
 @Component({
   selector: 'app-historical-data-chart',
@@ -232,10 +252,10 @@ export class HistoricalDataChartComponent implements OnInit {
         case TemporalEntityKind.Quote:
           switch (quoteView) {
             case quoteViewDots:
-              // y.domain(d3ts.scale.plot.quotepoint(datum.slice.apply(datum, x.zoomable().domain()), accessor).domain());
+              y.domain(d3ts.scale.plot.quotepoint(datum.slice.apply(datum, x.zoomable().domain()), accessor).domain());
               break;
             case quoteViewBars:
-              // y.domain(d3ts.scale.plot.quotebar(datum.slice.apply(datum, x.zoomable().domain()), accessor).domain());
+              y.domain(d3ts.scale.plot.quotebar(datum.slice.apply(datum, x.zoomable().domain()), accessor).domain());
               break;
           }
           y.domain(d3ts.scale.plot.tick(datum.slice.apply(datum, x.zoomable().domain()), accessor).domain());
@@ -295,7 +315,7 @@ export class HistoricalDataChartComponent implements OnInit {
     // data begin ----------------------------------
     x.domain(this.data.map(accessor.t));
     xNav.domain(x.domain());
-    console.log('d3ts.scale.plot', d3ts.scale.plot); ///////////////////////////////////////////////////////////
+    // console.log('d3ts.scale.plot', d3ts.scale.plot); ///////////////////////////////////////////////////////////
     switch (this.temporalEntityKind) {
       case TemporalEntityKind.Ohlcv:
         y.domain(d3ts.scale.plot.ohlc(this.data, accessor).domain());
@@ -303,11 +323,11 @@ export class HistoricalDataChartComponent implements OnInit {
       case TemporalEntityKind.Quote:
         switch (this.quoteView) {
           case quoteViewDots:
-            // y.domain(d3ts.scale.plot.quotepoint(this.data, accessor).domain());
+            y.domain(d3ts.scale.plot.quotepoint(this.data, accessor).domain());
             break;
           case quoteViewBars:
             // console.log('d3ts.scale.plot', d3ts.scale.plot);
-            // y.domain(d3ts.scale.plot.quotebar(this.data, accessor).domain());
+            y.domain(d3ts.scale.plot.quotebar(this.data, accessor).domain());
             break;
         }
         y.domain(d3ts.scale.plot.tick(this.data, accessor).domain());
@@ -373,8 +393,8 @@ export class HistoricalDataChartComponent implements OnInit {
         }
       case TemporalEntityKind.Quote:
         switch (this.quoteView) {
-          case quoteViewDots: return d3ts.plot.tick(); // quotepoint();
-          case quoteViewBars: return d3ts.plot.tick(); // quotebar();
+          case quoteViewDots: return d3ts.plot.quotepoint(); // quotepoint(); tick();
+          case quoteViewBars: return d3ts.plot.quotebar(); // quotebar(); tick();
           default: return d3ts.plot.quotebar();
         }
       case TemporalEntityKind.Trade:
@@ -409,7 +429,8 @@ export class HistoricalDataChartComponent implements OnInit {
     return d3ts.plot.valuearea();
   }
 
-  saveToPng() {
-    // saveAsPng.saveSvg(document.getElementById('chart'), 'chart.svg');
+  public saveToSvg(): void {
+    Downloader.download(Downloader.serializeToSvg(Downloader.getChildElementById(this.container.nativeElement.parentNode, 'chart'),
+      textBeforeSvg, textAfterSvg), 'historical_data_chart.html');
   }
 }

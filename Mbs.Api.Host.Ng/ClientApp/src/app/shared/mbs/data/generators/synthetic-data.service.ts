@@ -64,7 +64,7 @@ export class SyntheticDataService {
         retry(3), // retry a failed request up to 3 times
         map(hd => {
           if (hd.data) {
-            hd.data.forEach(v => v['time'] = new Date(v['time']));
+            hd.data.forEach(v => v['time'] = new Date(Date.parse(<any>v['time'])));
           }
           hd.temporalEntityKind = parameters.temporalEntityKind;
           hd.timeGranularity = parameters.timeParameters.timeGranularity;

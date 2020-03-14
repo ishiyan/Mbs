@@ -1,5 +1,5 @@
-import { Ohlcv } from '../entities/ohlcv';
-import { Scalar } from '../entities/scalar';
+import { Ohlcv } from '../../data/entities/ohlcv';
+import { Scalar } from '../../data/entities/scalar';
 import { Band } from '../entities/band';
 import { Heatmap } from '../entities/heatmap';
 

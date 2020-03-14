@@ -32,7 +32,7 @@ export class Downloader {
         return child;
     }
 
-    public static serializeToSvg(svgNativeElement: any): Blob {
+    public static serializeToSvg(svgNativeElement: any, textBefore: string = '', textAfter: string = ''): Blob {
         if (svgNativeElement === null) {
             return svgNativeElement;
         }
@@ -56,7 +56,7 @@ export class Downloader {
         svgNativeElement.setAttributeNS(xmlns, 'xmlns:xlink', xlinkns);
         const serializer = new window.XMLSerializer;
         const string = serializer.serializeToString(svgNativeElement);
-        return new Blob([string], { type: 'image/svg+xml' });
+        return new Blob([textBefore, string, textAfter], { type: 'image/svg+xml' });
     }
 
     public static rasterizeToPng(svgNativeElement: any): any {

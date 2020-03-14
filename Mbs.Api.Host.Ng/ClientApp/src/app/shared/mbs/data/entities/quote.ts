@@ -15,7 +15,7 @@ export class Quote {
   /** The ask size. */
   askSize: number;
 
-  constructor(data?: any) {
+  /*constructor(data?: any) {
     if (data) {
       for (const property in data) {
         if (data.hasOwnProperty(property)) {
@@ -23,9 +23,9 @@ export class Quote {
         }
       }
     }
-  }
+  }*/
 
-  toJSON(data?: any): any {
+  /*toJSON(data?: any): any {
     data = typeof data === 'object' ? data : {};
     data['time'] = this.time ? this.time.toISOString() : <any>undefined;
     data['bidPrice'] = this.bidPrice;
@@ -33,5 +33,29 @@ export class Quote {
     data['askPrice'] = this.askPrice;
     data['askSize'] = this.askSize;
     return data;
+  }*/
+}
+
+export namespace Quote {
+  export function fromJson(json?: any): Quote {
+    const quote = new Quote();
+    if (json) {
+      for (const property in json) {
+        if (json.hasOwnProperty(property)) {
+          (<any>quote)[property] = (<any>json)[property];
+        }
+      }
+    }
+    return quote;
+  }
+
+  export function toJson(quote: Quote, json?: any): any {
+    json = typeof json === 'object' ? json : {};
+    json['time'] = quote.time ? quote.time.toISOString() : <any>undefined;
+    json['bidPrice'] = quote.bidPrice;
+    json['bidSize'] = quote.bidSize;
+    json['askPrice'] = quote.askPrice;
+    json['askSize'] = quote.askSize;
+    return json;
   }
 }

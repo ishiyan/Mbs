@@ -9,7 +9,7 @@ export class Trade {
   /** The volume (quantity). */
   volume: number;
 
-  constructor(data?: any) {
+  /*constructor(data?: any) {
     if (data) {
       for (const property in data) {
         if (data.hasOwnProperty(property)) {
@@ -17,13 +17,35 @@ export class Trade {
         }
       }
     }
-  }
+  }*/
 
-  toJSON(data?: any): any {
+  /*toJSON(data?: any): any {
     data = typeof data === 'object' ? data : {};
     data['time'] = this.time ? this.time.toISOString() : <any>undefined;
     data['price'] = this.price;
     data['volume'] = this.volume;
     return data;
+  }*/
+}
+
+export namespace Trade {
+  export function fromJson(json?: any): Trade {
+    const trade = new Trade();
+    if (json) {
+      for (const property in json) {
+        if (json.hasOwnProperty(property)) {
+          (<any>trade)[property] = (<any>json)[property];
+        }
+      }
+    }
+    return trade;
+  }
+
+  export function toJson(trade: Trade, json?: any): any {
+    json = typeof json === 'object' ? json : {};
+    json['time'] = trade.time ? trade.time.toISOString() : <any>undefined;
+    json['price'] = trade.price;
+    json['volume'] = trade.volume;
+    return json;
   }
 }

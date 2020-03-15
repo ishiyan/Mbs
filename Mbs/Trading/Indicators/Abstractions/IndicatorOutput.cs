@@ -8,6 +8,6 @@
         /// <summary>
         /// A data object per indicator output.
         /// </summary>
-        public object[] Outputs;
+        public object[] Outputs { get; set; }
     }
 }

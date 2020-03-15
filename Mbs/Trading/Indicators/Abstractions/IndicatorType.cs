@@ -5,11 +5,12 @@ namespace Mbs.Trading.Indicators.Abstractions
     /// </summary>
     public enum IndicatorType
     {
+ /*
         /// <summary>
         /// Moving Average Convergence Divergence (MACD).
         /// </summary>
         MovingAverageConvergenceDivergence,
-
+*/
         /// <summary>
         /// Simple Moving Average (SMA).
         /// </summary>
@@ -19,7 +20,7 @@ namespace Mbs.Trading.Indicators.Abstractions
         /// Exponential Moving Average (EMA).
         /// </summary>
         ExponentialMovingAverage,
-
+/*
         /// <summary>
         /// Double Exponential Moving Average (DEMA).
         /// </summary>
@@ -99,12 +100,12 @@ namespace Mbs.Trading.Indicators.Abstractions
         /// Balance of Power (BoP).
         /// </summary>
         BalanceOfPower,
-
+*/
         /// <summary>
         /// Bollinger Bands (BB).
         /// </summary>
         BollingerBands,
-
+/*
         /// <summary>
         /// Commodity Channel Index (CCI).
         /// </summary>
@@ -114,7 +115,7 @@ namespace Mbs.Trading.Indicators.Abstractions
         /// Chande Momentum Oscillator (CMO).
         /// </summary>
         ChandeMomentumOscillator,
-
+*/
         /// <summary>
         /// Variance (VAR).
         /// </summary>

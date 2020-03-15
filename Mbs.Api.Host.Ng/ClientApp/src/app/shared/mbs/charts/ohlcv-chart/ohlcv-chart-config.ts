@@ -54,11 +54,17 @@ export class OhlcvChartConfig {
     /** An optional array of indicator panes. */
     public indicatorPanes: OhlcvChartConfig.Pane[] = [];
 
-    /** If crosshair should be  visible */
+    /** If *crosshair* should be visible */
     public crosshair = false;
 
     /** If volume in price pane should be visible */
     public volumeInPricePane = false;
+
+    /** If menu should be visible. */
+    public menuVisible = true;
+
+    /** If *download SVG* menu setting should be visible. */
+    public downloadSvgVisible = true;
 }
 
 export namespace OhlcvChartConfig {

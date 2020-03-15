@@ -8,11 +8,11 @@
         /// <summary>
         /// Identifies the indicator.
         /// </summary>
-        public IndicatorType IndicatorType;
+        public IndicatorType IndicatorType { get; set; }
 
         /// <summary>
         /// A metadata object per indicator output.
         /// </summary>
-        public Metadata[] Outputs;
+        public Metadata[] Outputs { get; set; }
     }
 }

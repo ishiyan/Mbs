@@ -8,16 +8,16 @@
         /// <summary>
         /// Identifies the indicator.
         /// </summary>
-        public IndicatorType IndicatorType;
+        public IndicatorType IndicatorType { get; set; }
 
         /// <summary>
         /// Parameters to create the indicator.
         /// </summary>
-        public object Parameters;
+        public object Parameters { get; set; }
 
         /// <summary>
         /// Outputs of the indicator.
         /// </summary>
-        public int[] OutputKinds;
+        public int[] OutputKinds { get; set; }
     }
 }

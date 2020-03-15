@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Mbs.Trading.Indicators.GeraldGoertzel;
+using Mbs.Trading.Indicators.JohnBollinger;
+using Mbs.Trading.Indicators.Statistics;
 
 namespace Mbs.Trading.Indicators.Abstractions
 {
@@ -47,6 +50,34 @@ namespace Mbs.Trading.Indicators.Abstractions
                     if (input.Parameters is ExponentialMovingAverage.ParametersSmoothingFactor parametersSmoothingFactor)
                         return new ExponentialMovingAverage(parametersSmoothingFactor);
                     throw InvalidParametersType(input, typeof(ExponentialMovingAverage));
+                }
+
+                case IndicatorType.BollingerBands:
+                {
+                    if (input.Parameters is BollingerBands.Parameters parameters)
+                        return new BollingerBands(parameters, input.OutputKinds);
+                    throw InvalidParametersType(input, typeof(BollingerBands));
+                }
+
+                case IndicatorType.Variance:
+                {
+                    if (input.Parameters is Variance.Parameters parameters)
+                        return new Variance(parameters);
+                    throw InvalidParametersType(input, typeof(Variance));
+                }
+
+                case IndicatorType.StandardDeviation:
+                {
+                    if (input.Parameters is StandardDeviation.Parameters parameters)
+                        return new StandardDeviation(parameters);
+                    throw InvalidParametersType(input, typeof(StandardDeviation));
+                }
+
+                case IndicatorType.GoertzelSpectrum:
+                {
+                    if (input.Parameters is GoertzelSpectrum.Parameters parameters)
+                        return new GoertzelSpectrum(parameters, input.OutputKinds);
+                    throw InvalidParametersType(input, typeof(GoertzelSpectrum));
                 }
 
                 default:

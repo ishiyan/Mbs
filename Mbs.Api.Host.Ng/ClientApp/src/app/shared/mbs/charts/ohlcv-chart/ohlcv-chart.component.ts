@@ -11,19 +11,10 @@ import { Heatmap } from '../entities/heatmap';
 import { OhlcvChartConfig } from './ohlcv-chart-config';
 import { Downloader } from '../downloader';
 
-import { dataTestOhlcv } from './test-data/data-test-ohlcv';
-import { dataTestBb } from './test-data/data-test-bb';
-import { dataTestMa } from './test-data/data-test-ma';
-import { dataTestLo } from './test-data/data-test-lo';
-import { dataTestUp } from './test-data/data-test-up';
-import { dataTestPercentB } from './test-data/data-test-percentb';
-import { dataTestBw } from './test-data/data-test-bw';
-import { dataTestGoertzel1 } from './test-data/data-test-goertzel_1';
-import { dataTestGoertzel10 } from './test-data/data-test-goertzel_10';
-
+/** *Ohlcv* view type: *candlesticks*. */
 const ohlcvViewCandlesticks = 0;
+/** *Ohlcv* view type: *bars*. */
 const ohlcvViewBars = 1;
-
 /** The width of a vertical axis in pixels including annotation. */
 const verticalAxisWidth = 50;
 /** The height of a vertical gap between an arrow and a price point in pixels. */
@@ -86,117 +77,72 @@ const textAfterSvg = `
 })
 export class OhlcvChartComponent implements OnInit {
     @ViewChild('container', { static: true }) container: ElementRef;
-    @Input() svgheight: any;
-
-    private config: OhlcvChartConfig = {
-        width: '100%', // widthMin: 500, widthMax: 700,
-        navigationPane: { height: 30, // heightMin: 30, heightMax: 30, timeTicksFormat: '%Y-%m-%d',
-            hasLine: true, hasArea: false, hasTimeAxis: true, timeTicks: 0,
-            // hasLine: true, hasArea: false, hasTimeAxis: true,
-            // hasLine: false, hasArea: true, hasTimeAxis: false
-        },
-        heightNavigationPane: 30, // heightNavigationPaneMin: 20, heightNavigationPaneMax: 60,
-        // navigationLine: true, navigationTimeAxis: true,
-        timeAnnotationFormat: '%Y-%m-%d', // timeTicks: 5, timeTicksFormat: '%Y-%m-%d',
-        axisLeft: true,
-        axisRight: true,
-        margin: {left: 0, top: 0, right: 0, bottom: 0},
-        ohlcv: {name: 'BRILL@XAMS', data: dataTestOhlcv, candlesticks: true},
-        pricePane: {
-            height: '30%', valueFormat: ',.2f', /*valueTicks: 10,*/ valueMarginPercentageFactor: 0.01, // heightMin: 300, heightMax: 300,
-            bands: [
-                { name: 'bb(stdev.p(20,c),2,sma(20,c))', data: dataTestBb, indicator: 0, output: 0,
-                  color: 'rgba(0,255,0,0.3)', legendColor: 'rgba(0,200,0,1)', interpolation: 'natural' },
-            ], lineAreas: [], horizontals: [], lines: [
-                { name: 'sma(20,c)', data: dataTestMa, indicator: 0, output: 0,
-                  color: 'red', width: 1, dash: '', interpolation: 'natural' },
-                { name: 'lo-bb(stdev.p(20,c),2,sma(20,c))', data: dataTestLo, indicator: 0, output: 0,
-                  color: 'blue', width: 0.5, dash: '5,5', interpolation: 'cardinal' },
-                { name: 'up-bb(stdev.p(20,c),2,sma(20,c))', data: dataTestUp, indicator: 0, output: 0,
-                  color: 'blue', width: 0.5, dash: '2,2', interpolation: 'linear' }
-            ], arrows: [
-                { name: 'sell', down: true, time: dataTestOhlcv[25].time, /*value: dataTestOhlcv[25].high,*/ indicator: 0, output: 0,
-                  color: 'rgb(255,0,0)' },
-                { name: 'buy', down: false, time: dataTestOhlcv[26].time, /*value: dataTestOhlcv[26].low,*/ indicator: 0, output: 0,
-                  color: 'rgb(0,255,0)' }
-            ]},
-        indicatorPanes: [
-            {height: '60', valueFormat: ',.2f', /*valueTicks: 5,*/ valueMarginPercentageFactor: 0.01,
-                bands: [], lineAreas: [], horizontals: [
-                    {value: 0, color: 'red', width: 0.5, dash: ''},
-                    {value: 1, color: 'red', width: 0.5, dash: ''}
-                ], lines: [
-                    { name: '%b(c)-bb(stdev.p(20,c),2,sma(20,c))', data: dataTestPercentB, indicator: 0, output: 0,
-                      color: 'green', width: 1, dash: '', interpolation: 'natural' }
-                ], arrows: []},
-            {height: '60', valueFormat: ',.2f', /*valueTicks: 3,*/ valueMarginPercentageFactor: 0.01,
-                bands: [], lineAreas: [
-                    { name: 'bw(c)-bb(stdev.p(20,c),2,sma(20,c))', data: dataTestBw, indicator: 0, output: 0,
-                      color: 'rgba(0,0,255,0.3)', legendColor: '#0000ff', value: 0.3, interpolation: 'natural' }
-                ], horizontals: [
-                    {value: 0.3, color: 'blue', width: 0.5, dash: ''}
-                ], lines: [
-                    // {name: 'bw(c)-bb(stdev.p(20,c),2,sma(20,c))', data: dataTestBw, indicator: 0, output: 0,
-                    // color: 'blue', width: 1, dash: '', interpolation: 'natural'}
-                ], arrows: []},
-            {height: '120', valueFormat: ',.2f', /*valueTicks: 5,*/ valueMarginPercentageFactor: 0, // heightMin: 50, heightMax: 100,
-                heatmap: {
-                    name: 'goertzel(64, [2,64,1/10], sdc, agc 0.991)', gradient: 'Viridis', invertGradient: false,
-                    data: dataTestGoertzel1, indicator: 0, output: 0
-                }, bands: [], lineAreas: [], horizontals: [], lines: [], arrows: []}
-        ],
-        crosshair: true,
-        volumeInPricePane: true
-    };
-
-    private menuVisible = true;
-    get viewMenu() {
-        return this.menuVisible;
-    }
-    set viewMenu(value: boolean) {
-        this.menuVisible = value;
+    @Input()
+    public set configuration(cfg: OhlcvChartConfig) {
+      if (cfg && cfg != null) {
+        this.config = cfg;
+        this.ohlcvView = cfg.ohlcv.candlesticks ? ohlcvViewCandlesticks : ohlcvViewBars;
+        this.renderCrosshair = cfg.crosshair;
+        this.renderVolume = cfg.volumeInPricePane;
+        this.currentSelection = null;
+      } else {
+        this.config = new OhlcvChartConfig();
+      }
+      this.render();
     }
 
-    private downloadSvgVisible = true;
-    get viewDownloadSvg() {
-        return this.downloadSvgVisible;
-    }
-    set viewDownloadSvg(value: boolean) {
-        this.downloadSvgVisible = value;
+    private config: OhlcvChartConfig;// = new OhlcvChartConfig();//= new TestData().config;
+    //private config = TestData.configDataPrefilled;
+    //private config = new TestData().config;
+
+    /** Gets if menu is visible. */
+    public get viewMenu(): boolean {
+        return this.config ? this.config.menuVisible : false;
     }
 
-    readonly ohlcvViewCandlesticks = ohlcvViewCandlesticks;
-    readonly ohlcvViewBars = ohlcvViewBars;
-    private ohlcvView: number = this.config.ohlcv.candlesticks ? this.ohlcvViewCandlesticks : this.ohlcvViewBars;
-    get ohlcvViewType(): number {
+    /** Gets if *download SVG* menu setting is visible. */
+    public get viewDownloadSvg(): boolean {
+        return this.config ? this.config.downloadSvgVisible : false;
+    }
+
+    /** Gets or sets the *ohlcv* view type: *candlesticks* or *bars*. */
+    public get ohlcvViewType(): number {
       return this.ohlcvView;
     }
-    set ohlcvViewType(value: number) {
+    public set ohlcvViewType(value: number) {
       this.ohlcvView = value;
       this.render();
     }
+    private ohlcvView: number = (this.config && !this.config.ohlcv.candlesticks) ? ohlcvViewBars : ohlcvViewCandlesticks;
+    public readonly ohlcvViewCandlesticks = ohlcvViewCandlesticks;
+    public readonly ohlcvViewBars = ohlcvViewBars;
 
-    private renderCrosshair = this.config.crosshair;
-    get viewCrosshair() {
+    /** Gets or sets if *crosshair* is visible */
+    public get viewCrosshair(): boolean {
         return this.renderCrosshair;
     }
-    set viewCrosshair(value: boolean) {
+    public set viewCrosshair(value: boolean) {
         this.renderCrosshair = value;
         this.render();
     }
+    private renderCrosshair = this.config ? this.config.crosshair : true;
 
-    private renderVolume = this.config.volumeInPricePane;
-    get viewVolume() {
+    /** Gets or sets if volume in price pane is visible */
+    public get viewVolume(): boolean {
       return this.renderVolume;
     }
-    set viewVolume(value: boolean) {
+    public set viewVolume(value: boolean) {
       this.renderVolume = value;
       this.render();
     }
+    private renderVolume = this.config ? this.config.volumeInPricePane : true;
 
-    get chartTitle(): string {
-        return this.config.ohlcv.name;
+    /** Gets a title of the chart. */
+    public get chartTitle(): string {
+        return this.config ? this.config.ohlcv.name : '---';
     }
+
+    private currentSelection: any = null;
 
     constructor(private element: ElementRef, iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
         iconRegistry.addSvgIcon('mb-candlesticks',
@@ -205,14 +151,12 @@ export class OhlcvChartComponent implements OnInit {
           sanitizer.bypassSecurityTrustResourceUrl('assets/img/mb-bars.svg'));
     }
 
-    private currentSelection: any = null;
-
     public downloadSvg(): void {
         Downloader.download(Downloader.serializeToSvg(Downloader.getChildElementById(this.container.nativeElement.parentNode, 'chart'),
             textBeforeSvg, textAfterSvg), 'ohlcv_chart.html');
     }
 
-    public downloadPng(): void {
+    /*public downloadPng(): void {
         const last = dataTestOhlcv[dataTestOhlcv.length - 1];
         const next = new Ohlcv();
         next.time = last.time;
@@ -228,7 +172,7 @@ export class OhlcvChartComponent implements OnInit {
         this.render();
         // Downloader.download(Downloader.rasterizeToPng(Downloader.getChildElementById(this.container.nativeElement.parentNode,
         //    'chart')), 'ohlcv_chart.png');
-    }
+    }*/
 
     @HostListener('window:resize', [])
     render() {
@@ -349,7 +293,7 @@ export class OhlcvChartComponent implements OnInit {
     }
 
     ngOnInit() {
-        setTimeout(() => this.render(), 0);
+        //setTimeout(() => this.render(), 0);
     }
 
     private static valueToPixels(value: number | string, reference: number): number {
@@ -1067,7 +1011,7 @@ export class OhlcvChartComponent implements OnInit {
 
     private static getArrowPrice(data: Ohlcv[], arrow: OhlcvChartConfig.ArrowData): number {
         if (arrow.value) {
-            return + arrow.value;
+            return +arrow.value;
         }
         const ohlcv = OhlcvChartComponent.findOhlcv(data, arrow.time);
         if (ohlcv != null) {
@@ -1184,8 +1128,12 @@ export namespace OhlcvChartComponent {
                 max = datumLastIndex;
             }
             const priceDomain: [number, number] = d3ts.scale.plot.ohlc(datum.slice.apply(datum, [min, max]), this.priceAccessor).domain();
-            min = +datum[min].time;
-            max = +datum[max].time;
+            if (datum[min] != undefined) {
+                min = +datum[min].time;
+            }
+            if (datum[max] != undefined) {
+                max = +datum[max].time;
+            }
             let minPrice = priceDomain[0];
             let maxPrice = priceDomain[1];
             for (let i = 0; i < this.indicatorBands.length; ++i) {
@@ -1376,8 +1324,12 @@ export namespace OhlcvChartComponent {
             if (max > datumLastIndex) {
                 max = datumLastIndex;
             }
-            min = +datum[min].time;
-            max = +datum[max].time;
+            if (datum[min] != undefined) {
+                min = +datum[min].time;
+            }
+            if (datum[max] != undefined) {
+                max = +datum[max].time;
+            }
             let minValue = Number.MAX_VALUE;
             let maxValue = Number.MIN_VALUE;
             let minIntensity = Number.MAX_VALUE;

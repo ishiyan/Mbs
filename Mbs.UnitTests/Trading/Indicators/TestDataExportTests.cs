@@ -1,7 +1,13 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Text.Encodings.Web;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static System.FormattableString;
 
@@ -205,6 +211,9 @@ namespace Mbs.UnitTests.Trading.Indicators
             var outputs = target.Update(scalarArray).ToList();
 
             list.Clear();
+            // ReSharper disable once StringLiteralTypo
+            list.Add("// tslint:disable:max-line-length");
+            list.Add("");
             list.Add("export const metaBb: Object = {");
             list.Add("    name:'Test data', indicators:[");
             list.Add($"        {{kind:'{metadata.IndicatorType}', outputs:[");
@@ -247,12 +256,17 @@ namespace Mbs.UnitTests.Trading.Indicators
                 list.Add(str);
             }
             list.Add("};");
+            // ReSharper disable once StringLiteralTypo
+            list.Add("// tslint:enable:");
             list.Add("");
             File.WriteAllLines(Invariant($"{FilePrefix}_combined.ts"), list);
 
             for (int j = 0; j < 7; ++j)
             {
                 list.Clear();
+                // ReSharper disable once StringLiteralTypo
+                list.Add("// tslint:disable:max-line-length");
+                list.Add("");
                 list.Add(Invariant($"// kind: {metadata.Outputs[j].Kind}"));
                 list.Add(Invariant($"// name: {metadata.Outputs[j].Name}"));
                 list.Add(Invariant($"// description: {metadata.Outputs[j].Description}"));
@@ -278,6 +292,9 @@ namespace Mbs.UnitTests.Trading.Indicators
                     }
                 }
                 list.Add("];");
+                // ReSharper disable once StringLiteralTypo
+                list.Add("// tslint:enable:");
+                list.Add("");
                 File.WriteAllLines(Invariant($"{FilePrefix}_output_{j}.ts"), list);
             }
         }
@@ -331,7 +348,6 @@ namespace Mbs.UnitTests.Trading.Indicators
             for (int i = 0; i < 252; ++i)
             {
                 ohlcvArray[i] = new Ohlcv { Time = date, Open = Open[i], High = High[i], Low = Low[i], Close = Close[i], Volume = Volume[i] };
-                // Javascript Date constructor accepts zero-based months.
                 date = date.AddDays(1);
                 while (date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday)
                     date = date.AddDays(1);
@@ -346,6 +362,9 @@ namespace Mbs.UnitTests.Trading.Indicators
             for (int j = 0; j < 4; ++j)
             {
                 list.Clear();
+                // ReSharper disable once StringLiteralTypo
+                list.Add("// tslint:disable:max-line-length");
+                list.Add("");
                 list.Add(Invariant($"// kind: {metadata.Outputs[j].Kind}"));
                 list.Add(Invariant($"// name: {metadata.Outputs[j].Name}"));
                 list.Add(Invariant($"// description: {metadata.Outputs[j].Description}"));
@@ -381,8 +400,484 @@ namespace Mbs.UnitTests.Trading.Indicators
                     list.Add(line);
                 }
                 list.Add("];");
+                // ReSharper disable once StringLiteralTypo
+                list.Add("// tslint:enable:");
+                list.Add("");
                 File.WriteAllLines(Invariant($"{FilePrefix}_output_goertzel_{j}.ts"), list);
             }
+        }
+
+        [TestMethod]
+        public void ExportBollingerBandsAndGoetrzel()
+        {
+            var ohlcvArray = new Ohlcv[Close.Length];
+            var date = new DateTime(2011, 1, 1);
+            while (date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday)
+                date = date.AddDays(1);
+            for (int i = 0; i < 252; ++i)
+            {
+                ohlcvArray[i] = new Ohlcv { Time = date, Open = Open[i], High = High[i], Low = Low[i], Close = Close[i], Volume = Volume[i] };
+                date = date.AddDays(1);
+                while (date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday)
+                    date = date.AddDays(1);
+            }
+
+            var inputs = new[]
+            {
+                new IndicatorInput
+                {
+                    IndicatorType = IndicatorType.BollingerBands,
+                    Parameters = new BollingerBands.Parameters(),
+                    OutputKinds = new[] { Middle, Lower, Upper, PercentB, BandWidth, LowerUpper }
+                },
+                new IndicatorInput
+                {
+                    IndicatorType = IndicatorType.GoertzelSpectrum,
+                    Parameters = new GoertzelSpectrum.Parameters{ PeriodResolution = 10, MaxPeriod = 28, IsSpectralDilationCompensation = false },
+                    OutputKinds = new[] { (int)GoertzelSpectrum.OutputKind.PowerSpectrumNormalizedToZeroOne }
+                }
+            };
+            var indicators = IndicatorFactory.Create(inputs).ToArray();
+            var metadata = new[]
+            {
+                indicators[0].Metadata,
+                indicators[1].Metadata
+            };
+            var outputs = new List<IndicatorOutput[]>();
+            foreach (var ohlcv in ohlcvArray)
+            {
+                var output = new[]
+                {
+                    indicators[0].Update(ohlcv),
+                    indicators[1].Update(ohlcv)
+                };
+                outputs.Add(output);
+            }
+
+            var options = new JsonSerializerOptions
+            {
+                AllowTrailingCommas = false,
+                MaxDepth = 1280,
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+            //options.Converters.Add(new NonLoopingJsonConverter());
+            // options.Converters.Add(new HandleSpecialDoublesAsStrings());
+            options.Converters.Add(new HandleSpecialDoublesAsStringsNewtonsoftCompat());
+
+            string json = JsonSerializer.Serialize(metadata, options);
+            File.WriteAllText("d:\\test-data-bb-goertzel-metadata.json", json);
+            //json = JsonSerializer.Serialize(outputs, options);
+            json = "System.Text.Json.JsonException: The object or value could not be serialized. Path: $.Outputs.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone.Clone. ---> System.InvalidOperationException: CurrentDepth (1000) is equal to or larger than the maximum allowed depth of 1000. Cannot write the next JSON object or array.";
+            File.WriteAllText("d:\\test-data-bb-goertzel-outputs.json", json);
+            /*using (FileStream fs = File.Create("d:\\test-data-bb-goertzel-combined.json"))
+            {
+                await JsonSerializer.SerializeAsync(fs, outputs);
+            }*/
+
+            var list = new List<string>
+            {
+                // ReSharper disable once StringLiteralTypo
+                "// tslint:disable:max-line-length",
+                "",
+                "export const testDataMeta: Object[] = ["
+            };
+            for (int j = 0; j < metadata.Length; ++j)
+            {
+                var meta = metadata[j];
+                list.Add($"  {{kind:'{meta.IndicatorType}', outputs:[");
+                for (int i = 0; i < meta.Outputs.Length; ++i)
+                {
+                    var m = meta.Outputs[i];
+                    var s = $"    {{kind:{m.Kind}, type:'{m.Type}', name:'{m.Name}', description:'{m.Description}'}}";
+                    if (i < meta.Outputs.Length - 1)
+                    {
+                        s += ",";
+                    }
+                    list.Add(s);
+                }
+                list.Add(j == metadata.Length - 1 ? "  ]}" : "  ]},");
+            }
+            list.Add("];");
+            list.Add("");
+            list.Add("export const testDataOutputs: Object[] = [");
+            for (int i = 0; i < outputs.Count; ++i)
+            {
+                var row = outputs[i];
+                list.Add("  {");
+                list.Add("    indicators: [");
+                var lenInd = row.Length;
+                var comma3 = i == outputs.Count - 1 ? "" : ",";
+                for (int k = 0; k < lenInd; ++k)
+                {
+                    var indOut = row[k].Outputs;
+                    var lenOut = indOut.Length;
+                    list.Add("      {");
+                    var comma2 = k == lenInd - 1 ? "" : ",";
+                    list.Add("        outputs: [");
+                    for (int j = 0; j < lenOut; ++j)
+                    {
+                        var comma = j == lenOut - 1 ? "" : ",";
+                        var o = indOut[j];
+                        var str = "          ";
+                        switch (o)
+                        {
+                            case Scalar s:
+                            {
+                                var t = DateTimeToString(s.Time);
+                                str += Invariant($"{{{t}, value:{s.Value}}}{comma}");
+                                break;
+                            }
+                            case Band b:
+                            {
+                                var t = DateTimeToString(b.Time);
+                                str += Invariant($"{{{t}, lower:{b.FirstValue}, upper:{b.SecondValue}}}{comma}");
+                                break;
+                            }
+                            case HeatMap h:
+                            {
+                                var t = DateTimeToString(h.Time);
+                                str += Invariant($"{{{t}, parameterFirst:{h.ParameterFirst}, parameterLast:{h.ParameterLast}, parameterResolution:{h.ParameterResolution}, valueMin:{h.ValueMin}, valueMax:{h.ValueMax}, ");
+                                var array = "values:[";
+                                if (h.Values == null)
+                                    array += "]";
+                                else
+                                {
+                                    var nLen = h.Values.Length;
+                                    for (int n = 0; n < nLen; ++n)
+                                    {
+                                        array += Invariant($"{h.Values[n]}");
+                                        if (n < nLen - 1)
+                                        {
+                                            array += ", ";
+                                        }
+                                    }
+                                    array += "]";
+                                }
+                                str += array;
+                                str += "}";
+                                str += comma;
+                                break;
+                            }
+                        }
+                        list.Add(str);
+                    }
+                    list.Add("        ]");
+                    list.Add($"      }}{comma2}");
+                }
+                list.Add("    ]");
+                list.Add($"  }}{comma3}");
+            }
+            list.Add("];");
+            // ReSharper disable once StringLiteralTypo
+            list.Add("// tslint:enable:");
+            list.Add("");
+            File.WriteAllLines("d:\\test-data-bb-goertzel-combined.ts", list);
+        }
+
+        private static string DateTimeToString(DateTime dateTime)
+        {
+            // Javascript Date constructor accepts zero-based months.
+            return Invariant($"time:new Date({dateTime.Year},{dateTime.Month - 1},{dateTime.Day})");
+        }
+    }
+
+    internal class HandleSpecialDoublesAsStrings : JsonConverter<double>
+    {
+        public override double Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            return reader.TokenType == JsonTokenType.String ? double.Parse(reader.GetString()) : reader.GetDouble();
+        }
+
+        public override void Write(Utf8JsonWriter writer, double value, JsonSerializerOptions options)
+        {
+            if (double.IsFinite(value))
+            {
+                writer.WriteNumberValue(value);
+            }
+            else
+            {
+                writer.WriteStringValue(value.ToString(CultureInfo.InvariantCulture));
+            }
+        }
+    }
+
+    internal class HandleSpecialDoublesAsStringsNewtonsoftCompat : JsonConverter<double>
+    {
+        private static readonly JsonEncodedText Nan = JsonEncodedText.Encode("NaN");
+        private static readonly JsonEncodedText PositiveInfinity = JsonEncodedText.Encode("Infinity");
+        private static readonly JsonEncodedText NegativeInfinity = JsonEncodedText.Encode("-Infinity");
+
+        public override double Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.String)
+            {
+                string specialDouble = reader.GetString();
+                switch (specialDouble)
+                {
+                    case "Infinity":
+                        return double.PositiveInfinity;
+                    case "-Infinity":
+                        return double.NegativeInfinity;
+                    default:
+                        return double.NaN;
+                }
+            }
+            return reader.GetDouble();
+        }
+
+        public override void Write(Utf8JsonWriter writer, double value, JsonSerializerOptions options)
+        {
+            if (double.IsFinite(value))
+            {
+                writer.WriteNumberValue(value);
+            }
+            else
+            {
+                if (double.IsPositiveInfinity(value))
+                {
+                    writer.WriteStringValue(PositiveInfinity);
+                }
+                else if (double.IsNegativeInfinity(value))
+                {
+                    writer.WriteStringValue(NegativeInfinity);
+                }
+                else
+                {
+                    writer.WriteStringValue(Nan);
+                }
+            }
+        }
+    }
+
+    public class NonLoopingJsonConverter : JsonConverterFactory
+    {
+        public override bool CanConvert(Type typeToConvert) => true;
+
+        public override JsonConverter CreateConverter(Type type, JsonSerializerOptions options)
+        {
+
+            JsonConverter converter = (JsonConverter)Activator.CreateInstance(
+                typeof(NonLoopingConverterInner<>).MakeGenericType(new[] { type }),
+                BindingFlags.Instance | BindingFlags.Public, binder: null, args: new object[] { }, culture: null);
+
+            return converter;
+        }
+
+        private class NonLoopingConverterInner<TValue> : JsonConverter<TValue>
+        {
+            public override TValue Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                return JsonSerializer.Deserialize<TValue>(ref reader, options);
+            }
+
+            public override void Write(Utf8JsonWriter writer, TValue value, JsonSerializerOptions options /*options ignored*/)
+            {
+                SafeJsonSerializer.Serialize(value, writer);
+            }
+        }
+    }
+
+    public static class SafeJsonSerializer
+    {
+        static readonly MethodInfo SerializeEnumerableMethod = typeof(SafeJsonSerializer).GetMethod("SerializeEnumerable", BindingFlags.Static | BindingFlags.NonPublic);
+
+        public static void Serialize<T>(T obj, Utf8JsonWriter jw) => Serialize(obj, null, jw, new List<int> { });
+
+        static void Serialize<T>(T obj, string propertyName, Utf8JsonWriter jw, List<int> hashCodes, bool isContainerType = false)
+        {
+            var jsonValueType = GetJsonValueKind(obj);
+            if (jsonValueType == JsonValueKind.Array || jsonValueType == JsonValueKind.Object)
+            {
+                var hashCode = obj.GetHashCode();
+                if (hashCodes.Contains(hashCode))
+                    return;
+                hashCodes.Add(hashCode);
+            }
+
+            if (isContainerType && jsonValueType == JsonValueKind.Null)
+                return;
+
+            if (propertyName != null)
+            {
+                jw.WritePropertyName(propertyName);
+            }
+
+            if (obj != null && obj.GetType().IsEnum)
+            {
+                jw.WriteStringValue(Enum.GetName(obj.GetType(), obj));
+                return;
+            }
+
+            switch (jsonValueType)
+            {
+                case JsonValueKind.Undefined:
+                    if (propertyName == null)
+                        return;
+                    jw.WriteNullValue();
+                    break;
+                case JsonValueKind.Null:
+                    jw.WriteNullValue();
+                    break;
+                case JsonValueKind.True:
+                    jw.WriteBooleanValue(true);
+                    break;
+                case JsonValueKind.False:
+                    jw.WriteBooleanValue(false);
+                    break;
+                case JsonValueKind.String:
+                    var result = JsonSerializer.Serialize(obj).Replace("\u0022", "");
+                    jw.WriteStringValue(result);
+                    break;
+                case JsonValueKind.Number:
+                    var num = Convert.ToDecimal(obj);
+                    jw.WriteNumberValue(num);
+                    break;
+                case JsonValueKind.Array:
+                    jw.WriteStartArray();
+                    try
+                    {
+                        List<object> list = new List<object>();
+                        if (typeof(IEnumerable).IsAssignableFrom(obj.GetType()))
+                        {
+                            IEnumerable items = (IEnumerable)obj;
+                            foreach (var item in items)
+                                list.Add(item);
+                        }
+                        else if (obj is IEnumerable<object>)
+                            foreach (var item in obj as IEnumerable<object>)
+                                list.Add(item);
+                        else if (obj is IOrderedEnumerable<object>)
+                            foreach (var item in obj as IOrderedEnumerable<object>)
+                                list.Add(item);
+
+                        SerializeEnumerable(list, jw, hashCodes);
+                    }
+                    catch
+                    {
+
+                        //upon failure, use reflection and generic SerializeEnumerable method
+                        Type[] args = obj.GetType().GetGenericArguments();
+                        Type itemType = args[0];
+
+                        MethodInfo genericM = SerializeEnumerableMethod.MakeGenericMethod(itemType);
+                        genericM.Invoke(null, new object[] { obj, propertyName, jw, hashCodes });
+                    }
+                    jw.WriteEndArray();
+                    break;
+                case JsonValueKind.Object:
+                    jw.WriteStartObject();
+                    var type = obj.GetType();
+                    if (type.IsIDictionary())
+                    {
+                        var dict = obj as IDictionary;
+                        foreach (var key in dict.Keys)
+                            Serialize(dict[key], key.ToString(), jw, hashCodes);
+                    }
+                    else
+                    {
+                        foreach (var prop in type.GetProperties().Where(t => t.DeclaringType.FullName != "System.Linq.Dynamic.Core.DynamicClass"))
+                        {
+                            var containerType = IsContainerType(prop.PropertyType);
+                            Serialize(prop.GetValue(obj), prop.Name, jw, hashCodes, containerType);
+                        }
+                    }
+                    jw.WriteEndObject();
+                    break;
+                default:
+                    return;
+            }
+        }
+
+        static void SerializeEnumerable<T>(IEnumerable<T> obj, Utf8JsonWriter jw, List<int> hashCodes)
+        {
+            foreach (var item in obj)
+                Serialize(item, null, jw, hashCodes);
+        }
+
+        static JsonValueKind GetJsonValueKind(object obj)
+        {
+            if (obj == null)
+                return JsonValueKind.Null;
+            var type = obj.GetType();
+            if (type.IsArray)
+                return JsonValueKind.Array;
+            if (type.IsIDictionary())
+                return JsonValueKind.Object;
+            if (type.IsIEnumerable())
+                return JsonValueKind.Array;
+            if (type.IsNumber())
+                return JsonValueKind.Number;
+            if (type == typeof(bool))
+            {
+                var bObj = (bool)obj;
+                return bObj ? JsonValueKind.True : JsonValueKind.False;
+            }
+
+            if (type == typeof(string) ||
+                type == typeof(DateTime) ||
+                type == typeof(DateTimeOffset) ||
+                type == typeof(TimeSpan) ||
+                type.IsPrimitive)
+                return JsonValueKind.String;
+            if ((type.GetProperties()?.Length ?? 0) > 0)
+                return JsonValueKind.Object;
+            return JsonValueKind.Undefined;
+        }
+
+        static bool IsContainerType(Type type)
+        {
+            if (type.IsArray)
+                return true;
+            if (type.IsIDictionary())
+                return true;
+            if (type.IsIEnumerable())
+                return true;
+            if (type.IsNumber())
+                return false;
+            if (type == typeof(bool))
+            {
+                return false;
+            }
+
+            if (type == typeof(string) ||
+                type == typeof(DateTime) ||
+                type == typeof(DateTimeOffset) ||
+                type == typeof(TimeSpan) ||
+                type.IsPrimitive)
+                return false;
+            if ((type.GetProperties()?.Length ?? 0) > 0)
+                return true;
+            if (type == typeof(object))
+                return true;
+            return false;
+        }
+    }
+
+    internal static class TypeExtensions
+    {
+        internal static bool IsIEnumerable(this Type type)
+        {
+            return type != typeof(string) && type.GetInterfaces().Contains(typeof(IEnumerable));
+        }
+        internal static bool IsIDictionary(this Type type)
+        {
+            return
+                type.GetInterfaces().Contains(typeof(IDictionary))
+                || (type.IsGenericType && typeof(Dictionary<,>).IsAssignableFrom(type.GetGenericTypeDefinition()));
+        }
+        internal static bool IsNumber(this Type type)
+        {
+            return type == typeof(byte)
+                || type == typeof(ushort)
+                || type == typeof(short)
+                || type == typeof(uint)
+                || type == typeof(int)
+                || type == typeof(ulong)
+                || type == typeof(long)
+                || type == typeof(decimal)
+                || type == typeof(double)
+                || type == typeof(float);
         }
     }
 }

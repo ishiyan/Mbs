@@ -8,21 +8,21 @@
         /// <summary>
         /// Identifies a single indicator output.
         /// </summary>
-        public int Kind;
+        public int Kind { get; set; }
 
         /// <summary>
         /// A type of the output.
         /// </summary>
-        public IndicatorOutputType Type;
+        public IndicatorOutputType Type { get; set; }
 
         /// <summary>
         /// Identifies an instance of the output.
         /// </summary>
-        public string Name;
+        public string Name { get; set; }
 
         /// <summary>
         /// Describes the output.
         /// </summary>
-        public string Description;
+        public string Description { get; set; }
     }
 }

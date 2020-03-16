@@ -21,8 +21,8 @@ import { AppComponent } from './app.component';
   ],
   imports: [
     BrowserModule, BrowserAnimationsModule, HttpClientModule, FormsModule, FlexLayoutModule,
-    AppRoutingModule, MaterialModule, ToolbarModule, SnackBarModule, MbsModule, MathJaxModule,
-    ThemePickerModule
+    AppRoutingModule, MaterialModule, ToolbarModule, SnackBarModule, MbsModule,
+    MathJaxModule, ThemePickerModule
   ],
   providers: [],
   bootstrap: [AppComponent]

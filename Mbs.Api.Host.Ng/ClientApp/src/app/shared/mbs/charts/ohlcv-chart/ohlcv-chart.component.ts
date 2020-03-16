@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, ViewChild, Input, HostListener } from '@angular/core';
+import { Component, ElementRef, ViewChild, Input, HostListener } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material/icon';
 import * as d3 from 'd3';
@@ -69,13 +69,15 @@ const textBeforeSvg = `<html><meta charset="utf-8"><style>
 const textAfterSvg = `
 </body></html>
 `;
+/** If *brushing* (zooming) is real-time. */
+const smoothBrushing = false;
 
 @Component({
     selector: 'app-mbs-ohlcv-chart',
     templateUrl: './ohlcv-chart.component.html',
     styleUrls: ['./ohlcv-chart.component.scss']
 })
-export class OhlcvChartComponent implements OnInit {
+export class OhlcvChartComponent {
     @ViewChild('container', { static: true }) container: ElementRef;
     @Input()
     public set configuration(cfg: OhlcvChartConfig) {
@@ -91,9 +93,7 @@ export class OhlcvChartComponent implements OnInit {
       this.render();
     }
 
-    private config: OhlcvChartConfig;// = new OhlcvChartConfig();//= new TestData().config;
-    //private config = TestData.configDataPrefilled;
-    //private config = new TestData().config;
+    private config: OhlcvChartConfig;
 
     /** Gets if menu is visible. */
     public get viewMenu(): boolean {
@@ -141,7 +141,7 @@ export class OhlcvChartComponent implements OnInit {
     public get chartTitle(): string {
         return this.config ? this.config.ohlcv.name : '---';
     }
-
+    
     private currentSelection: any = null;
 
     constructor(private element: ElementRef, iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
@@ -155,24 +155,6 @@ export class OhlcvChartComponent implements OnInit {
         Downloader.download(Downloader.serializeToSvg(Downloader.getChildElementById(this.container.nativeElement.parentNode, 'chart'),
             textBeforeSvg, textAfterSvg), 'ohlcv_chart.html');
     }
-
-    /*public downloadPng(): void {
-        const last = dataTestOhlcv[dataTestOhlcv.length - 1];
-        const next = new Ohlcv();
-        next.time = last.time;
-        // next.time.setDate(last.time.getDate() + 1);
-        next.time = new Date(last.time.getFullYear(), last.time.getMonth(), last.time.getDay() + 1);
-        next.open = last.open + 1;
-        next.high = last.high + 1;
-        next.low = last.low - 1;
-        next.close = last.close - 1;
-        next.volume = last.volume + 100;
-        console.log(next);
-        dataTestOhlcv.push(next);
-        this.render();
-        // Downloader.download(Downloader.rasterizeToPng(Downloader.getChildElementById(this.container.nativeElement.parentNode,
-        //    'chart')), 'ohlcv_chart.png');
-    }*/
 
     @HostListener('window:resize', [])
     render() {
@@ -225,7 +207,9 @@ export class OhlcvChartComponent implements OnInit {
             } else {
                 setCurrentSelection(d3.event.selection);
                 zoomable.domain(d3.event.selection.map(zoomable.invert));
-                draw(); // comment out if 'brush' event handler is enabled
+                if (!smoothBrushing) {
+                    draw();
+                }
             }
         }
 
@@ -243,7 +227,9 @@ export class OhlcvChartComponent implements OnInit {
             }
         }
 
-        // navPane.brush.on('brush', brushing); // comment out to disable real-time zooming
+        if (smoothBrushing) {
+            navPane.brush.on('brush', brushing);
+        }
         navPane.brush.on('end', brushed);
 
         timePane.timeScale.domain(cfg.ohlcv.data.map(pricePane.priceAccessor.t));
@@ -292,10 +278,6 @@ export class OhlcvChartComponent implements OnInit {
         draw();
     }
 
-    ngOnInit() {
-        //setTimeout(() => this.render(), 0);
-    }
-
     private static valueToPixels(value: number | string, reference: number): number {
         if (typeof value === 'number') {
             return +value;
@@ -327,12 +309,25 @@ export class OhlcvChartComponent implements OnInit {
         return {width: totalWidth, chart: {left: chartLeft, width: chartWidth}, content: {left: contentLeft, width: contentWidth}};
     }
 
+    private static textBoundingClientRect(t: any, remove: boolean = false): any {
+        const node = t.node();
+        let rect: any;
+        if (node && node != null) {
+            rect = node.getBoundingClientRect();
+            if (remove) {
+                t.remove();
+            }    
+        } else {
+            // console.log('node is null');
+            rect = {width: 100, height: 12};
+        }
+        return rect;
+    }
+
     private static layoutVertical(svg: any, cfg: OhlcvChartConfig,
         lh: OhlcvChartComponent.HorizontalLayout): OhlcvChartComponent.VerticalLayout {
         const t = svg.append('text').text(`w`);
-        const lineHeight = t.node().getBoundingClientRect().height;
-        t.remove();
-
+        const lineHeight = OhlcvChartComponent.textBoundingClientRect(t, true).height;
         const heightPricePaneLegend: number = OhlcvChartComponent.appendLegend(svg, cfg.margin.top, lineHeight, lh.content.left,
             lh.content.width, cfg.pricePane, cfg.ohlcv.name);
         const l = new OhlcvChartComponent.VerticalLayout();
@@ -404,7 +399,7 @@ export class OhlcvChartComponent implements OnInit {
 
         if (instrument && instrument.length > 0) {
             const t = OhlcvChartComponent.appendText(g, l, top, ` ${instrument} `);
-            const r = t.node().getBoundingClientRect();
+            const r = OhlcvChartComponent.textBoundingClientRect(t);
             l += r.width + whitespaceBetweenAxisAndLegend;
             height = r.height;
         }
@@ -419,7 +414,7 @@ export class OhlcvChartComponent implements OnInit {
             const d1 = legendHeatmapImageWidth + whitespaceBetweenLegendItems;
             l += d1;
             const t = OhlcvChartComponent.appendText(g, l, top, pane.heatmap.name);
-            const r = t.node().getBoundingClientRect();
+            const r = OhlcvChartComponent.textBoundingClientRect(t);
             if (height === 0) {
                 height = r.height;
             }
@@ -442,7 +437,7 @@ export class OhlcvChartComponent implements OnInit {
             const d1 = legendAreaImageWidth + whitespaceBetweenLegendItems;
             l += d1;
             const t = OhlcvChartComponent.appendText(g, l, top, band.name);
-            const r = t.node().getBoundingClientRect();
+            const r = OhlcvChartComponent.textBoundingClientRect(t);
             if (height === 0) {
                 height = r.height;
             }
@@ -466,7 +461,7 @@ export class OhlcvChartComponent implements OnInit {
             l += d1;
 
             const t = OhlcvChartComponent.appendText(g, l, top, lineArea.name);
-            const r = t.node().getBoundingClientRect();
+            const r = OhlcvChartComponent.textBoundingClientRect(t);
             if (height === 0) {
                 height = r.height;
             }
@@ -491,7 +486,7 @@ export class OhlcvChartComponent implements OnInit {
             l += d1;
 
             const t = OhlcvChartComponent.appendText(g, l, top, line.name);
-            const r = t.node().getBoundingClientRect();
+            const r = OhlcvChartComponent.textBoundingClientRect(t);
             if (height === 0) {
                 height = r.height;
             }

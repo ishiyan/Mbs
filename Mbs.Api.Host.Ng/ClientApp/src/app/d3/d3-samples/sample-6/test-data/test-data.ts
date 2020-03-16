@@ -18,7 +18,7 @@ export class TestData {
     public config: OhlcvChartConfig;
 
     public constructor() {
-        this.config = <OhlcvChartConfig>TestData.deepCopy(TestData.configTemplate);
+        this.config = TestData.configDataPrefilled; // <OhlcvChartConfig>TestData.deepCopy(TestData.configTemplate);
         if (outputsCount != ohlcvCount) {
             throw new Error('Lengths does not match: ohlcv=' + ohlcvCount + ', outputs=' + outputsCount);
         }
@@ -185,7 +185,7 @@ export class TestData {
                     data: [], indicator: 1, output: 0
                 }, bands: [], lineAreas: [], horizontals: [], lines: [], arrows: []}
         ],
-        crosshair: true,
+        crosshair: false,
         volumeInPricePane: true,
         menuVisible: true, downloadSvgVisible: true
     };

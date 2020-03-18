@@ -11,7 +11,7 @@ import { samples } from './mbsapi-samples/mbsapi-samples';
 })
 export class MbsApiComponent {
   public readonly samples: MbsApiSample[] = samples;
-  private sample: MbsApiSample = samples[0];
+  public sample: MbsApiSample = samples[0];
 
   constructor(router: Router) {
     const routeUrl = router.routerState.snapshot.url;

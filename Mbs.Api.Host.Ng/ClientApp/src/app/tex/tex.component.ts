@@ -1,38 +1,28 @@
-import { MediaMatcher } from '@angular/cdk/layout';
-import { ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { Category } from './categories/category';
 import { categories } from './categories/categories';
 
 @Component({
-    selector: 'app-tex',
-    templateUrl: './tex.component.html',
-    styleUrls: ['./tex.component.scss']
+  selector: 'app-tex',
+  templateUrl: './tex.component.html',
+  styleUrls: ['./tex.component.scss']
 })
-export class TexComponent implements OnDestroy {
-    private category: Category = categories[0];
-    mobileQuery: MediaQueryList;
-    private mobileQueryListener: () => void;
+export class TexComponent {
+  public readonly categories: Category[] = categories;
+  public category: Category = categories[0];
 
-    constructor(changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) {
-        this.mobileQuery = media.matchMedia('(max-width: 720px)');
-        this.mobileQueryListener = () => changeDetectorRef.detectChanges();
-        this.mobileQuery.addListener(this.mobileQueryListener);
+  constructor(router: Router) {
+    const routeUrl = router.routerState.snapshot.url;
+    for (let i = 0; i < categories.length; ++i) {
+      const cat = categories[i];
+      const url = '/tex/' + cat.route;
+      if (routeUrl === url) {
+        this.category = cat;
+        break;
+      }
     }
+  }
 
-    ngOnDestroy(): void {
-        this.mobileQuery.removeListener(this.mobileQueryListener);
-    }
-
-    public get categories(): Category[] {
-        return categories;
-    }
-
-    public get currentCategory(): Category {
-        return this.category;
-    }
-
-    public set selectedCategory(category: Category) {
-        this.category = category;
-    }
 }

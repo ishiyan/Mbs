@@ -1,34 +1,20 @@
-<mat-sidenav-container class="mbsapi-sidenav-container">
-<!--
-    <mat-sidenav #mbsapiSidenav fixedTopGap="112" class="mat-elevation-z16"
-        [mode]="mobileQuery.matches ? 'over' : 'side'"
-        [fixedInViewport]="mobileQuery.matches"
-        [opened]="!mobileQuery.matches">
--->
-<!-- -->
-    <mat-sidenav #mbsapiSidenav fixedTopGap="112" class="mat-elevation-z16"
-        [mode]="'over'"
-        [fixedInViewport]="true"
-        [opened]="false">
-<!-- -->
-        <mat-nav-list>
-            <mat-list-item *ngFor="let sample of samples"
-                [routerLink]="'/mbsapi/' + sample.route"
-                routerLinkActive="mbsapi-sidenav-item-selected"
-                (click)="selectedSample = sample; mbsapiSidenav.toggle();"
-                [class.mbsapi-sidenav-item-selected]="currentSample == sample">
-                    {{sample.name}}
-            </mat-list-item>
-        </mat-nav-list>
+<mat-toolbar color="primary" class="header">
+    <button mat-button class="sidenav-toggle" (click)="mbsapiSidenav.toggle()">
+      <mat-icon>{{ mbsapiSidenav.opened ? 'menu_open' : 'menu' }}</mat-icon>
+    </button>
+    <span>MbsApi: {{sample.name}}</span>
+  </mat-toolbar>
+  <mat-sidenav-container class="sidenav-container">
+    <mat-sidenav #mbsapiSidenav class="mat-elevation-z16" mode="push" fixedInViewport="false" opened="false">
+      <mat-nav-list>
+        <mat-list-item *ngFor="let s of samples" [routerLink]="'/mbsapi/' + s.route"
+          routerLinkActive="sidenav-item-selected" (click)="sample = s; mbsapiSidenav.close();"
+          [class.sidenav-item-selected]="sample == s">
+          {{s.name}}
+        </mat-list-item>
+      </mat-nav-list>
     </mat-sidenav>
     <mat-sidenav-content>
-        <mat-toolbar color="primary" class="mbsapi-header">
-            <button mat-button class="mbsapi-sidenav-toggle" (click)="mbsapiSidenav.toggle();">
-                <mat-icon>menu</mat-icon>
-            </button>
-            <div>MbsApi: {{currentSample.name}}</div>
-        </mat-toolbar>
-        <router-outlet></router-outlet>
-        <app-footer></app-footer>
+      <router-outlet></router-outlet>
     </mat-sidenav-content>
-</mat-sidenav-container>
+  </mat-sidenav-container>

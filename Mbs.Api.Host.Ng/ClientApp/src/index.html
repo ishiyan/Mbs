@@ -1,37 +1,42 @@
 <!doctype html>
-<html lang="en">
+<html lang="en-US">
 
 <head>
-    <meta charset="utf-8">
-    <title>Ngcli-mb</title>
-    <base href="/">
+  <meta charset="utf-8">
+  <title>Ngcli-mb</title>
+  <base href="/">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
 
-    <script type="text/x-mathjax-config">
-        MathJax.Hub.Config({
-          tex2jax: { inlineMath: [ ["$", "$"], ["\\(","\\)"] ], displayMath: [ ["$$","$$"], ["\\[", "\\]"] ], processEscapes: true, ignoreClass: "tex2jax_ignore|dno" },
-          TeX: { noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } } },
-          messageStyle: "none"
-        });
-    </script>
-    
-    <script type="text/javascript" async src="assets/mathjax/MathJax.js?config=TeX-AMS_CHTML"></script>
-    <!--
-        <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS_CHTML"></s\cript>
-        Or the following if you want to serve it offline:
-        <script type="text/javascript" async src="assets/mathjax/MathJax.js?config=TeX-AMS_CHTML"></script>
-    -->
-</head>
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: { inlineMath: [ ["$", "$"], ["\\(","\\)"] ], displayMath: [ ["$$","$$"], ["\\[", "\\]"] ], processEscapes: true, ignoreClass: "tex2jax_ignore|dno" },
+      TeX: { noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } } },
+      messageStyle: "none"
+    });
+  </script>
 
-<!-- link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined" rel="stylesheet" -->
-<!-- link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500|Roboto+Mono:300" rel="stylesheet" -->
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500|Roboto+Mono:300|Material+Icons|Material+Icons+Outlined">
+  <script type="text/javascript" async src="assets/mathjax/MathJax.js?config=TeX-AMS_CHTML"></script>
+  <!--
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS_CHTML"></s\cript>
+  Or the following if you want to serve it offline:
+  <script type="text/javascript" async src="assets/mathjax/MathJax.js?config=TeX-AMS_CHTML"></script>
+  -->
+  
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Mono:300&display=swap" rel="stylesheet">
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
 </head>
 
 <body class="mat-app-background">
-    <app-root></app-root>
+  <app-root></app-root>
+  <script>
+    // This hides the address bar on mobile browsers
+    // https://developers.google.com/web/fundamentals/native-hardware/fullscreen/
+    window.addEventListener('load', function () { window.scrollTo(0, 1); });
+  </script>
 </body>
 
 </html>

@@ -1,4 +1,4 @@
-@import '../app_components_theme';
+@import '../app-components-theme';
 
 // Define the dark theme.
 $primary: mat-palette($mat-brown);
@@ -7,4 +7,4 @@ $warn:    mat-palette($mat-red);
 
 $theme: mat-dark-theme($primary, $accent, $warn);
 @include angular-material-theme($theme);
-@include app_components_theme($theme);
+@include app-components-theme($theme);

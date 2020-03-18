@@ -12,12 +12,11 @@ import { MatIconRegistry } from '@angular/material/icon';
 export class ToolbarComponent {
     private map: any = {};
     private mapKeys: any = [];
+    public secondRowOpen = true;
 
     constructor(iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
-        iconRegistry.addSvgIcon(
-            'mbrane',
-            sanitizer.bypassSecurityTrustResourceUrl('assets/img/mbrane-top.svg'));
-      }
+        iconRegistry.addSvgIcon('mbrane-top', sanitizer.bypassSecurityTrustResourceUrl('assets/img/mbrane-top.svg'));
+    }
 
     @Input() public set toolbarItems(input: any) {
         this.map = input;

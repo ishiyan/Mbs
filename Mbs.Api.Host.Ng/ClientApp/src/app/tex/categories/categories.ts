@@ -8,18 +8,18 @@ import { scienceEquationsSamples } from '../samples/science-equations-samples';
 export const categories: Category[] = [
 
     {
-        name: 'Example formulas', samples: exampleFormulasSamples
+        name: 'Example formulas', route: 'examples',  samples: exampleFormulasSamples
     },
     {
-        name: 'Basic functionality', samples: basicFunctionalitySamples
+        name: 'Basic functionality', route: 'basic', samples: basicFunctionalitySamples
     },
     {
-        name: 'Multiline functionality', samples: multilineFunctionalitySamples
+        name: 'Multiline functionality', route: 'multiline', samples: multilineFunctionalitySamples
     },
     {
-        name: 'Symbols', samples: symbolSamples
+        name: 'Symbols', route: 'symbols', samples: symbolSamples
     },
     {
-        name: 'Science equations', samples: scienceEquationsSamples
+        name: 'Science equations', route: 'science', samples: scienceEquationsSamples
     }
 ];

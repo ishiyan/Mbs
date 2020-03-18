@@ -190,7 +190,7 @@ xcopy /S /Q /G /R /Y /I "%source_folder%\jax" "%target_folder%\jax"
 xcopy /S /Q /G /R /Y /I "%source_folder%\localization" "%target_folder%\localization"
 xcopy /S /Q /G /R /Y /I "%source_folder%\fonts" "%target_folder%\fonts"
 ```
-link_mathjax_to_assets.bat
+link_mathjax_to_assets.cmd
 ```shell
 @echo off
 set source_folder=node_modules\mathjax
@@ -204,7 +204,7 @@ mklink /J "%target_folder%\jax" "%source_folder%\jax"
 mklink /J "%target_folder%\localization" "%source_folder%\localization"
 mklink /J "%target_folder%\fonts" "%source_folder%\fonts"
 ```
-delete_mathjax_from_assets.bat
+delete_mathjax_from_assets.cmd
 ```shell
 @echo off
 set target_folder=src\assets\mathjax
@@ -252,6 +252,39 @@ declare module 'd3' {
   export * from 'd3-zoom';
 }
 
+```
+
+# Using Material Design icons
+
+```shell
+npm install -prod material-design-icons@latest
+```
+You can use it in two ways.
+
+First one. Add to the `head` section of the `index.html`:
+```html
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons&display=outlined" rel="stylesheet">
+```
+
+Second one. Add to the `styles.scss`:
+```scss
+@import '~material-design-icons/iconfont/material-icons.css';
+```
+
+# Using up-to-date Material Design icons font
+
+The original Google package described above is not up-to-date and misses many icons.
+You can use a font-replacement package which has up-to-date fonts.
+
+This font has only regular, not outline and rounded flavours. 
+```shell
+npm install -prod material-design-icons-iconfont@latest
+```
+
+Add to the `styles.scss`:
+```scss
+$material-design-icons-font-directory-path: '~material-design-icons-iconfont/dist/fonts/';
+@import '~material-design-icons-iconfont/src/material-design-icons';
 ```
 
 # typescript warnings

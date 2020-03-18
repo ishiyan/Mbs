@@ -1,5 +1,13 @@
 @import '~@angular/material/theming';
-@import './app_components_theme';
+
+// Include material icons fonts.
+// @import '~material-design-icons/iconfont/material-icons.css';
+// Original distribution is outdated, we use the following one which has many newer icons.
+// It is only regular. If you need outline, switch to the original distribution.
+$material-design-icons-font-directory-path: '~material-design-icons-iconfont/dist/fonts/';
+@import '~material-design-icons-iconfont/src/material-design-icons';
+
+@import './app-components-theme';
 
 // Include material core styles.
 @include mat-core();
@@ -10,7 +18,7 @@ $accent:  mat-palette($mat-pink, A200, A100, A400);
 
 $theme: mat-light-theme($primary, $accent);
 @include angular-material-theme($theme);
-@include app_components_theme($theme);
+@include app-components-theme($theme);
 
 body {
  font-family: Roboto;

@@ -8,12 +8,23 @@
 }
 
 .button-toggle-group {
-  margin: 0;
+  margin: 0px;
   margin-right: 16px;
+  align-items: center;
+  justify-content: center;
+}
+
+.button-toggle {
+  margin: 0px;
+  padding: 0px;
+}
+
+.svg-icon {
+  margin: 0px;
 }
 
 .slide-toggle {
-  margin: 0;
+  margin: 0px;
   margin-right: 16px;
 }
 

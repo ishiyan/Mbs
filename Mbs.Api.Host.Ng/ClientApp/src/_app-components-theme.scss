@@ -7,7 +7,7 @@
 @import 'app/shared/mbs/charts/ohlcv-chart/ohlcv-chart-theme';
 
 
-@mixin app_components_theme($theme) {
+@mixin app-components-theme($theme) {
   $primary: map-get($theme, primary);
   $accent: map-get($theme, accent);
   $warn: map-get($theme, warn);

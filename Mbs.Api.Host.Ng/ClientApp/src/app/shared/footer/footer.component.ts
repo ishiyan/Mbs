@@ -9,8 +9,6 @@ import { MatIconRegistry } from '@angular/material/icon';
 })
 export class FooterComponent {
   constructor(iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
-    iconRegistry.addSvgIcon(
-        'mbrane',
-        sanitizer.bypassSecurityTrustResourceUrl('assets/img/mbrane-bottom.svg'));
+    iconRegistry.addSvgIcon('mbrane-bottom', sanitizer.bypassSecurityTrustResourceUrl('assets/img/mbrane-bottom.svg'));
   }
- }
+}

@@ -1,24 +1,20 @@
-<mat-sidenav-container class="tex-sidenav-container">
-    <mat-sidenav #texSidenav fixedTopGap="112" class="mat-elevation-z16"
-        [mode]="mobileQuery.matches ? 'over' : 'side'"
-        [fixedInViewport]="mobileQuery.matches"
-        [opened]="!mobileQuery.matches">
-        <mat-list>
-            <mat-list-item *ngFor="let category of categories">
-                <button mat-button (click)="selectedCategory = category" [class.tex-sidenav-item-selected]="currentCategory == category">
-                    {{category.name}}
-                </button>
-            </mat-list-item>    
-        </mat-list>
-    </mat-sidenav>
-    <mat-sidenav-content>
-        <mat-toolbar color="primary" class="tex-header">
-            <button mat-button class="tex-sidenav-toggle" (click)="texSidenav.toggle()">
-                <mat-icon>menu</mat-icon>
-            </button>
-            <div>TeX: {{currentCategory.name}}</div>
-        </mat-toolbar>
-        <app-tex-list [samples]="currentCategory.samples"></app-tex-list>
-        <app-footer></app-footer>
-    </mat-sidenav-content>
+<mat-toolbar color="primary" class="header">
+  <button mat-button class="sidenav-toggle" (click)="texSidenav.toggle()">
+    <mat-icon>{{ texSidenav.opened ? 'menu_open' : 'menu' }}</mat-icon>
+  </button>
+  <span>TeX: {{category.name}}</span>
+</mat-toolbar>
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #texSidenav class="mat-elevation-z16" mode="push" fixedInViewport="false" opened="false">
+    <mat-nav-list>
+      <mat-list-item *ngFor="let c of categories" [routerLink]="'/tex/' + c.route"
+        routerLinkActive="sidenav-item-selected" (click)="category = c; texSidenav.close();"
+        [class.sidenav-item-selected]="category == c">
+        {{c.name}}
+      </mat-list-item>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <app-tex-list [samples]="category.samples"></app-tex-list>
+  </mat-sidenav-content>
 </mat-sidenav-container>

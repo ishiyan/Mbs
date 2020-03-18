@@ -1,5 +1,3 @@
-@import '../../../styles';
-
 .footer {
     margin-top: 40px;
     padding: 2px;
@@ -24,10 +22,9 @@
 
   .footer-logo {
     margin-right: 24px;
-    padding-bottom: -12px;
   }
 
-  @media screen and (max-width: 720px){
+  @media screen and (max-width: 520px){
     .footer-list {
       flex-direction: column;
     }

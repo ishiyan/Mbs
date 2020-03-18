@@ -1,4 +1,4 @@
-module.exports = (function() {
+module.exports = (function () {
   // From Mike Bostock: http://bl.ocks.org/597287
   // Adapted from Nick Johnson: http://bit.ly/biWkkq
   var pairs = [
@@ -20,10 +20,10 @@ module.exports = (function() {
     return [x, y];
   }
   return {
-    xy2d: function(x, y, z) {
+    xy2d: function (x, y, z) {
       var quad = 0,
-          pair,
-          i = 0;
+        pair,
+        i = 0;
       while (--z >= 0) {
         pair = pairs[quad][(x & (1 << z) ? 2 : 0) | (y & (1 << z) ? 1 : 0)];
         i = (i << 2) | pair[0];
@@ -31,13 +31,13 @@ module.exports = (function() {
       }
       return i;
     },
-    d2xy: function(z, t) {
+    d2xy: function (z, t) {
       var n = 1 << z,
-          x = 0,
-          y = 0;
+        x = 0,
+        y = 0;
       for (var s = 1; s < n; s *= 2) {
         var rx = 1 & (t / 2),
-            ry = 1 & (t ^ rx);
+          ry = 1 & (t ^ rx);
         var xy = rot(s, x, y, rx, ry);
         x = xy[0] + s * rx;
         y = xy[1] + s * ry;

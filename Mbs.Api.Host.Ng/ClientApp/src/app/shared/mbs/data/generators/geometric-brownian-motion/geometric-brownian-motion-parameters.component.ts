@@ -5,21 +5,21 @@ import { GeometricBrownianMotionParameters } from './geometric-brownian-motion-p
 import { Enums } from '../../../utils/enums';
 
 @Component({
-    selector: 'app-mbs-data-generators-geometric-brownian-motion-parameters',
-    templateUrl: './geometric-brownian-motion-parameters.component.html',
-    styleUrls: ['./geometric-brownian-motion-parameters.component.scss']
+  selector: 'app-mbs-data-generators-geometric-brownian-motion-parameters',
+  templateUrl: './geometric-brownian-motion-parameters.component.html',
+  styleUrls: ['./geometric-brownian-motion-parameters.component.scss']
 })
 export class GeometricBrownianMotionParametersComponent {
-    @Input() geometricBrownianMotionParameters: GeometricBrownianMotionParameters;
+  @Input() geometricBrownianMotionParameters: GeometricBrownianMotionParameters;
 
-    eq1 = '$mid_t=mid_0\\exp((\\mu-\\frac{\\sigma^2}{2})t+\\sigma\\sqrt{dt}\\cdot ng),$';
-    eq2 = '$mid_0=\\beta+\\frac{\\alpha}{2},$';
-    eq3 = '$dt=\\frac{1}{L - 1},$';
-    eq4 = '$mid_t\\ is\\ normalized\\ to\\ [\\beta, \\alpha+\\beta],$';
-    eq5 = '$sample_t=mid_t+noise_t$';
+  eq1 = '$mid_t=mid_0\\exp((\\mu-\\frac{\\sigma^2}{2})t+\\sigma\\sqrt{dt}\\cdot ng),$';
+  eq2 = '$mid_0=\\beta+\\frac{\\alpha}{2},$';
+  eq3 = '$dt=\\frac{1}{L - 1},$';
+  eq4 = '$mid_t\\ is\\ normalized\\ to\\ [\\beta, \\alpha+\\beta],$';
+  eq5 = '$sample_t=mid_t+noise_t$';
 
-    normalRandomGenerators = Object.keys(NormalRandomGeneratorKind);
-    uniformRandomGenerators = Object.keys(UniformRandomGeneratorKind);
+  normalRandomGenerators = Object.keys(NormalRandomGeneratorKind);
+  uniformRandomGenerators = Object.keys(UniformRandomGeneratorKind);
 
-    compare = Enums.compare;
+  compare = Enums.compare;
 }

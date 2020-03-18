@@ -6,16 +6,18 @@ import { SyntheticDataComponent } from './mbsapi-samples/synthetic-data/syntheti
 import { Sample1Component } from './mbsapi-samples/sample-1/sample-1.component';
 
 const routes: Routes = [
-    { path: '', component: MbsApiComponent, children: [
-        { path: 'synthetic-data', component: SyntheticDataComponent },
-        { path: 'sample-1', component: Sample1Component },
-        { path: '', component: SyntheticDataComponent }
-    ]},
-    { path: '**', redirectTo: '' }
+  {
+    path: '', component: MbsApiComponent, children: [
+      { path: 'synthetic-data', component: SyntheticDataComponent },
+      { path: 'sample-1', component: Sample1Component },
+      { path: '', component: SyntheticDataComponent }
+    ]
+  },
+  { path: '**', redirectTo: '' }
 ];
 
 @NgModule({
-    imports: [RouterModule.forChild(routes)],
-    exports: [RouterModule]
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
 })
 export class MbsApiRoutingModule { }

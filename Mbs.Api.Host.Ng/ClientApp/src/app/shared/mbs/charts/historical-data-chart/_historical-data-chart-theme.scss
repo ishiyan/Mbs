@@ -7,7 +7,6 @@
   $is-dark-theme: map-get($theme, is-dark);
 
   app-historical-data-chart {
-
     .mat-button-toggle {
       .svg-icon {
         stroke: mat-color($foreground, hint-text);

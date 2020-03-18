@@ -1,4 +1,4 @@
-<br/>
+<br />
 <div class="table-container">
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" multiTemplateDataRows>
     <!-- added: multiTemplateDataRows -->
@@ -39,7 +39,8 @@
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
     <!-- added -->
-    <tr mat-row *matRowDef="let instrument; columns: displayedColumns;" class="row" [class.expanded-row]="expandedInstrument === instrument"
+    <tr mat-row *matRowDef="let instrument; columns: displayedColumns;" class="row"
+      [class.expanded-row]="expandedInstrument === instrument"
       (click)="expandedInstrument = (expandedInstrument === instrument) ? null : instrument">
     </tr>
     <!-- was: tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr -->

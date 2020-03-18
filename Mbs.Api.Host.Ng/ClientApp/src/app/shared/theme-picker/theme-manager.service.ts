@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 
 /**
  * Manages stylesheets which are loaded into named slots so that they can be removed or changed later.

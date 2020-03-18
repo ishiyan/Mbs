@@ -4,8 +4,8 @@
     <mat-panel-title>{{chartTitle}}</mat-panel-title>
   </mat-expansion-panel-header>
 
-  <mat-button-toggle-group #group1="matButtonToggleGroup" class="button-toggle-group" [value]="ohlcvViewType" *ngIf="isOhlcv"
-    (change)="ohlcvViewType = group1.value">
+  <mat-button-toggle-group #group1="matButtonToggleGroup" class="button-toggle-group" [value]="ohlcvViewType"
+    *ngIf="isOhlcv" (change)="ohlcvViewType = group1.value">
     <mat-button-toggle [value]="ohlcvViewCandlesticks" class="button-toggle">
       <mat-icon svgIcon="mb-candlesticks" class="svg-icon"></mat-icon>
     </mat-button-toggle>
@@ -20,8 +20,8 @@
     </mat-button-toggle>
   </mat-button-toggle-group>
 
-  <mat-button-toggle-group #group2="matButtonToggleGroup" class="button-toggle-group" [value]="scalarViewType" *ngIf="isScalar"
-    (change)="scalarViewType = group2.value">
+  <mat-button-toggle-group #group2="matButtonToggleGroup" class="button-toggle-group" [value]="scalarViewType"
+    *ngIf="isScalar" (change)="scalarViewType = group2.value">
     <mat-button-toggle [value]="scalarViewLine" class="button-toggle">
       <mat-icon svgIcon="mb-line" class="svg-icon"></mat-icon>
     </mat-button-toggle>
@@ -33,8 +33,8 @@
     </mat-button-toggle>
   </mat-button-toggle-group>
 
-  <mat-button-toggle-group #group3="matButtonToggleGroup" class="button-toggle-group" [value]="tradeViewType" *ngIf="isTrade"
-    (change)="tradeViewType = group3.value">
+  <mat-button-toggle-group #group3="matButtonToggleGroup" class="button-toggle-group" [value]="tradeViewType"
+    *ngIf="isTrade" (change)="tradeViewType = group3.value">
     <mat-button-toggle [value]="tradeViewLine" class="button-toggle">
       <mat-icon svgIcon="mb-line" class="svg-icon"></mat-icon>
     </mat-button-toggle>
@@ -46,8 +46,8 @@
     </mat-button-toggle>
   </mat-button-toggle-group>
 
-  <mat-button-toggle-group #group4="matButtonToggleGroup" class="button-toggle-group" [value]="quoteViewType" *ngIf="isQuote"
-    (change)="quoteViewType = group4.value">
+  <mat-button-toggle-group #group4="matButtonToggleGroup" class="button-toggle-group" [value]="quoteViewType"
+    *ngIf="isQuote" (change)="quoteViewType = group4.value">
     <mat-button-toggle [value]="quoteViewBars" class="button-toggle">
       <mat-icon svgIcon="mb-line" class="svg-icon"></mat-icon>
     </mat-button-toggle>

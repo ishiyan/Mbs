@@ -17,13 +17,13 @@ import { Table12Component } from './mbsapi-samples/sample-1/table12/table12.comp
 import { ListService } from './mbsapi-samples/sample-1/table12/list.service';
 
 @NgModule({
-    imports: [
-        CommonModule, FormsModule, FlexLayoutModule,
-        MbsApiRoutingModule, MaterialModule, SnackBarModule, MbsModule, FooterModule, SvgViewerModule
-    ],
-    declarations: [
-        MbsApiComponent, SyntheticDataComponent, Sample1Component, Table1Component, Table12Component
-    ],
-    providers: [ListService]
+  imports: [
+    CommonModule, FormsModule, FlexLayoutModule,
+    MbsApiRoutingModule, MaterialModule, SnackBarModule, MbsModule, FooterModule, SvgViewerModule
+  ],
+  declarations: [
+    MbsApiComponent, SyntheticDataComponent, Sample1Component, Table1Component, Table12Component
+  ],
+  providers: [ListService]
 })
 export class MbsApiModule { }

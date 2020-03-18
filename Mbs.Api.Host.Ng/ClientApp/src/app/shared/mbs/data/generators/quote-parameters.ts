@@ -9,34 +9,34 @@ import { objectName, spreadFractionName, askSizeName, bidSizeName } from './cons
  *
  *  ➋ The ask and bid sizes are constant values. */
 export class QuoteParameters {
-    private static readonly defaultSpreadFraction: number = 0.3;
-    private static readonly defaultAskSize: number = 100;
-    private static readonly defaultBidSize: number = 100;
+  private static readonly defaultSpreadFraction: number = 0.3;
+  private static readonly defaultAskSize: number = 100;
+  private static readonly defaultBidSize: number = 100;
 
-    /** The spread fraction, ρs, which determines the ask and bid prices as a fraction of the mid price. */
-    spreadFraction: number = QuoteParameters.defaultSpreadFraction;
+  /** The spread fraction, ρs, which determines the ask and bid prices as a fraction of the mid price. */
+  spreadFraction: number = QuoteParameters.defaultSpreadFraction;
 
-    /** The ask size, which is the same for all quotes; should be positive. */
-    askSize: number = QuoteParameters.defaultAskSize;
+  /** The ask size, which is the same for all quotes; should be positive. */
+  askSize: number = QuoteParameters.defaultAskSize;
 
-    /** The bid size, which is the same for all quotes; should be positive. */
-    bidSize: number = QuoteParameters.defaultBidSize;
+  /** The bid size, which is the same for all quotes; should be positive. */
+  bidSize: number = QuoteParameters.defaultBidSize;
 
-    constructor(data?: QuoteParameters) {
-        if (data) {
-            for (const property in data) {
-                if (data.hasOwnProperty(property)) {
-                    (<any>this)[property] = (<any>data)[property];
-                }
-            }
+  constructor(data?: QuoteParameters) {
+    if (data) {
+      for (const property in data) {
+        if (data.hasOwnProperty(property)) {
+          (<any>this)[property] = (<any>data)[property];
         }
+      }
     }
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === objectName ? data : {};
-        data[spreadFractionName] = this.spreadFraction;
-        data[askSizeName] = this.askSize;
-        data[bidSizeName] = this.bidSize;
-        return data;
-    }
+  toJSON(data?: any) {
+    data = typeof data === objectName ? data : {};
+    data[spreadFractionName] = this.spreadFraction;
+    data[askSizeName] = this.askSize;
+    data[bidSizeName] = this.bidSize;
+    return data;
+  }
 }

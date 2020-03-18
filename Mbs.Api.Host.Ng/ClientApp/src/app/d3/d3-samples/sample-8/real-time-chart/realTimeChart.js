@@ -6,22 +6,22 @@ var d3 = require('d3');
 
 export function realTimeChart() {
   var version = "0.1.0",
-      datum, initialData, data,
-      maxSeconds = 300, pixelsPerSecond = 10,
-      svgWidth = 700, svgHeight = 300,
-      margin = { top: 20, bottom: 20, left: 50, right: 30, topNav: 10, bottomNav: 20 },
-      dimension = { chartTitle: 20, xAxis: 20, yAxis: 20, xTitle: 20, yTitle: 20, navChart: 70 },
-      barWidth = 3,
-      maxY = 100, minY = 0,
-      chartTitle, yTitle, xTitle,
-      drawXAxis = true, drawYAxis = true, drawNavChart = true,
-      border,
-      selection,
-      barId = 0,
-      isRunning = true;
+    datum, initialData, data,
+    maxSeconds = 300, pixelsPerSecond = 10,
+    svgWidth = 700, svgHeight = 300,
+    margin = { top: 20, bottom: 20, left: 50, right: 30, topNav: 10, bottomNav: 20 },
+    dimension = { chartTitle: 20, xAxis: 20, yAxis: 20, xTitle: 20, yTitle: 20, navChart: 70 },
+    barWidth = 3,
+    maxY = 100, minY = 0,
+    chartTitle, yTitle, xTitle,
+    drawXAxis = true, drawYAxis = true, drawNavChart = true,
+    border,
+    selection,
+    barId = 0,
+    isRunning = true;
 
   // create the chart
-  var chart = function(s) {
+  var chart = function (s) {
     selection = s;
     if (selection == undefined) {
       console.error("selection is undefined");
@@ -51,86 +51,86 @@ export function realTimeChart() {
 
     // append the svg
     var svg = selection.append("svg")
-        .attr("width", svgWidth)
-        .attr("height", svgHeight)
-        .style("border", function(d) { 
-          if (border) return "1px solid lightgray"; 
-          else return null;
-        });
+      .attr("width", svgWidth)
+      .attr("height", svgHeight)
+      .style("border", function (d) {
+        if (border) return "1px solid lightgray";
+        else return null;
+      });
 
     // create main group and translate
     var main = svg.append("g")
-        .attr("transform", "translate (" + margin.left + "," + marginTop + ")");
+      .attr("transform", "translate (" + margin.left + "," + marginTop + ")");
 
     // define clip-path
     main.append("defs").append("clipPath")
-        .attr("id", "myClip")
+      .attr("id", "myClip")
       .append("rect")
-        .attr("x", 0)
-        .attr("y", 0)
-        .attr("width", width)
-        .attr("height", height);
+      .attr("x", 0)
+      .attr("y", 0)
+      .attr("width", width)
+      .attr("height", height);
 
     // create chart background
     main.append("rect")
-        .attr("x", 0)
-        .attr("y", 0)
-        .attr("width", width)
-        .attr("height", height)
-        .style("fill", "#f5f5f5");
+      .attr("x", 0)
+      .attr("y", 0)
+      .attr("width", width)
+      .attr("height", height)
+      .style("fill", "#f5f5f5");
 
     // note that two groups are created here, the latter assigned to barG;
     // the former will contain a clip path to constrain objects to the chart area; 
     // no equivalent clip path is created for the nav chart as the data itself
     // is clipped to the full time domain
     var barG = main.append("g")
-        .attr("class", "barGroup")
-        .attr("transform", "translate(0, 0)")
-        .attr("clip-path", "url(#myClip")
+      .attr("class", "barGroup")
+      .attr("transform", "translate(0, 0)")
+      .attr("clip-path", "url(#myClip")
       .append("g");
 
     // add group for x axis
     var xAxisG = main.append("g")
-        .attr("class", "x axis")
-        .attr("transform", "translate(0," + height + ")");
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")");
 
     // add group for y axis
     var yAxisG = main.append("g")
-        .attr("class", "y axis");
+      .attr("class", "y axis");
 
     // in x axis group, add x axis title
     xAxisG.append("text")
-        .attr("class", "title")
-        .attr("x", width / 2)
-        .attr("y", 25)
-        .attr("dy", ".71em")
-        .text(function(d) { 
-          var text = xTitle == undefined ? "" : xTitle;
-          return text; 
-        });
+      .attr("class", "title")
+      .attr("x", width / 2)
+      .attr("y", 25)
+      .attr("dy", ".71em")
+      .text(function (d) {
+        var text = xTitle == undefined ? "" : xTitle;
+        return text;
+      });
 
     // in y axis group, add y axis title
     yAxisG.append("text")
-        .attr("class", "title")
-        .attr("transform", "rotate(-90)")
-        .attr("x", - height / 2)
-        .attr("y", -35)
-        .attr("dy", ".71em")
-        .text(function(d) { 
-          var text = yTitle == undefined ? "" : yTitle;
-          return text; 
-        });
+      .attr("class", "title")
+      .attr("transform", "rotate(-90)")
+      .attr("x", - height / 2)
+      .attr("y", -35)
+      .attr("dy", ".71em")
+      .text(function (d) {
+        var text = yTitle == undefined ? "" : yTitle;
+        return text;
+      });
 
     // in main group, add chart title
     main.append("text")
-        .attr("class", "chartTitle")
-        .attr("x", width / 2)
-        .attr("y", -20)
-        .attr("dy", ".71em")
-        .text(function(d) { 
-          var text = chartTitle == undefined ? "" : chartTitle;
-          return text; 
-        });
+      .attr("class", "chartTitle")
+      .attr("x", width / 2)
+      .attr("y", -20)
+      .attr("dy", ".71em")
+      .text(function (d) {
+        var text = chartTitle == undefined ? "" : chartTitle;
+        return text;
+      });
 
     // define main chart scales
     var x = d3.scaleTime().range([0, width]);
@@ -142,26 +142,26 @@ export function realTimeChart() {
 
     // add nav chart
     var nav = svg.append("g")
-        .attr("transform", "translate (" + margin.left + "," + marginTopNav + ")");
+      .attr("transform", "translate (" + margin.left + "," + marginTopNav + ")");
 
     // add nav background
     nav.append("rect")
-        .attr("x", 0)
-        .attr("y", 0)
-        .attr("width", width)
-        .attr("height", heightNav)
-        .style("fill", "#F5F5F5")
-        .style("shape-rendering", "crispEdges")
-        .attr("transform", "translate(0, 0)");
+      .attr("x", 0)
+      .attr("y", 0)
+      .attr("width", width)
+      .attr("height", heightNav)
+      .style("fill", "#F5F5F5")
+      .style("shape-rendering", "crispEdges")
+      .attr("transform", "translate(0, 0)");
 
     // add group to hold line and area paths
     var navG = nav.append("g")
-        .attr("class", "nav");
+      .attr("class", "nav");
 
     // add group to hold nav x axis
     var xAxisGNav = nav.append("g")
-        .attr("class", "x axis")
-        .attr("transform", "translate(0," + heightNav + ")");
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + heightNav + ")");
 
     // define nav scales
     var xNav = d3.scaleTime().range([0, widthNav]);
@@ -172,15 +172,15 @@ export function realTimeChart() {
 
     // define function that will draw the nav area chart
     var navArea = d3.area()
-        .curve(d3.curveMonotoneX)
-        .x(function (d) { return xNav(d.time); })
-        .y1(function (d) { return yNav(d.value); })
-        .y0(heightNav);
+      .curve(d3.curveMonotoneX)
+      .x(function (d) { return xNav(d.time); })
+      .y1(function (d) { return yNav(d.value); })
+      .y0(heightNav);
 
     // define function that will draw the nav line chart
     var navLine = d3.line()
-        .x(function (d) { return xNav(d.time); })
-        .y(function (d) { return yNav(d.value); });
+      .x(function (d) { return xNav(d.time); })
+      .y(function (d) { return yNav(d.value); });
 
     // compute initial time domains...
     var ts = new Date().getTime();
@@ -199,7 +199,7 @@ export function realTimeChart() {
 
     // set the scale domains for main and nav charts
     x.domain([startTimeViewport, endTimeViewport]);
-    xNav.domain([startTime, endTime]); 
+    xNav.domain([startTime, endTime]);
 
     // update axis with modified scale
     xAxis.scale(x)(xAxisG);
@@ -210,44 +210,44 @@ export function realTimeChart() {
     // the time domain of main chart)
     var sel;
     var viewport = d3.brushX()
-        .extent([ [0,0], [widthNav,heightNav] ])
-        .on("brush end", function () {
-          // get the current time extent of viewport
-          var extent = d3.event.selection || xNav.range();
-          // console.log(extent);
+      .extent([[0, 0], [widthNav, heightNav]])
+      .on("brush end", function () {
+        // get the current time extent of viewport
+        var extent = d3.event.selection || xNav.range();
+        // console.log(extent);
 
-          startTimeViewport = xNav.invert(extent[0]);
-          endTimeViewport = xNav.invert(extent[1]);
-          // console.log(startTimeViewport.getMinutes() + ':' + startTimeViewport.getSeconds() + ' - ' + endTimeViewport.getMinutes() + ':' + endTimeViewport.getSeconds());
+        startTimeViewport = xNav.invert(extent[0]);
+        endTimeViewport = xNav.invert(extent[1]);
+        // console.log(startTimeViewport.getMinutes() + ':' + startTimeViewport.getSeconds() + ' - ' + endTimeViewport.getMinutes() + ':' + endTimeViewport.getSeconds());
 
-          intervalViewport = endTimeViewport.getTime() - startTimeViewport.getTime();
-          offsetViewport = startTimeViewport.getTime() - startTime.getTime();
+        intervalViewport = endTimeViewport.getTime() - startTimeViewport.getTime();
+        offsetViewport = startTimeViewport.getTime() - startTime.getTime();
 
-          // handle invisible viewport
-          if (intervalViewport == 0) {
-            intervalViewport = maxSeconds * 1000;
-            offsetViewport = 0;
-          }
+        // handle invisible viewport
+        if (intervalViewport == 0) {
+          intervalViewport = maxSeconds * 1000;
+          offsetViewport = 0;
+        }
 
-          // update the x domain of the main chart
-          x.domain((extent === null) ? xNav.domain() : extent);
+        // update the x domain of the main chart
+        x.domain((extent === null) ? xNav.domain() : extent);
 
-          // update the x axis of the main chart
-          xAxis.scale(x)(xAxisG);
+        // update the x axis of the main chart
+        xAxis.scale(x)(xAxisG);
 
-          sel = d3.event.selection || xNav.range();
-          x.domain(sel.map(xNav.invert, xNav));
+        sel = d3.event.selection || xNav.range();
+        x.domain(sel.map(xNav.invert, xNav));
 
-          // update display
-          refresh();
-        });
+        // update display
+        refresh();
+      });
 
     // create group and assign to brush
     var viewportG = nav.append("g")
-        .attr("class", "viewport")
-        .call(viewport)
-        .selectAll("rect")
-        .attr("height", heightNav);
+      .attr("class", "viewport")
+      .call(viewport)
+      .selectAll("rect")
+      .attr("height", heightNav);
 
     // initial invocation
     data = initialData || [];
@@ -262,9 +262,9 @@ export function realTimeChart() {
       // process data to remove too late or too early data items 
       // (the latter could occur if the chart is stopped, while data
       // is being pumped in)
-      data = data.filter(function(d) {
+      data = data.filter(function (d) {
         if (d.time.getTime() > startTime.getTime() &&
-            d.time.getTime() < endTime.getTime()) 
+          d.time.getTime() < endTime.getTime())
           return true;
       })
 
@@ -282,36 +282,37 @@ export function realTimeChart() {
       // the x position is to the left of the chart, where the item would be 
       // exited
       var updateSel = barG.selectAll(".bar")
-          .data(data);
+        .data(data);
 
       // remove items
       updateSel.exit().remove();
 
       // append items
       updateSel.enter().append("rect")
-          .attr("class", "bar")
-          .attr("id", function() { 
-            return "bar-" + barId++; 
-          })
-          .attr("shape-rendering", "crispEdges");
+        .attr("class", "bar")
+        .attr("id", function () {
+          return "bar-" + barId++;
+        })
+        .attr("shape-rendering", "crispEdges");
 
       // update items
       updateSel
-          .attr("x", function(d) {
-            // console.log(x(d.time));
-            var val = Math.round(x(d.time) - barWidth);
-            if(val !== val) {
-              val = 0;
-            }
-            return val; })
-          .attr("y", function(d) { return y(d.value); })
-          .attr("width", barWidth)
-          .attr("height", function(d) { return height - y(d.value); })
-          .style("fill", function(d) { return d.color == undefined ? "black" : d.color; })
-          // .style("stroke", "none")
-          // .style("stroke-width", "1px")
-          // .style("stroke-opacity", 0.5)
-          .style("fill-opacity", 1);
+        .attr("x", function (d) {
+          // console.log(x(d.time));
+          var val = Math.round(x(d.time) - barWidth);
+          if (val !== val) {
+            val = 0;
+          }
+          return val;
+        })
+        .attr("y", function (d) { return y(d.value); })
+        .attr("width", barWidth)
+        .attr("height", function (d) { return height - y(d.value); })
+        .style("fill", function (d) { return d.color == undefined ? "black" : d.color; })
+        // .style("stroke", "none")
+        // .style("stroke-width", "1px")
+        // .style("stroke-opacity", 0.5)
+        .style("fill-opacity", 1);
 
       // also, bind data to nav chart
       // first remove current paths
@@ -319,17 +320,17 @@ export function realTimeChart() {
 
       // then append area path...
       navG.append('path')
-          .attr('class', 'area')
-          .attr('d', navArea(data));
+        .attr('class', 'area')
+        .attr('d', navArea(data));
 
       // ...and line path
       navG.append('path')
-          .attr('class', 'line')
-          .attr('d', navLine(data)); 
+        .attr('class', 'line')
+        .attr('d', navLine(data));
     }
 
     // function to keep the chart "moving" through time (right to left) 
-    setInterval(function() {
+    setInterval(function () {
       // get current viewport extent
       var extent = xNav.domain();
       var interval = extent[1] - extent[0];
@@ -364,9 +365,9 @@ export function realTimeChart() {
   }
 
   // chart getter/setters
- 
+
   // array of inital data
-  chart.initialData = function(_) {
+  chart.initialData = function (_) {
     if (arguments.length == 0) return initialData;
     initialData = _;
     return chart;
@@ -374,7 +375,7 @@ export function realTimeChart() {
 
   // new data item (this most recent item will appear 
   // on the right side of the chart, and begin moving left)
-  chart.datum = function(_) {
+  chart.datum = function (_) {
     if (arguments.length == 0) return datum;
     datum = _;
     data.push(datum);
@@ -382,84 +383,84 @@ export function realTimeChart() {
   }
 
   // svg width
-  chart.width = function(_) {
+  chart.width = function (_) {
     if (arguments.length == 0) return svgWidth;
     svgWidth = _;
     return chart;
   }
 
   // svg height
-  chart.height = function(_) {
+  chart.height = function (_) {
     if (arguments.length == 0) return svgHeight;
     svgHeight = _;
     return chart;
   }
 
   // svg border
-  chart.border = function(_) {
+  chart.border = function (_) {
     if (arguments.length == 0) return border;
     border = _;
     return chart;
   }
 
   // left margin
-  chart.left = function(_) {
+  chart.left = function (_) {
     if (arguments.length == 0) return margin.left;
     margin.left = _;
     return chart;
   }
 
   // top margin
-  chart.top = function(_) {
+  chart.top = function (_) {
     if (arguments.length == 0) return margin.top;
     margin.top = _;
     return chart;
   }
-  
+
   // right margin
-  chart.right = function(_) {
+  chart.right = function (_) {
     if (arguments.length == 0) return margin.right;
     margin.right = _;
     return chart;
   }
 
   // bottom margin
-  chart.bottom = function(_) {
+  chart.bottom = function (_) {
     if (arguments.length == 0) return margin.bottom;
     margin.bottom = _;
     return chart;
   }
 
   // chart title
-  chart.title = function(_) {
+  chart.title = function (_) {
     if (arguments.length == 0) return chartTitle;
     chartTitle = _;
     return chart;
   }
 
   // x axis title
-  chart.xTitle = function(_) {
+  chart.xTitle = function (_) {
     if (arguments.length == 0) return xTitle;
     xTitle = _;
     return chart;
   }
 
   // y axis title
-  chart.yTitle = function(_) {
+  chart.yTitle = function (_) {
     if (arguments.length == 0) return yTitle;
     yTitle = _;
     return chart;
   }
 
   // bar width
-  chart.barWidth = function(_) {
+  chart.barWidth = function (_) {
     if (arguments.length == 0) return barWidth;
     barWidth = _;
     return chart;
   }
 
   // bar width
-  chart.isRunning = function(_) {
+  chart.isRunning = function (_) {
     if (arguments.length == 0) return isRunning;
     isRunning = _;
     return chart;
@@ -467,6 +468,6 @@ export function realTimeChart() {
 
   // version
   chart.version = version;
-  
+
   return chart;
 }

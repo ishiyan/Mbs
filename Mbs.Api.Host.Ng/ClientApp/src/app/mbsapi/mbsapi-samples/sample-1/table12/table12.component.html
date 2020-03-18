@@ -1,4 +1,4 @@
-<br/>
+<br />
 <div class="table-container ">
   <mat-form-field>
     <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
@@ -41,7 +41,8 @@
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-      <tr mat-row *matRowDef="let instrument; columns: displayedColumns;" class="row" [class.expanded-row]="expandedInstrument === instrument"
+      <tr mat-row *matRowDef="let instrument; columns: displayedColumns;" class="row"
+        [class.expanded-row]="expandedInstrument === instrument"
         (click)="expandedInstrument = (expandedInstrument === instrument) ? null : instrument">
       </tr>
       <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="detail-row"></tr>

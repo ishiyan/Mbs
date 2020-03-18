@@ -40,29 +40,30 @@ import { HilbertPathsComponent } from './d3-samples/sample-5/hilbert-paths/hilbe
 import { HilbertStocksComponent } from './d3-samples/sample-5/hilbert-stocks/hilbert-stocks.component';
 import { Sample6Component } from './d3-samples/sample-6/sample-6.component';
 import { Sample7Component } from './d3-samples/sample-7/sample-7.component';
-import { D3tcHorizonChartInteractiveComponent
-     } from './d3-samples/sample-7/d3tc-horizon-chart-interactive/d3tc-horizon-chart-interactive.component';
+import {
+  D3tcHorizonChartInteractiveComponent
+} from './d3-samples/sample-7/d3tc-horizon-chart-interactive/d3tc-horizon-chart-interactive.component';
 import { D3tcHorizonChartBandsComponent } from './d3-samples/sample-7/d3tc-horizon-chart-bands/d3tc-horizon-chart-bands.component';
 import { D3tcHorizonChartSingleComponent } from './d3-samples/sample-7/d3tc-horizon-chart-single/d3tc-horizon-chart-single.component';
 import { Sample8Component } from './d3-samples/sample-8/sample-8.component';
 import { RealTimeChartComponent } from './d3-samples/sample-8/real-time-chart/real-time-chart.component';
 
 @NgModule({
-    imports: [
-        CommonModule, FormsModule, FlexLayoutModule,
-        D3RoutingModule, MaterialModule, FooterModule, MbsModule
-    ],
-    declarations: [
-        D3Component, Sample1Component, Sample2Component, BarchartComponent, BrushHandlesComponent, BrushHandles2Component,
-        ClickToRecenterBrushComponent, ClickToRecenterBrush2Component, ClickToSelectAllComponent, Sample3Component,
-        BrushAndZoomAreaChartComponent,
-        Sample4Component, D3tcArrowComponent, D3tcFinanceTimeComponent, D3tcCandlesticksComponent, D3tcOhlcComponent,
-        D3tcCloseComponent, D3tcVolumeComponent, D3tcBrushComponent, D3tcAxisAnnotationsComponent, D3tcCrosshairComponent,
-        D3tcSupportResistanceComponent, D3tcTrendlinesComponent, D3tcZoomingComponent, D3tcFeedComponent,
-        D3tcTradeArrowsComponent, D3tcMultipleSmallPlotsComponent, Sample5Component, HilbertCurveComponent, HilbertPathsComponent,
-        HilbertStocksComponent, Sample6Component,
-        Sample7Component, D3tcHorizonChartInteractiveComponent, D3tcHorizonChartBandsComponent, D3tcHorizonChartSingleComponent,
-        Sample8Component, RealTimeChartComponent
-    ]
+  imports: [
+    CommonModule, FormsModule, FlexLayoutModule,
+    D3RoutingModule, MaterialModule, FooterModule, MbsModule
+  ],
+  declarations: [
+    D3Component, Sample1Component, Sample2Component, BarchartComponent, BrushHandlesComponent, BrushHandles2Component,
+    ClickToRecenterBrushComponent, ClickToRecenterBrush2Component, ClickToSelectAllComponent, Sample3Component,
+    BrushAndZoomAreaChartComponent,
+    Sample4Component, D3tcArrowComponent, D3tcFinanceTimeComponent, D3tcCandlesticksComponent, D3tcOhlcComponent,
+    D3tcCloseComponent, D3tcVolumeComponent, D3tcBrushComponent, D3tcAxisAnnotationsComponent, D3tcCrosshairComponent,
+    D3tcSupportResistanceComponent, D3tcTrendlinesComponent, D3tcZoomingComponent, D3tcFeedComponent,
+    D3tcTradeArrowsComponent, D3tcMultipleSmallPlotsComponent, Sample5Component, HilbertCurveComponent, HilbertPathsComponent,
+    HilbertStocksComponent, Sample6Component,
+    Sample7Component, D3tcHorizonChartInteractiveComponent, D3tcHorizonChartBandsComponent, D3tcHorizonChartSingleComponent,
+    Sample8Component, RealTimeChartComponent
+  ]
 })
 export class D3Module { }

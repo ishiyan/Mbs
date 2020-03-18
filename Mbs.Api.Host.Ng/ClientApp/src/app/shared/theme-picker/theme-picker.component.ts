@@ -1,11 +1,11 @@
-import {Component, ViewEncapsulation, ChangeDetectionStrategy, OnInit, OnDestroy} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {Subscription} from 'rxjs';
-import {map, filter} from 'rxjs/operators';
+import { Component, ViewEncapsulation, ChangeDetectionStrategy, OnInit, OnDestroy } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { map, filter } from 'rxjs/operators';
 
-import {Theme} from './theme';
-import {ThemeManagerService} from './theme-manager.service';
-import {ThemeStorageService} from './theme-storage.service';
+import { Theme } from './theme';
+import { ThemeManagerService } from './theme-manager.service';
+import { ThemeStorageService } from './theme-storage.service';
 
 @Component({
   selector: 'app-theme-picker',

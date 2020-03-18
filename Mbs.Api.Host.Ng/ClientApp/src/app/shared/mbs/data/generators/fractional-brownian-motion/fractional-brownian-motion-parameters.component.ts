@@ -6,19 +6,19 @@ import { FractionalBrownianMotionAlgorithm } from './fractional-brownian-motion-
 import { Enums } from '../../../utils/enums';
 
 @Component({
-    selector: 'app-mbs-data-generators-fractional-brownian-motion-parameters',
-    templateUrl: './fractional-brownian-motion-parameters.component.html',
-    styleUrls: ['./fractional-brownian-motion-parameters.component.scss']
+  selector: 'app-mbs-data-generators-fractional-brownian-motion-parameters',
+  templateUrl: './fractional-brownian-motion-parameters.component.html',
+  styleUrls: ['./fractional-brownian-motion-parameters.component.scss']
 })
 export class FractionalBrownianMotionParametersComponent {
-    @Input() fractionalBrownianMotionParameters: FractionalBrownianMotionParameters;
+  @Input() fractionalBrownianMotionParameters: FractionalBrownianMotionParameters;
 
-    eq1 = '$mid_t=\\alpha\\cdot fBm_t(H, ng, seed)+\\beta,$';
-    eq2 = '$sample_t=mid_t+noise_t$';
+  eq1 = '$mid_t=\\alpha\\cdot fBm_t(H, ng, seed)+\\beta,$';
+  eq2 = '$sample_t=mid_t+noise_t$';
 
-    algorithms = Object.keys(FractionalBrownianMotionAlgorithm);
-    normalRandomGenerators = Object.keys(NormalRandomGeneratorKind);
-    uniformRandomGenerators = Object.keys(UniformRandomGeneratorKind);
+  algorithms = Object.keys(FractionalBrownianMotionAlgorithm);
+  normalRandomGenerators = Object.keys(NormalRandomGeneratorKind);
+  uniformRandomGenerators = Object.keys(UniformRandomGeneratorKind);
 
-    compare = Enums.compare;
+  compare = Enums.compare;
 }

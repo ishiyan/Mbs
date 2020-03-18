@@ -1,12 +1,12 @@
 circle {
-    fill-opacity: 0.2;
-    transition: fill-opacity 250ms linear;
+  fill-opacity: 0.2;
+  transition: fill-opacity 250ms linear;
 }
 
 circle.active {
-    stroke: #f00;
+  stroke: #f00;
 }
 
 .container {
-    padding:12px;
+  padding: 12px;
 }

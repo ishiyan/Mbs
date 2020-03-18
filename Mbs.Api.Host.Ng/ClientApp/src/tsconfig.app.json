@@ -6,7 +6,7 @@
   },
   "angularCompilerOptions": {
     "enableIvy": true
-  },
+  },
   "files": [
     "main.ts",
     "polyfills.ts"

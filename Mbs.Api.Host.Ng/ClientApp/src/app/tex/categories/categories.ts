@@ -6,20 +6,19 @@ import { symbolSamples } from '../samples/symbol-samples';
 import { scienceEquationsSamples } from '../samples/science-equations-samples';
 
 export const categories: Category[] = [
-
-    {
-        name: 'Example formulas', route: 'examples',  samples: exampleFormulasSamples
-    },
-    {
-        name: 'Basic functionality', route: 'basic', samples: basicFunctionalitySamples
-    },
-    {
-        name: 'Multiline functionality', route: 'multiline', samples: multilineFunctionalitySamples
-    },
-    {
-        name: 'Symbols', route: 'symbols', samples: symbolSamples
-    },
-    {
-        name: 'Science equations', route: 'science', samples: scienceEquationsSamples
-    }
+  {
+    name: 'Example formulas', route: 'examples', samples: exampleFormulasSamples
+  },
+  {
+    name: 'Basic functionality', route: 'basic', samples: basicFunctionalitySamples
+  },
+  {
+    name: 'Multiline functionality', route: 'multiline', samples: multilineFunctionalitySamples
+  },
+  {
+    name: 'Symbols', route: 'symbols', samples: symbolSamples
+  },
+  {
+    name: 'Science equations', route: 'science', samples: scienceEquationsSamples
+  }
 ];

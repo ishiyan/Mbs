@@ -6,34 +6,34 @@ import { sampleCountName, timeParametersName, waveformParametersName, sinusoidal
 
 /** The input parameters for the sinusoidal scalar generator. */
 export class SinusoidalScalarGeneratorParameters {
-    /** The number of samples to generate. */
-    sampleCount: number = SyntheticDataParameters.defaultSampleCount;
+  /** The number of samples to generate. */
+  sampleCount: number = SyntheticDataParameters.defaultSampleCount;
 
-    /** The time related input parameters. */
-    timeParameters: TimeParameters = new TimeParameters();
+  /** The time related input parameters. */
+  timeParameters: TimeParameters = new TimeParameters();
 
-    /** The waveform related input parameters. */
-    waveformParameters: WaveformParameters = new WaveformParameters();
+  /** The waveform related input parameters. */
+  waveformParameters: WaveformParameters = new WaveformParameters();
 
-    /** The sinusoidal related input parameters. */
-    sinusoidalParameters: SinusoidalParameters = new SinusoidalParameters();
+  /** The sinusoidal related input parameters. */
+  sinusoidalParameters: SinusoidalParameters = new SinusoidalParameters();
 
-    constructor(data?: SinusoidalScalarGeneratorParameters) {
-        if (data) {
-            for (const property in data) {
-                if (data.hasOwnProperty(property)) {
-                    (<any>this)[property] = (<any>data)[property];
-                }
-            }
+  constructor(data?: SinusoidalScalarGeneratorParameters) {
+    if (data) {
+      for (const property in data) {
+        if (data.hasOwnProperty(property)) {
+          (<any>this)[property] = (<any>data)[property];
         }
+      }
     }
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === objectName ? data : {};
-        data[sampleCountName] = this.sampleCount;
-        data[timeParametersName] = this.timeParameters ? this.timeParameters.toJSON() : <any>undefined;
-        data[waveformParametersName] = this.waveformParameters ? this.waveformParameters.toJSON() : <any>undefined;
-        data[sinusoidalParametersName] = this.sinusoidalParameters ? this.sinusoidalParameters.toJSON() : <any>undefined;
-        return data;
-    }
+  toJSON(data?: any) {
+    data = typeof data === objectName ? data : {};
+    data[sampleCountName] = this.sampleCount;
+    data[timeParametersName] = this.timeParameters ? this.timeParameters.toJSON() : <any>undefined;
+    data[waveformParametersName] = this.waveformParameters ? this.waveformParameters.toJSON() : <any>undefined;
+    data[sinusoidalParametersName] = this.sinusoidalParameters ? this.sinusoidalParameters.toJSON() : <any>undefined;
+    return data;
+  }
 }

@@ -7,9 +7,8 @@
 <mat-sidenav-container class="sidenav-container">
   <mat-sidenav #d3Sidenav class="mat-elevation-z16" mode="push" fixedInViewport="false" opened="false">
     <mat-nav-list>
-      <mat-list-item *ngFor="let s of samples" [routerLink]="'/d3/' + s.route"
-        routerLinkActive="sidenav-item-selected" (click)="sample = s; d3Sidenav.close();"
-        [class.sidenav-item-selected]="sample == s">
+      <mat-list-item *ngFor="let s of samples" [routerLink]="'/d3/' + s.route" routerLinkActive="sidenav-item-selected"
+        (click)="sample = s; d3Sidenav.close();" [class.sidenav-item-selected]="sample == s">
         {{s.name}}
       </mat-list-item>
     </mat-nav-list>

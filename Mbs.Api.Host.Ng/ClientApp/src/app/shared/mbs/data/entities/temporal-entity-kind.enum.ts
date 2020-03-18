@@ -1,14 +1,14 @@
 /** Enumerates temporal entity kinds. */
 export enum TemporalEntityKind {
-    /** Opening price, highest price, lowest price, closing price, volume. */
-    Ohlcv = 'ohlcv',
+  /** Opening price, highest price, lowest price, closing price, volume. */
+  Ohlcv = 'ohlcv',
 
-    /** Ask price, ask size, bid price, bid size. */
-    Quote = 'quote',
+  /** Ask price, ask size, bid price, bid size. */
+  Quote = 'quote',
 
-    /** Time, price and value. */
-    Trade = 'trade',
+  /** Time, price and value. */
+  Trade = 'trade',
 
-    /** Time and value. */
-    Scalar = 'scalar',
+  /** Time and value. */
+  Scalar = 'scalar',
 }

@@ -1,4 +1,4 @@
 export class MbsApiSample {
-    public name: string;
-    public route: string;
+  public name: string;
+  public route: string;
 }

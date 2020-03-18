@@ -1,4 +1,4 @@
-<br/>
+<br />
 <mat-expansion-panel expanded="false">
   <mat-expansion-panel-header>
     <mat-panel-title>Export to CSV</mat-panel-title>
@@ -25,11 +25,12 @@
     </mat-select>
   </mat-form-field>
   <mat-form-field class="short-field">
-      <mat-label>Header</mat-label>
-      <mat-select [(value)]="writeHeader">
-        <mat-option [value]="true">Yes</mat-option>
-        <mat-option [value]="false" selected>No</mat-option>
-      </mat-select>
-    </mat-form-field>
-    <button mat-raised-button color="accent" (click)="doDownload()" class="button" [disabled]="!canDownload">Download</button>
+    <mat-label>Header</mat-label>
+    <mat-select [(value)]="writeHeader">
+      <mat-option [value]="true">Yes</mat-option>
+      <mat-option [value]="false" selected>No</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <button mat-raised-button color="accent" (click)="doDownload()" class="button"
+    [disabled]="!canDownload">Download</button>
 </mat-expansion-panel>

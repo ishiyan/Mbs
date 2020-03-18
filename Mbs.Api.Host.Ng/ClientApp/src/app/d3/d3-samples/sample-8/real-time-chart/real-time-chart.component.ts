@@ -9,86 +9,86 @@ import * as rtc from './realTimeChart.js';
   encapsulation: ViewEncapsulation.None
 })
 export class RealTimeChartComponent implements OnInit, OnDestroy {
-    @ViewChild('container', { static: true }) container: ElementRef;
-    @Input() svgheight: any;
-    private chart: any;
+  @ViewChild('container', { static: true }) container: ElementRef;
+  @Input() svgheight: any;
+  private chart: any;
 
-    constructor(private element: ElementRef) {
-    }
+  constructor(private element: ElementRef) {
+  }
 
-    ngOnInit() {
-        const margin = { top: 20, right: 20, bottom: 20, left: 40 };
-        const w = this.container.nativeElement.getBoundingClientRect().width;
-        const viewDiv: any = d3.select(this.element.nativeElement).select('#viewDiv');
-        const width = w - margin.left - margin.right;
-        const height = this.svgheight - margin.top - margin.bottom;
+  ngOnInit() {
+    const margin = { top: 20, right: 20, bottom: 20, left: 40 };
+    const w = this.container.nativeElement.getBoundingClientRect().width;
+    const viewDiv: any = d3.select(this.element.nativeElement).select('#viewDiv');
+    const width = w - margin.left - margin.right;
+    const height = this.svgheight - margin.top - margin.bottom;
 
-        // define time scale
-        const timeScale = d3.scaleLinear().domain([300, 1700]).range([300, 1700]).clamp(true);
+    // define time scale
+    const timeScale = d3.scaleLinear().domain([300, 1700]).range([300, 1700]).clamp(true);
 
-        // define value scale
-        const valueScale = d3.scaleLinear().domain([0, 1]).range([30, 95]);
+    // define value scale
+    const valueScale = d3.scaleLinear().domain([0, 1]).range([30, 95]);
 
-        // mean and deviation for time interval in milliseconds
-        const meanMs = 2000;
-        const dev = 500;
+    // mean and deviation for time interval in milliseconds
+    const meanMs = 2000;
+    const dev = 500;
 
-        // generate initial data
-        const normal = d3.randomNormal(meanMs, dev);
-        let currMs = new Date().getTime() - 300000 - 4000;
-        const data = d3.range(300).map(function(d, i, arr) {
-            const value = valueScale(Math.random()); // random data
-            // const value = Math.round((d % 60) / 60 * 95); // ramp data
-            const interval = Math.round(timeScale(normal()));
-            currMs += interval;
-            const time = new Date(currMs);
-            return { interval: interval, value: value, time: time, ts: currMs };
-        });
+    // generate initial data
+    const normal = d3.randomNormal(meanMs, dev);
+    let currMs = new Date().getTime() - 300000 - 4000;
+    const data = d3.range(300).map(function (d, i, arr) {
+      const value = valueScale(Math.random()); // random data
+      // const value = Math.round((d % 60) / 60 * 95); // ramp data
+      const interval = Math.round(timeScale(normal()));
+      currMs += interval;
+      const time = new Date(currMs);
+      return { interval: interval, value: value, time: time, ts: currMs };
+    });
 
-        // create the real time chart
-        const chart = rtc.realTimeChart()
-            // .title('Chart Title').yTitle('Y Scale').xTitle('X Scale')
-            .border(false).width(w).height(this.svgheight).barWidth(2)
-            .left(margin.left).top(margin.top).right(margin.right).bottom(margin.bottom)
-            .initialData(data);
+    // create the real time chart
+    const chart = rtc.realTimeChart()
+      // .title('Chart Title').yTitle('Y Scale').xTitle('X Scale')
+      .border(false).width(w).height(this.svgheight).barWidth(2)
+      .left(margin.left).top(margin.top).right(margin.right).bottom(margin.bottom)
+      .initialData(data);
 
-        // invoke the chart (alternative invocation is chart(chartDiv);)
-        viewDiv.append('div').attr('id', 'chartDiv').call(chart);
+    // invoke the chart (alternative invocation is chart(chartDiv);)
+    viewDiv.append('div').attr('id', 'chartDiv').call(chart);
 
-        // drive data into the chart roughly every second
-        // in a normal use case, real time data would arrive through the network or some other mechanism
-        // let d = 0;
-        chart.isRunning(true);
-        this.chart = chart;
-        function dataGenerator() {
-                const timeout = Math.round(timeScale(normal()));
-                setTimeout(function() {
-                    // create new data item
-                    const now = new Date();
-                    const item = {
-                        value: valueScale(Math.random()), // random data
-                        // value: Math.round((d++ % 60) / 60 * 95), // ramp data
-                        time: now,
-                        color: 'forestgreen',
-                        ts: now.getTime(),
-                        interval: timeout
-                    };
+    // drive data into the chart roughly every second
+    // in a normal use case, real time data would arrive through the network or some other mechanism
+    // let d = 0;
+    chart.isRunning(true);
+    this.chart = chart;
+    function dataGenerator() {
+      const timeout = Math.round(timeScale(normal()));
+      setTimeout(function () {
+        // create new data item
+        const now = new Date();
+        const item = {
+          value: valueScale(Math.random()), // random data
+          // value: Math.round((d++ % 60) / 60 * 95), // ramp data
+          time: now,
+          color: 'forestgreen',
+          ts: now.getTime(),
+          interval: timeout
+        };
 
-                    // send the datum to the chart
-                    chart.datum(item);
+        // send the datum to the chart
+        chart.datum(item);
 
-                    // do forever
-                    if (chart.isRunning()) {
-                        dataGenerator();
-                    }
-                }, timeout);
+        // do forever
+        if (chart.isRunning()) {
+          dataGenerator();
         }
-
-        // start the data generator
-        dataGenerator();
+      }, timeout);
     }
 
-    ngOnDestroy() {
-        this.chart.isRunning(false);
-    }
+    // start the data generator
+    dataGenerator();
+  }
+
+  ngOnDestroy() {
+    this.chart.isRunning(false);
+  }
 }

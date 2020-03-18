@@ -9,17 +9,17 @@ import { ThemePickerModule } from '../theme-picker/theme-picker.module';
 import { ToolbarComponent } from './toolbar.component';
 
 @NgModule({
-    imports: [
-        CommonModule,
-        RouterModule,
-        MaterialModule,
-        FlexLayoutModule,
-        FormsModule,
-        ThemePickerModule
-    ],
-    exports: [
-        ToolbarComponent
-    ],
-    declarations: [ToolbarComponent]
+  imports: [
+    CommonModule,
+    RouterModule,
+    MaterialModule,
+    FlexLayoutModule,
+    FormsModule,
+    ThemePickerModule
+  ],
+  exports: [
+    ToolbarComponent
+  ],
+  declarations: [ToolbarComponent]
 })
 export class ToolbarModule { }

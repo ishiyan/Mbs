@@ -1,11 +1,10 @@
-@import '../node_modules/@angular/material/theming';
+@import "../node_modules/@angular/material/theming";
 
-@import 'app/shared/toolbar/toolbar-theme';
-@import 'app/shared/footer/footer-theme';
-@import 'app/shared/svg-viewer/svg-viewer-theme';
-@import 'app/shared/mbs/charts/historical-data-chart/historical-data-chart-theme';
-@import 'app/shared/mbs/charts/ohlcv-chart/ohlcv-chart-theme';
-
+@import "app/shared/toolbar/toolbar-theme";
+@import "app/shared/footer/footer-theme";
+@import "app/shared/svg-viewer/svg-viewer-theme";
+@import "app/shared/mbs/charts/historical-data-chart/historical-data-chart-theme";
+@import "app/shared/mbs/charts/ohlcv-chart/ohlcv-chart-theme";
 
 @mixin app-components-theme($theme) {
   $primary: map-get($theme, primary);

@@ -1,12 +1,12 @@
 import { Injectable, Injector, ErrorHandler, NgZone } from '@angular/core';
-import { MatSnackBar, MatSnackBarVerticalPosition } from '@angular/material';
+import { MatSnackBar/*, MatSnackBarVerticalPosition*/ } from '@angular/material';
 
 @Injectable()
 export class MbsErrorHandler implements ErrorHandler {
 
   private snackBar: MatSnackBar;
 
-  constructor(private injector: Injector, private zone: NgZone) {}
+  constructor(private injector: Injector, private zone: NgZone) { }
 
   handleError(error: any): void {
     if (!this.snackBar) {
@@ -22,7 +22,7 @@ export class MbsErrorHandler implements ErrorHandler {
 
   private openSnackBar(message: string): void {
     this.zone.run(() => {
-      this.snackBar.open(message, 'Ok', {duration: 5000, verticalPosition: 'top'});
+      this.snackBar.open(message, 'Ok', { duration: 5000, verticalPosition: 'top' });
     });
   }
 }

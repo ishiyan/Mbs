@@ -1,28 +1,30 @@
 {
-    // see https://github.com/Microsoft/vscode-recipes/tree/master/Angular-CLI
-    "version": "0.2.0",
-    "configurations": [
-      {
-        "name": "./node_modules/.bin/ng serve",
-        "type": "chrome",
-        "request": "launch",
-        "url": "http://localhost:4200/#",
-        "webRoot": "${workspaceFolder}"
-      },
-      {
-        "name": "./node_modules/.bin/ng test",
-        "type": "chrome",
-        "request": "launch",
-        "url": "http://localhost:9876/debug.html",
-        "webRoot": "${workspaceFolder}"
-      },
-      {
-        "name": "./node_modules/.bin/ng e2e",
-        "type": "node",
-        "request": "launch",
-        "program": "${workspaceFolder}/node_modules/protractor/bin/protractor",
-        "protocol": "inspector",
-        "args": ["${workspaceFolder}/e2e/protractor.conf.js"]
-      }
-    ]
-  }
+  // see https://github.com/Microsoft/vscode-recipes/tree/master/Angular-CLI
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "./node_modules/.bin/ng serve",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:4200/#",
+      "webRoot": "${workspaceFolder}"
+    },
+    {
+      "name": "./node_modules/.bin/ng test",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:9876/debug.html",
+      "webRoot": "${workspaceFolder}"
+    },
+    {
+      "name": "./node_modules/.bin/ng e2e",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/protractor/bin/protractor",
+      "protocol": "inspector",
+      "args": [
+        "${workspaceFolder}/e2e/protractor.conf.js"
+      ]
+    }
+  ]
+}

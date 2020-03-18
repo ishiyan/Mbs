@@ -7,22 +7,22 @@ import { TimeParameters } from './time-parameters';
 import { Enums } from '../../utils/enums';
 
 @Component({
-    selector: 'app-mbs-data-generators-time-parameters',
-    templateUrl: './time-parameters.component.html',
-    styleUrls: ['./time-parameters.component.scss']
+  selector: 'app-mbs-data-generators-time-parameters',
+  templateUrl: './time-parameters.component.html',
+  styleUrls: ['./time-parameters.component.scss']
 })
 export class TimeParametersComponent {
-    @Input() timeParameters: TimeParameters;
+  @Input() timeParameters: TimeParameters;
 
-    timeGranularities = Object.keys(TimeGranularity);
-    businessDayCalendars = Object.keys(BusinessDayCalendar);
+  timeGranularities = Object.keys(TimeGranularity);
+  businessDayCalendars = Object.keys(BusinessDayCalendar);
 
-    compare = Enums.compare;
+  compare = Enums.compare;
 
-    constructor(public dialog: MatDialog) {
-    }
+  constructor(public dialog: MatDialog) {
+  }
 
-    openBusinessDayCalendarDescription() {
-        this.dialog.open(BusinessDayCalendarDescriptionComponent, null);
-    }
+  openBusinessDayCalendarDescription() {
+    this.dialog.open(BusinessDayCalendarDescriptionComponent, null);
+  }
 }

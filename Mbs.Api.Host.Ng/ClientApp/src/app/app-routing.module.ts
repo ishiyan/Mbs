@@ -12,7 +12,7 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes, {
     scrollPositionRestoration: 'enabled',
     anchorScrolling: 'enabled',
-    relativeLinkResolution: 'corrected'    
+    relativeLinkResolution: 'corrected'
   })],
   exports: [RouterModule]
 })

@@ -1,4 +1,5 @@
-export class D3Sample {
-  public name: string;
-  public route: string;
+export interface D3Sample {
+  name: string;  
+  route?: string;
+  children?: D3Sample[];
 }

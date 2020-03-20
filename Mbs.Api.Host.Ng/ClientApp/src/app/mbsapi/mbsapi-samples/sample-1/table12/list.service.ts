@@ -6,8 +6,7 @@ import { catchError, retry } from 'rxjs/operators';
 import { Instrument } from '../../../../shared/mbs/instruments/instrument';
 import { MbsError } from '../../../../shared/mbs/errors/mbs-error';
 
-const apiUrl = 'http://51.136.83.223/api/v1/instruments/lists/';
-//const apiUrl = '/api/v1/instruments/lists/';
+const apiUrl = '/api/v1/instruments/lists/';
 // const apiUrl = 'http://localhost:5000/api/v1/instruments/lists/';
 const httpOptions = {
   headers: new HttpHeaders({

@@ -1,5 +1,6 @@
 import { Component, OnInit, ElementRef, ViewChild, Input } from '@angular/core';
 import * as d3 from 'd3';
+// @ts-ignore
 import * as d3tc from '../../../../shared/d3tc';
 
 import { D3Ohlcv } from '../../data/d3-ohlcv';
@@ -37,7 +38,7 @@ export class D3tcCloseComponent implements OnInit {
     const xAxis = d3.axisBottom(x);
     const yAxis = d3.axisLeft(y);
 
-    function draw(dat) {
+    function draw(dat: D3Ohlcv[]) {
       x.domain(dat.map(accessor.d));
       y.domain(d3tc.scale.plot.ohlc(dat, accessor).domain());
       svg.selectAll('g.close').datum(dat).call(close);

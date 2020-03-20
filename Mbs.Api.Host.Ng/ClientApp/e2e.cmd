@@ -1,0 +1,1 @@
+.\node_modules\.bin\ng e2e

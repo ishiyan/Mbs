@@ -2,6 +2,7 @@ import { Component, ElementRef, ViewChild, Input, HostListener } from '@angular/
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material/icon';
 import * as d3 from 'd3';
+// @ts-ignore
 import * as d3ts from '../d3ts';
 
 import { Ohlcv } from '../../data/entities/ohlcv';
@@ -195,7 +196,7 @@ export class OhlcvChartComponent {
       }
     }
 
-    const setCurrentSelection = x => { this.currentSelection = x; };
+    const setCurrentSelection = (x: any) => { this.currentSelection = x; };
 
     function brushed(): void {
       const zoomable = timePane.timeScale.zoomable();
@@ -285,9 +286,10 @@ export class OhlcvChartComponent {
 
     const numeric = value.match(/\d+/);
     if (value.endsWith('%')) {
+      // @ts-ignore
       return +numeric / 100 * reference;
     }
-
+    // @ts-ignore
     return +numeric;
   }
 
@@ -702,8 +704,8 @@ export class OhlcvChartComponent {
       indicatorArrow.price = price;
       indicatorArrow.arrow = d3ts.svg.arrow()
         .orient(arrow.down ? 'down' : 'up')
-        .x(d => timeScale(arrow.time))
-        .y(d => {
+        .x((d: any) => timeScale(arrow.time))
+        .y((d: any) => {
           const p = pane.yPrice(price);
           return arrow.down ? p - verticalArrowGap : p + verticalArrowGap;
         });
@@ -1025,7 +1027,9 @@ export class OhlcvChartComponent {
     const context = canvas.getContext('2d');
     const k = 1 / (width - 1);
     for (let i = 0; i < width; ++i) {
+      // @ts-ignore
       context.fillStyle = color(invertGradient ? (1 - i * k) : (i * k));
+      // @ts-ignore
       context.fillRect(i, 0, 1, height);
     }
     return canvas;
@@ -1518,14 +1522,18 @@ export namespace OhlcvChartComponent {
         for (let i = 0; i < height; ++i) {
           const index = Math.round((y.invert(i) - periodMin) * periodRes);
           const value = (heat[index] - min) / delta;
+          // @ts-ignore
           context.fillStyle = color(invertColor ? 1 - value : value);
+          // @ts-ignore
           context.fillRect(0, periodInverted ? height - i : i, width, 1);
         }
       } else {
         for (let i = 0; i < height; ++i) {
           const index = Math.round((y.invert(i) - periodMin) * periodRes);
           const value = heat[index];
+          // @ts-ignore
           context.fillStyle = color(invertColor ? 1 - value : value);
+          // @ts-ignore
           context.fillRect(0, periodInverted ? height - i : i, width, 1);
         }
       }

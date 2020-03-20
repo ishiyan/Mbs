@@ -64,7 +64,7 @@ export class Downloader {
       return svgNativeElement;
     }
 
-    let resolve, reject;
+    let resolve: any, reject: any;
     const promise = new Promise((y, n) => (resolve = y, reject = n));
     const image = new Image;
     image.onerror = reject;
@@ -86,6 +86,7 @@ export class Downloader {
     canvas.height = height * dpi;
     canvas.style.width = width + 'px';
     const context = canvas.getContext('2d');
+    // @ts-ignore
     context.scale(dpi, dpi);
     return context;
   }

@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, NgModule } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { TimeGranularity } from './../../time/time-granularity.enum';
 import { BusinessDayCalendar } from './../../time/business-day-calendar.enum';
 import { BusinessDayCalendarDescriptionComponent } from '../../time/business-day-calendar-description.component';
@@ -23,6 +23,6 @@ export class TimeParametersComponent {
   }
 
   openBusinessDayCalendarDescription() {
-    this.dialog.open(BusinessDayCalendarDescriptionComponent, null);
+    this.dialog.open(BusinessDayCalendarDescriptionComponent, undefined);
   }
 }

@@ -1,5 +1,6 @@
 import { Component, OnInit, ElementRef, ViewChild, Input, ViewEncapsulation } from '@angular/core';
 import * as d3 from 'd3';
+// @ts-ignore
 import * as d3tc from '../../../../shared/d3tc';
 
 import { D3Ohlcv } from '../../data/d3-ohlcv';
@@ -50,7 +51,7 @@ export class D3tcAxisAnnotationsComponent implements OnInit {
     const timeAnnotationTop = d3tc.plot.axisannotation().axis(xAxisTop).orient('top')
       .accessor(accessor.d).format(d3.timeFormat('%Y-%m-%d')).width(65);
 
-    function draw(dat, topData, leftData, rightData, bottomData) {
+    function draw(dat: D3Ohlcv[], topData: any, leftData: any, rightData: any, bottomData: any) {
       x.domain(dat.map(accessor.d));
       y.domain(d3tc.scale.plot.ohlc(dat, accessor).domain());
 

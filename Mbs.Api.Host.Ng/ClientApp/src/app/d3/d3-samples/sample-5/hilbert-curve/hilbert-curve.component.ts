@@ -1,8 +1,9 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
 import { MatSelectChange } from '@angular/material/select';
-import { /*MatCheckboxChange,*/ MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import * as d3 from 'd3';
 
+// @ts-ignore
 import * as hilbert from '../hilbert';
 
 @Component({
@@ -44,9 +45,9 @@ export class HilbertCurveComponent implements OnInit {
     square.enter().append('rect');
     square.exit().remove();
     this.g.selectAll('rect')
-      .style('fill', (d, i) => d3.hsl(Math.floor(i * 360 / this.level102), 1, .5).rgb())
+      .style('fill', (d: any, i: any) => d3.hsl(Math.floor(i * 360 / this.level102), 1, .5).rgb())
       // .style('fill', (d, i) => d3.hsl(~~(i * 360 / this.level102), 1, .5).rgb())
-      .attr('x', d => this.x(d[0] - .5)).attr('y', d => this.x(d[1] - .5))
+      .attr('x', (d: any) => this.x(d[0] - .5)).attr('y', (d: any) => this.x(d[1] - .5))
       .attr('width', this.x(1) - this.x(0) + 1).attr('height', this.x(1) - this.x(0) + 1);
   }
 

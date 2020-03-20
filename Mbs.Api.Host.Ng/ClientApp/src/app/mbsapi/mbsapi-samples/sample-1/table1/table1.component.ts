@@ -26,12 +26,22 @@ export class Table1Component implements OnInit {
   public CurrencyCode = CurrencyCode; // added
   public expandedInstrument: Instrument; // added
   displayedColumns: string[] = ['type', 'symbol', 'name', 'isin', 'mic'];
-  dataSource = []; // euronextListShort;
+  dataSource: any[] = []; // euronextListShort;
 
   constructor(private element: ElementRef) {
   }
 
   ngOnInit() {
     console.log('ngOnInit');
+  }
+
+  public getMic(instrument: Instrument): ExchangeMic {
+    // @ts-ignore
+    return ExchangeMic[instrument.mic];
+  }
+
+  public getType(instrument: Instrument): InstrumentType {
+    // @ts-ignore
+    return InstrumentType[instrument.type];
   }
 }

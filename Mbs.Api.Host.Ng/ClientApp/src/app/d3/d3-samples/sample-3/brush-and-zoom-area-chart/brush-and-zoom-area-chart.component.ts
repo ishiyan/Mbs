@@ -50,15 +50,15 @@ export class BrushAndZoomAreaChartComponent implements OnInit {
 
     const area = d3.area()
       .curve(d3.curveMonotoneX)
-      .x(function (d) { return x(d['date']); })
+      .x(function (d: any) { return x(d['date']); })
       .y0(height)
-      .y1(function (d) { return y(d['price']); });
+      .y1(function (d: any) { return y(d['price']); });
 
     const area2 = d3.area()
       .curve(d3.curveMonotoneX)
-      .x(function (d) { return x2(d['date']); })
+      .x(function (d: any) { return x2(d['date']); })
       .y0(height2)
-      .y1(function (d) { return y2(d['price']); });
+      .y1(function (d: any) { return y2(d['price']); });
 
     svg.append('defs').append('clipPath')
       .attr('id', 'clip')
@@ -75,7 +75,9 @@ export class BrushAndZoomAreaChartComponent implements OnInit {
       .attr('transform', 'translate(' + margin2.left + ',' + margin2.top + ')');
 
     // data begin ----------------------------------
+    // @ts-ignore
     x.domain(d3.extent(data, function (d) { return d.date; }));
+    // @ts-ignore
     y.domain([0, d3.max(data, function (d) { return d.price; })]);
     x2.domain(x.domain());
     y2.domain(y.domain());

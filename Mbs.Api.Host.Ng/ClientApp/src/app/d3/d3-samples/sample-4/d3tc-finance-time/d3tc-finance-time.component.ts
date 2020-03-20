@@ -1,5 +1,6 @@
 import { Component, OnInit, ElementRef, ViewChild, Input, ViewEncapsulation } from '@angular/core';
 import * as d3 from 'd3';
+// @ts-ignore
 import * as d3tc from '../../../../shared/d3tc';
 
 import { D3Ohlcv } from '../../data/d3-ohlcv';
@@ -46,12 +47,12 @@ export class D3tcFinanceTimeComponent implements OnInit {
     const intradayTimeNonClamped = d3tc.scale.financetime().range([0, width]);
     const intradayUtcTimeNonClamped = d3tc.scale.financetime.utc().range([0, width]);
 
-    let timeInit;
-    let timeNonClampedInit;
-    let timeUtcNonClampedInit;
-    let intradayTimeInit;
-    let intradayTimeNonClampedInit;
-    let intradayUtcTimeNonClampedInit;
+    let timeInit: any;
+    let timeNonClampedInit: any;
+    let timeUtcNonClampedInit: any;
+    let intradayTimeInit: any;
+    let intradayTimeNonClampedInit: any;
+    let intradayUtcTimeNonClampedInit: any;
 
     const xAxisD3 = d3.axisBottom(x);
     const xAxisD3Utc = d3.axisBottom(xUtc);
@@ -181,7 +182,9 @@ export class D3tcFinanceTimeComponent implements OnInit {
     // data begin ----------------------------------
     const d3evDaily = d3.extent(dataDaily, function (d) { return d.date; });
     const vDaily = dataDaily.map(function (d) { return d.date; });
+    // @ts-ignore
     x.domain(d3evDaily);
+    // @ts-ignore
     xUtc.domain(d3evDaily);
     timeInit = time.domain(vDaily).zoomable().copy();
     timeNonClampedInit = timeNonClamped.domain(vDaily).zoomable().clamp(false).copy();
@@ -189,7 +192,9 @@ export class D3tcFinanceTimeComponent implements OnInit {
 
     const d3evIntraday = d3.extent(dataIntraday, function (d) { return d.date; });
     const vIntraday = dataIntraday.map(function (d) { return d.date; });
+    // @ts-ignore
     xIntraday.domain(d3evIntraday);
+    // @ts-ignore
     xIntradayUtc.domain(d3evIntraday);
     intradayTimeInit = intradayTime.domain(vIntraday).zoomable().copy();
     intradayTimeNonClampedInit = intradayTimeNonClamped.domain(vIntraday).zoomable().clamp(false).copy();

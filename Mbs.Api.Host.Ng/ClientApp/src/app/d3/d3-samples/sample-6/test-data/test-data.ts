@@ -33,6 +33,7 @@ export class TestData {
     this.config.pricePane.arrows = [];
     this.config.indicatorPanes[0].lines[0].data = [];
     this.config.indicatorPanes[1].lineAreas[0].data = [];
+    // @ts-ignore
     this.config.indicatorPanes[2].heatmap.data = [];
     this.dataLength = 0;
   }
@@ -58,6 +59,7 @@ export class TestData {
     cloned.pricePane.lines[2].data = dataTestUp;
     cloned.indicatorPanes[0].lines[0].data = dataTestPercentB;
     cloned.indicatorPanes[1].lineAreas[0].data = dataTestBw;
+    // @ts-ignore
     cloned.indicatorPanes[2].heatmap.data = dataTestGoertzel1;
     TestData.addArrows(cloned);
     return cloned;
@@ -210,7 +212,7 @@ export class TestData {
     menuVisible: true, downloadSvgVisible: true
   };
 
-  private static deepCopy(obj: any) {
+  private static deepCopy(obj: any): any {
     // Handle the 3 simple types, and null or undefined.
     if (null == obj || "object" != typeof obj) {
       return obj;
@@ -231,7 +233,7 @@ export class TestData {
     }
     // Handle Object.
     if (obj instanceof Object) {
-      const copy = {};
+      const copy: any = {};
       for (var attr in obj) {
         if (obj.hasOwnProperty(attr)) {
           copy[attr] = TestData.deepCopy(obj[attr])

@@ -1,5 +1,6 @@
 import { Component, OnInit, ElementRef, ViewChild, Input } from '@angular/core';
 import * as d3 from 'd3';
+// @ts-ignore
 import * as d3tc from '../../../../shared/d3tc';
 
 import { D3Ohlcv } from '../../data/d3-ohlcv';
@@ -53,7 +54,7 @@ export class D3tcZoomingComponent implements OnInit {
       svg.select('g.y.axis').call(yAxis);
     }
 
-    let zoomableInit;
+    let zoomableInit: any;
     function zoomed() {
       const rescaledY = d3.event.transform.rescaleY(y);
       yAxis.scale(rescaledY);

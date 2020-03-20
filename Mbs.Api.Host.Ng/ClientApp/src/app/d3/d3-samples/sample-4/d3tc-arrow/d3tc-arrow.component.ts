@@ -1,5 +1,6 @@
 import { Component, OnInit, ElementRef, ViewChild, Input, ViewEncapsulation } from '@angular/core';
 import * as d3 from 'd3';
+// @ts-ignore
 import * as d3tc from '../../../../shared/d3tc';
 
 @Component({
@@ -29,9 +30,9 @@ export class D3tcArrowComponent implements OnInit {
 
     const arrow = d3tc.svg.arrow().x(230).y(0).height(50).width(50);
 
-    const arrowOrient = d3tc.svg.arrow().orient(function (d) { return d; })
-      .x(function (d, i) { return 0 + i * 50; })
-      .y(function (d, i) { return 0 + i * 50; });
+    const arrowOrient = d3tc.svg.arrow().orient(function (d: any) { return d; })
+      .x(function (d: any, i: any) { return 0 + i * 50; })
+      .y(function (d: any, i: any) { return 0 + i * 50; });
 
     const arrowTranslate = d3tc.svg.arrow().tail(false);
 
@@ -39,13 +40,13 @@ export class D3tcArrowComponent implements OnInit {
 
     svg.selectAll('path.arrow.orient').data(data).enter()
       .append('path')
-      .attr('class', function (d) { return 'arrow orient ' + d; })
+      .attr('class', function (d: any) { return 'arrow orient ' + d; })
       .attr('d', arrowOrient);
 
     svg.selectAll('path.arrow.rotate').data(data).enter()
       .append('path')
-      .attr('class', function (d) { return 'arrow rotate ' + d; })
-      .attr('transform', function (d, i) {
+      .attr('class', function (d: any) { return 'arrow rotate ' + d; })
+      .attr('transform', function (d: any, i: any) {
         return 'translate(' + (100 + i * 50) + ', ' + (0 + i * 50) + ') rotate(' + i * 45 + ')';
       })
       .attr('d', arrowTranslate);

@@ -41,14 +41,14 @@ export class BrushHandles2Component implements OnInit {
       .selectAll('circle')
       .data(data)
       .enter().append('circle')
-      .attr('transform', function (d) { return 'translate(' + x(d) + ',' + y() + ')'; })
+      .attr('transform', function (d: any) { return 'translate(' + x(d) + ',' + y() + ')'; })
       .attr('r', 3.5);
 
     const gBrush: any = g.append('g').attr('class', 'brush').call(brush);
 
     // style brush resize handle
     // https://github.com/crossfilter/crossfilter/blob/gh-pages/index.html#L466
-    const brushResizePath = function (d) {
+    const brushResizePath = function (d: any) {
       const e = +(d.type === 'e');
       const xx = e ? 1 : -1;
       const yy = height / 2;
@@ -74,10 +74,10 @@ export class BrushHandles2Component implements OnInit {
         circle.classed('active', false);
       } else {
         const sx = s.map(x.invert);
-        circle.classed('active', function (d) { return sx[0] <= d && d <= sx[1]; });
+        circle.classed('active', function (d: any) { return sx[0] <= d && d <= sx[1]; });
         handle
           .attr('display', null)
-          .attr('transform', function (d, i) { return 'translate(' + s[i] + ',' + (-height / 4) + ')'; });
+          .attr('transform', function (d: any, i: any) { return 'translate(' + s[i] + ',' + (-height / 4) + ')'; });
       }
     });
     gBrush.call(brush.move, [0.3, 0.5].map(x));

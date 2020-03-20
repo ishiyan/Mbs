@@ -1,5 +1,6 @@
 import { Component, OnInit, ElementRef, ViewChild, Input, ViewEncapsulation } from '@angular/core';
 import * as d3 from 'd3';
+// @ts-ignore
 import * as d3tc from '../../../../shared/d3tc';
 
 import { D3Ohlcv } from '../../data/d3-ohlcv';
@@ -39,7 +40,7 @@ export class D3tcTrendlinesComponent implements OnInit {
     const yAxis = d3.axisLeft(y);
     const valueText = svg.append('text').style('text-anchor', 'end').attr('class', 'coords').attr('x', width - 15).attr('y', 15);
 
-    function refreshText(z) {
+    function refreshText(z: any) {
       const timeFormat = d3.timeFormat('%Y-%m-%d');
       const valueFormat = d3.format(',.2f');
       valueText.text(
@@ -48,22 +49,22 @@ export class D3tcTrendlinesComponent implements OnInit {
       );
     }
 
-    function enter(z) {
+    function enter(z: any) {
       valueText.style('display', 'inline');
       refreshText(z);
     }
 
-    function out(z) {
+    function out(z: any) {
       valueText.style('display', 'none');
     }
 
-    function drag(z) {
+    function drag(z: any) {
       refreshText(z);
     }
 
     const trendline = d3tc.plot.trendline().xScale(x).yScale(y).on('mouseenter', enter).on('mouseout', out).on('drag', drag);
 
-    function draw(dat, trendlineDat) {
+    function draw(dat: D3Ohlcv[], trendlineDat: any) {
       x.domain(dat.map(accessor.d));
       y.domain(d3tc.scale.plot.ohlc(dat, accessor).domain());
       svg.selectAll('g.candlestick').datum(dat).call(candlestick);

@@ -1,7 +1,6 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
-import { MatCheckboxChange } from '@angular/material/checkbox';
-import { MatSelectChange } from '@angular/material/select';
 import * as d3 from 'd3';
+// @ts-ignore
 import * as hilbert from './hilbert2d';
 
 @Component({
@@ -10,7 +9,7 @@ import * as hilbert from './hilbert2d';
   styleUrls: ['./hilbert-paths.component.scss']
 })
 export class HilbertPathsComponent implements OnInit {
-  private svg;
+  private svg: any;
 
   constructor(private element: ElementRef) {
   }
@@ -26,7 +25,7 @@ export class HilbertPathsComponent implements OnInit {
     const max2 = max * max;
 
     // const color: any = d3.scaleOrdinal(d3.schemeCategory20b);
-    function colors(s) { return s.match(/.{6}/g).map(function (x) { return '#' + x; }); }
+    function colors(s: any) { return s.match(/.{6}/g).map(function (x: any) { return '#' + x; }); }
     const category20b = colors(
       '393b795254a36b6ecf9c9ede6379398ca252b5cf6bcedb9c8c6d31bd9e39e7ba52e7cb94843c39ad494ad6616be7969c7b4173a55194ce6dbdde9ed6');
     const color = d3.scaleOrdinal(category20b);
@@ -39,14 +38,14 @@ export class HilbertPathsComponent implements OnInit {
     }
     segments[segments.length - 1][1] = max2;
     this.svg.append('g').selectAll('path').data(segments).enter().append('path')
-      .attr('fill', 'transparent').attr('stroke', (d, i) => color(i)).attr('stroke-width', '8').attr('stroke-linecap', 'square')
-      .attr('d', d => 'M' + d3.range(d[0], d[1])
+      .attr('fill', 'transparent').attr('stroke', (d: any, i: any) => color(i)).attr('stroke-width', '8').attr('stroke-linecap', 'square')
+      .attr('d', (d: any) => 'M' + d3.range(d[0], d[1])
         .map(e => {
           const xy = hilbert.d2xy(e);
           return [scale * xy.x, scale * xy.y];
         }).join('L'));
     this.svg.append('path').attr('fill', 'transparent').attr('stroke', '#fff').attr('stroke-width', '1')
-      .attr('d', 'M' + d3.range(max * max).map(hilbert.d2xy).map(d => [scale * d['x'], scale * d['y']]).join('L'));
+      .attr('d', 'M' + d3.range(max * max).map(hilbert.d2xy).map((d: any) => [scale * d['x'], scale * d['y']]).join('L'));
     const t = this.svg.append('text').attr('y', 10).attr('x', 512).attr('font-size', 12).style('font-family', 'monospace');
 
     const numberOfBalls = 7; // [2, 7]

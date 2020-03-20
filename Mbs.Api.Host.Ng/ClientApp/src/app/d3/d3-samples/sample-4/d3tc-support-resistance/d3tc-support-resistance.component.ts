@@ -1,5 +1,6 @@
 import { Component, OnInit, ElementRef, ViewChild, Input, ViewEncapsulation } from '@angular/core';
 import * as d3 from 'd3';
+// @ts-ignore
 import * as d3tc from '../../../../shared/d3tc';
 
 import { D3Ohlcv } from '../../data/d3-ohlcv';
@@ -47,28 +48,28 @@ export class D3tcSupportResistanceComponent implements OnInit {
     const ohlcAnnotation = d3tc.plot.axisannotation().axis(yAxis).orient('left').format(d3.format(',.2f'));
     const percentAnnotation = d3tc.plot.axisannotation().axis(percentAxis).orient('right').format(d3.format('+.1%'));
 
-    function refreshText(z) {
+    function refreshText(z: any) {
       const valueFormat = d3.format(',.2f');
       valueText.text('value: ' + valueFormat(z.value));
     }
 
-    function enter(z) {
+    function enter(z: any) {
       valueText.style('display', 'inline');
       refreshText(z);
     }
 
-    function out(z) {
+    function out(z: any) {
       valueText.style('display', 'none');
     }
 
-    function drag(z) {
+    function drag(z: any) {
       refreshText(z);
     }
 
     const supstance = d3tc.plot.supstance().xScale(x).yScale(y).annotation([ohlcAnnotation, percentAnnotation])
       .on('mouseenter', enter).on('mouseout', out).on('drag', drag);
 
-    function draw(dat, sup) {
+    function draw(dat: D3Ohlcv[], sup: any) {
       x.domain(dat.map(accessor.d));
       y.domain(d3tc.scale.plot.ohlc(dat, accessor).domain());
       percent.domain(d3tc.scale.plot.percent(y, accessor(dat[0])).domain());

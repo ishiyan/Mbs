@@ -78,6 +78,7 @@ export class HistoricalDataDownloadComponent {
       return this.decimalPipe.transform(value, decimalFormat);
     };
 
+    // @ts-ignore
     const csv = items.map(row => headers.map(fieldName => replacer(fieldName, row[fieldName])).join(separator));
     if (this.writeDescription) {
       const comment = '# ';
@@ -96,6 +97,7 @@ export class HistoricalDataDownloadComponent {
     }
     const csv = this.writeByteOrderMark ? '\ufeff' + this.convertToCSV() : this.convertToCSV();
     const blob = new Blob([csv], { 'type': 'text/csv;charset=utf8;' });
+    // @ts-ignore
     const filename = this.currentHistoricalData.name.replace(/ /g, '_') + '.csv';
 
     if (navigator.msSaveBlob) {

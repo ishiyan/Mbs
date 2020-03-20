@@ -83,25 +83,25 @@ export class BarchartComponent implements OnInit, OnChanges {
 
     // update existing bars
     this.chart.selectAll('.bar').transition()
-      .attr('x', d => this.xScale(d[0]))
-      .attr('y', d => this.yScale(d[1]))
-      .attr('width', d => this.xScale.bandwidth())
-      .attr('height', d => this.height - this.yScale(d[1]))
-      .style('fill', (d, i) => this.colors(i));
+      .attr('x', (d: any) => this.xScale(d[0]))
+      .attr('y', (d: any) => this.yScale(d[1]))
+      .attr('width', (d: any) => this.xScale.bandwidth())
+      .attr('height', (d: any) => this.height - this.yScale(d[1]))
+      .style('fill', (d: any, i: any) => this.colors(i));
 
     // add new bars
     update
       .enter()
       .append('rect')
       .attr('class', 'bar')
-      .attr('x', d => this.xScale(d[0]))
-      .attr('y', d => this.yScale(0))
+      .attr('x', (d: any) => this.xScale(d[0]))
+      .attr('y', (d: any) => this.yScale(0))
       .attr('width', this.xScale.bandwidth())
       .attr('height', 0)
-      .style('fill', (d, i) => this.colors(i))
+      .style('fill', (d: any, i: any) => this.colors(i))
       .transition()
-      .delay((d, i) => i * 10)
-      .attr('y', d => this.yScale(d[1]))
-      .attr('height', d => this.height - this.yScale(d[1]));
+      .delay((d: any, i: any) => i * 10)
+      .attr('y', (d: any) => this.yScale(d[1]))
+      .attr('height', (d: any) => this.height - this.yScale(d[1]));
   }
 }

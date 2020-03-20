@@ -13,8 +13,8 @@ import { HistoricalData } from '../../../shared/mbs/data/historical-data';
 export class SyntheticDataComponent implements OnInit {
   readonly temporalEntityKinds = Object.keys(TemporalEntityKind);
   syntheticDataParameters: SyntheticDataParameters = new SyntheticDataParameters();
-  historicalData: HistoricalData;
-  historicalDataName: string;
+  historicalData: HistoricalData | undefined;
+  historicalDataName: string | undefined;
 
   constructor(private element: ElementRef, private syntheticDataService: SyntheticDataService, private snackBarService: SnackBarService) {
   }

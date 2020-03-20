@@ -30,12 +30,13 @@ export class Table12Component implements OnInit {
   public InstrumentType = InstrumentType;
   public ExchangeMic = ExchangeMic;
   public CurrencyCode = CurrencyCode;
-  public expandedInstrument: Instrument;
+  public expandedInstrument: Instrument | null;
   displayedColumns: string[] = ['type', 'symbol', 'name', 'isin', 'mic'];
   dataSource: MatTableDataSource<Instrument>;
 
   constructor(private listService: ListService, private snackBarService: SnackBarService) {
     this.dataSource = new MatTableDataSource<Instrument>();
+    // @ts-ignore
     this.dataSource.filterPredicate = (data: Instrument, filter: string) => {
       // return (data.description && data.description.toLowerCase().indexOf(filter) !== -1) ||
       return (data.name && data.name.toLowerCase().indexOf(filter) !== -1) ||
@@ -101,7 +102,7 @@ export class Table12Component implements OnInit {
         },
         error: error => {
           this.expandedInstrument = null;
-          this.dataSource.data = null;
+          this.dataSource.data = [];
           this.snackBarService.add(error as string);
           console.error(error as string);
         }
@@ -115,7 +116,17 @@ export class Table12Component implements OnInit {
     }
   }
 
-  helpWindow(event) {
+  getMic(instrument: Instrument): ExchangeMic {
+    // @ts-ignore
+    return ExchangeMic[instrument.mic];
+  }
+
+  getType(instrument: Instrument): InstrumentType {
+    // @ts-ignore
+    return InstrumentType[instrument.type];
+  }
+
+  helpWindow(event: any) {
     window.open(document.URL, '_blank', 'location=no,height=570,width=520,scrollbars=yes,status=yes');
   }
 }

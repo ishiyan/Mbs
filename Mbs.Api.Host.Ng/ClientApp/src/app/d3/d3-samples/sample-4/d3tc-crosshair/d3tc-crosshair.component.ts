@@ -1,5 +1,6 @@
 import { Component, OnInit, ElementRef, ViewChild, Input } from '@angular/core';
 import * as d3 from 'd3';
+// @ts-ignore
 import * as d3tc from '../../../../shared/d3tc';
 
 import { D3Ohlcv } from '../../data/d3-ohlcv';
@@ -57,7 +58,7 @@ export class D3tcCrosshairComponent implements OnInit {
       coordsText.style('display', 'none');
     }
 
-    function move(coords) {
+    function move(coords: any) {
       coordsText.text(timeAnnotationBottom.format()(coords.x) + ', ' + ohlcAnnotationLeft.format()(coords.y));
     }
 
@@ -65,7 +66,7 @@ export class D3tcCrosshairComponent implements OnInit {
       .xAnnotation([timeAnnotationBottom, timeAnnotationTop]).yAnnotation([ohlcAnnotationLeft, ohlcAnnotationRight])
       .on('enter', enter).on('out', out).on('move', move);
 
-    function draw(dat, topData, leftData, rightData, bottomData) {
+    function draw(dat: D3Ohlcv[], topData: any, leftData: any, rightData: any, bottomData: any) {
       x.domain(dat.map(accessor.d));
       y.domain(d3tc.scale.plot.ohlc(dat, accessor).domain());
 
@@ -75,7 +76,7 @@ export class D3tcCrosshairComponent implements OnInit {
       svg.selectAll('g.y.axis.left').call(yAxisLeft);
       svg.selectAll('g.y.axis.right').call(yAxisRight);
 
-      svg.selectAll('g.crosshair').datum({ x: x.domain()[80], y: 67.5 }).call(crosshair).each(function (d) { move(d); });
+      svg.selectAll('g.crosshair').datum({ x: x.domain()[80], y: 67.5 }).call(crosshair).each(function (d: any) { move(d); });
     }
 
     // data begin ----------------------------------

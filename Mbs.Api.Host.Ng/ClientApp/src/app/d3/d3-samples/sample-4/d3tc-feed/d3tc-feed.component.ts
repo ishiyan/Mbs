@@ -1,5 +1,6 @@
 import { Component, OnInit, ElementRef, ViewChild, Input } from '@angular/core';
 import * as d3 from 'd3';
+// @ts-ignore
 import * as d3tc from '../../../../shared/d3tc';
 
 import { D3Ohlcv } from '../../data/d3-ohlcv';
@@ -57,14 +58,14 @@ export class D3tcFeedComponent implements OnInit {
     svg.append('g').attr('class', 'crosshair ohlc');
 
     const coordsText = svg.append('text').style('text-anchor', 'end').attr('class', 'coords').attr('x', width - 5).attr('y', 15);
-    function move(coords) {
+    function move(coords: any) {
       coordsText.text(timeAnnotation.format()(coords.x) + ', ' + ohlcAnnotation.format()(coords.y));
     }
     const crosshair = d3tc.plot.crosshair().xScale(x).yScale(y)
       .xAnnotation(timeAnnotation).yAnnotation([ohlcAnnotation, volumeAnnotation]).on('move', move);
 
     const feed = data;
-    function redraw(dat) {
+    function redraw(dat: D3Ohlcv[]) {
       x.domain(dat.map(accessor.d));
       // Show only 150 points on the plot
       x.zoomable().domain([dat.length - 130, dat.length]);
@@ -74,7 +75,9 @@ export class D3tcFeedComponent implements OnInit {
       // Setup a transition for all that support
       svg.transition() // Disable transition for now, each is only for transitions
         .each(function () {
-          const selection = d3.select(this);
+        // tslint:disable-next-line:no-shadowed-variable
+        // @ts-ignore
+        const selection = d3.select(this);
           selection.select('g.x.axis').call(xAxis);
           selection.select('g.y.axis').call(yAxis);
           selection.select('g.volume.axis').call(volumeAxis);

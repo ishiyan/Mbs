@@ -76,7 +76,7 @@ export class ThemePickerComponent implements OnInit, OnDestroy {
     this.queryParamSubscription.unsubscribe();
   }
 
-  installTheme(themeName: string) {
+  installTheme(themeName: string | null) {
     const theme = this.themes.find(currentTheme => currentTheme.name === themeName);
 
     if (!theme) {

@@ -1,5 +1,6 @@
 import { Component, OnInit, ElementRef, ViewChild, Input, ViewEncapsulation } from '@angular/core';
 import * as d3 from 'd3';
+// @ts-ignore
 import * as d3tc from '../../../../shared/d3tc';
 
 import { D3Ohlcv } from '../../data/d3-ohlcv';
@@ -39,12 +40,12 @@ export class D3tcTradeArrowsComponent implements OnInit {
     const yAxis = d3.axisLeft(y);
     const valueText = svg.append('text').style('text-anchor', 'end').attr('class', 'coords').attr('x', width - 5).attr('y', 15);
 
-    function refreshText(z) {
+    function refreshText(z: any) {
       const dateFormat = d3.timeFormat('%d-%b-%y');
       const valueFormat = d3.format(',.2f');
       valueText.text('Trade: ' + dateFormat(z.date) + ', ' + z.type + ', ' + valueFormat(z.price));
     }
-    function enter(z) {
+    function enter(z: any) {
       valueText.style('display', 'inline');
       refreshText(z);
     }
@@ -53,9 +54,9 @@ export class D3tcTradeArrowsComponent implements OnInit {
     }
 
     const tradearrow = d3tc.plot.tradearrow().xScale(x).yScale(y)
-      .orient(function (z) { return z.type.startsWith('buy') ? 'up' : 'down'; }).on('mouseenter', enter).on('mouseout', out);
+      .orient(function (z: any) { return z.type.startsWith('buy') ? 'up' : 'down'; }).on('mouseenter', enter).on('mouseout', out);
 
-    function draw(dat, trad) {
+    function draw(dat: D3Ohlcv[], trad: any) {
       x.domain(dat.map(accessor.d));
       y.domain(d3tc.scale.plot.ohlc(dat, accessor).domain());
       svg.selectAll('g.candlestick').datum(dat).call(candlestick);

@@ -2,6 +2,7 @@ import { Component, OnInit, ElementRef, ViewChild, Input, ViewEncapsulation, Hos
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material/icon';
 import * as d3 from 'd3';
+// @ts-ignore
 import * as d3ts from '../d3ts';
 
 import { Downloader } from '../downloader';
@@ -63,7 +64,7 @@ export class HistoricalDataChartComponent implements OnInit {
     this.render();
   }
 
-  private temporalEntityKind: TemporalEntityKind;
+  private temporalEntityKind: TemporalEntityKind | undefined;
   get isOhlcv(): boolean {
     return this.temporalEntityKind === TemporalEntityKind.Ohlcv;
   }
@@ -218,8 +219,8 @@ export class HistoricalDataChartComponent implements OnInit {
     focus.append('clipPath').attr('id', 'clip')
       .append('rect').attr('x', 0).attr('y', y(1)).attr('width', width).attr('height', y(0) - y(1));
 
-    let yVolume;
-    let volume;
+    let yVolume: d3.ScaleLinear<number, number>;
+    let volume: any;
     if (this.renderVolume) {
       yVolume = d3.scaleLinear().range([y(0), y(0.3)]);
       volume = d3ts.plot.volume().xScale(x).yScale(yVolume);
@@ -242,7 +243,7 @@ export class HistoricalDataChartComponent implements OnInit {
     }
 
     function draw(scalarView: number, tradeView: number, quoteView: number,
-      renderVolume: boolean, temporalEntityKind: TemporalEntityKind) {
+      renderVolume: boolean, temporalEntityKind: TemporalEntityKind | undefined) {
       const priceSelection = focus.select('g.price');
       const datum = priceSelection.datum();
       switch (temporalEntityKind) {
@@ -300,6 +301,11 @@ export class HistoricalDataChartComponent implements OnInit {
       focus.select('g.y.axis').call(yAxisLeft);
     }
 
+    const sv = this.scalarView;
+    const tv = this.tradeView;
+    const qv = this.quoteView;
+    const rv = this.renderVolume;
+    const tek = this.temporalEntityKind;
     function brushed() {
       const zoomable = x.zoomable();
       const zoomableNav = xNav.zoomable();
@@ -307,7 +313,7 @@ export class HistoricalDataChartComponent implements OnInit {
       if (d3.event.selection !== null) {
         zoomable.domain(d3.event.selection.map(zoomable.invert));
       }
-      draw(this.scalarView, this.tradeView, this.quoteView, this.renderVolume, this.temporalEntityKind);
+      draw(sv, tv, qv, rv, tek);
     }
 
     brushNav.on('end', brushed);
@@ -361,6 +367,7 @@ export class HistoricalDataChartComponent implements OnInit {
     }
     yNav.domain(y.domain());
     if (this.renderVolume) {
+      // @ts-ignore
       yVolume.domain(d3ts.scale.plot.volume(this.data).domain());
     }
     focus.select('g.price').datum(this.data);

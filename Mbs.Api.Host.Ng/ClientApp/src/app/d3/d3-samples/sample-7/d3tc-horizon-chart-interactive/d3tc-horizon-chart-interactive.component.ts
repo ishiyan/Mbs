@@ -2,6 +2,7 @@ import { Component, OnInit, ElementRef, ViewChild, Input } from '@angular/core';
 import { MatRadioChange } from '@angular/material/radio';
 import { MatSelectChange } from '@angular/material/select';
 import * as d3 from 'd3';
+// @ts-ignore
 import * as d3tc from '../../../../shared/d3tc';
 
 import { D3Ohlcv } from '../../data/d3-ohlcv';
@@ -73,7 +74,7 @@ export class D3tcHorizonChartInteractiveComponent implements OnInit {
     const mean = data.map(c => c.close).reduce(function (p, v) { return p + v; }, 0) / data.length;
     const horizonData = data.map(function (c) { return [c.date, c.close ? (c.close - mean) : null]; });
     this.chart = d3tc.horizonChart().width(width).height(this.height / this.bands).bands(this.bands).mode(this.mode)
-      .interpolate(this.interpolation).colors(this.color).defined(function (d) { return d[1]; });
+      .interpolate(this.interpolation).colors(this.color).defined(function (d: any) { return d[1]; });
     this.svg.data([horizonData]).call(this.chart);
   }
 }

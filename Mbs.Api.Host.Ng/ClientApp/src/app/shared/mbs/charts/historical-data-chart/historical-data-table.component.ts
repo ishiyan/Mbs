@@ -62,7 +62,7 @@ export class HistoricalDataTableComponent implements OnInit {
   canDownload = false;
   currentHistoricalData: HistoricalData;
   dataSource: MatTableDataSource<Ohlcv | Quote | Trade | Scalar> = new MatTableDataSource<Ohlcv | Quote | Trade | Scalar>();
-  private temporalEntityKind: TemporalEntityKind;
+  private temporalEntityKind: TemporalEntityKind | undefined;
 
   ngOnInit() {
     this.dataSource.paginator = this.paginator;

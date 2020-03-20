@@ -1,5 +1,6 @@
 import { Component, OnInit, ElementRef, Input } from '@angular/core';
 import * as d3 from 'd3';
+// @ts-ignore
 import * as d3tc from '../../../../shared/d3tc';
 
 import { D3Ohlcv } from '../../data/d3-ohlcv';
@@ -17,7 +18,7 @@ export class D3tcHorizonChartSingleComponent implements OnInit {
   private _mode = 'mirror';
   private _interpolation = d3.curveCatmullRom;
   private _colors = ['#08519c', '#bdd7e7', '#bae4b3', '#006d2c'];
-  private horizonData: (number | Date)[][];
+  private horizonData: (number | Date | null)[][];
   private svg: any;
   private g: any;
   private chart: any;
@@ -74,7 +75,7 @@ export class D3tcHorizonChartSingleComponent implements OnInit {
     this.svg = d3.select(this.element.nativeElement).select('svg').attr('width', this._width).attr('height', this._height);
     this.g = this.svg.append('g');
     this.chart = d3tc.horizonChart().width(this._width).height(this._height).bands(this._bands)
-      .mode(this._mode).colors(this._colors).interpolate(this._interpolation).defined(function (d) { return d[1]; });
+      .mode(this._mode).colors(this._colors).interpolate(this._interpolation).defined(function (d: any) { return d[1]; });
     this.g.data([this.horizonData]).call(this.chart);
   }
 }

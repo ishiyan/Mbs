@@ -30,6 +30,7 @@ import { HistoricalDataDownloadComponent } from './charts/historical-data-chart/
 import { HistoricalDataChartComponent } from './charts/historical-data-chart/historical-data-chart.component';
 
 import { OhlcvChartComponent } from './charts/ohlcv-chart/ohlcv-chart.component';
+import { SparklineComponent } from './charts/sparkline/sparkline.component';
 
 @NgModule({
   imports: [
@@ -47,7 +48,7 @@ import { OhlcvChartComponent } from './charts/ohlcv-chart/ohlcv-chart.component'
     FractionalBrownianMotionParametersComponent, GeometricBrownianMotionParametersComponent, ChirpParametersComponent,
     SawtoothParametersComponent, SquareParametersComponent, SinusoidalParametersComponent, SyntheticDataParametersComponent,
     HistoricalDataTableComponent, HistoricalDataDownloadComponent, HistoricalDataChartComponent,
-    OhlcvChartComponent
+    OhlcvChartComponent, SparklineComponent
   ],
   declarations: [
     BusinessDayCalendarDescriptionComponent, TimeParametersComponent, WaveformParametersComponent,
@@ -55,7 +56,7 @@ import { OhlcvChartComponent } from './charts/ohlcv-chart/ohlcv-chart.component'
     FractionalBrownianMotionParametersComponent, GeometricBrownianMotionParametersComponent, ChirpParametersComponent,
     SawtoothParametersComponent, SquareParametersComponent, SinusoidalParametersComponent, SyntheticDataParametersComponent,
     HistoricalDataTableComponent, HistoricalDataDownloadComponent, HistoricalDataChartComponent,
-    OhlcvChartComponent
+    OhlcvChartComponent, SparklineComponent
   ],
   providers: [
     SyntheticDataService

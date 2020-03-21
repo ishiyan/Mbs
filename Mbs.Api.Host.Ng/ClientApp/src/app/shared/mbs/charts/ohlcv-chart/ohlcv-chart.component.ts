@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, Input, HostListener } from '@angular/core';
+import { Component, ElementRef, ViewChild, Input, HostListener, OnChanges } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material/icon';
 import * as d3 from 'd3';
@@ -78,7 +78,7 @@ const smoothBrushing = false;
   templateUrl: './ohlcv-chart.component.html',
   styleUrls: ['./ohlcv-chart.component.scss']
 })
-export class OhlcvChartComponent {
+export class OhlcvChartComponent implements OnChanges {
   @ViewChild('container', { static: true }) container: ElementRef;
   @Input()
   public set configuration(cfg: OhlcvChartConfig) {
@@ -145,7 +145,7 @@ export class OhlcvChartComponent {
 
   private currentSelection: any = null;
 
-  constructor(private element: ElementRef, iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
+  constructor(iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
     iconRegistry.addSvgIcon('mb-candlesticks',
       sanitizer.bypassSecurityTrustResourceUrl('assets/img/mb-candlesticks.svg'));
     iconRegistry.addSvgIcon('mb-bars',
@@ -157,8 +157,12 @@ export class OhlcvChartComponent {
       textBeforeSvg, textAfterSvg), 'ohlcv_chart.html');
   }
 
+  ngOnChanges() {
+    this.render();
+  }
+
   @HostListener('window:resize', [])
-  render() {
+  public render(): void {
     const chartId = '#chart';
     // console.log('width=' + this.container.nativeElement.getBoundingClientRect().width);
     // console.log('offsetWidth=' + this.container.nativeElement.offsetWidth);

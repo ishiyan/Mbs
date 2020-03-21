@@ -1,4 +1,6 @@
 import { Directive, ElementRef, Input, OnChanges, OnInit } from '@angular/core';
+//import * as MathJax from '@types/mathjax';
+import "MathJax"; //works local, not in docker
 
 @Directive({
   selector: '[appMathJax]'

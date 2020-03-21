@@ -5,8 +5,8 @@ RUN mkdir -p /root/src/app/netcoreapp
 WORKDIR /root/src/app/netcoreapp
 
 # set up node
-ENV NODE_VERSION 10.9.0
-ENV NODE_DOWNLOAD_SHA d061760884e4705adfc858eb669c44eb66cd57e8cdf6d5d57a190e76723af416
+ENV NODE_VERSION 13.11.0
+ENV NODE_DOWNLOAD_SHA db9592a3e54c34fcf2252e6cf49780dda93cc175d7a27654a8971e1eb5f1f989
 RUN curl -SL "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.gz" --output nodejs.tar.gz \
     && echo "$NODE_DOWNLOAD_SHA nodejs.tar.gz" | sha256sum -c - \
     && tar -xzf "nodejs.tar.gz" -C /usr/local --strip-components=1 \

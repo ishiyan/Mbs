@@ -2,6 +2,15 @@
 
 [![Build Status](https://mbrane.visualstudio.com/IvanShiyan/_apis/build/status/Mbs.Api.Host.Ng%20-%20Azure%20Kubernetes%20Service%20-%20CI-clone?branchName=master)](https://mbrane.visualstudio.com/IvanShiyan/_build/latest?definitionId=11&branchName=master)
 
+
+Docker images: Buster vs Alpine
+
+|REPOSITORY    |TAG    |IMAGE ID     |CREATED     |SIZE  |
+|--------------|-------|-------------|------------|------|
+|buster/latest |latest |2deeaec121e0 |2 hours ago |266MB |
+|alpine/latest |latest |b125eda34929 |2 hours ago |164MB |
+
+
 ```shell
 az aks browse --resource-group mbrane --name mbrane1
 

@@ -3,7 +3,7 @@
     <mat-card-title>{{sample.name}}</mat-card-title>
   </mat-card-header>
   <mat-card-content>
-    <textarea #tex class="tex-card-textarea" (change)="updateMathJax()">$${{sample.code}}$$</textarea>
-    <div appMathJax [appMathJax]="tex.value"></div>
+    <textarea #source class="tex-card-textarea" (change)="updateMathJax(source.value)">$${{sample.code}}$$</textarea>
+    <div #render mathjax>$${{sample.code}}$$</div>
   </mat-card-content>
 </mat-card>

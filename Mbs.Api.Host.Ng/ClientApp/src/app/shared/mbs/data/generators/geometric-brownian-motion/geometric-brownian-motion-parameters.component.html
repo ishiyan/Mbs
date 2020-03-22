@@ -5,11 +5,11 @@
     </mat-panel-title>
   </mat-expansion-panel-header>
   <div>
-    <span [appMathJax]="eq1"></span>
-    <span [appMathJax]="eq2"></span>
-    <span [appMathJax]="eq3"></span>
-    <span [appMathJax]="eq4"></span>
-    <span [appMathJax]="eq5"></span>
+    <span [mathjax]="eq1"></span>
+    <span [mathjax]="eq2"></span>
+    <span [mathjax]="eq3"></span>
+    <span [mathjax]="eq4"></span>
+    <span [mathjax]="eq5"></span>
   </div>
   <mat-form-field>
     <input type="number" matInput placeholder="Amplitude, α" [(ngModel)]="geometricBrownianMotionParameters.amplitude"

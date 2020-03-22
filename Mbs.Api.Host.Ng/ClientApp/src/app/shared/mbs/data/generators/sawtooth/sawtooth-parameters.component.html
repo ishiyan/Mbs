@@ -5,8 +5,8 @@
     </mat-panel-title>
   </mat-expansion-panel-header>
   <div>
-    <span [appMathJax]="eq1">{{eq1}}</span>
-    <span [appMathJax]="eq2">{{eq2}}</span>
+    <span [mathjax]="eq1">{{eq1}}</span>
+    <span [mathjax]="eq2">{{eq2}}</span>
   </div>
   <mat-form-field>
     <input type="number" matInput placeholder="Amplitude, α" [(ngModel)]="sawtoothParameters.amplitude" min="4" step="1"

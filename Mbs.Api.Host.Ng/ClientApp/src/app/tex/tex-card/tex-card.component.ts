@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectorRef, AfterViewChecked } from '@angular/core';
+import { Component, Input, ChangeDetectorRef, AfterViewChecked, ViewChild, ElementRef } from '@angular/core';
 
 import { MathJaxDirective } from '../../shared/math-jax/math-jax.directive';
 import { Sample } from '../samples/sample';
@@ -9,15 +9,24 @@ import { Sample } from '../samples/sample';
   styleUrls: ['./tex-card.component.scss']
 })
 export class TexCardComponent implements AfterViewChecked {
-  @Input() sample: Sample;
+  @Input()
+  sample: Sample;
+
+  @ViewChild('render', { static: true })
+  render: ElementRef;
+
+  @ViewChild('render', {read: MathJaxDirective, static: true})
+  mathJaxDirective: MathJaxDirective;
 
   constructor(private changeDetectionRef: ChangeDetectorRef) { }
+
 
   ngAfterViewChecked() {
     this.changeDetectionRef.detectChanges();
   }
 
-  updateMathJax() {
-    MathJax.Hub.Queue(['Typeset', MathJax.Hub, 'MathJax']);
+  updateMathJax(text: string) {
+    this.render.nativeElement.innerHTML = text;
+    this.mathJaxDirective.typeset();
   }
 }

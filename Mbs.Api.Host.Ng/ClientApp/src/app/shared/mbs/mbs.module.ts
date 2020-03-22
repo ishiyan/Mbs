@@ -39,7 +39,7 @@ import { SparklineComponent } from './charts/sparkline/sparkline.component';
     MaterialModule,
     FlexLayoutModule,
     FormsModule,
-    MathJaxModule,
+    MathJaxModule.forChild(),
     SvgViewerModule
   ],
   exports: [

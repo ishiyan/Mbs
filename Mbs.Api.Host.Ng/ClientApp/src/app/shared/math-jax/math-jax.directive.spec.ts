@@ -1,9 +1,11 @@
 import { MathJaxDirective } from './math-jax.directive';
-import { ElementRef } from '@angular/core';
+import { MathJaxService } from './math-jax.service';
 
 describe('MathJaxDirective', () => {
   it('should create an instance', () => {
-    const directive = new MathJaxDirective(new ElementRef(null));
+    const service = new MathJaxService();
+
+    const directive = new MathJaxDirective({ nativeElement: {} }, service);
     expect(directive).toBeTruthy();
   });
 });

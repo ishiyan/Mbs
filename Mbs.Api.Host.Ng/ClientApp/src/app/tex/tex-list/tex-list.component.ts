@@ -1,5 +1,4 @@
 import { Component, Input } from '@angular/core';
-
 import { Sample } from '../samples/sample';
 
 @Component({
@@ -9,4 +8,8 @@ import { Sample } from '../samples/sample';
 })
 export class TexListComponent {
   @Input() samples: Sample[];
+  @Input()
+  showMathJax: boolean = true;
+  @Input()
+  showKatex: boolean = true;
 }

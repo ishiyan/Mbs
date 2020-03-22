@@ -14,6 +14,9 @@ export class SawtoothParametersComponent {
   eq1 = '$mid_t=\\alpha\\cdot shape_t\\cdot t+\\beta,$';
   eq2 = '$sample_t=mid_t+noise_t$';
 
+  eq1k = 'mid_t=\\alpha\\cdot shape_t\\cdot t+\\beta,';
+  eq2k = 'sample_t=mid_t+noise_t';
+
   sawtoothShapes = Object.keys(SawtoothShape);
 
   compare = Enums.compare;

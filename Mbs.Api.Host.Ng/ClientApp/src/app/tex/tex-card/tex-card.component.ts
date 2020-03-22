@@ -1,6 +1,7 @@
 import { Component, Input, ChangeDetectorRef, AfterViewChecked, ViewChild, ElementRef } from '@angular/core';
 
 import { MathJaxDirective } from '../../shared/math-jax/math-jax.directive';
+import { KatexComponent } from 'src/app/shared/katex/katex.component';
 import { Sample } from '../samples/sample';
 
 @Component({
@@ -11,22 +12,33 @@ import { Sample } from '../samples/sample';
 export class TexCardComponent implements AfterViewChecked {
   @Input()
   sample: Sample;
+  @Input()
+  showMathJax: boolean = true;
+  @Input()
+  showKatex: boolean = true;
 
-  @ViewChild('render', { static: true })
-  render: ElementRef;
+  @ViewChild('renderMathJax', { static: true })
+  renderMathJax: ElementRef;
 
-  @ViewChild('render', {read: MathJaxDirective, static: true})
+  @ViewChild('renderMathJax', {read: MathJaxDirective, static: true})
   mathJaxDirective: MathJaxDirective;
 
-  constructor(private changeDetectionRef: ChangeDetectorRef) { }
+  @ViewChild('renderKatex', {read: KatexComponent, static: true})
+  katexomponent: KatexComponent;
 
+  constructor(private changeDetectionRef: ChangeDetectorRef) { }
 
   ngAfterViewChecked() {
     this.changeDetectionRef.detectChanges();
   }
 
   updateMathJax(text: string) {
-    this.render.nativeElement.innerHTML = text;
-    this.mathJaxDirective.typeset();
+    if (this.showKatex) {
+      this.katexomponent.equation = text;
+    }
+    if (this.showMathJax) {
+      this.renderMathJax.nativeElement.innerHTML = '$$' + text + '$$';
+      this.mathJaxDirective.typeset();  
+    }
   }
 }

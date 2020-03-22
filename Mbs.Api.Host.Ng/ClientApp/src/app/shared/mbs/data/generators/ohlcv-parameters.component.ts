@@ -12,4 +12,9 @@ export class OhlcvParametersComponent {
   eq2 = '$(open,close)_t=mid_t\\cdot (1 \\pm ρ_b),$';
   eq3 = '$v_t=\\nu=const$,';
   eq4 = '$ρ_b\\in [0, ρ_s]$';
+
+  eq1k = '(high,low)_t=mid_t\\cdot (1 \\pm ρ_s),';
+  eq2k = '(open,close)_t=mid_t\\cdot (1 \\pm ρ_b),';
+  eq3k = 'v_t=\\nu=const,';
+  eq4k = 'ρ_b\\in [0, ρ_s]';
 }

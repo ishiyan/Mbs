@@ -8,6 +8,10 @@
     <span [mathjax]="eq1">{{eq1}}</span>
     <span [mathjax]="eq2">{{eq2}}</span>
   </div>
+  <div>
+    <mb-katex [equation]="eq1k" [options]="{throwOnError: false, strict: true}"></mb-katex>
+    <mb-katex [equation]="eq2k" [options]="{throwOnError: false, strict: true}"></mb-katex>
+  </div>
   <mat-form-field>
     <input type="number" matInput placeholder="Amplitude, α" [(ngModel)]="sawtoothParameters.amplitude" min="4" step="1"
       required>

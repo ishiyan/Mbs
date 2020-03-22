@@ -18,6 +18,12 @@ export class GeometricBrownianMotionParametersComponent {
   eq4 = '$mid_t\\ is\\ normalized\\ to\\ [\\beta, \\alpha+\\beta],$';
   eq5 = '$sample_t=mid_t+noise_t$';
 
+  eq1k = 'mid_t=mid_0\\exp((\\mu-\\frac{\\sigma^2}{2})t+\\sigma\\sqrt{dt}\\cdot ng),';
+  eq2k = 'mid_0=\\beta+\\frac{\\alpha}{2},';
+  eq3k = 'dt=\\frac{1}{L - 1},';
+  eq4k = 'mid_t\\ is\\ normalized\\ to\\ [\\beta, \\alpha+\\beta],';
+  eq5k = 'sample_t=mid_t+noise_t';
+
   normalRandomGenerators = Object.keys(NormalRandomGeneratorKind);
   uniformRandomGenerators = Object.keys(UniformRandomGeneratorKind);
 

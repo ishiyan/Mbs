@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
 import { MathJaxModule } from '../math-jax/math-jax.module';
+import { KatexModule } from '../katex/katex.module';
 import { MaterialModule } from '../material/material.module';
 import { SvgViewerModule } from '../svg-viewer/svg-viewer.module';
 
@@ -40,6 +41,7 @@ import { SparklineComponent } from './charts/sparkline/sparkline.component';
     FlexLayoutModule,
     FormsModule,
     MathJaxModule.forChild(),
+    KatexModule,
     SvgViewerModule
   ],
   exports: [

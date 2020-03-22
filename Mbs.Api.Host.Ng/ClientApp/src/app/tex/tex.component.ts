@@ -12,6 +12,8 @@ import { categories } from './categories/categories';
 export class TexComponent {
   public readonly categories: Category[] = categories;
   public category: Category = categories[0];
+  public renderMathJax: boolean = true;
+  public renderKatex: boolean = true;
 
   constructor(router: Router) {
     const routeUrl = router.routerState.snapshot.url;

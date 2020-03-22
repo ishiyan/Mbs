@@ -11,4 +11,7 @@ export class SinusoidalParametersComponent {
 
   eq1 = '$mid_t=\\alpha\\cdot\\cos(\\frac{2\\pi}{\\lambda}t+\\varphi\\cdot\\pi)+\\beta,$';
   eq2 = '$sample_t=mid_t+noise_t$';
+
+  eq1k = 'mid_t=\\alpha\\cdot\\cos(\\frac{2\\pi}{\\lambda}t+\\varphi\\cdot\\pi)+\\beta,';
+  eq2k = 'sample_t=mid_t+noise_t';
 }

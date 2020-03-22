@@ -3,7 +3,12 @@
     <mat-card-title>{{sample.name}}</mat-card-title>
   </mat-card-header>
   <mat-card-content>
-    <textarea #source class="tex-card-textarea" (change)="updateMathJax(source.value)">$${{sample.code}}$$</textarea>
-    <div #render mathjax>$${{sample.code}}$$</div>
+    <textarea #source class="tex-card-textarea" (change)="updateMathJax(source.value)">{{sample.code}}</textarea>
+    <div *ngIf="showMathJax">
+      MathJax: <div #renderMathJax mathjax>$${{sample.code}}$$</div>
+    </div>
+    <div *ngIf="showKatex">
+      KaTeX: <mb-katex #renderKatex [equation]="sample.code" [options]="{displayMode: true, throwOnError: false, strict: true}"></mb-katex>
+    </div>
   </mat-card-content>
 </mat-card>

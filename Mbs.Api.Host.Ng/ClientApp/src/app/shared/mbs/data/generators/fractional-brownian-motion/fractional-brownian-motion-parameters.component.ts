@@ -16,6 +16,9 @@ export class FractionalBrownianMotionParametersComponent {
   eq1 = '$mid_t=\\alpha\\cdot fBm_t(H, ng, seed)+\\beta,$';
   eq2 = '$sample_t=mid_t+noise_t$';
 
+  eq1k = 'mid_t=\\alpha\\cdot fBm_t(H, ng, seed)+\\beta,';
+  eq2k = 'sample_t=mid_t+noise_t';
+
   algorithms = Object.keys(FractionalBrownianMotionAlgorithm);
   normalRandomGenerators = Object.keys(NormalRandomGeneratorKind);
   uniformRandomGenerators = Object.keys(UniformRandomGeneratorKind);

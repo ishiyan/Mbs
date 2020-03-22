@@ -5,6 +5,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 
 import { TexRoutingModule } from './tex-routing.module';
 import { MathJaxModule } from '../shared/math-jax/math-jax.module';
+import { KatexModule } from '../shared/katex/katex.module';
 import { MaterialModule } from '../shared/material/material.module';
 import { FooterModule } from '../shared/footer/footer.module';
 import { TexComponent } from './tex.component';
@@ -14,7 +15,7 @@ import { TexCardComponent } from './tex-card/tex-card.component';
 @NgModule({
   imports: [
     CommonModule, FormsModule, FlexLayoutModule,
-    TexRoutingModule, MaterialModule, FooterModule, MathJaxModule.forChild()
+    TexRoutingModule, MaterialModule, FooterModule, MathJaxModule.forChild(), KatexModule
   ],
   declarations: [TexComponent, TexListComponent, TexCardComponent]
 })

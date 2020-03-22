@@ -12,4 +12,8 @@ export class SquareParametersComponent {
   // tslint:disable-next-line: max-line-length
   eq1 = '$mid_t=\\left\\{\\begin{array}{rl}\\alpha+\\beta&t\\in [1, \\lambda]\\\\\\beta&t\\in [\\lambda+1, 2\\lambda]\\end{array}\\right.,$';
   eq2 = '$sample_t=mid_t+noise_t$';
+
+  // tslint:disable-next-line: max-line-length
+  eq1k = 'mid_t=\\left\\{\\begin{array}{rl}\\alpha+\\beta&t\\in [1, \\lambda]\\\\\\beta&t\\in [\\lambda+1, 2\\lambda]\\end{array}\\right.,';
+  eq2k = 'sample_t=mid_t+noise_t';
 }

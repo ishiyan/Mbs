@@ -4,12 +4,19 @@
       Geometric Brownian motion parameters
     </mat-panel-title>
   </mat-expansion-panel-header>
-  <div>
+  <!-- div>
     <span [mathjax]="eq1"></span>
     <span [mathjax]="eq2"></span>
     <span [mathjax]="eq3"></span>
     <span [mathjax]="eq4"></span>
     <span [mathjax]="eq5"></span>
+  </div -->
+  <div>
+    <mb-katex [equation]="eq1k" [options]="{throwOnError: false, strict: true}"></mb-katex>
+    <mb-katex [equation]="eq2k" [options]="{throwOnError: false, strict: true}"></mb-katex>
+    <mb-katex [equation]="eq3k" [options]="{throwOnError: false, strict: true}"></mb-katex>
+    <mb-katex [equation]="eq4k" [options]="{throwOnError: false, strict: true}"></mb-katex>
+    <mb-katex [equation]="eq5k" [options]="{throwOnError: false, strict: true}"></mb-katex>
   </div>
   <mat-form-field>
     <input type="number" matInput placeholder="Amplitude, α" [(ngModel)]="geometricBrownianMotionParameters.amplitude"

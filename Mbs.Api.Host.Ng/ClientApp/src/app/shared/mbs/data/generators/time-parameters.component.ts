@@ -7,7 +7,7 @@ import { TimeParameters } from './time-parameters';
 import { Enums } from '../../utils/enums';
 
 @Component({
-  selector: 'app-mbs-data-generators-time-parameters',
+  selector: 'mb-data-generators-time-parameters',
   templateUrl: './time-parameters.component.html',
   styleUrls: ['./time-parameters.component.scss']
 })

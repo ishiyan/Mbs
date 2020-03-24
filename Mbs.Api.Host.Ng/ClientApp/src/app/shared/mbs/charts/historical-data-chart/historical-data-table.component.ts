@@ -10,7 +10,7 @@ import { Trade } from '../../data/entities/trade';
 import { Scalar } from '../../data/entities/scalar';
 
 @Component({
-  selector: 'app-mbs-data-historical-data-table',
+  selector: 'mb-data-historical-data-table',
   templateUrl: './historical-data-table.component.html',
   styleUrls: ['./historical-data-table.component.scss']
 })

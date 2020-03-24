@@ -30,7 +30,7 @@ export namespace Scalar {
     if (json) {
       for (const property in json) {
         if (json.hasOwnProperty(property)) {
-          (<any>scalar)[property] = (<any>json)[property];
+          (scalar as any)[property] = json[property];
         }
       }
     }
@@ -39,8 +39,10 @@ export namespace Scalar {
 
   export function toJson(scalar: Scalar, json?: any): any {
     json = typeof json === 'object' ? json : {};
-    json['time'] = scalar.time ? scalar.time.toISOString() : <any>undefined;
+    // tslint:disable:no-string-literal
+    json['time'] = scalar.time ? scalar.time.toISOString() : (undefined as any);
     json['value'] = scalar.value;
+    // tslint:enable:no-string-literal
     return json;
   }
 }

@@ -4,7 +4,7 @@ import { TemporalEntityKind } from '../entities/temporal-entity-kind.enum';
 import { SyntheticDataParameters } from './synthetic-data-parameters';
 
 @Component({
-  selector: 'app-mbs-data-generators-synthetic-data-parameters',
+  selector: 'mb-data-generators-synthetic-data-parameters',
   templateUrl: './synthetic-data-parameters.component.html',
   styleUrls: ['./synthetic-data-parameters.component.scss']
 })

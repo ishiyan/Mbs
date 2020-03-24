@@ -7,7 +7,7 @@ import * as d3 from 'd3';
 import * as hilbert from '../hilbert';
 
 @Component({
-  selector: 'app-hilbert-curve',
+  selector: 'd3-sample-hilbert-curve',
   templateUrl: './hilbert-curve.component.html',
   styleUrls: ['./hilbert-curve.component.scss']
 })

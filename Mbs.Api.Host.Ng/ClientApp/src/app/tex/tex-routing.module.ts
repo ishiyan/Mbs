@@ -12,7 +12,8 @@ const routes: Routes = [
       { path: 'basic', component: TexListComponent },
       { path: 'multiline', component: TexListComponent },
       { path: 'symbols', component: TexListComponent },
-      { path: 'science', component: TexListComponent }
+      { path: 'science', component: TexListComponent },
+      { path: 'synthetic', component: TexListComponent }
     ]
   },
   { path: '**', redirectTo: '' }

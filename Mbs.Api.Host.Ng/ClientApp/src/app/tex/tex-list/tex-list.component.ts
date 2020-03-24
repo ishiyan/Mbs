@@ -2,14 +2,14 @@ import { Component, Input } from '@angular/core';
 import { Sample } from '../samples/sample';
 
 @Component({
-  selector: 'app-tex-list',
+  selector: 'tex-sample-list',
   templateUrl: './tex-list.component.html',
   styleUrls: ['./tex-list.component.scss']
 })
 export class TexListComponent {
   @Input() samples: Sample[];
   @Input()
-  showMathJax: boolean = true;
+  showMathJax = true;
   @Input()
-  showKatex: boolean = true;
+  showKatex = true;
 }

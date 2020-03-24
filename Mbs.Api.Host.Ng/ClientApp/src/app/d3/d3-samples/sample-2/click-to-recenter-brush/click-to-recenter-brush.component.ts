@@ -2,7 +2,7 @@ import { Component, OnInit, ElementRef, ViewChild, Input } from '@angular/core';
 import * as d3 from 'd3';
 
 @Component({
-  selector: 'app-click-to-recenter-brush',
+  selector: 'd3-sample-click-to-recenter-brush',
   templateUrl: './click-to-recenter-brush.component.html',
   styleUrls: ['./click-to-recenter-brush.component.scss']
 })
@@ -16,7 +16,7 @@ export class ClickToRecenterBrushComponent implements OnInit {
   ngOnInit() {
     const randomX = d3.randomUniform(0, 10);
     const randomY = d3.randomNormal(0.5, 0.12);
-    const data = d3.range(800).map(function () { return [randomX(), randomY()]; });
+    const data = d3.range(800).map(() => [randomX(), randomY()]);
 
     const margin: any = { top: 20, right: 10, bottom: 40, left: 20 };
     const w = this.container.nativeElement.getBoundingClientRect().width;
@@ -38,7 +38,7 @@ export class ClickToRecenterBrushComponent implements OnInit {
       .selectAll('circle')
       .data(data)
       .enter().append('circle')
-      .attr('transform', function (d: any) { return 'translate(' + x(d[0]) + ',' + y(d[1]) + ')'; })
+      .attr('transform', (d: any) => { return 'translate(' + x(d[0]) + ',' + y(d[1]) + ')'; })
       .attr('r', 3.5);
 
     brush.on('start brush end', () => {
@@ -47,7 +47,7 @@ export class ClickToRecenterBrushComponent implements OnInit {
         dot.classed('activa', false);
       } else {
         const sx = s.map(x.invert);
-        dot.classed('active', function (d: any) { return sx[0] <= d[0] && d[0] <= sx[1]; });
+        dot.classed('active', (d: any) => { return sx[0] <= d[0] && d[0] <= sx[1]; });
       }
     });
 
@@ -55,7 +55,7 @@ export class ClickToRecenterBrushComponent implements OnInit {
       .call(brush)
       .call(brush.move, [3, 5].map(x))
       .selectAll('.overlay')
-      .each(function (d: any) { d.type = 'selection'; }) // Treat overlay interaction as move.
+      .each((d: any) => { d.type = 'selection'; }) // Treat overlay interaction as move.
       .on('mousedown touchstart', function () { // Recenter before brushing.
         const dx = x(1) - x(0); // Use a fixed width when recentering.
         // tslint:disable-next-line:no-shadowed-variable

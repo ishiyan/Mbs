@@ -74,214 +74,19 @@ const textAfterSvg = `
 const smoothBrushing = false;
 
 @Component({
-  selector: 'app-mbs-ohlcv-chart',
+  selector: 'mb-ohlcv-chart',
   templateUrl: './ohlcv-chart.component.html',
   styleUrls: ['./ohlcv-chart.component.scss']
 })
 export class OhlcvChartComponent implements OnChanges {
-  @ViewChild('container', { static: true }) container: ElementRef;
-  @Input()
-  public set configuration(cfg: OhlcvChartConfig) {
-    if (cfg && cfg != null) {
-      this.config = cfg;
-      this.ohlcvView = cfg.ohlcv.candlesticks ? ohlcvViewCandlesticks : ohlcvViewBars;
-      this.renderCrosshair = cfg.crosshair;
-      this.renderVolume = cfg.volumeInPricePane;
-      this.currentSelection = null;
-    } else {
-      this.config = new OhlcvChartConfig();
-    }
-    this.render();
-  }
-
   private config: OhlcvChartConfig;
-
-  /** Gets if menu is visible. */
-  public get viewMenu(): boolean {
-    return this.config ? this.config.menuVisible : false;
-  }
-
-  /** Gets if *download SVG* menu setting is visible. */
-  public get viewDownloadSvg(): boolean {
-    return this.config ? this.config.downloadSvgVisible : false;
-  }
-
-  /** Gets or sets the *ohlcv* view type: *candlesticks* or *bars*. */
-  public get ohlcvViewType(): number {
-    return this.ohlcvView;
-  }
-  public set ohlcvViewType(value: number) {
-    this.ohlcvView = value;
-    this.render();
-  }
+  private currentSelection: any = null;
+  private renderVolume = this.config ? this.config.volumeInPricePane : true;
+  private renderCrosshair = this.config ? this.config.crosshair : true;
   private ohlcvView: number = (this.config && !this.config.ohlcv.candlesticks) ? ohlcvViewBars : ohlcvViewCandlesticks;
   public readonly ohlcvViewCandlesticks = ohlcvViewCandlesticks;
   public readonly ohlcvViewBars = ohlcvViewBars;
-
-  /** Gets or sets if *crosshair* is visible */
-  public get viewCrosshair(): boolean {
-    return this.renderCrosshair;
-  }
-  public set viewCrosshair(value: boolean) {
-    this.renderCrosshair = value;
-    this.render();
-  }
-  private renderCrosshair = this.config ? this.config.crosshair : true;
-
-  /** Gets or sets if volume in price pane is visible */
-  public get viewVolume(): boolean {
-    return this.renderVolume;
-  }
-  public set viewVolume(value: boolean) {
-    this.renderVolume = value;
-    this.render();
-  }
-  private renderVolume = this.config ? this.config.volumeInPricePane : true;
-
-  /** Gets a title of the chart. */
-  public get chartTitle(): string {
-    return this.config ? this.config.ohlcv.name : '---';
-  }
-
-  private currentSelection: any = null;
-
-  constructor(iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
-    iconRegistry.addSvgIcon('mb-candlesticks',
-      sanitizer.bypassSecurityTrustResourceUrl('assets/img/mb-candlesticks.svg'));
-    iconRegistry.addSvgIcon('mb-bars',
-      sanitizer.bypassSecurityTrustResourceUrl('assets/img/mb-bars.svg'));
-  }
-
-  public downloadSvg(): void {
-    Downloader.download(Downloader.serializeToSvg(Downloader.getChildElementById(this.container.nativeElement.parentNode, 'chart'),
-      textBeforeSvg, textAfterSvg), 'ohlcv_chart.html');
-  }
-
-  ngOnChanges() {
-    this.render();
-  }
-
-  @HostListener('window:resize', [])
-  public render(): void {
-    const chartId = '#chart';
-    // console.log('width=' + this.container.nativeElement.getBoundingClientRect().width);
-    // console.log('offsetWidth=' + this.container.nativeElement.offsetWidth);
-    // const w = this.container.nativeElement.getBoundingClientRect().width;
-    const w = this.container.nativeElement.offsetWidth;
-    const cfg = this.config;
-    const lh = OhlcvChartComponent.layoutHorizontal(cfg, w);
-
-    d3.select(chartId).select('svg').remove();
-    const svg: any = d3.select(chartId).append('svg')
-      .attr('preserveAspectRatio', 'xMinYMin meet').attr('width', lh.width);
-
-    const lv = OhlcvChartComponent.layoutVertical(svg, cfg, lh);
-    svg.attr('height', lv.height).attr('viewBox', `0 0 ${lh.width} ${lv.height}`);
-
-    const timePane = OhlcvChartComponent.createTimePane(cfg, lh, lv, svg);
-
-    const pricePane = OhlcvChartComponent.createPricePane(cfg, lh, lv, timePane.timeScale, timePane.timeAnnotation,
-      svg, this.ohlcvView === ohlcvViewCandlesticks, this.renderVolume, this.renderCrosshair);
-
-    const indicatorPanes: OhlcvChartComponent.IndicatorPane[] = [];
-    for (let i = 0; i < cfg.indicatorPanes.length; ++i) {
-      const pane = OhlcvChartComponent.createIndicatorPane(i, cfg, lh, lv, timePane.timeScale, timePane.timeAxis,
-        svg, this.renderCrosshair);
-      indicatorPanes.push(pane);
-    }
-
-    const navPane = OhlcvChartComponent.createNavPane(cfg, lh, lv, svg);
-
-    function draw(): void {
-      timePane.draw();
-      pricePane.draw(timePane);
-      for (let i = 0; i < indicatorPanes.length; ++i) {
-        indicatorPanes[i].draw(timePane, pricePane);
-      }
-    }
-
-    const setCurrentSelection = (x: any) => { this.currentSelection = x; };
-
-    function brushed(): void {
-      const zoomable = timePane.timeScale.zoomable();
-      const zoomableNav = navPane.timeScale.zoomable();
-      zoomable.domain(zoomableNav.domain());
-      if (!d3.event.selection) {
-        setCurrentSelection(null);
-        draw();
-      } else {
-        setCurrentSelection(d3.event.selection);
-        zoomable.domain(d3.event.selection.map(zoomable.invert));
-        if (!smoothBrushing) {
-          draw();
-        }
-      }
-    }
-
-    function brushing(): void {
-      if (d3.event.selection) {
-        const sel = d3.event.selection;
-        if (sel[1] - sel[0] > minSelection) {
-          // setCurrentSelection(sel);
-          const zoomable = timePane.timeScale.zoomable();
-          const zoomableNav = navPane.timeScale.zoomable();
-          zoomable.domain(zoomableNav.domain());
-          zoomable.domain(d3.event.selection.map(zoomable.invert));
-          draw();
-        }
-      }
-    }
-
-    if (smoothBrushing) {
-      navPane.brush.on('brush', brushing);
-    }
-    navPane.brush.on('end', brushed);
-
-    timePane.timeScale.domain(cfg.ohlcv.data.map(pricePane.priceAccessor.t));
-    // console.log(OhlcvChartComponent.firstTime(cfg));
-    // console.log(OhlcvChartComponent.lastTime(cfg));
-    // timePane.timeScale.domain([OhlcvChartComponent.firstTime(cfg), OhlcvChartComponent.lastTime(cfg)]);
-    // navPane.timeScale.domain([OhlcvChartComponent.firstTime(cfg), OhlcvChartComponent.lastTime(cfg)]);
-    navPane.timeScale.domain(timePane.timeScale.domain());
-    pricePane.yPrice.domain(d3ts.scale.plot.ohlc(cfg.ohlcv.data, pricePane.priceAccessor).domain());
-
-    navPane.priceScale.domain(pricePane.yPrice.domain());
-    if (pricePane.yVolume) {
-      pricePane.yVolume.domain(d3ts.scale.plot.volume(cfg.ohlcv.data).domain());
-    }
-    pricePane.groupPrice.datum(cfg.ohlcv.data);
-    if (this.renderVolume) {
-      pricePane.groupVolume.datum(cfg.ohlcv.data);
-    }
-
-    pricePane.setIndicatorDatum();
-
-    for (let i = 0; i < indicatorPanes.length; ++i) {
-      indicatorPanes[i].setIndicatorDatum();
-    }
-
-    if (navPane.area) {
-      navPane.areaSelection.datum(cfg.ohlcv.data).call(navPane.area);
-    }
-    if (navPane.line) {
-      navPane.lineSelection.datum(cfg.ohlcv.data).call(navPane.line);
-    }
-    if (navPane.timeAxis) {
-      navPane.timeAxisSelection.call(navPane.timeAxis);
-    }
-
-    // associate the brush with the scale and render the brush only AFTER a domain has been applied
-    navPane.paneSelection.call(navPane.brush).selectAll('rect').attr('height', lv.navigationPane.height);
-
-    if (this.currentSelection != null && (this.currentSelection[1] - this.currentSelection[0] > minSelection)) {
-      navPane.brush.move(navPane.paneSelection, this.currentSelection);
-      const zoomable = timePane.timeScale.zoomable();
-      const zoomableNav = navPane.timeScale.zoomable();
-      zoomable.domain(zoomableNav.domain());
-      zoomable.domain(this.currentSelection.map(zoomable.invert));
-    }
-    draw();
-  }
+  @ViewChild('container', { static: true }) container: ElementRef;
 
   private static valueToPixels(value: number | string, reference: number): number {
     if (typeof value === 'number') {
@@ -349,8 +154,7 @@ export class OhlcvChartComponent implements OnChanges {
 
     let top = l.pricePane.top + l.pricePane.height;
     if (cfg.indicatorPanes && cfg.indicatorPanes.length) {
-      for (let i = 0; i < cfg.indicatorPanes.length; ++i) {
-        const pane = cfg.indicatorPanes[i];
+      for (const pane of cfg.indicatorPanes) {
         const block = new OhlcvChartComponent.VerticalLayoutBlock();
         const legendHeight: number = OhlcvChartComponent.appendLegend(svg, top, lineHeight, lh.content.left,
           lh.content.width, pane, undefined);
@@ -435,8 +239,7 @@ export class OhlcvChartComponent implements OnChanges {
       l += w + whitespaceBetweenAxisAndLegend;
     }
 
-    for (let i = 0; i < pane.bands.length; ++i) {
-      const band = pane.bands[i];
+    for (const band of pane.bands) {
       const q = g.append('rect').attr('x', l).attr('y', top - legendAreaImageHeight)
         .attr('width', legendAreaImageWidth).attr('height', legendAreaImageHeight).attr('stroke-width', 0)
         .attr('fill', band.color);
@@ -458,8 +261,7 @@ export class OhlcvChartComponent implements OnChanges {
       l += w + whitespaceBetweenAxisAndLegend;
     }
 
-    for (let i = 0; i < pane.lineAreas.length; ++i) {
-      const lineArea = pane.lineAreas[i];
+    for (const lineArea of pane.lineAreas) {
       const q = g.append('rect').attr('x', l).attr('y', top - legendAreaImageHeight)
         .attr('width', legendAreaImageWidth).attr('height', legendAreaImageHeight).attr('stroke-width', 0)
         .attr('fill', lineArea.color);
@@ -482,8 +284,7 @@ export class OhlcvChartComponent implements OnChanges {
       l += w + whitespaceBetweenAxisAndLegend;
     }
 
-    for (let i = 0; i < pane.lines.length; ++i) {
-      const line = pane.lines[i];
+    for (const line of pane.lines) {
       const hei = (legendLineImageHeight - line.width) / 2;
       const q = g.append('line').attr('x1', l).attr('y1', top - hei)
         .attr('x2', l + legendLineImageWidth).attr('y2', top - hei).attr('stroke-width', line.width)
@@ -511,31 +312,30 @@ export class OhlcvChartComponent implements OnChanges {
 
   private static firstTime(cfg: OhlcvChartConfig): Date {
     let time = cfg.ohlcv.data[0].time;
-    for (let i = 0; i < cfg.pricePane.bands.length; ++i) {
-      const data = cfg.pricePane.bands[i].data;
+    for (const item of cfg.pricePane.bands) {
+      const data = item.data;
       const t = data[0].time;
       if (time > t) {
         time = t;
       }
     }
-    for (let i = 0; i < cfg.pricePane.lines.length; ++i) {
-      const data = cfg.pricePane.lines[i].data;
+    for (const item of cfg.pricePane.lines) {
+      const data = item.data;
       const t = data[0].time;
       if (time > t) {
         time = t;
       }
     }
-    for (let j = 0; j < cfg.indicatorPanes.length; ++j) {
-      const pane = cfg.indicatorPanes[j];
-      for (let i = 0; i < pane.bands.length; ++i) {
-        const data = pane.bands[i].data;
+    for (const pane of cfg.indicatorPanes) {
+      for (const item of pane.bands) {
+        const data = item.data;
         const t = data[0].time;
         if (time > t) {
           time = t;
         }
       }
-      for (let i = 0; i < pane.lines.length; ++i) {
-        const data = pane.lines[i].data;
+      for (const item of pane.lines) {
+        const data = item.data;
         const t = data[0].time;
         if (time > t) {
           time = t;
@@ -547,31 +347,30 @@ export class OhlcvChartComponent implements OnChanges {
 
   private static lastTime(cfg: OhlcvChartConfig): Date {
     let time = cfg.ohlcv.data[cfg.ohlcv.data.length - 1].time;
-    for (let i = 0; i < cfg.pricePane.bands.length; ++i) {
-      const data = cfg.pricePane.bands[i].data;
+    for (const item of cfg.pricePane.bands) {
+      const data = item.data;
       const t = data[data.length - 1].time;
       if (time < t) {
         time = t;
       }
     }
-    for (let i = 0; i < cfg.pricePane.lines.length; ++i) {
-      const data = cfg.pricePane.lines[i].data;
+    for (const item of cfg.pricePane.lines) {
+      const data = item.data;
       const t = data[data.length - 1].time;
       if (time < t) {
         time = t;
       }
     }
-    for (let j = 0; j < cfg.indicatorPanes.length; ++j) {
-      const pane = cfg.indicatorPanes[j];
-      for (let i = 0; i < pane.bands.length; ++i) {
-        const data = pane.bands[i].data;
+    for (const pane of cfg.indicatorPanes) {
+      for (const item of pane.bands) {
+        const data = item.data;
         const t = data[data.length - 1].time;
         if (time < t) {
           time = t;
         }
       }
-      for (let i = 0; i < pane.lines.length; ++i) {
-        const data = pane.lines[i].data;
+      for (const item of pane.lines) {
+        const data = item.data;
         const t = data[data.length - 1].time;
         if (time < t) {
           time = t;
@@ -656,13 +455,13 @@ export class OhlcvChartComponent implements OnChanges {
         .attr('stroke-linejoin', 'round')
         .attr('stroke-linecap', 'round')
         .attr('fill', 'none');
-      const value = horizontal.value;
-      indicatorHorizontal.value = value;
+      const val = horizontal.value;
+      indicatorHorizontal.value = val;
       indicatorHorizontal.data =
-        [{ time: minDate, value: value }, { time: maxDate, value: value }];
+        [{ time: minDate, value: val }, { time: maxDate, value: val }];
       indicatorHorizontal.line = d3.line()
         .x(d => { const w: any = d; return timeScale(w.time); })
-        .y(d => pane.yPrice(value));
+        .y(d => pane.yPrice(val));
       pane.indicatorHorizontals.push(indicatorHorizontal);
     }
 
@@ -694,11 +493,10 @@ export class OhlcvChartComponent implements OnChanges {
     }
 
     let gArrows;
-    for (let i = 0; i < cf.arrows.length; ++i) {
+    for (const arrow of cf.arrows) {
       if (!gArrows) {
         gArrows = pane.group.append('g').attr('class', `arrows`).attr('clip-path', clipUrl);
       }
-      const arrow = cf.arrows[i];
       const indicatorArrow = new OhlcvChartComponent.IndicatorArrow();
       indicatorArrow.isDown = arrow.down;
       indicatorArrow.path = gArrows.append('path')
@@ -833,13 +631,13 @@ export class OhlcvChartComponent implements OnChanges {
         .attr('stroke-linejoin', 'round')
         .attr('stroke-linecap', 'round')
         .attr('fill', 'none');
-      const value = horizontal.value;
-      indicatorHorizontal.value = value;
+      const val = horizontal.value;
+      indicatorHorizontal.value = val;
       indicatorHorizontal.data =
-        [{ time: minDate, value: value }, { time: maxDate, value: value }];
+        [{ time: minDate, value: val }, { time: maxDate, value: val }];
       indicatorHorizontal.line = d3.line()
         .x(d => { const w: any = d; return timeScale(w.time); })
-        .y(d => pane.yValue(value));
+        .y(d => pane.yValue(val));
       pane.indicatorHorizontals.push(indicatorHorizontal);
     }
 
@@ -1001,8 +799,7 @@ export class OhlcvChartComponent implements OnChanges {
   }
 
   private static findOhlcv(data: Ohlcv[], time: Date): Ohlcv | null {
-    for (let i = 0; i < data.length; ++i) {
-      const d = data[i];
+    for (const d of data) {
       if (+d.time >= +time) {
         return d;
       }
@@ -1070,6 +867,202 @@ export class OhlcvChartComponent implements OnChanges {
       default: return d3.interpolateGreys;
     }
   }
+
+  @Input()
+  public set configuration(cfg: OhlcvChartConfig) {
+    if (cfg && cfg != null) {
+      this.config = cfg;
+      this.ohlcvView = cfg.ohlcv.candlesticks ? ohlcvViewCandlesticks : ohlcvViewBars;
+      this.renderCrosshair = cfg.crosshair;
+      this.renderVolume = cfg.volumeInPricePane;
+      this.currentSelection = null;
+    } else {
+      this.config = new OhlcvChartConfig();
+    }
+    this.render();
+  }
+
+  /** Gets if menu is visible. */
+  public get viewMenu(): boolean {
+    return this.config ? this.config.menuVisible : false;
+  }
+
+  /** Gets if *download SVG* menu setting is visible. */
+  public get viewDownloadSvg(): boolean {
+    return this.config ? this.config.downloadSvgVisible : false;
+  }
+
+  /** Gets or sets the *ohlcv* view type: *candlesticks* or *bars*. */
+  public get ohlcvViewType(): number {
+    return this.ohlcvView;
+  }
+  public set ohlcvViewType(value: number) {
+    this.ohlcvView = value;
+    this.render();
+  }
+
+  /** Gets or sets if *crosshair* is visible */
+  public get viewCrosshair(): boolean {
+    return this.renderCrosshair;
+  }
+  public set viewCrosshair(value: boolean) {
+    this.renderCrosshair = value;
+    this.render();
+  }
+
+  /** Gets or sets if volume in price pane is visible */
+  public get viewVolume(): boolean {
+    return this.renderVolume;
+  }
+  public set viewVolume(value: boolean) {
+    this.renderVolume = value;
+    this.render();
+  }
+
+  /** Gets a title of the chart. */
+  public get chartTitle(): string {
+    return this.config ? this.config.ohlcv.name : '---';
+  }
+
+  constructor(iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
+    iconRegistry.addSvgIcon('mb-candlesticks',
+      sanitizer.bypassSecurityTrustResourceUrl('assets/img/mb-candlesticks.svg'));
+    iconRegistry.addSvgIcon('mb-bars',
+      sanitizer.bypassSecurityTrustResourceUrl('assets/img/mb-bars.svg'));
+  }
+
+  public downloadSvg(): void {
+    Downloader.download(Downloader.serializeToSvg(Downloader.getChildElementById(this.container.nativeElement.parentNode, 'chart'),
+      textBeforeSvg, textAfterSvg), 'ohlcv_chart.html');
+  }
+
+  ngOnChanges() {
+    this.render();
+  }
+
+  @HostListener('window:resize', [])
+  public render(): void {
+    const chartId = '#chart';
+    // console.log('width=' + this.container.nativeElement.getBoundingClientRect().width);
+    // console.log('offsetWidth=' + this.container.nativeElement.offsetWidth);
+    // const w = this.container.nativeElement.getBoundingClientRect().width;
+    const w = this.container.nativeElement.offsetWidth;
+    const cfg = this.config;
+    const lh = OhlcvChartComponent.layoutHorizontal(cfg, w);
+
+    d3.select(chartId).select('svg').remove();
+    const svg: any = d3.select(chartId).append('svg')
+      .attr('preserveAspectRatio', 'xMinYMin meet').attr('width', lh.width);
+
+    const lv = OhlcvChartComponent.layoutVertical(svg, cfg, lh);
+    svg.attr('height', lv.height).attr('viewBox', `0 0 ${lh.width} ${lv.height}`);
+
+    const timePane = OhlcvChartComponent.createTimePane(cfg, lh, lv, svg);
+
+    const pricePane = OhlcvChartComponent.createPricePane(cfg, lh, lv, timePane.timeScale, timePane.timeAnnotation,
+      svg, this.ohlcvView === ohlcvViewCandlesticks, this.renderVolume, this.renderCrosshair);
+
+    const indicatorPanes: OhlcvChartComponent.IndicatorPane[] = [];
+    for (let i = 0; i < cfg.indicatorPanes.length; ++i) {
+      const pane = OhlcvChartComponent.createIndicatorPane(i, cfg, lh, lv, timePane.timeScale, timePane.timeAxis,
+        svg, this.renderCrosshair);
+      indicatorPanes.push(pane);
+    }
+
+    const navPane = OhlcvChartComponent.createNavPane(cfg, lh, lv, svg);
+
+    function draw(): void {
+      timePane.draw();
+      pricePane.draw(timePane);
+      indicatorPanes.forEach(item => item.draw(timePane, pricePane));
+      /*for (let i = 0; i < indicatorPanes.length; ++i) {
+        indicatorPanes[i].draw(timePane, pricePane);
+      }*/
+    }
+
+    const setCurrentSelection = (x: any) => { this.currentSelection = x; };
+
+    function brushed(): void {
+      const zoomable = timePane.timeScale.zoomable();
+      const zoomableNav = navPane.timeScale.zoomable();
+      zoomable.domain(zoomableNav.domain());
+      if (!d3.event.selection) {
+        setCurrentSelection(null);
+        draw();
+      } else {
+        setCurrentSelection(d3.event.selection);
+        zoomable.domain(d3.event.selection.map(zoomable.invert));
+        if (!smoothBrushing) {
+          draw();
+        }
+      }
+    }
+
+    function brushing(): void {
+      if (d3.event.selection) {
+        const sel = d3.event.selection;
+        if (sel[1] - sel[0] > minSelection) {
+          // setCurrentSelection(sel);
+          const zoomable = timePane.timeScale.zoomable();
+          const zoomableNav = navPane.timeScale.zoomable();
+          zoomable.domain(zoomableNav.domain());
+          zoomable.domain(d3.event.selection.map(zoomable.invert));
+          draw();
+        }
+      }
+    }
+
+    if (smoothBrushing) {
+      navPane.brush.on('brush', brushing);
+    }
+    navPane.brush.on('end', brushed);
+
+    timePane.timeScale.domain(cfg.ohlcv.data.map(pricePane.priceAccessor.t));
+    // console.log(OhlcvChartComponent.firstTime(cfg));
+    // console.log(OhlcvChartComponent.lastTime(cfg));
+    // timePane.timeScale.domain([OhlcvChartComponent.firstTime(cfg), OhlcvChartComponent.lastTime(cfg)]);
+    // navPane.timeScale.domain([OhlcvChartComponent.firstTime(cfg), OhlcvChartComponent.lastTime(cfg)]);
+    navPane.timeScale.domain(timePane.timeScale.domain());
+    pricePane.yPrice.domain(d3ts.scale.plot.ohlc(cfg.ohlcv.data, pricePane.priceAccessor).domain());
+
+    navPane.priceScale.domain(pricePane.yPrice.domain());
+    if (pricePane.yVolume) {
+      pricePane.yVolume.domain(d3ts.scale.plot.volume(cfg.ohlcv.data).domain());
+    }
+    pricePane.groupPrice.datum(cfg.ohlcv.data);
+    if (this.renderVolume) {
+      pricePane.groupVolume.datum(cfg.ohlcv.data);
+    }
+
+    pricePane.setIndicatorDatum();
+
+    indicatorPanes.forEach(item => item.setIndicatorDatum());
+    /*for (let i = 0; i < indicatorPanes.length; ++i) {
+      indicatorPanes[i].setIndicatorDatum();
+    }*/
+
+    if (navPane.area) {
+      navPane.areaSelection.datum(cfg.ohlcv.data).call(navPane.area);
+    }
+    if (navPane.line) {
+      navPane.lineSelection.datum(cfg.ohlcv.data).call(navPane.line);
+    }
+    if (navPane.timeAxis) {
+      navPane.timeAxisSelection.call(navPane.timeAxis);
+    }
+
+    // associate the brush with the scale and render the brush only AFTER a domain has been applied
+    navPane.paneSelection.call(navPane.brush).selectAll('rect').attr('height', lv.navigationPane.height);
+
+    if (this.currentSelection != null && (this.currentSelection[1] - this.currentSelection[0] > minSelection)) {
+      navPane.brush.move(navPane.paneSelection, this.currentSelection);
+      const zoomable = timePane.timeScale.zoomable();
+      const zoomableNav = navPane.timeScale.zoomable();
+      zoomable.domain(zoomableNav.domain());
+      zoomable.domain(this.currentSelection.map(zoomable.invert));
+    }
+    draw();
+  }
 }
 
 export namespace OhlcvChartComponent {
@@ -1131,18 +1124,17 @@ export namespace OhlcvChartComponent {
         max = datumLastIndex;
       }
       const priceDomain: [number, number] = d3ts.scale.plot.ohlc(datum.slice.apply(datum, [min, max]), this.priceAccessor).domain();
-      if (datum[min] != undefined) {
+      if (datum[min] !== undefined) {
         min = +datum[min].time;
       }
-      if (datum[max] != undefined) {
+      if (datum[max] !== undefined) {
         max = +datum[max].time;
       }
       let minPrice = priceDomain[0];
       let maxPrice = priceDomain[1];
-      for (let i = 0; i < this.indicatorBands.length; ++i) {
-        const data = this.indicatorBands[i].data;
-        for (let j = 0; j < data.length; ++j) {
-          const d = data[j];
+      for (const item of this.indicatorBands) {
+        const data = item.data;
+        for (const d of data) {
           const t = +d.time;
           if (min <= t && t <= max) {
             if (minPrice > d.lower) {
@@ -1154,11 +1146,10 @@ export namespace OhlcvChartComponent {
           }
         }
       }
-      for (let i = 0; i < this.indicatorLineAreas.length; ++i) {
-        const data = this.indicatorLineAreas[i].data;
-        const value = this.indicatorLineAreas[i].value;
-        for (let j = 0; j < data.length; ++j) {
-          const d = data[j];
+      for (const item of this.indicatorLineAreas) {
+        const data = item.data;
+        const value = item.value;
+        for (const d of data) {
           const t = +d.time;
           if (min <= t && t <= max) {
             if (minPrice > d.value) {
@@ -1176,8 +1167,8 @@ export namespace OhlcvChartComponent {
           }
         }
       }
-      for (let i = 0; i < this.indicatorHorizontals.length; ++i) {
-        const value = this.indicatorHorizontals[i].value;
+      for (const item of this.indicatorHorizontals) {
+        const value = item.value;
         if (minPrice > value) {
           minPrice = value;
         }
@@ -1185,10 +1176,9 @@ export namespace OhlcvChartComponent {
           maxPrice = value;
         }
       }
-      for (let i = 0; i < this.indicatorLines.length; ++i) {
-        const data = this.indicatorLines[i].data;
-        for (let j = 0; j < data.length; ++j) {
-          const d = data[j];
+      for (const item of this.indicatorLines) {
+        const data = item.data;
+        for (const d of data) {
           const t = +d.time;
           if (min <= t && t <= max) {
             const value = d.value;
@@ -1211,9 +1201,8 @@ export namespace OhlcvChartComponent {
         const h = this.yPrice.range()[0];
         if (arrowDelta < h) {
           const delta = h - arrowDelta;
-          for (let i = 0; i < this.indicatorArrows.length; ++i) {
-            const indicatorArrow = this.indicatorArrows[i];
-            const p = indicatorArrow.price;
+          for (const item of this.indicatorArrows) {
+            const p = item.price;
             const ph = p * h;
             if (maxPrice < p) {
               maxPrice = p;
@@ -1221,7 +1210,7 @@ export namespace OhlcvChartComponent {
             if (minPrice > p) {
               minPrice = p;
             }
-            if (indicatorArrow.isDown) {
+            if (item.isDown) {
               const maxNew = (ph - minPrice * arrowDelta) / delta;
               if (maxPrice < maxNew) {
                 maxPrice = maxNew;
@@ -1243,14 +1232,16 @@ export namespace OhlcvChartComponent {
       this.yPrice.domain([minPrice, maxPrice]).nice();
 
       // Draw bands and areas below price and lines.
-      for (let i = 0; i < this.indicatorBands.length; ++i) {
+      this.indicatorBands.forEach(item => item.path.attr('d', item.area));
+      this.indicatorLineAreas.forEach(item => item.path.attr('d', item.area));
+      /*for (let i = 0; i < this.indicatorBands.length; ++i) {
         const indicatorBand = this.indicatorBands[i];
         indicatorBand.path.attr('d', indicatorBand.area);
       }
       for (let i = 0; i < this.indicatorLineAreas.length; ++i) {
         const indicatorLineArea = this.indicatorLineAreas[i];
         indicatorLineArea.path.attr('d', indicatorLineArea.area);
-      }
+      }*/
 
       // Draw horizontals above bands and areas but below price and lines.
       this.groupPrice.call(this.priceShape);
@@ -1258,7 +1249,13 @@ export namespace OhlcvChartComponent {
         this.groupVolume.call(this.volume);
       }
 
-      for (let i = 0; i < this.indicatorHorizontals.length; ++i) {
+      this.indicatorHorizontals.forEach(item => item.path.attr('d', item.line));
+      this.indicatorLines.forEach(item => item.path.attr('d', item.line));
+      for (const item of this.indicatorArrows) {
+        item.arrow.width(arrowWidth).height(arrowHeight);
+        item.path.attr('d', item.arrow);
+      }
+      /*for (let i = 0; i < this.indicatorHorizontals.length; ++i) {
         const indicatorHorizontal = this.indicatorHorizontals[i];
         indicatorHorizontal.path.attr('d', indicatorHorizontal.line);
       }
@@ -1270,7 +1267,7 @@ export namespace OhlcvChartComponent {
         const indicatorArrow = this.indicatorArrows[i];
         indicatorArrow.arrow.width(arrowWidth).height(arrowHeight);
         indicatorArrow.path.attr('d', indicatorArrow.arrow);
-      }
+      }*/
 
       if (this.yAxisLeft) {
         this.groupAxisLeft.call(this.yAxisLeft);
@@ -1281,7 +1278,11 @@ export namespace OhlcvChartComponent {
     }
 
     public setIndicatorDatum(): void {
-      for (let i = 0; i < this.indicatorBands.length; ++i) {
+      this.indicatorBands.forEach(item => item.path.datum(item.data));
+      this.indicatorLineAreas.forEach(item => item.path.datum(item.data));
+      this.indicatorHorizontals.forEach(item => item.path.datum(item.data));
+      this.indicatorLines.forEach(item => item.path.datum(item.data));
+      /*for (let i = 0; i < this.indicatorBands.length; ++i) {
         const indicatorBand = this.indicatorBands[i];
         indicatorBand.path.datum(indicatorBand.data);
       }
@@ -1296,7 +1297,7 @@ export namespace OhlcvChartComponent {
       for (let i = 0; i < this.indicatorLines.length; ++i) {
         const indicatorLine = this.indicatorLines[i];
         indicatorLine.path.datum(indicatorLine.data);
-      }
+      }*/
     }
   }
 
@@ -1327,10 +1328,10 @@ export namespace OhlcvChartComponent {
       if (max > datumLastIndex) {
         max = datumLastIndex;
       }
-      if (datum[min] != undefined) {
+      if (datum[min] !== undefined) {
         min = +datum[min].time;
       }
-      if (datum[max] != undefined) {
+      if (datum[max] !== undefined) {
         max = +datum[max].time;
       }
       let minValue = Number.MAX_VALUE;
@@ -1344,8 +1345,7 @@ export namespace OhlcvChartComponent {
           const paramLast = data[0].parameterLast;
           minValue = Math.min(paramFirst, paramLast);
           maxValue = Math.max(paramFirst, paramLast);
-          for (let j = 0; j < data.length; ++j) {
-            const d = data[j];
+          for (const d of data) {
             const t = +d.time;
             if (min <= t && t <= max && d.values.length > 0) {
               if (minIntensity > d.valueMin) {
@@ -1362,10 +1362,9 @@ export namespace OhlcvChartComponent {
           }
         }
       }
-      for (let i = 0; i < this.indicatorBands.length; ++i) {
-        const data = this.indicatorBands[i].data;
-        for (let j = 0; j < data.length; ++j) {
-          const d = data[j];
+      for (const item of this.indicatorBands) {
+        const data = item.data;
+        for (const d of data) {
           const t = +d.time;
           if (min <= t && t <= max) {
             if (minValue > d.lower) {
@@ -1377,11 +1376,10 @@ export namespace OhlcvChartComponent {
           }
         }
       }
-      for (let i = 0; i < this.indicatorLineAreas.length; ++i) {
-        const data = this.indicatorLineAreas[i].data;
-        const value = this.indicatorLineAreas[i].value;
-        for (let j = 0; j < data.length; ++j) {
-          const d = data[j];
+      for (const item of this.indicatorLineAreas) {
+        const data = item.data;
+        const value = item.value;
+        for (const d of data) {
           const t = +d.time;
           if (min <= t && t <= max) {
             if (minValue > d.value) {
@@ -1399,8 +1397,8 @@ export namespace OhlcvChartComponent {
           }
         }
       }
-      for (let i = 0; i < this.indicatorHorizontals.length; ++i) {
-        const value = this.indicatorHorizontals[i].value;
+      for (const item of this.indicatorHorizontals) {
+        const value = item.value;
         if (minValue > value) {
           minValue = value;
         }
@@ -1408,10 +1406,9 @@ export namespace OhlcvChartComponent {
           maxValue = value;
         }
       }
-      for (let i = 0; i < this.indicatorLines.length; ++i) {
-        const data = this.indicatorLines[i].data;
-        for (let j = 0; j < data.length; ++j) {
-          const d = data[j];
+      for (const item of this.indicatorLines) {
+        const data = item.data;
+        for (const d of data) {
           const t = +d.time;
           if (min <= t && t <= max) {
             const value = d.value;
@@ -1447,8 +1444,7 @@ export namespace OhlcvChartComponent {
           const periodRes = data[0].parameterResolution;
           const periodInverted = periodFirst > periodLast;
           const periodMin = Math.min(periodFirst, periodLast);
-          for (let j = 0; j < data.length; ++j) {
-            const d = data[j];
+          for (const d of data) {
             const t = +d.time;
             if (min <= t && t <= max && d.values.length > 0) {
               const xMid = timePane.timeScale(t);
@@ -1464,24 +1460,24 @@ export namespace OhlcvChartComponent {
       }
 
       // Draw bands and areas below lines.
-      for (let i = 0; i < this.indicatorBands.length; ++i) {
-        const indicatorBand = this.indicatorBands[i];
-        indicatorBand.path.attr('d', indicatorBand.area);
+      this.indicatorBands.forEach(item => item.path.attr('d', item.area));
+      this.indicatorLineAreas.forEach(item => item.path.attr('d', item.area));
+      /*for (const item of this.indicatorBands) {
+        item.path.attr('d', item.area);
       }
-      for (let i = 0; i < this.indicatorLineAreas.length; ++i) {
-        const indicatorLineArea = this.indicatorLineAreas[i];
-        indicatorLineArea.path.attr('d', indicatorLineArea.area);
-      }
+      for (const item of this.indicatorLineAreas) {
+        item.path.attr('d', item.area);
+      }*/
 
       // Draw horizontals above bands and areas but below lines.
-      for (let i = 0; i < this.indicatorHorizontals.length; ++i) {
-        const indicatorHorizontal = this.indicatorHorizontals[i];
-        indicatorHorizontal.path.attr('d', indicatorHorizontal.line);
+      this.indicatorHorizontals.forEach(item => item.path.attr('d', item.line));
+      this.indicatorLines.forEach(item => item.path.attr('d', item.line));
+      /*for (const item of this.indicatorHorizontals) {
+        item.path.attr('d', item.line);
       }
-      for (let i = 0; i < this.indicatorLines.length; ++i) {
-        const indicatorLine = this.indicatorLines[i];
-        indicatorLine.path.attr('d', indicatorLine.line);
-      }
+      for (const item of this.indicatorLines) {
+        item.path.attr('d', item.line);
+      }*/
 
       if (this.yAxisLeft) {
         this.groupAxisLeft.call(this.yAxisLeft);
@@ -1492,21 +1488,17 @@ export namespace OhlcvChartComponent {
     }
 
     public setIndicatorDatum(): void {
-      for (let i = 0; i < this.indicatorBands.length; ++i) {
-        const indicatorBand = this.indicatorBands[i];
-        indicatorBand.path.datum(indicatorBand.data);
+      for (const item of this.indicatorBands) {
+        item.path.datum(item.data);
       }
-      for (let i = 0; i < this.indicatorLineAreas.length; ++i) {
-        const indicatorLineArea = this.indicatorLineAreas[i];
-        indicatorLineArea.path.datum(indicatorLineArea.data);
+      for (const item of this.indicatorLineAreas) {
+        item.path.datum(item.data);
       }
-      for (let i = 0; i < this.indicatorHorizontals.length; ++i) {
-        const indicatorHorizontal = this.indicatorHorizontals[i];
-        indicatorHorizontal.path.datum(indicatorHorizontal.data);
+      for (const item of this.indicatorHorizontals) {
+        item.path.datum(item.data);
       }
-      for (let i = 0; i < this.indicatorLines.length; ++i) {
-        const indicatorLine = this.indicatorLines[i];
-        indicatorLine.path.datum(indicatorLine.data);
+      for (const item of this.indicatorLines) {
+        item.path.datum(item.data);
       }
     }
 

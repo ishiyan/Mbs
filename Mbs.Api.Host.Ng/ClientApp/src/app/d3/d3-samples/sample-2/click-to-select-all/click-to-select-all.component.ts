@@ -2,7 +2,7 @@ import { Component, OnInit, ElementRef, ViewChild, Input } from '@angular/core';
 import * as d3 from 'd3';
 
 @Component({
-  selector: 'app-click-to-select-all',
+  selector: 'd3-sample-click-to-select-all',
   templateUrl: './click-to-select-all.component.html',
   styleUrls: ['./click-to-select-all.component.scss']
 })
@@ -16,7 +16,7 @@ export class ClickToSelectAllComponent implements OnInit {
   ngOnInit() {
     const randomX = d3.randomUniform(0, 10);
     const randomY = d3.randomNormal(0.5, 0.12);
-    const data = d3.range(800).map(function () { return [randomX(), randomY()]; });
+    const data = d3.range(800).map(() => [randomX(), randomY()]);
 
     const margin: any = { top: 20, right: 10, bottom: 40, left: 20 };
     const w = this.container.nativeElement.getBoundingClientRect().width;
@@ -38,7 +38,7 @@ export class ClickToSelectAllComponent implements OnInit {
       .selectAll('circle')
       .data(data)
       .enter().append('circle')
-      .attr('transform', function (d: any) { return 'translate(' + x(d[0]) + ',' + y(d[1]) + ')'; })
+      .attr('transform', (d: any) => { return 'translate(' + x(d[0]) + ',' + y(d[1]) + ')'; })
       .attr('r', 3.5);
 
     brush.on('start brush end', () => {
@@ -47,7 +47,7 @@ export class ClickToSelectAllComponent implements OnInit {
         dot.classed('activa', false);
       } else {
         const sx = s.map(x.invert);
-        dot.classed('active', function (d: any) { return sx[0] <= d[0] && d[0] <= sx[1]; });
+        dot.classed('active', (d: any) => { return sx[0] <= d[0] && d[0] <= sx[1]; });
       }
     });
 

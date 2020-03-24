@@ -9,33 +9,33 @@ export class OhlcvChartConfig {
    * Total width of a chart including margins.
    * Defines the width of all chart panes.
    * Can be either a positive number of pixels or a percentage string (e.g. '45%') of a reference width.
-  */
+   */
   public width: string | number;
 
   /** An optional minimal width in pixels including margins. */
-  public widthMin?: number | undefined = undefined;
+  public widthMin?: number = undefined;
 
   /** An optional maximal width in pixels including margins. */
-  public widthMax?: number | undefined = undefined;
+  public widthMax?: number = undefined;
 
   /** An optional navigation pane. */
-  public navigationPane?: OhlcvChartConfig.NavigationPane | undefined = new OhlcvChartConfig.NavigationPane();
+  public navigationPane?: OhlcvChartConfig.NavigationPane = new OhlcvChartConfig.NavigationPane();
 
   /**
    * An optional height of the navigation pane.
    * Can be either a positive number of pixels or a percentage string (e.g. '45%') of a reference width.
    * If undefined, the navigation pane will not be created.
    */
-  public heightNavigationPane?: string | number | undefined = undefined;
+  public heightNavigationPane?: string | number = undefined;
 
   /** An optional d3.timeFormat specifier for time axis annotations, e.g. '%Y-%m-%d'. */
-  public timeAnnotationFormat?: string | undefined = undefined;
+  public timeAnnotationFormat?: string = undefined;
 
   /** An optional d3.timeFormat specifier for time axis ticks, e.g. '%Y-%m-%d'. */
-  public timeTicksFormat?: string | undefined = undefined;
+  public timeTicksFormat?: string = undefined;
 
   /** An optional number of ticks in the time axis. */
-  public timeTicks?: number | undefined = undefined;
+  public timeTicks?: number = undefined;
 
   /** If left axis should be visible on the price and indicator panes. */
   public axisLeft = true;
@@ -124,7 +124,7 @@ export namespace OhlcvChartConfig {
      * - step
      * - stepBefore
      * - stepAfter
-    */
+     */
     public interpolation = 'natural';
   }
 
@@ -163,7 +163,7 @@ export namespace OhlcvChartConfig {
      * - step
      * - stepBefore
      * - stepAfter
-    */
+     */
     public interpolation = 'natural';
   }
 
@@ -199,7 +199,7 @@ export namespace OhlcvChartConfig {
      * - step
      * - stepBefore
      * - stepAfter
-    */
+     */
     public interpolation = 'natural';
   }
 

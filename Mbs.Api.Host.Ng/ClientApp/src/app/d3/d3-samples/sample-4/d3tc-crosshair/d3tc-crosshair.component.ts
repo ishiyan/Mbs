@@ -7,7 +7,7 @@ import { D3Ohlcv } from '../../data/d3-ohlcv';
 import { dataOhlcvDaily } from '../../data/data-ohlcv-daily';
 
 @Component({
-  selector: 'app-d3tc-crosshair',
+  selector: 'd3-sample-d3tc-crosshair',
   templateUrl: './d3tc-crosshair.component.html',
   styleUrls: ['./d3tc-crosshair.component.scss']
 })
@@ -76,7 +76,7 @@ export class D3tcCrosshairComponent implements OnInit {
       svg.selectAll('g.y.axis.left').call(yAxisLeft);
       svg.selectAll('g.y.axis.right').call(yAxisRight);
 
-      svg.selectAll('g.crosshair').datum({ x: x.domain()[80], y: 67.5 }).call(crosshair).each(function (d: any) { move(d); });
+      svg.selectAll('g.crosshair').datum({ x: x.domain()[80], y: 67.5 }).call(crosshair).each((d: any) => move(d));
     }
 
     // data begin ----------------------------------

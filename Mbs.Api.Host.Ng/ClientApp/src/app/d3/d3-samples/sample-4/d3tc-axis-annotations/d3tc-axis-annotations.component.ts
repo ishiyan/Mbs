@@ -7,7 +7,7 @@ import { D3Ohlcv } from '../../data/d3-ohlcv';
 import { dataOhlcvDaily } from '../../data/data-ohlcv-daily';
 
 @Component({
-  selector: 'app-d3tc-axis-annotations',
+  selector: 'd3-sample-d3tc-axis-annotations',
   templateUrl: './d3tc-axis-annotations.component.html',
   styleUrls: ['./d3tc-axis-annotations.component.scss'],
   encapsulation: ViewEncapsulation.None // does not see css without this
@@ -81,7 +81,7 @@ export class D3tcAxisAnnotationsComponent implements OnInit {
     let toggle = true;
     const d: D3Ohlcv[] = data.slice(0, data.length - 20);
     draw(d, [data[80]], [data[130], data[0]], [data[80]], [data[30]]);
-    d3.select(this.element.nativeElement).select('button').on('click', function () {
+    d3.select(this.element.nativeElement).select('button').on('click', () => {
       if (toggle) {
         draw(data, [data[80]], [data[131], data[100]], [data[188], data[80]], [data[30], data[100]]);
       } else {

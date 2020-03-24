@@ -11,15 +11,15 @@ interface UpdateValue<T> {
 
 /** Typeset the content or expressions using MathJax library. */
 @Directive({
-  selector: 'mathjax, [mathjax]'
+  selector: '[mbMathJax]'
 })
 export class MathJaxDirective implements AfterViewInit, OnChanges, OnDestroy {
-  /** An array of input MathJax expressions. */
-  @Input('mathjax')
-  public MathJaxExpressions: string[];
+  /** An input MathJax expression. */
+  @Input()
+  public mbMathJax: string;
 
   /** The associated native element. */
-  private readonly element: HTMLElement;
+  /*private readonly*/ element: HTMLElement;
   /** Observes the change of the input expression. */
   private expressionChangeSubject = new ReplaySubject<UpdateValue<string>[]>();
   /** Observes the completion of the initial MathJax typesetting. */
@@ -47,12 +47,12 @@ export class MathJaxDirective implements AfterViewInit, OnChanges, OnDestroy {
 
     this.expressionChangeSubscription = combineLatest([this.allJax$, this.expressionChangeSubject])
       .subscribe(([jax, updateValue]) =>
-        updateValue.forEach(v => MathJax.Hub.Queue(() => {
-          // Stop pushing messages to the queue when the component is being destroyed.
-          if (!this.isDestroying) {
-            return jax[v.order].Text(v.value);
-          }
-        })));
+      updateValue.forEach(v => MathJax.Hub.Queue(() => {
+        // Stop pushing messages to the queue when the component is being destroyed.
+        if (!this.isDestroying && jax[v.order]) {
+          return jax[v.order].Text(v.value);
+        }
+      })));
   }
 
   ngAfterViewInit(): void {
@@ -62,7 +62,7 @@ export class MathJaxDirective implements AfterViewInit, OnChanges, OnDestroy {
           MathJax.Hub.Queue(['Typeset', MathJax.Hub, this.element]);
         }
         try {
-          MathJax.Hub.Queue(['MathJaxTypeset', this]);  
+          MathJax.Hub.Queue(['MathJaxTypeset', this]);
         } catch {
         }
       });
@@ -74,27 +74,13 @@ export class MathJaxDirective implements AfterViewInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    const expressions = changes.MathJaxExpressions;
+    const expressions = changes.mbMathJax;
 
-    // Shortcut if there's nothing to update.
-    if (!(expressions.currentValue instanceof Array)) {
-      return;
+    if (expressions && expressions.currentValue) {
+      const s = expressions.currentValue as string;
+      this.expressionChangeSubject.next([{ value: s, order: 0 }]);
+      this.typeset();
     }
-
-    // Update only the changed expressions.
-    // Note that *expressions.currentValue* is defined, we checked it above.
-    // Hence, gnore the TypeScript assignability error.
-    // @ts-ignore
-    const updateValues: UpdateValue<string>[] = expressions.currentValue
-      .map((cv, i) =>
-        (expressions.previousValue ? expressions.previousValue[i] !== cv : true) ?
-          {
-            value: expressions.currentValue[i],
-            order: i
-          }
-          : undefined)
-      .filter(v => v);
-    this.expressionChangeSubject.next(updateValues);
   }
 
   ngOnDestroy(): void {

@@ -7,24 +7,26 @@ export class Inav {
   currency!: CurrencyCode;
 
   /** A target instrument reference. */
-  target?: InstrumentReference | undefined;
+  target?: InstrumentReference;
 
   constructor(data?: Inav) {
     if (data) {
       for (const property in data) {
         if (data.hasOwnProperty(property)) {
-          (<any>this)[property] = (<any>data)[property];
+          (this as any)[property] = (data as any)[property];
         }
       }
-      this.target = data.target && !(<any>data.target).toJSON ? new InstrumentReference(data.target) :
-        <InstrumentReference>this.target;
+      this.target = (data.target && !(data.target).toJSON) ? new InstrumentReference(data.target) :
+        (this.target as InstrumentReference);
     }
   }
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
+    // tslint:disable:no-string-literal
     data['Currency'] = this.currency;
-    data['Target'] = this.target ? this.target.toJSON() : <any>undefined;
+    data['Target'] = this.target ? this.target.toJSON() : (undefined as any);
+    // tslint:enable:no-string-literal
     return data;
   }
 }

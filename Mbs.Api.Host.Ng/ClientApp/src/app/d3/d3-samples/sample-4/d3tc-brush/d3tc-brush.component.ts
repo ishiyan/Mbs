@@ -7,7 +7,7 @@ import { D3Ohlcv } from '../../data/d3-ohlcv';
 import { dataOhlcvDaily } from '../../data/data-ohlcv-daily-big';
 
 @Component({
-  selector: 'app-d3tc-brush',
+  selector: 'd3-sample-d3tc-brush',
   templateUrl: './d3tc-brush.component.html',
   styleUrls: ['./d3tc-brush.component.scss'],
   encapsulation: ViewEncapsulation.None // does not see css without this

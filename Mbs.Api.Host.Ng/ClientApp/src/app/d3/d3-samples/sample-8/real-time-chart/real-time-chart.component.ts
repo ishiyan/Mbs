@@ -4,7 +4,7 @@ import * as d3 from 'd3';
 import * as rtc from './realTimeChart.js';
 
 @Component({
-  selector: 'app-real-time-chart',
+  selector: 'd3-sample-real-time-chart',
   templateUrl: './real-time-chart.component.html',
   styleUrls: ['./real-time-chart.component.scss'],
   encapsulation: ViewEncapsulation.None
@@ -37,13 +37,13 @@ export class RealTimeChartComponent implements OnInit, OnDestroy {
     // generate initial data
     const normal = d3.randomNormal(meanMs, dev);
     let currMs = new Date().getTime() - 300000 - 4000;
-    const data = d3.range(300).map(function (d, i, arr) {
-      const value = valueScale(Math.random()); // random data
-      // const value = Math.round((d % 60) / 60 * 95); // ramp data
-      const interval = Math.round(timeScale(normal()));
-      currMs += interval;
-      const time = new Date(currMs);
-      return { interval: interval, value: value, time: time, ts: currMs };
+    const data = d3.range(300).map((d, i, arr) => {
+      const val = valueScale(Math.random()); // random data
+      // const val = Math.round((d % 60) / 60 * 95); // ramp data
+      const int = Math.round(timeScale(normal()));
+      currMs += int;
+      const t = new Date(currMs);
+      return { interval: int, value: val, time: t, ts: currMs };
     });
 
     // create the real time chart
@@ -63,7 +63,7 @@ export class RealTimeChartComponent implements OnInit, OnDestroy {
     this.chart = chart;
     function dataGenerator() {
       const timeout = Math.round(timeScale(normal()));
-      setTimeout(function () {
+      setTimeout(() => {
         // create new data item
         const now = new Date();
         const item = {

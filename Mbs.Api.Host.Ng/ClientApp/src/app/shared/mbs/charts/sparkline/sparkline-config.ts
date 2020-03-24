@@ -8,7 +8,7 @@ export class SparklineConfig {
   /**
    * Total width of a sparkline including margins.
    * Can be either a positive number of pixels or a percentage string (e.g. '45%') of a reference width.
-  */
+   */
   public width: string | number;
 
   /** An optional minimal width in pixels including margins. */
@@ -59,7 +59,7 @@ export class SparklineConfig {
    * - step
    * - stepBefore
    * - stepAfter
-  */
+   */
   public interpolation = 'natural';
 
   /** Data array. */

@@ -7,7 +7,7 @@ import { D3Ohlcv } from '../../data/d3-ohlcv';
 import { dataOhlcvDaily } from '../../data/data-ohlcv-daily';
 
 @Component({
-  selector: 'app-d3tc-trade-arrows',
+  selector: 'd3-sample-d3tc-trade-arrows',
   templateUrl: './d3tc-trade-arrows.component.html',
   styleUrls: ['./d3tc-trade-arrows.component.scss'],
   encapsulation: ViewEncapsulation.None // does not see css without this
@@ -54,7 +54,7 @@ export class D3tcTradeArrowsComponent implements OnInit {
     }
 
     const tradearrow = d3tc.plot.tradearrow().xScale(x).yScale(y)
-      .orient(function (z: any) { return z.type.startsWith('buy') ? 'up' : 'down'; }).on('mouseenter', enter).on('mouseout', out);
+      .orient((z: any) => { return z.type.startsWith('buy') ? 'up' : 'down'; }).on('mouseenter', enter).on('mouseout', out);
 
     function draw(dat: D3Ohlcv[], trad: any) {
       x.domain(dat.map(accessor.d));
@@ -83,7 +83,7 @@ export class D3tcTradeArrowsComponent implements OnInit {
     const d: D3Ohlcv[] = data.slice(0, data.length - 20);
     const t = trades.slice(0, trades.length - 1);
     draw(d, t);
-    d3.select(this.element.nativeElement).select('button').on('click', function () {
+    d3.select(this.element.nativeElement).select('button').on('click', () => {
       if (toggle) {
         draw(data, trades);
       } else {

@@ -7,11 +7,11 @@ import * as katex from 'katex';
   styleUrls: ['./katex.component.scss']
 })
 export class KatexComponent {
-  @Input() equation: string;
+  @Input() expression: string;
   @Input() options?: katex.KatexOptions;
-  @Output() onError = new EventEmitter<any>();
+  @Output() hasError = new EventEmitter<any>();
 
-  public hasError(error: any): void {
-    this.onError.emit(error);
+  public outputError(error: any): void {
+    this.hasError.emit(error);
   }
 }

@@ -4,14 +4,15 @@ import { CommonModule } from '@angular/common';
 import { MathJaxDirective } from './math-jax.directive';
 import { MathJaxService } from './math-jax.service';
 import { ModuleConfiguration } from './module-configuration';
+import { MathJaxComponent } from './math-jax.component';
 
 /** Module to load and configure the *MathJax* library. */
 @NgModule({
-  declarations: [MathJaxDirective],
+  declarations: [MathJaxDirective, MathJaxComponent],
   imports: [
     CommonModule
   ],
-  exports: [MathJaxDirective]
+  exports: [MathJaxDirective, MathJaxComponent]
 })
 export class MathJaxModule {
   constructor(service: MathJaxService, moduleConfig?: ModuleConfiguration) {
@@ -26,7 +27,7 @@ export class MathJaxModule {
           inlineMath: [['$', '$'], ['\\(', '\\)']],
           displayMath: [['$$', '$$'], ['\\[', '\\]']],
           processEscapes: true,
-          ignoreClass: "tex2jax_ignore|dno",
+          ignoreClass: 'tex2jax_ignore|dno',
           preview: 'none'
         }
       });
@@ -39,25 +40,21 @@ export class MathJaxModule {
 
     if (moduleConfig) {
       // Insert the MathJax configuration script into the Head element.
-      (function () {
-        const script = document.createElement('script') as HTMLScriptElement;
-        script.type = 'text/x-mathjax-config';
-        script.text = `(${mathJaxHubConfig})();`;
-        document.getElementsByTagName('head')[0].appendChild(script);
-      })();
+      const script = document.createElement('script') as HTMLScriptElement;
+      script.type = 'text/x-mathjax-config';
+      script.text = `(${mathJaxHubConfig})();`;
+      document.getElementsByTagName('head')[0].appendChild(script);
 
       // Insert the script block to load the MathJax library.
-      (function (version: string, config: string, online: boolean) {
-        const script = document.createElement('script') as HTMLScriptElement;
-        script.type = 'text/javascript';
-        if (online) {
-          script.src = `https://cdnjs.cloudflare.com/ajax/libs/mathjax/${version}/MathJax.js?config=${config}`;
-        } else {
-          script.src = `assets/mathjax/MathJax.js?config=${config}`;
-        }
-        script.async = true;
-        document.getElementsByTagName('head')[0].appendChild(script);
-      })(moduleConfig.version, moduleConfig.config, moduleConfig.online);
+      const script2 = document.createElement('script') as HTMLScriptElement;
+      script2.type = 'text/javascript';
+      if (moduleConfig.online) {
+       script2.src = `https://cdnjs.cloudflare.com/ajax/libs/mathjax/${moduleConfig.version}/MathJax.js?config=${moduleConfig.config}`;
+      } else {
+        script2.src = `assets/mathjax/MathJax.js?config=${moduleConfig.config}`;
+      }
+      script2.async = true;
+      document.getElementsByTagName('head')[0].appendChild(script2);
     }
   }
 

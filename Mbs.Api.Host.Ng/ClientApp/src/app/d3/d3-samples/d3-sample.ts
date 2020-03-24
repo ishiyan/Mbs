@@ -1,5 +1,5 @@
 export interface D3Sample {
-  name: string;  
+  name: string;
   route?: string;
   children?: D3Sample[];
 }

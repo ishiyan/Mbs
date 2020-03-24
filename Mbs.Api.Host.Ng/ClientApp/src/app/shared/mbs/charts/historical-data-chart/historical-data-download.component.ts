@@ -5,7 +5,7 @@ import { TemporalEntityKind } from '../../data//entities/temporal-entity-kind.en
 import { HistoricalData } from '../../data/historical-data';
 
 @Component({
-  selector: 'app-mbs-data-historical-data-download',
+  selector: 'mb-data-historical-data-download',
   templateUrl: './historical-data-download.component.html',
   styleUrls: ['./historical-data-download.component.scss']
 })
@@ -96,7 +96,7 @@ export class HistoricalDataDownloadComponent {
       return;
     }
     const csv = this.writeByteOrderMark ? '\ufeff' + this.convertToCSV() : this.convertToCSV();
-    const blob = new Blob([csv], { 'type': 'text/csv;charset=utf8;' });
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf8;' });
     // @ts-ignore
     const filename = this.currentHistoricalData.name.replace(/ /g, '_') + '.csv';
 

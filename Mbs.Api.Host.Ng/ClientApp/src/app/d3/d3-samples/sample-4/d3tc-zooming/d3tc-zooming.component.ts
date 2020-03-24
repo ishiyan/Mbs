@@ -7,7 +7,7 @@ import { D3Ohlcv } from '../../data/d3-ohlcv';
 import { dataOhlcvDaily } from '../../data/data-ohlcv-daily';
 
 @Component({
-  selector: 'app-d3tc-zooming',
+  selector: 'd3-sample-d3tc-zooming',
   templateUrl: './d3tc-zooming.component.html',
   styleUrls: ['./d3tc-zooming.component.scss']
 })

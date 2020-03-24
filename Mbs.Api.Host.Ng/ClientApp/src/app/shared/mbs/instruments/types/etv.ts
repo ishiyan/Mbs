@@ -6,28 +6,28 @@ export class Etv {
   currency!: CurrencyCode;
 
   /** A trading mode. */
-  tradingMode?: string | undefined;
+  tradingMode?: string;
 
   /** All-in fees. */
-  allInFees?: string | undefined;
+  allInFees?: string;
 
   /** An expence ratio percentage. */
-  expenseRatio?: string | undefined;
+  expenseRatio?: string;
 
   /** A dividend frequency. */
-  dividendFrequency?: string | undefined;
+  dividendFrequency?: string;
 
   /** An issuer. */
-  issuer?: string | undefined;
+  issuer?: string;
 
   /** A number of shares outstanding. */
-  sharesOutstanding?: number | undefined;
+  sharesOutstanding?: number;
 
   constructor(data?: Etv) {
     if (data) {
       for (const property in data) {
         if (data.hasOwnProperty(property)) {
-          (<any>this)[property] = (<any>data)[property];
+          (this as any)[property] = (data as any)[property];
         }
       }
     }
@@ -35,6 +35,7 @@ export class Etv {
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
+    // tslint:disable:no-string-literal
     data['Currency'] = this.currency;
     data['TradingMode'] = this.tradingMode;
     data['AllInFees'] = this.allInFees;
@@ -42,6 +43,7 @@ export class Etv {
     data['DividendFrequency'] = this.dividendFrequency;
     data['Issuer'] = this.issuer;
     data['SharesOutstanding'] = this.sharesOutstanding;
+    // tslint:enable:no-string-literal
     return data;
   }
 }

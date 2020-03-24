@@ -5,20 +5,19 @@ import { Category } from './categories/category';
 import { categories } from './categories/categories';
 
 @Component({
-  selector: 'app-tex',
+  selector: 'tex-sample-collection',
   templateUrl: './tex.component.html',
   styleUrls: ['./tex.component.scss']
 })
 export class TexComponent {
   public readonly categories: Category[] = categories;
   public category: Category = categories[0];
-  public renderMathJax: boolean = true;
-  public renderKatex: boolean = true;
+  public renderMathJax = true;
+  public renderKatex = true;
 
   constructor(router: Router) {
     const routeUrl = router.routerState.snapshot.url;
-    for (let i = 0; i < categories.length; ++i) {
-      const cat = categories[i];
+    for (const cat of categories) {
       const url = '/tex/' + cat.route;
       if (routeUrl === url) {
         this.category = cat;

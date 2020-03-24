@@ -7,7 +7,7 @@ import { D3Ohlcv } from '../../data/d3-ohlcv';
 import { dataOhlcvDaily } from '../../data/data-ohlcv-daily';
 
 @Component({
-  selector: 'app-d3tc-horizon-chart-single',
+  selector: 'd3-sample-d3tc-horizon-chart-single',
   templateUrl: './d3tc-horizon-chart-single.component.html',
   styleUrls: ['./d3tc-horizon-chart-single.component.scss']
 })
@@ -61,8 +61,8 @@ export class D3tcHorizonChartSingleComponent implements OnInit {
     }
   }
   @Input() set data(value: D3Ohlcv[]) {
-    const mean = value.map(c => c.close).reduce(function (p, v) { return p + v; }, 0) / value.length;
-    this.horizonData = value.map(function (c) { return [c.date, c.close ? (c.close - mean) : null]; });
+    const mean = value.map(c => c.close).reduce((p, v) => { return p + v; }, 0) / value.length;
+    this.horizonData = value.map(c => { return [c.date, c.close ? (c.close - mean) : null]; });
     if (this.g) {
       this.g.data([this.horizonData]).call(this.chart);
     }
@@ -75,7 +75,7 @@ export class D3tcHorizonChartSingleComponent implements OnInit {
     this.svg = d3.select(this.element.nativeElement).select('svg').attr('width', this._width).attr('height', this._height);
     this.g = this.svg.append('g');
     this.chart = d3tc.horizonChart().width(this._width).height(this._height).bands(this._bands)
-      .mode(this._mode).colors(this._colors).interpolate(this._interpolation).defined(function (d: any) { return d[1]; });
+      .mode(this._mode).colors(this._colors).interpolate(this._interpolation).defined((d: any) => d[1]);
     this.g.data([this.horizonData]).call(this.chart);
   }
 }

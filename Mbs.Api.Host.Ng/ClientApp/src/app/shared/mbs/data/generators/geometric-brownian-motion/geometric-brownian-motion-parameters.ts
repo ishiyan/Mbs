@@ -26,28 +26,32 @@ export class GeometricBrownianMotionParameters {
 
   /** The volatility (standard deviation), σ, of the geometric Brownian motion.
    *
-   * At each step, the drift will be shocked (added or subtracted) by this value multiplied by a normal random number. */
+   * At each step, the drift will be shocked (added or subtracted) by this value multiplied by a normal random number.
+   */
   volatility: number = GeometricBrownianMotionParameters.defaultVolatility;
 
   /** The kind of a Gaussian distribution random generator. */
   normalRandomGeneratorKind: NormalRandomGeneratorKind = GeometricBrownianMotionParameters.defaultNormalRandomGeneratorKind;
+
   /** The kind of a uniform random generator optionally associated with the Gaussian random generator.
    *
-   * Used only by ZigguratColinGreen and BoxMuller Gaussian generators. */
+   * Used only by ZigguratColinGreen and BoxMuller Gaussian generators.
+   */
   associatedUniformRandomGeneratorKind: UniformRandomGeneratorKind =
     GeometricBrownianMotionParameters.defaultAssociatedUniformRandomGeneratorKind;
 
   /** The seed of a random generator.
    *
    * If ZigguratColinGreen or BoxMuller Gaussian generator is used, the seed will be applied to the associated uniform generator.
-   * Otherwise, it will be applied to the Gaussian generator. */
+   * Otherwise, it will be applied to the Gaussian generator.
+   */
   seed: number = GeometricBrownianMotionParameters.defaultSeed;
 
   constructor(data?: GeometricBrownianMotionParameters) {
     if (data) {
       for (const property in data) {
         if (data.hasOwnProperty(property)) {
-          (<any>this)[property] = (<any>data)[property];
+          (this as any)[property] = (data as any)[property];
         }
       }
     }

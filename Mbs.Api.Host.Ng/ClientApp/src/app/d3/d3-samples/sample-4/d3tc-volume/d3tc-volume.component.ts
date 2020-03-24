@@ -7,7 +7,7 @@ import { D3Ohlcv } from '../../data/d3-ohlcv';
 import { dataOhlcvDaily } from '../../data/data-ohlcv-daily';
 
 @Component({
-  selector: 'app-d3tc-volume',
+  selector: 'd3-sample-d3tc-volume',
   templateUrl: './d3tc-volume.component.html',
   styleUrls: ['./d3tc-volume.component.scss']
 })
@@ -56,7 +56,7 @@ export class D3tcVolumeComponent implements OnInit {
     let toggle = true;
     const d: D3Ohlcv[] = data.slice(0, data.length - 20);
     draw(d);
-    d3.select(this.element.nativeElement).select('button').on('click', function () { draw(toggle ? data : d); toggle = !toggle; });
+    d3.select(this.element.nativeElement).select('button').on('click', () => { draw(toggle ? data : d); toggle = !toggle; });
     // data end ----------------------------------
   }
 }

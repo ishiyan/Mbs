@@ -6,7 +6,7 @@
   $foreground: map-get($theme, foreground);
   $is-dark-theme: map-get($theme, is-dark);
 
-  app-mbs-ohlcv-chart {
+  mb-ohlcv-chart {
     .mat-button-toggle {
       .svg-icon {
         stroke: mat-color($foreground, hint-text);

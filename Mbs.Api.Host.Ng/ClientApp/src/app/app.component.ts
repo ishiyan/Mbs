@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
+  // tslint:disable-next-line:component-selector
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
@@ -8,9 +9,11 @@ import { Component } from '@angular/core';
 export class AppComponent {
   // {[route-id], text} pairs
   public toolbarItems: any = {
-    ['mbsapi']: 'Data', // Mbs, D3, TeX
-    ['d3']: 'Indicators',
-    ['tex']: 'Strategies',
+    // Data, Indicators, Strategies, Notes, Panopticum
+    // Mb, D3, TeX
+    ['mb']: 'Mb',
+    ['d3']: 'D3',
+    ['tex']: 'TeX',
     ['notes']: 'Notes'
   };
 }

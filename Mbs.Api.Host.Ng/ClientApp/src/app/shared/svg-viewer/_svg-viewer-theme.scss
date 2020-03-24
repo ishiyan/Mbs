@@ -5,7 +5,7 @@
   $background: map-get($theme, background);
   $foreground: map-get($theme, foreground);
 
-  app-svg-viewer {
+  mb-svg-viewer {
     svg {
       stroke: mat-color($foreground, text);
     }

@@ -7,7 +7,7 @@ import { D3Ohlcv } from '../../data/d3-ohlcv';
 import { dataOhlcvDaily } from '../../data/data-ohlcv-daily';
 
 @Component({
-  selector: 'app-d3tc-trendlines',
+  selector: 'd3-sample-d3tc-trendlines',
   templateUrl: './d3tc-trendlines.component.html',
   styleUrls: ['./d3tc-trendlines.component.scss'],
   encapsulation: ViewEncapsulation.None // does not see css without this
@@ -89,7 +89,7 @@ export class D3tcTrendlinesComponent implements OnInit {
     const d: D3Ohlcv[] = data.slice(0, data.length - 20);
     const t = trendlineData.slice(0, trendlineData.length - 1);
     draw(d, t);
-    d3.select(this.element.nativeElement).select('button').on('click', function () {
+    d3.select(this.element.nativeElement).select('button').on('click', () => {
       if (toggle) {
         draw(data, trendlineData);
       } else {

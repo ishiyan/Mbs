@@ -7,53 +7,54 @@ export class Etf {
   currency!: CurrencyCode;
 
   /** A trading mode. */
-  tradingMode?: string | undefined;
+  tradingMode?: string;
 
-  /** An ISO 10962 Classification of Financial Instruments code. */
-  cfi?: string | undefined;
+  /** An ISO 10962 *Classification of Financial Instruments* code. */
+  cfi?: string;
 
   /** A dividend frequency. */
-  dividendFrequency?: string | undefined;
+  dividendFrequency?: string;
 
   /** An exposition type. */
-  expositionType?: string | undefined;
+  expositionType?: string;
 
   /** A fraction. */
-  fraction?: string | undefined;
+  fraction?: string;
 
   /** A total expence ratio percentage. */
-  totalExpenseRatio?: string | undefined;
+  totalExpenseRatio?: string;
 
   /** An index family. */
-  indexFamily?: string | undefined;
+  indexFamily?: string;
 
   /** A launch date. */
-  launchDate?: string | undefined;
+  launchDate?: string;
 
   /** An issuer. */
-  issuer?: string | undefined;
+  issuer?: string;
 
-  /** An Indicative Net Asset Value instrument reference. */
-  inav?: InstrumentReference | undefined;
+  /** An *Indicative Net Asset Value* instrument reference. */
+  inav?: InstrumentReference;
 
   /** Gets or sets an underlying instrument reference. */
-  underlying?: InstrumentReference | undefined;
+  underlying?: InstrumentReference;
 
   constructor(data?: Etf) {
     if (data) {
       for (const property in data) {
         if (data.hasOwnProperty(property)) {
-          (<any>this)[property] = (<any>data)[property];
+          (this as any)[property] = (data as any)[property];
         }
       }
-      this.inav = data.inav && !(<any>data.inav).toJSON ? new InstrumentReference(data.inav) : <InstrumentReference>this.inav;
-      this.underlying = data.underlying && !(<any>data.underlying).toJSON ? new InstrumentReference(data.underlying) :
-        <InstrumentReference>this.underlying;
+      this.inav = data.inav && !(data.inav as any).toJSON ? new InstrumentReference(data.inav) : (this.inav as InstrumentReference);
+      this.underlying = data.underlying && !(data.underlying as any).toJSON ? new InstrumentReference(data.underlying) :
+        (this.underlying as InstrumentReference);
     }
   }
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
+    // tslint:disable:no-string-literal
     data['Currency'] = this.currency;
     data['TradingMode'] = this.tradingMode;
     data['Cfi'] = this.cfi;
@@ -64,8 +65,9 @@ export class Etf {
     data['IndexFamily'] = this.indexFamily;
     data['LaunchDate'] = this.launchDate;
     data['Issuer'] = this.issuer;
-    data['Inav'] = this.inav ? this.inav.toJSON() : <any>undefined;
-    data['Underlying'] = this.underlying ? this.underlying.toJSON() : <any>undefined;
+    data['Inav'] = this.inav ? this.inav.toJSON() : (undefined as any);
+    data['Underlying'] = this.underlying ? this.underlying.toJSON() : (undefined as any);
+    // tslint:enable:no-string-literal
     return data;
   }
 }

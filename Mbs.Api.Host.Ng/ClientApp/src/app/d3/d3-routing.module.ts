@@ -14,7 +14,7 @@ import { Sample8Component } from './d3-samples/sample-8/sample-8.component';
 const routes: Routes = [
   {
     path: '', component: D3Component, children: [
-      { path: '', component: Sample1Component },
+      { path: '', component: Sample5Component },
       { path: 'sample-1', component: Sample1Component },
       { path: 'sample-2', component: Sample2Component },
       { path: 'sample-3', component: Sample3Component },

@@ -5,7 +5,7 @@ import { D3DatePrice } from '../../data/d3-date-price';
 import { d3Sp500 } from '../../data/d3-sp500';
 
 @Component({
-  selector: 'app-brush-and-zoom-area-chart',
+  selector: 'd3-sample-brush-and-zoom-area-chart',
   templateUrl: './brush-and-zoom-area-chart.component.html',
   styleUrls: ['./brush-and-zoom-area-chart.component.scss'],
   encapsulation: ViewEncapsulation.None
@@ -48,17 +48,19 @@ export class BrushAndZoomAreaChartComponent implements OnInit {
       .translateExtent([[0, 0], [width, height]])
       .extent([[0, 0], [width, height]]);
 
+    const ti = 'date';
+    const p = 'price';
     const area = d3.area()
       .curve(d3.curveMonotoneX)
-      .x(function (d: any) { return x(d['date']); })
+      .x((d: any) => x(d[ti]))
       .y0(height)
-      .y1(function (d: any) { return y(d['price']); });
+      .y1((d: any) => y(d[p]));
 
     const area2 = d3.area()
       .curve(d3.curveMonotoneX)
-      .x(function (d: any) { return x2(d['date']); })
+      .x((d: any) => x2(d[ti]))
       .y0(height2)
-      .y1(function (d: any) { return y2(d['price']); });
+      .y1((d: any) => y2(d[p]));
 
     svg.append('defs').append('clipPath')
       .attr('id', 'clip')
@@ -76,9 +78,9 @@ export class BrushAndZoomAreaChartComponent implements OnInit {
 
     // data begin ----------------------------------
     // @ts-ignore
-    x.domain(d3.extent(data, function (d) { return d.date; }));
+    x.domain(d3.extent(data, d => d.date));
     // @ts-ignore
-    y.domain([0, d3.max(data, function (d) { return d.price; })]);
+    y.domain([0, d3.max(data, d => d.price)]);
     x2.domain(x.domain());
     y2.domain(y.domain());
 

@@ -4,7 +4,7 @@ import * as d3 from 'd3';
 import * as d3tc from '../../../../shared/d3tc';
 
 @Component({
-  selector: 'app-d3tc-arrow',
+  selector: 'd3-sample-d3tc-arrow',
   templateUrl: './d3tc-arrow.component.html',
   styleUrls: ['./d3tc-arrow.component.scss'],
   encapsulation: ViewEncapsulation.None // does not see css without this
@@ -30,9 +30,9 @@ export class D3tcArrowComponent implements OnInit {
 
     const arrow = d3tc.svg.arrow().x(230).y(0).height(50).width(50);
 
-    const arrowOrient = d3tc.svg.arrow().orient(function (d: any) { return d; })
-      .x(function (d: any, i: any) { return 0 + i * 50; })
-      .y(function (d: any, i: any) { return 0 + i * 50; });
+    const arrowOrient = d3tc.svg.arrow().orient((d: any) => d)
+      .x((d: any, i: any) => 0 + i * 50)
+      .y((d: any, i: any) => 0 + i * 50);
 
     const arrowTranslate = d3tc.svg.arrow().tail(false);
 
@@ -40,13 +40,13 @@ export class D3tcArrowComponent implements OnInit {
 
     svg.selectAll('path.arrow.orient').data(data).enter()
       .append('path')
-      .attr('class', function (d: any) { return 'arrow orient ' + d; })
+      .attr('class', (d: any) => { return 'arrow orient ' + d; })
       .attr('d', arrowOrient);
 
     svg.selectAll('path.arrow.rotate').data(data).enter()
       .append('path')
-      .attr('class', function (d: any) { return 'arrow rotate ' + d; })
-      .attr('transform', function (d: any, i: any) {
+      .attr('class', (d: any) => { return 'arrow rotate ' + d; })
+      .attr('transform', (d: any, i: any) => {
         return 'translate(' + (100 + i * 50) + ', ' + (0 + i * 50) + ') rotate(' + i * 45 + ')';
       })
       .attr('d', arrowTranslate);

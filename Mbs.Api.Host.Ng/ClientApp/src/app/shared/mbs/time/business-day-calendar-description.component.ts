@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-business-day-calendar-description',
+  selector: 'mb-business-day-calendar-description',
   templateUrl: './business-day-calendar-description.component.html',
   styleUrls: ['./business-day-calendar-description.component.scss']
 })

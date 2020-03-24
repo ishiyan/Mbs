@@ -12,13 +12,13 @@
     "directive-selector": [
       true,
       "attribute",
-      "prefix",
+      "mb",
       "camelCase"
     ],
     "component-selector": [
       true,
       "element",
-      "prefix",
+      ["d3-sample", "tex-sample", "mb"],
       "kebab-case"
     ],
     "import-blacklist": [

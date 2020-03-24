@@ -8,7 +8,7 @@ import { dataOhlcvDaily } from '../../data/data-ohlcv-daily';
 import { dataOhlcvIntraday } from '../../data/data-ohlcv-intraday';
 
 @Component({
-  selector: 'app-d3tc-finance-time',
+  selector: 'd3-sample-d3tc-finance-time',
   templateUrl: './d3tc-finance-time.component.html',
   styleUrls: ['./d3tc-finance-time.component.scss'],
   encapsulation: ViewEncapsulation.None // does not see css without this
@@ -180,8 +180,8 @@ export class D3tcFinanceTimeComponent implements OnInit {
     const accessor = d3tc.accessor.ohlc();
 
     // data begin ----------------------------------
-    const d3evDaily = d3.extent(dataDaily, function (d) { return d.date; });
-    const vDaily = dataDaily.map(function (d) { return d.date; });
+    const d3evDaily = d3.extent(dataDaily, d => d.date);
+    const vDaily = dataDaily.map(d => d.date);
     // @ts-ignore
     x.domain(d3evDaily);
     // @ts-ignore
@@ -190,8 +190,8 @@ export class D3tcFinanceTimeComponent implements OnInit {
     timeNonClampedInit = timeNonClamped.domain(vDaily).zoomable().clamp(false).copy();
     timeUtcNonClampedInit = timeUtcNonClamped.domain(vDaily).zoomable().clamp(false).copy();
 
-    const d3evIntraday = d3.extent(dataIntraday, function (d) { return d.date; });
-    const vIntraday = dataIntraday.map(function (d) { return d.date; });
+    const d3evIntraday = d3.extent(dataIntraday, d => d.date);
+    const vIntraday = dataIntraday.map(d => d.date);
     // @ts-ignore
     xIntraday.domain(d3evIntraday);
     // @ts-ignore

@@ -54,9 +54,9 @@ export class Downloader {
 
     svgNativeElement.setAttributeNS(xmlns, 'xmlns', svgns);
     svgNativeElement.setAttributeNS(xmlns, 'xmlns:xlink', xlinkns);
-    const serializer = new window.XMLSerializer;
-    const string = serializer.serializeToString(svgNativeElement);
-    return new Blob([textBefore, string, textAfter], { type: 'image/svg+xml' });
+    const serializer = new window.XMLSerializer();
+    const str = serializer.serializeToString(svgNativeElement);
+    return new Blob([textBefore, str, textAfter], { type: 'image/svg+xml' });
   }
 
   public static rasterizeToPng(svgNativeElement: any): any {
@@ -64,9 +64,10 @@ export class Downloader {
       return svgNativeElement;
     }
 
-    let resolve: any, reject: any;
+    let resolve: any;
+    let reject: any;
     const promise = new Promise((y, n) => (resolve = y, reject = n));
-    const image = new Image;
+    const image = new Image();
     image.onerror = reject;
     image.onload = () => {
       const rect = svgNativeElement.getBoundingClientRect();

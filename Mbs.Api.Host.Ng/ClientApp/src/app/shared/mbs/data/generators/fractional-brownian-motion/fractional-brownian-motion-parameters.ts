@@ -33,21 +33,23 @@ export class FractionalBrownianMotionParameters {
 
   /** The kind of a uniform random generator optionally associated with the Gaussian random generator.
    *
-   * Used only by ZigguratColinGreen and BoxMuller Gaussian generators. */
+   * Used only by ZigguratColinGreen and BoxMuller Gaussian generators.
+   */
   associatedUniformRandomGeneratorKind: UniformRandomGeneratorKind =
     FractionalBrownianMotionParameters.defaultAssociatedUniformRandomGeneratorKind;
 
   /** The seed of a random generator.
-  *
-  * If ZigguratColinGreen or BoxMuller Gaussian generator is used, the seed will be applied to the associated uniform generator.
-  * Otherwise, it will be applied to the Gaussian generator. */
+   *
+   * If ZigguratColinGreen or BoxMuller Gaussian generator is used, the seed will be applied to the associated uniform generator.
+   * Otherwise, it will be applied to the Gaussian generator.
+   */
   seed: number = FractionalBrownianMotionParameters.defaultSeed;
 
   constructor(data?: FractionalBrownianMotionParameters) {
     if (data) {
       for (const property in data) {
         if (data.hasOwnProperty(property)) {
-          (<any>this)[property] = (<any>data)[property];
+          (this as any)[property] = (data as any)[property];
         }
       }
     }

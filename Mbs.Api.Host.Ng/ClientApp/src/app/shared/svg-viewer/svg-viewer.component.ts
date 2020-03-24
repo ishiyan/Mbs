@@ -2,7 +2,7 @@ import { Component, ElementRef, Input, NgModule, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
-  selector: 'app-svg-viewer',
+  selector: 'mb-svg-viewer',
   templateUrl: './svg-viewer.component.html',
   styleUrls: ['./svg-viewer.component.scss']
 })

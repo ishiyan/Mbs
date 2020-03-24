@@ -12,35 +12,35 @@
       <mat-hint>The total number of samples to generate.</mat-hint>
     </mat-form-field>
   </mat-expansion-panel>
-  <app-mbs-data-generators-chirp-parameters [ngClass]="isChirp ? 'shown' : 'hidden'"
+  <mb-data-generators-chirp-parameters [ngClass]="isChirp ? 'shown' : 'hidden'"
     [chirpParameters]="syntheticDataParameters.chirpParameters">
-  </app-mbs-data-generators-chirp-parameters>
-  <app-mbs-data-generators-fractional-brownian-motion-parameters [ngClass]="isFbm ? 'shown' : 'hidden'"
+  </mb-data-generators-chirp-parameters>
+  <mb-data-generators-fractional-brownian-motion-parameters [ngClass]="isFbm ? 'shown' : 'hidden'"
     [fractionalBrownianMotionParameters]="syntheticDataParameters.fbmParameters">
-  </app-mbs-data-generators-fractional-brownian-motion-parameters>
-  <app-mbs-data-generators-geometric-brownian-motion-parameters [ngClass]="isGbm ? 'shown' : 'hidden'"
+  </mb-data-generators-fractional-brownian-motion-parameters>
+  <mb-data-generators-geometric-brownian-motion-parameters [ngClass]="isGbm ? 'shown' : 'hidden'"
     [geometricBrownianMotionParameters]="syntheticDataParameters.gbmParameters">
-  </app-mbs-data-generators-geometric-brownian-motion-parameters>
-  <app-mbs-data-generators-sawtooth-parameters [ngClass]="isSawtooth ? 'shown' : 'hidden'"
+  </mb-data-generators-geometric-brownian-motion-parameters>
+  <mb-data-generators-sawtooth-parameters [ngClass]="isSawtooth ? 'shown' : 'hidden'"
     [sawtoothParameters]="syntheticDataParameters.sawtoothParameters">
-  </app-mbs-data-generators-sawtooth-parameters>
-  <app-mbs-data-generators-square-parameters [ngClass]="isSquare ? 'shown' : 'hidden'"
+  </mb-data-generators-sawtooth-parameters>
+  <mb-data-generators-square-parameters [ngClass]="isSquare ? 'shown' : 'hidden'"
     [squareParameters]="syntheticDataParameters.squareParameters">
-  </app-mbs-data-generators-square-parameters>
-  <app-mbs-data-generators-sinusoidal-parameters [ngClass]="isSinusoid ? 'shown' : 'hidden'"
+  </mb-data-generators-square-parameters>
+  <mb-data-generators-sinusoidal-parameters [ngClass]="isSinusoid ? 'shown' : 'hidden'"
     [sinusoidalParameters]="syntheticDataParameters.sinusoidalParameters">
-  </app-mbs-data-generators-sinusoidal-parameters>
-  <app-mbs-data-generators-waveform-parameters [waveformParameters]="syntheticDataParameters.waveformParameters">
-  </app-mbs-data-generators-waveform-parameters>
-  <app-mbs-data-generators-time-parameters [timeParameters]="syntheticDataParameters.timeParameters">
-  </app-mbs-data-generators-time-parameters>
-  <app-mbs-data-generators-ohlcv-parameters [ngClass]="isOhlcv ? 'shown' : 'hidden'"
+  </mb-data-generators-sinusoidal-parameters>
+  <mb-data-generators-waveform-parameters [waveformParameters]="syntheticDataParameters.waveformParameters">
+  </mb-data-generators-waveform-parameters>
+  <mb-data-generators-time-parameters [timeParameters]="syntheticDataParameters.timeParameters">
+  </mb-data-generators-time-parameters>
+  <mb-data-generators-ohlcv-parameters [ngClass]="isOhlcv ? 'shown' : 'hidden'"
     [ohlcvParameters]="syntheticDataParameters.ohlcvParameters">
-  </app-mbs-data-generators-ohlcv-parameters>
-  <app-mbs-data-generators-quote-parameters [ngClass]="isQuote ? 'shown' : 'hidden'"
+  </mb-data-generators-ohlcv-parameters>
+  <mb-data-generators-quote-parameters [ngClass]="isQuote ? 'shown' : 'hidden'"
     [quoteParameters]="syntheticDataParameters.quoteParameters">
-  </app-mbs-data-generators-quote-parameters>
-  <app-mbs-data-generators-trade-parameters [ngClass]="isTrade ? 'shown' : 'hidden'"
+  </mb-data-generators-quote-parameters>
+  <mb-data-generators-trade-parameters [ngClass]="isTrade ? 'shown' : 'hidden'"
     [tradeParameters]="syntheticDataParameters.tradeParameters">
-  </app-mbs-data-generators-trade-parameters>
+  </mb-data-generators-trade-parameters>
 </mat-accordion>

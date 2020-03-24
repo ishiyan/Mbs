@@ -8,12 +8,14 @@ export class OhlcvParameters {
 
   /** The shadow fraction, ρs, which determines the length of the candlestick shadows as a fraction of the mid price; ρs∈[0, 1].
    *
-   *  The value should be greater or equal to the candlestick body fraction. */
+   *  The value should be greater or equal to the candlestick body fraction.
+   */
   candlestickShadowFraction: number = OhlcvParameters.defaultCandlestickShadowFraction;
 
   /** The body fraction, ρb, which determines the half-length of the candlestick body as a fraction of the mid price; ρb∈[0, 1].
    *
-   *  The value should be less or equal to the candlestick shadow fraction. */
+   *  The value should be less or equal to the candlestick shadow fraction.
+   */
   candlestickBodyFraction: number = OhlcvParameters.defaultCandlestickBodyFraction;
 
   /** The volume, which is the same for all candlesticks; should be positive. */
@@ -23,7 +25,7 @@ export class OhlcvParameters {
     if (data) {
       for (const property in data) {
         if (data.hasOwnProperty(property)) {
-          (<any>this)[property] = (<any>data)[property];
+          (this as any)[property] = (data as any)[property];
         }
       }
     }

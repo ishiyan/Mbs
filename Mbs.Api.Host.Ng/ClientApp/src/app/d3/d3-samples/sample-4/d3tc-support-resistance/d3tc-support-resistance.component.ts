@@ -7,7 +7,7 @@ import { D3Ohlcv } from '../../data/d3-ohlcv';
 import { dataOhlcvDaily } from '../../data/data-ohlcv-daily';
 
 @Component({
-  selector: 'app-d3tc-support-resistance',
+  selector: 'd3-sample-d3tc-support-resistance',
   templateUrl: './d3tc-support-resistance.component.html',
   styleUrls: ['./d3tc-support-resistance.component.scss'],
   encapsulation: ViewEncapsulation.None // does not see css without this
@@ -96,7 +96,7 @@ export class D3tcSupportResistanceComponent implements OnInit {
     const d: D3Ohlcv[] = data.slice(0, data.length - 20);
     const t = supstanceData.slice(0, supstanceData.length - 1);
     draw(d, t);
-    d3.select(this.element.nativeElement).select('button').on('click', function () {
+    d3.select(this.element.nativeElement).select('button').on('click', () => {
       if (toggle) {
         draw(data, supstanceData);
       } else {

@@ -5,7 +5,7 @@
   $background: map-get($theme, background);
   $foreground: map-get($theme, foreground);
 
-  app-toolbar {
+  mb-toolbar {
     color: mat-color($primary, default-contrast);
   }
 }

@@ -4,6 +4,7 @@ import { basicFunctionalitySamples } from '../samples/basic-functionality-sample
 import { multilineFunctionalitySamples } from '../samples/multiline-functionality-samples';
 import { symbolSamples } from '../samples/symbol-samples';
 import { scienceEquationsSamples } from '../samples/science-equations-samples';
+import { syntheticDataSamples } from '../samples/synthetic-data-samples';
 
 export const categories: Category[] = [
   {
@@ -20,5 +21,8 @@ export const categories: Category[] = [
   },
   {
     name: 'Science equations', route: 'science', samples: scienceEquationsSamples
+  },
+  {
+    name: 'Used in synthetic data forms', route: 'synthetic', samples: syntheticDataSamples
   }
 ];

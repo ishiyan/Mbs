@@ -6,22 +6,22 @@ export class Fund {
   currency!: CurrencyCode;
 
   /** A trading mode. */
-  tradingMode?: string | undefined;
+  tradingMode?: string;
 
-  /** An ISO 10962 Classification of Financial Instruments code. */
-  cfi?: string | undefined;
+  /** An ISO 10962 *Classification of Financial Instruments* code. */
+  cfi?: string;
 
   /** An issuer. */
-  issuer?: string | undefined;
+  issuer?: string;
 
   /** A number of shares outstanding. */
-  sharesOutstanding?: number | undefined;
+  sharesOutstanding?: number;
 
   constructor(data?: Fund) {
     if (data) {
       for (const property in data) {
         if (data.hasOwnProperty(property)) {
-          (<any>this)[property] = (<any>data)[property];
+          (this as any)[property] = (data as any)[property];
         }
       }
     }
@@ -29,11 +29,13 @@ export class Fund {
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
+    // tslint:disable:no-string-literal
     data['Currency'] = this.currency;
     data['TradingMode'] = this.tradingMode;
     data['Cfi'] = this.cfi;
     data['Issuer'] = this.issuer;
     data['SharesOutstanding'] = this.sharesOutstanding;
+    // tslint:enable:no-string-literal
     return data;
   }
 }

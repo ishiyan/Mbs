@@ -1,4 +1,4 @@
-<mat-toolbar color="primary" class="mat-elevation-z8 app-toolbar">
+<mat-toolbar color="primary" class="mat-elevation-z8 mb-toolbar">
   <mat-toolbar-row>
     <button mat-icon-button id="menu" (click)="secondRowOpen = !secondRowOpen" class="show-small">
       <mat-icon>{{ secondRowOpen ? 'menu_open' : 'menu' }}</mat-icon>
@@ -6,7 +6,7 @@
     <mat-icon svgIcon="mbrane-top" class="logo"></mat-icon>
     <a mat-button class="hide-small" *ngFor="let key of itemKeys" [routerLink]="key">{{items[key]}}</a>
     <span class="fill-remaining-space"></span>
-    <app-theme-picker></app-theme-picker>
+    <mb-theme-picker></mb-theme-picker>
     <a mat-button routerLink="/">
       <mat-icon>fingerprint</mat-icon>
     </a>

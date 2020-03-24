@@ -4,11 +4,9 @@ mat-form-field {
   padding-bottom: 16px;
 }
 
-span {
-  margin-right: 16px;
-}
 mb-katex {
-  margin-right: 16px;
+  margin: 0px;
+  // display: block; // comment out  this to show equations in single sequence wrapping over multiple lines
 }
 
 div {

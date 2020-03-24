@@ -5,11 +5,11 @@ export class Stock {
   /** A currency code. */
   currency!: CurrencyCode;
   /** A trading mode. */
-  tradingMode?: string | undefined;
-  /** An ISO 10962 Classification of Financial Instruments code. */
-  cfi?: string | undefined;
+  tradingMode?: string;
+  /** An ISO 10962 *Classification of Financial Instruments* code. */
+  cfi?: string;
   /** An Industry Classification Benchmark code. */
-  icb?: string | undefined;
+  icb?: string;
   /** A number of shares outstanding. */
   sharesOutstanding?: number | undefined;
 
@@ -17,7 +17,7 @@ export class Stock {
     if (data) {
       for (const property in data) {
         if (data.hasOwnProperty(property)) {
-          (<any>this)[property] = (<any>data)[property];
+          (this as any)[property] = (data as any)[property];
         }
       }
     }
@@ -25,11 +25,13 @@ export class Stock {
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
+    // tslint:disable:no-string-literal
     data['Currency'] = this.currency;
     data['TradingMode'] = this.tradingMode;
     data['Cfi'] = this.cfi;
     data['Icb'] = this.icb;
     data['SharesOutstanding'] = this.sharesOutstanding;
+    // tslint:enable:no-string-literal
     return data;
   }
 }

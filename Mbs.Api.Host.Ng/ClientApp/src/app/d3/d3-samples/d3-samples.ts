@@ -6,7 +6,7 @@ export const treeNodes: D3Sample[] = [
   }, {
     name: 'Horizon chart', route: 'sample-7'
   }, {
-    name: 'Candlestick chart', route: 'sample-6'
+    name: 'Here be dragons!', route: 'sample-6'
   }, {
     name: 'D3',
     children: [

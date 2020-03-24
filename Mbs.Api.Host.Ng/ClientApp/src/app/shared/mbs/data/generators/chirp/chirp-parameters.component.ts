@@ -4,22 +4,19 @@ import { ChirpSweep } from './chirp-sweep.enum';
 import { Enums } from '../../../utils/enums';
 
 @Component({
-  selector: 'app-mbs-data-generators-chirp-parameters',
+  selector: 'mb-data-generators-chirp-parameters',
   templateUrl: './chirp-parameters.component.html',
   styleUrls: ['./chirp-parameters.component.scss']
 })
 export class ChirpParametersComponent {
   @Input() chirpParameters: ChirpParameters;
 
-  eq1 = '$mid_t=\\alpha\\cdot\\cos(sweep_t\\cdot t+\\varphi\\cdot\\pi)+\\beta,$';
-  eq2 = '$sweep_1=\\frac{2\\pi}{\\lambda_1},$';
-  eq3 = '$sweep_L=\\frac{2\\pi}{\\lambda_L},$';
-  eq4 = '$sample_t=mid_t+noise_t$';
+  options: any = {throwOnError: false, strict: true};
 
-  eq1k = 'mid_t=\\alpha\\cdot\\cos(sweep_t\\cdot t+\\varphi\\cdot\\pi)+\\beta,';
-  eq2k = 'sweep_1=\\frac{2\\pi}{\\lambda_1},';
-  eq3k = 'sweep_L=\\frac{2\\pi}{\\lambda_L},';
-  eq4k = 'sample_t=mid_t+noise_t';
+  eq1 = 'mid_t=\\alpha\\cdot\\cos(sweep_t\\cdot t+\\varphi\\cdot\\pi)+\\beta,';
+  eq2 = 'sweep_1=\\frac{2\\pi}{\\lambda_1},';
+  eq3 = 'sweep_L=\\frac{2\\pi}{\\lambda_L},';
+  eq4 = 'sample_t=mid_t+noise_t';
 
   chirpSweeps = Object.keys(ChirpSweep);
 

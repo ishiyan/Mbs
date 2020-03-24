@@ -7,7 +7,7 @@ import { dataOhlcvDaily } from '../../data/data-ohlcv-daily-big';
 import * as hilbert from '../hilbert';
 
 @Component({
-  selector: 'app-hilbert-stocks',
+  selector: 'd3-sample-hilbert-stocks',
   templateUrl: './hilbert-stocks.component.html',
   styleUrls: ['./hilbert-stocks.component.scss']
 })
@@ -21,8 +21,9 @@ export class HilbertStocksComponent implements OnInit {
     const svg: any = d3.select(this.element.nativeElement).select('svg')
       .attr('class', 'hilbert').attr('opacity', 1).attr('width', w + 10).attr('height', w + 30);
 
-    function plot(chart: any, lev: number, curve: any, data: D3Ohlcv[]) {
-      const dat: number[] = data.map(function (d): number { return +d['open']; });
+    const plot = (chart: any, lev: number, curve: any, data: D3Ohlcv[]) => {
+      const open = 'open';
+      const dat: number[] = data.map((d): number => +d[open]);
       const level2 = Math.pow(2, lev / 2); // 1 << lev
       const x = d3.scaleLinear().domain([-.5, level2]).range([0, w]);
       // @ts-ignore
@@ -35,14 +36,14 @@ export class HilbertStocksComponent implements OnInit {
       square.exit().remove();
       vis.selectAll('rect')
         // .style('fill', function (d, i) { return isNaN(dat[i]) ? '#000' : colour(dat[i]); })
-        .style('fill', function (d: any, i: any) { return dat[i] ? colour(dat[i]) : '#000'; })
-        .attr('x', function (d: any) { return x(d[0] - .5); })
-        .attr('y', function (d: any) { return x(d[1] - .5); })
+        .style('fill', (d: any, i: any) => { return dat[i] ? colour(dat[i]) : '#000'; })
+        .attr('x', (d: any) => { return x(d[0] - .5); })
+        .attr('y', (d: any) => { return x(d[1] - .5); })
         .attr('width', x(1) - x(0) + 1)
         .attr('height', x(1) - x(0) + 1);
     }
 
     const level = 12;
-    plot(svg, level, dataOhlcvDaily.map(function (d, i) { return hilbert.d2xy(level, i); }), dataOhlcvDaily);
+    plot(svg, level, dataOhlcvDaily.map((d, i) => { return hilbert.d2xy(level, i); }), dataOhlcvDaily);
   }
 }

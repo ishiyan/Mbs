@@ -6,34 +6,34 @@ export class Index {
   currency!: CurrencyCode;
 
   /** A kind of an index. */
-  kind?: string | undefined;
+  kind?: string;
 
   /** A family of an index. */
-  family?: string | undefined;
+  family?: string;
 
   /** A calculation frequency of an index. */
-  calculationFrequency?: string | undefined;
+  calculationFrequency?: string;
 
   /** A weighting of an index. */
-  weighting?: string | undefined;
+  weighting?: string;
 
   /** A capping factor of an index. */
-  cappingFactor?: string | undefined;
+  cappingFactor?: string;
 
   /** An Industry Classification Benchmark code. */
-  icb?: string | undefined;
+  icb?: string;
 
   /** A base date of an index. */
-  baseDate?: string | undefined;
+  baseDate?: string;
 
   /** A base level of an index. */
-  baseLevel?: string | undefined;
+  baseLevel?: string;
 
   constructor(data?: Index) {
     if (data) {
       for (const property in data) {
         if (data.hasOwnProperty(property)) {
-          (<any>this)[property] = (<any>data)[property];
+          (this as any)[property] = (data as any)[property];
         }
       }
     }
@@ -41,6 +41,7 @@ export class Index {
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
+    // tslint:disable:no-string-literal
     data['Currency'] = this.currency;
     data['Kind'] = this.kind;
     data['Family'] = this.family;
@@ -50,6 +51,7 @@ export class Index {
     data['Icb'] = this.icb;
     data['BaseDate'] = this.baseDate;
     data['BaseLevel'] = this.baseLevel;
+    // tslint:enable:no-string-literal
     return data;
   }
 }

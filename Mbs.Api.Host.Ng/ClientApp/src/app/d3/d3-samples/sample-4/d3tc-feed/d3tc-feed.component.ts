@@ -7,7 +7,7 @@ import { D3Ohlcv } from '../../data/d3-ohlcv';
 import { dataOhlcvDaily } from '../../data/data-ohlcv-daily';
 
 @Component({
-  selector: 'app-d3tc-feed',
+  selector: 'd3-sample-d3tc-feed',
   templateUrl: './d3tc-feed.component.html',
   styleUrls: ['./d3tc-feed.component.scss']
 })
@@ -86,7 +86,7 @@ export class D3tcFeedComponent implements OnInit {
           svg.select('g.crosshair.ohlc').call(crosshair);
         });
       // Set next timer expiry
-      setTimeout(function () {
+      setTimeout(() => {
         let newDat;
         if (dat.length < feed.length) {
           // Simulate a daily feed

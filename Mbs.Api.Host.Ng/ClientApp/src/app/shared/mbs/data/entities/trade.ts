@@ -34,7 +34,7 @@ export namespace Trade {
     if (json) {
       for (const property in json) {
         if (json.hasOwnProperty(property)) {
-          (<any>trade)[property] = (<any>json)[property];
+          (trade as any)[property] = json[property];
         }
       }
     }
@@ -43,9 +43,11 @@ export namespace Trade {
 
   export function toJson(trade: Trade, json?: any): any {
     json = typeof json === 'object' ? json : {};
-    json['time'] = trade.time ? trade.time.toISOString() : <any>undefined;
+    // tslint:disable:no-string-literal
+    json['time'] = trade.time ? trade.time.toISOString() : (undefined as any);
     json['price'] = trade.price;
     json['volume'] = trade.volume;
+    // tslint:enable:no-string-literal
     return json;
   }
 }

@@ -3,7 +3,8 @@ export class Ohlcv {
   /** The date and time.
    *
    * For _ohlcv_ bar entities it corresponds to the closing time, so that an _ohlcv_ bar accumulates lower-level entities
-   * up to the closing date and time. */
+   * up to the closing date and time.
+   */
   time: Date;
 
   /** The opening price. */

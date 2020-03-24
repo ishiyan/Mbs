@@ -5,16 +5,10 @@
     </mat-panel-title>
   </mat-expansion-panel-header>
   <div>
-    <span [mathjax]="eq1">{{eq1}}</span>
-    <span [mathjax]="eq2">{{eq2}}</span>
-    <span [mathjax]="eq3">{{eq3}}</span>
-    <span [mathjax]="eq4">{{eq4}}</span>
-  </div>
-  <div>
-    <mb-katex [equation]="eq1k" [options]="{throwOnError: false, strict: true}"></mb-katex>
-    <mb-katex [equation]="eq2k" [options]="{throwOnError: false, strict: true}"></mb-katex>
-    <mb-katex [equation]="eq3k" [options]="{throwOnError: false, strict: true}"></mb-katex>
-    <mb-katex [equation]="eq4k" [options]="{throwOnError: false, strict: true}"></mb-katex>
+    <mb-katex [expression]="eq1" [options]="options"></mb-katex>&#8203;
+    <mb-katex [expression]="eq2" [options]="options"></mb-katex>&#8203;
+    <mb-katex [expression]="eq3" [options]="options"></mb-katex>&#8203;
+    <mb-katex [expression]="eq4" [options]="options"></mb-katex>
   </div>
   <mat-form-field>
     <input type="number" matInput placeholder="Shadow fraction, ρs"

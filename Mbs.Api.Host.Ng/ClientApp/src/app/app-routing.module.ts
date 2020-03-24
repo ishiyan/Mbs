@@ -4,8 +4,8 @@ import { Routes, RouterModule } from '@angular/router';
 const routes: Routes = [
   { path: 'tex', loadChildren: () => import('./tex/tex.module').then(m => m.TexModule) },
   { path: 'd3', loadChildren: () => import('./d3/d3.module').then(m => m.D3Module) },
-  { path: 'mbsapi', loadChildren: () => import('./mbsapi/mbsapi.module').then(m => m.MbsApiModule) },
-  { path: '**', redirectTo: 'tex', pathMatch: 'full' }
+  { path: 'mb', loadChildren: () => import('./mb/mb.module').then(m => m.MbModule) },
+  { path: '**', redirectTo: 'mb', pathMatch: 'full' }
 ];
 
 @NgModule({

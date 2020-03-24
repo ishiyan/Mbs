@@ -43,7 +43,7 @@ const textAfterSvg = `
 `;
 
 @Component({
-  selector: 'app-historical-data-chart',
+  selector: 'mb-historical-data-chart',
   templateUrl: './historical-data-chart.component.html',
   styleUrls: ['./historical-data-chart.component.scss'],
   encapsulation: ViewEncapsulation.Emulated

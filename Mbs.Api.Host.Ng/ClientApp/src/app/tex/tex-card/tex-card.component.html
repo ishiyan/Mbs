@@ -3,12 +3,19 @@
     <mat-card-title>{{sample.name}}</mat-card-title>
   </mat-card-header>
   <mat-card-content>
+    <!-- without (change ="..." textarea does not notify about changing text -->
     <textarea #source class="tex-card-textarea" (change)="updateMathJax(source.value)">{{sample.code}}</textarea>
     <div *ngIf="showMathJax">
-      MathJax: <div #renderMathJax mathjax>$${{sample.code}}$$</div>
+      MathJax display: <mb-mathjax [expression]="'$$'+source.value+'$$'"></mb-mathjax> <!-- div [mbMathJax]>$${{source.value}}$$</div -->
     </div>
     <div *ngIf="showKatex">
-      KaTeX: <mb-katex #renderKatex [equation]="sample.code" [options]="{displayMode: true, throwOnError: false, strict: true}"></mb-katex>
+      KaTeX display: <mb-katex [expression]="source.value" [options]="katexDisplayOptions"></mb-katex>
+    </div>
+    <div *ngIf="showMathJax">
+      MathJax inline: <mb-mathjax [expression]="'$'+source.value+'$'"></mb-mathjax> <!-- span [mbMathJax]>${{source.value}}$</span -->
+    </div>
+    <div *ngIf="showKatex">
+      KaTeX inline: <mb-katex [expression]="source.value" [options]="katexInlineOptions"></mb-katex>
     </div>
   </mat-card-content>
 </mat-card>

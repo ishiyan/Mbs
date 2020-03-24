@@ -42,7 +42,7 @@ export namespace Quote {
     if (json) {
       for (const property in json) {
         if (json.hasOwnProperty(property)) {
-          (<any>quote)[property] = (<any>json)[property];
+          (quote as any)[property] = json[property];
         }
       }
     }
@@ -51,11 +51,13 @@ export namespace Quote {
 
   export function toJson(quote: Quote, json?: any): any {
     json = typeof json === 'object' ? json : {};
-    json['time'] = quote.time ? quote.time.toISOString() : <any>undefined;
+    // tslint:disable:no-string-literal
+    json['time'] = quote.time ? quote.time.toISOString() : (undefined as any);
     json['bidPrice'] = quote.bidPrice;
     json['bidSize'] = quote.bidSize;
     json['askPrice'] = quote.askPrice;
     json['askSize'] = quote.askSize;
+    // tslint:enable:no-string-literal
     return json;
   }
 }

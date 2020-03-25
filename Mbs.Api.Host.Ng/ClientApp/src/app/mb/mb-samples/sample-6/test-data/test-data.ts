@@ -1,4 +1,4 @@
-import { OhlcvChartConfig } from '../../../../shared/mbs/charts/ohlcv-chart/ohlcv-chart-config';
+import { Configuration } from '../../../../shared/mbs/charts/ohlcv-chart/template/configuration';
 
 import { dataTestOhlcv } from '../../../../shared/mbs/charts/ohlcv-chart/test-data/data-test-ohlcv';
 import { dataTestBb } from '../../../../shared/mbs/charts/ohlcv-chart/test-data/data-test-bb';
@@ -14,7 +14,7 @@ const outputsCount = testDataOutputs.length;
 const ohlcvCount = dataTestOhlcv.length;
 
 export class TestData {
-  private static configTemplate: OhlcvChartConfig = {
+  private static configTemplate: Configuration = {
     width: '100%', // widthMin: 500, widthMax: 700,
     navigationPane: {
       height: 30, // heightMin: 30, heightMax: 30, timeTicksFormat: '%Y-%m-%d',
@@ -89,10 +89,10 @@ export class TestData {
   };
 
   private dataLength = 0;
-  public config: OhlcvChartConfig;
+  public config: Configuration;
 
-  public static get configDataPrefilled(): OhlcvChartConfig {
-    const cloned = TestData.deepCopy(TestData.configTemplate) as OhlcvChartConfig;
+  public static get configDataPrefilled(): Configuration {
+    const cloned = TestData.deepCopy(TestData.configTemplate) as Configuration;
     cloned.ohlcv.data = dataTestOhlcv;
     cloned.pricePane.bands[0].data = dataTestBb;
     cloned.pricePane.lines[0].data = dataTestMa;
@@ -106,7 +106,7 @@ export class TestData {
     return cloned;
   }
 
-  private static add(count: number, currentCount: number, cfg: OhlcvChartConfig): number {
+  private static add(count: number, currentCount: number, cfg: Configuration): number {
     const sum = currentCount + count;
     const newCount = sum > outputsCount ? outputsCount : sum;
     for (let i = currentCount; i < newCount; ++i) {
@@ -148,7 +148,7 @@ export class TestData {
     return newCount;
   }
 
-  private static addArrows(cfg: OhlcvChartConfig): void {
+  private static addArrows(cfg: Configuration): void {
     const count = cfg.ohlcv.data.length;
     if (count > 25 && cfg.pricePane.arrows.length < 1) {
       const arrow = {

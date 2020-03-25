@@ -1,4 +1,4 @@
-import { Scalar } from '../../entities/scalar';
+import { Scalar } from '../../../data/entities/scalar';
 
 // kind: 2
 // name: lo-bb(stdev.p(20,c),2,sma(20,c))

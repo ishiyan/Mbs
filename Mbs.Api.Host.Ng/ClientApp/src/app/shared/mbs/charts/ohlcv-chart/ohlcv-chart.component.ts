@@ -9,7 +9,8 @@ import { Ohlcv } from '../../data/entities/ohlcv';
 import { Scalar } from '../../data/entities/scalar';
 import { Band } from '../entities/band';
 import { Heatmap } from '../entities/heatmap';
-import { OhlcvChartConfig } from './ohlcv-chart-config';
+import * as Template from './template/template';
+import * as Chart from './chart/chart';
 import { Downloader } from '../downloader';
 
 /** *Ohlcv* view type: *candlesticks*. */
@@ -18,12 +19,6 @@ const ohlcvViewCandlesticks = 0;
 const ohlcvViewBars = 1;
 /** The width of a vertical axis in pixels including annotation. */
 const verticalAxisWidth = 50;
-/** The height of a vertical gap between an arrow and a price point in pixels. */
-const verticalArrowGap = 3;
-/** The minimal width of an arrow in pixels. */
-const minArrowWidth = 3;
-/** The arrow height / width ratio. */
-const arowHeightToWidthRatio = 5 / 4;
 /** The minimal navigation selection width in pixels which causes the chart to re-draw. */
 const minSelection = 10;
 /** The height of a time axis in pixels. */
@@ -79,7 +74,7 @@ const smoothBrushing = false;
   styleUrls: ['./ohlcv-chart.component.scss']
 })
 export class OhlcvChartComponent implements OnChanges {
-  private config: OhlcvChartConfig;
+  private config: Template.Configuration;
   private currentSelection: any = null;
   private renderVolume = this.config ? this.config.volumeInPricePane : true;
   private renderCrosshair = this.config ? this.config.crosshair : true;
@@ -102,7 +97,7 @@ export class OhlcvChartComponent implements OnChanges {
     return +numeric;
   }
 
-  private static layoutHorizontal(cfg: OhlcvChartConfig, referenceWidth: number): OhlcvChartComponent.HorizontalLayout {
+  private static layoutHorizontal(cfg: Template.Configuration, referenceWidth: number): Chart.HorizontalLayout {
     let totalWidth: number = OhlcvChartComponent.valueToPixels(cfg.width, referenceWidth);
     if (cfg.widthMin && cfg.widthMin > totalWidth) {
       totalWidth = cfg.widthMin;
@@ -135,13 +130,13 @@ export class OhlcvChartComponent implements OnChanges {
     return rect;
   }
 
-  private static layoutVertical(svg: any, cfg: OhlcvChartConfig,
-    lh: OhlcvChartComponent.HorizontalLayout): OhlcvChartComponent.VerticalLayout {
+  private static layoutVertical(svg: any, cfg: Template.Configuration,
+    lh: Chart.HorizontalLayout): Chart.VerticalLayout {
     const t = svg.append('text').text(`w`);
     const lineHeight = OhlcvChartComponent.textBoundingClientRect(t, true).height;
     const heightPricePaneLegend: number = OhlcvChartComponent.appendLegend(svg, cfg.margin.top, lineHeight, lh.content.left,
       lh.content.width, cfg.pricePane, cfg.ohlcv.name);
-    const l = new OhlcvChartComponent.VerticalLayout();
+    const l = new Chart.VerticalLayout();
     l.pricePane.top = cfg.margin.top + heightPricePaneLegend;
     let q = OhlcvChartComponent.valueToPixels(cfg.pricePane.height, lh.content.width);
     if (cfg.pricePane.heightMin && cfg.pricePane.heightMin > q) {
@@ -155,7 +150,7 @@ export class OhlcvChartComponent implements OnChanges {
     let top = l.pricePane.top + l.pricePane.height;
     if (cfg.indicatorPanes && cfg.indicatorPanes.length) {
       for (const pane of cfg.indicatorPanes) {
-        const block = new OhlcvChartComponent.VerticalLayoutBlock();
+        const block = new Chart.VerticalLayoutBlock();
         const legendHeight: number = OhlcvChartComponent.appendLegend(svg, top, lineHeight, lh.content.left,
           lh.content.width, pane, undefined);
         block.top = top + legendHeight;
@@ -200,7 +195,7 @@ export class OhlcvChartComponent implements OnChanges {
   }
 
   private static appendLegend(g: any, top: number, lineHeight: number, left: number, width: number,
-    pane: OhlcvChartConfig.Pane, instrument: string = ''): number {
+    pane: Template.Pane, instrument: string = ''): number {
     g = g.append('g').attr('class', 'legend');
     top += lineHeight / 2;
     left += whitespaceBetweenAxisAndLegend;
@@ -310,7 +305,7 @@ export class OhlcvChartComponent implements OnChanges {
     return height;
   }
 
-  private static firstTime(cfg: OhlcvChartConfig): Date {
+  private static firstTime(cfg: Template.Configuration): Date {
     let time = cfg.ohlcv.data[0].time;
     for (const item of cfg.pricePane.bands) {
       const data = item.data;
@@ -345,7 +340,7 @@ export class OhlcvChartComponent implements OnChanges {
     return time;
   }
 
-  private static lastTime(cfg: OhlcvChartConfig): Date {
+  private static lastTime(cfg: Template.Configuration): Date {
     let time = cfg.ohlcv.data[cfg.ohlcv.data.length - 1].time;
     for (const item of cfg.pricePane.bands) {
       const data = item.data;
@@ -394,12 +389,12 @@ export class OhlcvChartComponent implements OnChanges {
     return height / defaultWhitespaceBetweenValueTicks;
   }
 
-  private static createPricePane(cfg: OhlcvChartConfig, lh: OhlcvChartComponent.HorizontalLayout,
-    lv: OhlcvChartComponent.VerticalLayout, timeScale: any, timeAnnotationBottom: any, svg: any,
-    isCandlestick: boolean, isVolume: boolean, isCrossHair: boolean): OhlcvChartComponent.PricePane {
+  private static createPricePane(cfg: Template.Configuration, lh: Chart.HorizontalLayout,
+    lv: Chart.VerticalLayout, timeScale: any, timeAnnotationBottom: any, svg: any,
+    isCandlestick: boolean, isVolume: boolean, isCrossHair: boolean): Chart.PricePane {
 
     const cf = cfg.pricePane;
-    const pane = new OhlcvChartComponent.PricePane();
+    const pane = new Chart.PricePane();
     pane.yPrice = d3.scaleLinear().range([lv.pricePane.height, 0]);
     const factor = cf.valueMarginPercentageFactor;
     pane.yMarginFactorTop = 1 + factor;
@@ -415,7 +410,7 @@ export class OhlcvChartComponent implements OnChanges {
 
     for (let i = 0; i < cf.bands.length; ++i) {
       const band = cf.bands[i];
-      const indicatorBand = new OhlcvChartComponent.IndicatorBand();
+      const indicatorBand = new Chart.IndicatorBand();
       indicatorBand.path = pane.group.append('g').attr('class', `band-${i}`).attr('clip-path', clipUrl).append('path')
         .attr('fill', band.color);
       indicatorBand.area = d3.area()
@@ -431,7 +426,7 @@ export class OhlcvChartComponent implements OnChanges {
     for (let i = 0; i < cf.lineAreas.length; ++i) {
       const lineArea = cf.lineAreas[i];
       const value = lineArea.value;
-      const indicatorLineArea = new OhlcvChartComponent.IndicatorLineArea();
+      const indicatorLineArea = new Chart.IndicatorLineArea();
       indicatorLineArea.path = pane.group.append('g').attr('class', `linearea-${i}`).attr('clip-path', clipUrl).append('path')
         .attr('fill', lineArea.color);
       indicatorLineArea.area = d3.area()
@@ -447,7 +442,7 @@ export class OhlcvChartComponent implements OnChanges {
 
     for (let i = 0; i < cf.horizontals.length; ++i) {
       const horizontal = cf.horizontals[i];
-      const indicatorHorizontal = new OhlcvChartComponent.IndicatorHorizontal();
+      const indicatorHorizontal = new Chart.IndicatorHorizontal();
       indicatorHorizontal.path = pane.group.append('g').attr('class', `horizontal-${i}`).attr('clip-path', clipUrl).append('path')
         .attr('stroke', horizontal.color)
         .attr('stroke-width', horizontal.width)
@@ -467,7 +462,7 @@ export class OhlcvChartComponent implements OnChanges {
 
     for (let i = 0; i < cf.lines.length; ++i) {
       const line = cf.lines[i];
-      const indicatorLine = new OhlcvChartComponent.IndicatorLine();
+      const indicatorLine = new Chart.IndicatorLine();
       indicatorLine.path = pane.group.append('g').attr('class', `line-${i}`).attr('clip-path', clipUrl).append('path')
         .attr('stroke', line.color)
         .attr('stroke-width', line.width)
@@ -497,7 +492,7 @@ export class OhlcvChartComponent implements OnChanges {
       if (!gArrows) {
         gArrows = pane.group.append('g').attr('class', `arrows`).attr('clip-path', clipUrl);
       }
-      const indicatorArrow = new OhlcvChartComponent.IndicatorArrow();
+      const indicatorArrow = new Chart.IndicatorArrow();
       indicatorArrow.isDown = arrow.down;
       indicatorArrow.path = gArrows.append('path')
         .attr('stroke-width', 0)
@@ -509,7 +504,7 @@ export class OhlcvChartComponent implements OnChanges {
         .x((d: any) => timeScale(arrow.time))
         .y((d: any) => {
           const p = pane.yPrice(price);
-          return arrow.down ? p - verticalArrowGap : p + verticalArrowGap;
+          return arrow.down ? p - Chart.verticalArrowGap : p + Chart.verticalArrowGap;
         });
       pane.indicatorArrows.push(indicatorArrow);
     }
@@ -560,13 +555,12 @@ export class OhlcvChartComponent implements OnChanges {
     return pane;
   }
 
-  private static createIndicatorPane(index: number, cfg: OhlcvChartConfig, lh: OhlcvChartComponent.HorizontalLayout,
-    lv: OhlcvChartComponent.VerticalLayout, timeScale: any, timeAxisBottom: any, svg: any,
-    isCrossHair: boolean): OhlcvChartComponent.IndicatorPane {
+  private static createIndicatorPane(index: number, cfg: Template.Configuration, lh: Chart.HorizontalLayout,
+    lv: Chart.VerticalLayout, timeScale: any, timeAxisBottom: any, svg: any, isCrossHair: boolean): Chart.IndicatorPane {
 
     const block = lv.indicatorPanes[index];
     const cf = cfg.indicatorPanes[index];
-    const pane = new OhlcvChartComponent.IndicatorPane();
+    const pane = new Chart.IndicatorPane();
     pane.yValue = d3.scaleLinear().range([block.height, 0]);
     const factor = cf.valueMarginPercentageFactor;
     pane.yMarginFactorTop = 1 + factor;
@@ -580,7 +574,7 @@ export class OhlcvChartComponent implements OnChanges {
 
     if (cf.heatmap) {
       const heatmap = cf.heatmap;
-      const indicatorHeatmap = new OhlcvChartComponent.IndicatorHeatmap();
+      const indicatorHeatmap = new Chart.IndicatorHeatmap();
       indicatorHeatmap.path = pane.group.append('g').attr('class', `heatmap`).attr('clip-path', clipUrl);
       indicatorHeatmap.invertGradient = heatmap.invertGradient;
       indicatorHeatmap.gradient = OhlcvChartComponent.convertGradient(heatmap.gradient);
@@ -591,7 +585,7 @@ export class OhlcvChartComponent implements OnChanges {
 
     for (let i = 0; i < cf.bands.length; ++i) {
       const band = cf.bands[i];
-      const indicatorBand = new OhlcvChartComponent.IndicatorBand();
+      const indicatorBand = new Chart.IndicatorBand();
       indicatorBand.path = pane.group.append('g').attr('class', `band-${i}`).attr('clip-path', clipUrl).append('path')
         .attr('fill', band.color);
       indicatorBand.area = d3.area()
@@ -607,7 +601,7 @@ export class OhlcvChartComponent implements OnChanges {
     for (let i = 0; i < cf.lineAreas.length; ++i) {
       const lineArea = cf.lineAreas[i];
       const value = lineArea.value;
-      const indicatorLineArea = new OhlcvChartComponent.IndicatorLineArea();
+      const indicatorLineArea = new Chart.IndicatorLineArea();
       indicatorLineArea.path = pane.group.append('g').attr('class', `linearea-${i}`).attr('clip-path', clipUrl).append('path')
         .attr('fill', lineArea.color);
       indicatorLineArea.area = d3.area()
@@ -623,7 +617,7 @@ export class OhlcvChartComponent implements OnChanges {
 
     for (let i = 0; i < cf.horizontals.length; ++i) {
       const horizontal = cf.horizontals[i];
-      const indicatorHorizontal = new OhlcvChartComponent.IndicatorHorizontal();
+      const indicatorHorizontal = new Chart.IndicatorHorizontal();
       indicatorHorizontal.path = pane.group.append('g').attr('class', `horizontal-${i}`).attr('clip-path', clipUrl).append('path')
         .attr('stroke', horizontal.color)
         .attr('stroke-width', horizontal.width)
@@ -643,7 +637,7 @@ export class OhlcvChartComponent implements OnChanges {
 
     for (let i = 0; i < cf.lines.length; ++i) {
       const line = cf.lines[i];
-      const indicatorLine = new OhlcvChartComponent.IndicatorLine();
+      const indicatorLine = new Chart.IndicatorLine();
       indicatorLine.path = pane.group.append('g').attr('class', `line-${i}`).attr('clip-path', clipUrl).append('path')
         .attr('stroke', line.color)
         .attr('stroke-width', line.width)
@@ -712,12 +706,12 @@ export class OhlcvChartComponent implements OnChanges {
     return pane;
   }
 
-  private static createNavPane(cfg: OhlcvChartConfig, lh: OhlcvChartComponent.HorizontalLayout,
-    lv: OhlcvChartComponent.VerticalLayout, svg: any): OhlcvChartComponent.NavPane {
+  private static createNavPane(cfg: Template.Configuration, lh: Chart.HorizontalLayout,
+    lv: Chart.VerticalLayout, svg: any): Chart.NavigationPane {
 
     const width = lh.content.width;
     const height = lv.navigationPane.height;
-    const pane = new OhlcvChartComponent.NavPane();
+    const pane = new Chart.NavigationPane();
     if (cfg.navigationPane !== undefined) {
       const nav = cfg.navigationPane;
       const heightWithoutTimeAxis = nav.hasTimeAxis ? height - timeAxisHeight : height;
@@ -759,10 +753,10 @@ export class OhlcvChartComponent implements OnChanges {
     return pane;
   }
 
-  private static createTimePane(cfg: OhlcvChartConfig, lh: OhlcvChartComponent.HorizontalLayout,
-    lv: OhlcvChartComponent.VerticalLayout, svg: any): OhlcvChartComponent.TimePane {
+  private static createTimePane(cfg: Template.Configuration, lh: Chart.HorizontalLayout,
+    lv: Chart.VerticalLayout, svg: any): Chart.TimePane {
 
-    const pane = new OhlcvChartComponent.TimePane();
+    const pane = new Chart.TimePane();
     pane.timeScale = d3ts.scale.financetime().range([0, lh.content.width]);
     pane.timeAxis = d3.axisBottom(pane.timeScale).tickSizeOuter(0);
     if (cfg.timeTicksFormat !== undefined) {
@@ -807,7 +801,7 @@ export class OhlcvChartComponent implements OnChanges {
     return null;
   }
 
-  private static getArrowPrice(data: Ohlcv[], arrow: OhlcvChartConfig.ArrowData): number {
+  private static getArrowPrice(data: Ohlcv[], arrow: Template.ArrowData): number {
     if (arrow.value) {
       return +arrow.value;
     }
@@ -869,7 +863,7 @@ export class OhlcvChartComponent implements OnChanges {
   }
 
   @Input()
-  public set configuration(cfg: OhlcvChartConfig) {
+  public set configuration(cfg: Template.Configuration) {
     if (cfg && cfg != null) {
       this.config = cfg;
       this.ohlcvView = cfg.ohlcv.candlesticks ? ohlcvViewCandlesticks : ohlcvViewBars;
@@ -877,7 +871,7 @@ export class OhlcvChartComponent implements OnChanges {
       this.renderVolume = cfg.volumeInPricePane;
       this.currentSelection = null;
     } else {
-      this.config = new OhlcvChartConfig();
+      this.config = new Template.Configuration();
     }
     this.render();
   }
@@ -962,7 +956,7 @@ export class OhlcvChartComponent implements OnChanges {
     const pricePane = OhlcvChartComponent.createPricePane(cfg, lh, lv, timePane.timeScale, timePane.timeAnnotation,
       svg, this.ohlcvView === ohlcvViewCandlesticks, this.renderVolume, this.renderCrosshair);
 
-    const indicatorPanes: OhlcvChartComponent.IndicatorPane[] = [];
+    const indicatorPanes: Chart.IndicatorPane[] = [];
     for (let i = 0; i < cfg.indicatorPanes.length; ++i) {
       const pane = OhlcvChartComponent.createIndicatorPane(i, cfg, lh, lv, timePane.timeScale, timePane.timeAxis,
         svg, this.renderCrosshair);
@@ -975,9 +969,6 @@ export class OhlcvChartComponent implements OnChanges {
       timePane.draw();
       pricePane.draw(timePane);
       indicatorPanes.forEach(item => item.draw(timePane, pricePane));
-      /*for (let i = 0; i < indicatorPanes.length; ++i) {
-        indicatorPanes[i].draw(timePane, pricePane);
-      }*/
     }
 
     const setCurrentSelection = (x: any) => { this.currentSelection = x; };
@@ -1035,11 +1026,7 @@ export class OhlcvChartComponent implements OnChanges {
     }
 
     pricePane.setIndicatorDatum();
-
     indicatorPanes.forEach(item => item.setIndicatorDatum());
-    /*for (let i = 0; i < indicatorPanes.length; ++i) {
-      indicatorPanes[i].setIndicatorDatum();
-    }*/
 
     if (navPane.area) {
       navPane.areaSelection.datum(cfg.ohlcv.data).call(navPane.area);
@@ -1062,544 +1049,5 @@ export class OhlcvChartComponent implements OnChanges {
       zoomable.domain(this.currentSelection.map(zoomable.invert));
     }
     draw();
-  }
-}
-
-export namespace OhlcvChartComponent {
-  export class HorizontalLayoutBlock {
-    public left = 0;
-    public width = 0;
-  }
-
-  export class HorizontalLayout {
-    public width = 0;
-    public chart: HorizontalLayoutBlock = { left: 0, width: 0 };
-    public content: HorizontalLayoutBlock = { left: 0, width: 0 };
-  }
-
-  export class VerticalLayoutBlock {
-    public top = 0;
-    public height = 0;
-  }
-
-  export class VerticalLayout {
-    public height = 0;
-    public pricePane: VerticalLayoutBlock = { top: 0, height: 0 };
-    public indicatorPanes: VerticalLayoutBlock[] = [];
-    public timeAxis: VerticalLayoutBlock = { top: 0, height: 0 };
-    public navigationPane: VerticalLayoutBlock = { top: 0, height: 0 };
-  }
-
-  export class PricePane {
-    group: any;
-    groupPrice: any;
-    groupVolume: any;
-    groupAxisLeft: any;
-    groupAxisRight: any;
-    yPrice: d3.ScaleLinear<number, number>;
-    yVolume: d3.ScaleLinear<number, number>;
-    yMarginFactorTop: number;
-    yMarginFactorBottom: number;
-    yAxisLeft: any;
-    yAxisRight: any;
-    priceShape: any;
-    priceAccessor: any;
-    volume: any;
-    indicatorBands: OhlcvChartComponent.IndicatorBand[] = [];
-    indicatorLineAreas: OhlcvChartComponent.IndicatorLineArea[] = [];
-    indicatorHorizontals: OhlcvChartComponent.IndicatorHorizontal[] = [];
-    indicatorLines: OhlcvChartComponent.IndicatorLine[] = [];
-    indicatorArrows: OhlcvChartComponent.IndicatorArrow[] = [];
-
-    public draw(timePane: TimePane): void {
-      const datum = this.groupPrice.datum();
-      const datumLastIndex = datum.length - 1;
-      const timeDomain: [number, number] = timePane.timeScale.zoomable().domain();
-      let min = Math.round(timeDomain[0]);
-      let max = Math.round(timeDomain[1]);
-      if (min < 0) {
-        min = 0;
-      }
-      if (max > datumLastIndex) {
-        max = datumLastIndex;
-      }
-      const priceDomain: [number, number] = d3ts.scale.plot.ohlc(datum.slice.apply(datum, [min, max]), this.priceAccessor).domain();
-      if (datum[min] !== undefined) {
-        min = +datum[min].time;
-      }
-      if (datum[max] !== undefined) {
-        max = +datum[max].time;
-      }
-      let minPrice = priceDomain[0];
-      let maxPrice = priceDomain[1];
-      for (const item of this.indicatorBands) {
-        const data = item.data;
-        for (const d of data) {
-          const t = +d.time;
-          if (min <= t && t <= max) {
-            if (minPrice > d.lower) {
-              minPrice = d.lower;
-            }
-            if (maxPrice < d.upper) {
-              maxPrice = d.upper;
-            }
-          }
-        }
-      }
-      for (const item of this.indicatorLineAreas) {
-        const data = item.data;
-        const value = item.value;
-        for (const d of data) {
-          const t = +d.time;
-          if (min <= t && t <= max) {
-            if (minPrice > d.value) {
-              minPrice = d.value;
-            }
-            if (maxPrice < d.value) {
-              maxPrice = d.value;
-            }
-            if (minPrice > value) {
-              minPrice = value;
-            }
-            if (maxPrice < value) {
-              maxPrice = value;
-            }
-          }
-        }
-      }
-      for (const item of this.indicatorHorizontals) {
-        const value = item.value;
-        if (minPrice > value) {
-          minPrice = value;
-        }
-        if (maxPrice < value) {
-          maxPrice = value;
-        }
-      }
-      for (const item of this.indicatorLines) {
-        const data = item.data;
-        for (const d of data) {
-          const t = +d.time;
-          if (min <= t && t <= max) {
-            const value = d.value;
-            if (minPrice > value) {
-              minPrice = value;
-            }
-            if (maxPrice < value) {
-              maxPrice = value;
-            }
-          }
-        }
-      }
-      let arrowWidth;
-      let arrowHeight;
-      if (this.indicatorArrows.length > 0) {
-        const slotWidth = this.priceShape.width()(timePane.timeScale);
-        arrowWidth = slotWidth < minArrowWidth ? minArrowWidth : slotWidth;
-        arrowHeight = arrowWidth * arowHeightToWidthRatio;
-        const arrowDelta = arrowHeight + verticalArrowGap;
-        const h = this.yPrice.range()[0];
-        if (arrowDelta < h) {
-          const delta = h - arrowDelta;
-          for (const item of this.indicatorArrows) {
-            const p = item.price;
-            const ph = p * h;
-            if (maxPrice < p) {
-              maxPrice = p;
-            }
-            if (minPrice > p) {
-              minPrice = p;
-            }
-            if (item.isDown) {
-              const maxNew = (ph - minPrice * arrowDelta) / delta;
-              if (maxPrice < maxNew) {
-                maxPrice = maxNew;
-              }
-            } else {
-              const minNew = (ph - maxPrice * arrowDelta) / delta;
-              if (minPrice > minNew) {
-                minPrice = minNew;
-              }
-              if (minPrice < 0) {
-                minPrice = 0;
-              }
-            }
-          }
-        }
-      }
-      minPrice *= this.yMarginFactorBottom;
-      maxPrice *= this.yMarginFactorTop;
-      this.yPrice.domain([minPrice, maxPrice]).nice();
-
-      // Draw bands and areas below price and lines.
-      this.indicatorBands.forEach(item => item.path.attr('d', item.area));
-      this.indicatorLineAreas.forEach(item => item.path.attr('d', item.area));
-      /*for (let i = 0; i < this.indicatorBands.length; ++i) {
-        const indicatorBand = this.indicatorBands[i];
-        indicatorBand.path.attr('d', indicatorBand.area);
-      }
-      for (let i = 0; i < this.indicatorLineAreas.length; ++i) {
-        const indicatorLineArea = this.indicatorLineAreas[i];
-        indicatorLineArea.path.attr('d', indicatorLineArea.area);
-      }*/
-
-      // Draw horizontals above bands and areas but below price and lines.
-      this.groupPrice.call(this.priceShape);
-      if (this.volume) {
-        this.groupVolume.call(this.volume);
-      }
-
-      this.indicatorHorizontals.forEach(item => item.path.attr('d', item.line));
-      this.indicatorLines.forEach(item => item.path.attr('d', item.line));
-      for (const item of this.indicatorArrows) {
-        item.arrow.width(arrowWidth).height(arrowHeight);
-        item.path.attr('d', item.arrow);
-      }
-      /*for (let i = 0; i < this.indicatorHorizontals.length; ++i) {
-        const indicatorHorizontal = this.indicatorHorizontals[i];
-        indicatorHorizontal.path.attr('d', indicatorHorizontal.line);
-      }
-      for (let i = 0; i < this.indicatorLines.length; ++i) {
-        const indicatorLine = this.indicatorLines[i];
-        indicatorLine.path.attr('d', indicatorLine.line);
-      }
-      for (let i = 0; i < this.indicatorArrows.length; ++i) {
-        const indicatorArrow = this.indicatorArrows[i];
-        indicatorArrow.arrow.width(arrowWidth).height(arrowHeight);
-        indicatorArrow.path.attr('d', indicatorArrow.arrow);
-      }*/
-
-      if (this.yAxisLeft) {
-        this.groupAxisLeft.call(this.yAxisLeft);
-      }
-      if (this.yAxisRight) {
-        this.groupAxisRight.call(this.yAxisRight);
-      }
-    }
-
-    public setIndicatorDatum(): void {
-      this.indicatorBands.forEach(item => item.path.datum(item.data));
-      this.indicatorLineAreas.forEach(item => item.path.datum(item.data));
-      this.indicatorHorizontals.forEach(item => item.path.datum(item.data));
-      this.indicatorLines.forEach(item => item.path.datum(item.data));
-      /*for (let i = 0; i < this.indicatorBands.length; ++i) {
-        const indicatorBand = this.indicatorBands[i];
-        indicatorBand.path.datum(indicatorBand.data);
-      }
-      for (let i = 0; i < this.indicatorLineAreas.length; ++i) {
-        const indicatorLineArea = this.indicatorLineAreas[i];
-        indicatorLineArea.path.datum(indicatorLineArea.data);
-      }
-      for (let i = 0; i < this.indicatorHorizontals.length; ++i) {
-        const indicatorHorizontal = this.indicatorHorizontals[i];
-        indicatorHorizontal.path.datum(indicatorHorizontal.data);
-      }
-      for (let i = 0; i < this.indicatorLines.length; ++i) {
-        const indicatorLine = this.indicatorLines[i];
-        indicatorLine.path.datum(indicatorLine.data);
-      }*/
-    }
-  }
-
-  export class IndicatorPane {
-    group: any;
-    groupAxisLeft: any;
-    groupAxisRight: any;
-    yValue: d3.ScaleLinear<number, number>;
-    yMarginFactorTop: number;
-    yMarginFactorBottom: number;
-    yAxisLeft: any;
-    yAxisRight: any;
-    indicatorHeatmap?: OhlcvChartComponent.IndicatorHeatmap;
-    indicatorBands: OhlcvChartComponent.IndicatorBand[] = [];
-    indicatorLineAreas: OhlcvChartComponent.IndicatorLineArea[] = [];
-    indicatorHorizontals: OhlcvChartComponent.IndicatorHorizontal[] = [];
-    indicatorLines: OhlcvChartComponent.IndicatorLine[] = [];
-
-    public draw(timePane: TimePane, pricePane: PricePane): void {
-      const datum = pricePane.groupPrice.datum();
-      const datumLastIndex = datum.length - 1;
-      const timeDomain: [number, number] = timePane.timeScale.zoomable().domain();
-      let min = Math.round(timeDomain[0]);
-      let max = Math.round(timeDomain[1]);
-      if (min < 0) {
-        min = 0;
-      }
-      if (max > datumLastIndex) {
-        max = datumLastIndex;
-      }
-      if (datum[min] !== undefined) {
-        min = +datum[min].time;
-      }
-      if (datum[max] !== undefined) {
-        max = +datum[max].time;
-      }
-      let minValue = Number.MAX_VALUE;
-      let maxValue = Number.MIN_VALUE;
-      let minIntensity = Number.MAX_VALUE;
-      let maxIntensity = Number.MIN_VALUE;
-      if (this.indicatorHeatmap) {
-        const data = this.indicatorHeatmap.data;
-        if (data.length > 0) {
-          const paramFirst = data[0].parameterFirst;
-          const paramLast = data[0].parameterLast;
-          minValue = Math.min(paramFirst, paramLast);
-          maxValue = Math.max(paramFirst, paramLast);
-          for (const d of data) {
-            const t = +d.time;
-            if (min <= t && t <= max && d.values.length > 0) {
-              if (minIntensity > d.valueMin) {
-                minIntensity = d.valueMin;
-              }
-              if (maxIntensity < d.valueMax) {
-                maxIntensity = d.valueMax;
-              }
-            }
-          }
-          if (maxIntensity === Number.MIN_VALUE || minIntensity === Number.MAX_VALUE) {
-            minIntensity = 0;
-            maxIntensity = 0;
-          }
-        }
-      }
-      for (const item of this.indicatorBands) {
-        const data = item.data;
-        for (const d of data) {
-          const t = +d.time;
-          if (min <= t && t <= max) {
-            if (minValue > d.lower) {
-              minValue = d.lower;
-            }
-            if (maxValue < d.upper) {
-              maxValue = d.upper;
-            }
-          }
-        }
-      }
-      for (const item of this.indicatorLineAreas) {
-        const data = item.data;
-        const value = item.value;
-        for (const d of data) {
-          const t = +d.time;
-          if (min <= t && t <= max) {
-            if (minValue > d.value) {
-              minValue = d.value;
-            }
-            if (maxValue < d.value) {
-              maxValue = d.value;
-            }
-            if (minValue > value) {
-              minValue = value;
-            }
-            if (maxValue < value) {
-              maxValue = value;
-            }
-          }
-        }
-      }
-      for (const item of this.indicatorHorizontals) {
-        const value = item.value;
-        if (minValue > value) {
-          minValue = value;
-        }
-        if (maxValue < value) {
-          maxValue = value;
-        }
-      }
-      for (const item of this.indicatorLines) {
-        const data = item.data;
-        for (const d of data) {
-          const t = +d.time;
-          if (min <= t && t <= max) {
-            const value = d.value;
-            if (minValue > value) {
-              minValue = value;
-            }
-            if (maxValue < value) {
-              maxValue = value;
-            }
-          }
-        }
-      }
-      if (this.indicatorHeatmap) {
-        this.yValue.domain([minValue, maxValue]).nice();
-      } else {
-        minValue *= this.yMarginFactorBottom;
-        maxValue *= this.yMarginFactorTop;
-        this.yValue.domain([minValue, maxValue]).nice();
-      }
-
-      if (this.indicatorHeatmap) {
-        this.indicatorHeatmap.path.selectAll('image').remove();
-        const data = this.indicatorHeatmap.data;
-        if (data.length > 0) {
-          const slotWidth = 1 + (data.length > 1 ?
-            timePane.timeScale(data[1].time) - timePane.timeScale(data[0].time) :
-            pricePane.priceShape.width()(timePane.timeScale));
-          const h = this.indicatorHeatmap.height;
-          const gradient = this.indicatorHeatmap.gradient;
-          const invertGradient = this.indicatorHeatmap.invertGradient;
-          const periodFirst = data[0].parameterFirst;
-          const periodLast = data[0].parameterLast;
-          const periodRes = data[0].parameterResolution;
-          const periodInverted = periodFirst > periodLast;
-          const periodMin = Math.min(periodFirst, periodLast);
-          for (const d of data) {
-            const t = +d.time;
-            if (min <= t && t <= max && d.values.length > 0) {
-              const xMid = timePane.timeScale(t);
-              const xMin = xMid - slotWidth / 2;
-              const img = this.heatColumn(d, periodMin, periodRes, periodInverted, d.valueMin, d.valueMax,
-                gradient, invertGradient, slotWidth, h);
-              this.indicatorHeatmap.path.append('image').attr('x', xMin).attr('width', slotWidth)
-                .attr('y', 0).attr('height', h).attr('preserveAspectRatio', 'none')
-                .attr('xlink:href', img.toDataURL());
-            }
-          }
-        }
-      }
-
-      // Draw bands and areas below lines.
-      this.indicatorBands.forEach(item => item.path.attr('d', item.area));
-      this.indicatorLineAreas.forEach(item => item.path.attr('d', item.area));
-      /*for (const item of this.indicatorBands) {
-        item.path.attr('d', item.area);
-      }
-      for (const item of this.indicatorLineAreas) {
-        item.path.attr('d', item.area);
-      }*/
-
-      // Draw horizontals above bands and areas but below lines.
-      this.indicatorHorizontals.forEach(item => item.path.attr('d', item.line));
-      this.indicatorLines.forEach(item => item.path.attr('d', item.line));
-      /*for (const item of this.indicatorHorizontals) {
-        item.path.attr('d', item.line);
-      }
-      for (const item of this.indicatorLines) {
-        item.path.attr('d', item.line);
-      }*/
-
-      if (this.yAxisLeft) {
-        this.groupAxisLeft.call(this.yAxisLeft);
-      }
-      if (this.yAxisRight) {
-        this.groupAxisRight.call(this.yAxisRight);
-      }
-    }
-
-    public setIndicatorDatum(): void {
-      for (const item of this.indicatorBands) {
-        item.path.datum(item.data);
-      }
-      for (const item of this.indicatorLineAreas) {
-        item.path.datum(item.data);
-      }
-      for (const item of this.indicatorHorizontals) {
-        item.path.datum(item.data);
-      }
-      for (const item of this.indicatorLines) {
-        item.path.datum(item.data);
-      }
-    }
-
-    private heatColumn(heatmap: Heatmap, periodMin: number, periodRes: number, periodInverted: boolean, min: number, max: number,
-      color: any, invertColor: boolean, width: number, height: number): HTMLCanvasElement {
-      const canvas = document.createElement('canvas');
-      canvas.width = width;
-      canvas.height = height;
-      canvas.style.width = width + 'px';
-      canvas.style.height = height + 'px';
-      canvas.style.imageRendering = 'pixelated';
-      const context = canvas.getContext('2d');
-      const y = this.yValue;
-      const heat = heatmap.values;
-      if (min !== 0 && max !== 1) {
-        const delta = max - min;
-        for (let i = 0; i < height; ++i) {
-          const index = Math.round((y.invert(i) - periodMin) * periodRes);
-          const value = (heat[index] - min) / delta;
-          // @ts-ignore
-          context.fillStyle = color(invertColor ? 1 - value : value);
-          // @ts-ignore
-          context.fillRect(0, periodInverted ? height - i : i, width, 1);
-        }
-      } else {
-        for (let i = 0; i < height; ++i) {
-          const index = Math.round((y.invert(i) - periodMin) * periodRes);
-          const value = heat[index];
-          // @ts-ignore
-          context.fillStyle = color(invertColor ? 1 - value : value);
-          // @ts-ignore
-          context.fillRect(0, periodInverted ? height - i : i, width, 1);
-        }
-      }
-      return canvas;
-    }
-  }
-
-  export class NavPane {
-    group: any;
-    priceScale: d3.ScaleLinear<number, number>;
-    timeScale: any;
-    brush: any;
-    area: any;
-    line: any;
-    timeAxis: any;
-    lineSelection: any;
-    timeAxisSelection: any;
-    areaSelection: any;
-    paneSelection: any;
-  }
-
-  export class TimePane {
-    group: any;
-    timeScale: any;
-    timeAxis: any;
-    timeAnnotation: any;
-
-    public draw(): void {
-      this.group.call(this.timeAxis);
-    }
-  }
-
-  export class IndicatorLine {
-    data: Scalar[];
-    line: any;
-    path: any;
-  }
-
-  export class IndicatorLineArea {
-    data: Scalar[];
-    value: number;
-    area: any;
-    path: any;
-  }
-
-  export class IndicatorBand {
-    data: Band[];
-    area: any;
-    path: any;
-  }
-
-  export class IndicatorHorizontal {
-    data: Scalar[];
-    value: number;
-    line: any;
-    path: any;
-  }
-
-  export class IndicatorArrow {
-    arrow: any;
-    path: any;
-    isDown: boolean;
-    price: number;
-  }
-
-  export class IndicatorHeatmap {
-    data: Heatmap[];
-    gradient: any;
-    invertGradient: boolean;
-    path: any;
-    height: number;
   }
 }

@@ -24,6 +24,7 @@ export class Scalar {
   }*/
 }
 
+/*
 export namespace Scalar {
   export function fromJson(json?: any): Scalar {
     const scalar = new Scalar();
@@ -46,3 +47,4 @@ export namespace Scalar {
     return json;
   }
 }
+*/

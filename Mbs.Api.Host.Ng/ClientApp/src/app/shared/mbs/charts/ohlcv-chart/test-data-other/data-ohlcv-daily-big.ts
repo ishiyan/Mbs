@@ -1,4 +1,4 @@
-import { Ohlcv } from '../../entities/ohlcv';
+import { Ohlcv } from '../../../data/entities/ohlcv';
 
 export const dataOhlcvDaily: Ohlcv[] = [
   { time: new Date(1999, 0, 4), open: 20.8, high: 21.175, low: 20.65, close: 21.025, volume: 6074544 },

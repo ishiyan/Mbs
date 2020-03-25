@@ -8,7 +8,7 @@ describe('MathJaxService', () => {
   }));
 
   it('should be created', () => {
-    const service: MathJaxService = TestBed.get(MathJaxService);
+    const service: MathJaxService = TestBed.inject(MathJaxService);
     expect(service).toBeTruthy();
   });
 });

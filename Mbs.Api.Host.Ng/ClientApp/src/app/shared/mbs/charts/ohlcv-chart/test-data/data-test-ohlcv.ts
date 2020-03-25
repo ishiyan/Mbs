@@ -1,4 +1,4 @@
-import { Ohlcv } from '../../entities/ohlcv';
+import { Ohlcv } from '../../../data/entities/ohlcv';
 
 export const dataTestOhlcv: Ohlcv[] = [
   { time: new Date(2011, 0, 3), open: 92.5, high: 93.25, low: 90.75, close: 91.5, volume: 4077500 },

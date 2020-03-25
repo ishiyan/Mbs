@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { OhlcvChartConfig } from '../../../shared/mbs/charts/ohlcv-chart/ohlcv-chart-config';
+import { Configuration } from '../../../shared/mbs/charts/ohlcv-chart/template/configuration';
 import { TestData } from './test-data/test-data';
 
 @Component({
@@ -10,10 +10,10 @@ import { TestData } from './test-data/test-data';
 })
 export class Sample6Component {
   public showPortal = false;
-  public configPrefilled: OhlcvChartConfig = TestData.configDataPrefilled;
+  public configPrefilled: Configuration = TestData.configDataPrefilled;
 
   private testData: TestData = new TestData();
-  public configModifiable: OhlcvChartConfig = this.testData.config;
+  public configModifiable: Configuration = this.testData.config;
 
   public clearData(): void {
     this.testData.clear();

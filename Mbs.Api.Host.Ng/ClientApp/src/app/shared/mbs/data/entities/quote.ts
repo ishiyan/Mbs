@@ -36,6 +36,7 @@ export class Quote {
   }*/
 }
 
+/*
 export namespace Quote {
   export function fromJson(json?: any): Quote {
     const quote = new Quote();
@@ -61,3 +62,4 @@ export namespace Quote {
     return json;
   }
 }
+*/

@@ -28,6 +28,7 @@ export class Trade {
   }*/
 }
 
+/*
 export namespace Trade {
   export function fromJson(json?: any): Trade {
     const trade = new Trade();
@@ -51,3 +52,4 @@ export namespace Trade {
     return json;
   }
 }
+*/

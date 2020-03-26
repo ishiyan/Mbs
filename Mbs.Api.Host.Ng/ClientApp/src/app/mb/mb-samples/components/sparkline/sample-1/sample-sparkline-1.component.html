@@ -1,0 +1,130 @@
+<div class="sample">
+  <p>Data types:</p>
+  <span class="nowrap">
+    Ohlcv <mb-sparkline [width]="100" [height]="20" [configuration]="{fillColor: 'cornflowerblue', strokeColor: 'none'}"
+      [data]="dataOhlcv"></mb-sparkline>
+  </span>
+  &#8203;
+  <span class="nowrap">
+    Scalar <mb-sparkline [width]="100" [height]="20"
+      [configuration]="{fillColor: undefined, strokeColor: 'steelblue', strokeWidth: 0.1}" [data]="dataScalar">
+    </mb-sparkline>
+  </span>
+  &#8203;
+  <span class="nowrap">
+    Scalar with NaN <mb-sparkline [width]="100" [height]="20"
+      [configuration]="{fillColor: undefined, strokeColor: 'cornflowerblue', strokeWidth: 0.1}"
+      [data]="dataScalarWithNaN">
+    </mb-sparkline>
+  </span>
+  <br />
+  <hr />
+
+  Default config: <mb-sparkline [data]="dataScalar"></mb-sparkline>
+  <br />
+  <hr />
+
+  <p>
+    <label>Sparkline selector style:</label>&nbsp;
+    <mat-radio-group (change)="styleIsLineChanged($event)">
+      <mat-radio-button value="true" color="primary">&nbsp;Line</mat-radio-button>&nbsp;&nbsp;
+      <mat-radio-button value="false" color="primary" checked>&nbsp;Fill</mat-radio-button>
+    </mat-radio-group>
+  </p>
+  <p *ngIf="styleIsLine">
+    <mat-form-field style="width:380px">
+      <mat-label>Select a sparkline</mat-label>
+      <mat-select [(value)]="seldat">
+        <mat-select-trigger>
+          <mb-sparkline [width]="200" [height]="24" [data]="seldat.data" [configuration]="configLine"></mb-sparkline> {{seldat.name}}
+        </mat-select-trigger>
+        <mat-option *ngFor="let d of dataArray" [value]="d">
+          <mb-sparkline [width]="200" [height]="24" [data]="d.data" [configuration]="configLine"></mb-sparkline> {{d.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <br/>
+    You selected:
+    <mb-sparkline [width]="100" [height]="16" [data]="seldat.data" [configuration]="configFill"></mb-sparkline>
+    {{seldat.name}}
+  </p>
+  <p *ngIf="!styleIsLine">
+    <mat-form-field style="width:380px">
+      <mat-label>Select a sparkline</mat-label>
+      <mat-select [(value)]="seldat">
+        <mat-select-trigger>
+          <mb-sparkline [width]="200" [height]="24" [data]="seldat.data" [configuration]="configFill"></mb-sparkline> {{seldat.name}}
+        </mat-select-trigger>
+        <mat-option *ngFor="let d of dataArray" [value]="d">
+          <mb-sparkline [width]="200" [height]="24" [data]="d.data" [configuration]="configFill"></mb-sparkline> {{d.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <br/>
+    You selected:
+    <mb-sparkline [width]="100" [height]="16" [data]="seldat.data" [configuration]="configLine"></mb-sparkline>
+    {{seldat.name}}
+  </p>
+  <hr />
+
+  <!--
+  <p>Sparkline selector (fill)</p>
+  <p>
+    <mat-form-field style="width:340px">
+      <mat-label>Select a sparkline</mat-label>
+      <mat-select [(value)]="seldat">
+        <mat-select-trigger>
+          <mb-sparkline [width]="160" [height]="24" [data]="seldat.data" [configuration]="configFill"></mb-sparkline> {{seldat.name}}
+        </mat-select-trigger>
+        <mat-option *ngFor="let d of dataArray" [value]="d">
+          <mb-sparkline [width]="160" [height]="24" [data]="d.data" [configuration]="configFill"></mb-sparkline> {{d.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </p>
+  You selected:
+  <mb-sparkline [width]="100" [height]="16" [data]="seldat.data" [configuration]="configLine"></mb-sparkline>
+  {{seldat.name}}
+  <hr />
+
+  <p>Sparkline selector (line)</p>
+  <p>
+    <mat-form-field style="width:340px">
+      <mat-label>Select a sparkline</mat-label>
+      <mat-select [(value)]="seldat">
+        <mat-select-trigger>
+          <mb-sparkline [width]="160" [height]="24" [data]="seldat.data" [configuration]="configLine"></mb-sparkline> {{seldat.name}}
+        </mat-select-trigger>
+        <mat-option *ngFor="let d of dataArray" [value]="d">
+          <mb-sparkline [width]="160" [height]="24" [data]="d.data" [configuration]="configLine"></mb-sparkline> {{d.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </p>
+  You selected:
+  <mb-sparkline [width]="100" [height]="16" [data]="seldat.data" [configuration]="configFill"></mb-sparkline>
+  {{seldat.name}}
+  <hr />
+-->
+  <!--
+  <p>Sparkline selector 2</p>
+  <mat-form-field>
+    <mat-label>Select a sparkline</mat-label>
+    <mat-select>
+      <mat-option>None</mat-option>
+      <mat-option value="option1">
+        <mb-sparkline [width]="100" [height]="16" [data]="dataOhlcv"></mb-sparkline> Ohlcv
+      </mat-option>
+      <mat-option value="option2">
+        <mb-sparkline [width]="100" [height]="16" [data]="dataScalar"></mb-sparkline> Scalar
+      </mat-option>
+      <mat-option value="option3">
+        <mb-sparkline [width]="100" [height]="16" [data]="dataScalarWithNaN"></mb-sparkline> Scalar (NaN)
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <br />
+  <hr />
+-->
+
+</div>

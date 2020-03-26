@@ -1,67 +1,45 @@
-import { Component, Input, ElementRef, OnChanges, ViewChild, HostListener } from '@angular/core';
+import { Component, Input, ElementRef, OnChanges, ViewChild, HostListener, AfterViewInit } from '@angular/core';
 import * as d3 from 'd3';
 
 import { Ohlcv } from '../../data/entities/ohlcv';
 import { Quote } from '../../data/entities/quote';
 import { Trade } from '../../data/entities/trade';
 import { Scalar } from '../../data/entities/scalar';
-import { SparklineConfig } from './sparkline-config';
+import { SparklineConfiguration } from './sparkline-configuration.interface';
 
 @Component({
   selector: 'mb-sparkline',
   templateUrl: './sparkline.component.html',
   styleUrls: ['./sparkline.component.scss']
 })
-export class SparklineComponent implements OnChanges {
-  @ViewChild('container', { static: true }) container: ElementRef;
-  @Input() svgheight: any;
-  @Input()
-  public set configuration(cfg: SparklineConfig) {
+export class SparklineComponent implements OnChanges, AfterViewInit {
+  private currentConfiguration: SparklineConfiguration = {
+    fillColor: 'steelblue', strokeColor: undefined, strokeWidth: 0.1, interpolation: 'linear'
+  };
+  private currentData: Ohlcv[] | Quote[] | Trade[] | Scalar[];
+
+  /** A width of the sparkline. */
+  @Input() width = 160;
+
+  /** A height of the sparkline. */
+  @Input() height = 24;
+
+  /** Specifies fill, stroke and interpolation. */
+  @Input() set configuration(cfg: SparklineConfiguration) {
     if (cfg && cfg != null) {
-      this.config = cfg;
-    } else {
-      this.config = new SparklineConfig();
+      this.currentConfiguration = { ...this.currentConfiguration, ...cfg };
     }
-    this.render();
+  }
+  get configuration(): SparklineConfiguration {
+    return this.currentConfiguration;
   }
 
-  private config: SparklineConfig;
-  private data: any[] = [];
-
-  private static valueToPixels(value: number | string, reference: number): number {
-    if (typeof value === 'number') {
-      return +value;
-    }
-
-    const numeric = value.match(/\d+/);
-    if (value.endsWith('%')) {
-      // @ts-ignore
-      return +numeric / 100 * reference;
-    }
-    // @ts-ignore
-    return +numeric;
+  /** The data array to use. */
+  @Input() set data(dat: Ohlcv[] | Quote[] | Trade[] | Scalar[]) {
+    this.currentData = dat;
   }
-
-  private static calculateWidth(cfg: SparklineConfig, referenceWidth: number): number {
-    let totalWidth: number = SparklineComponent.valueToPixels(cfg.width, referenceWidth);
-    if (cfg.widthMin && cfg.widthMin > totalWidth) {
-      totalWidth = cfg.widthMin;
-    }
-    if (cfg.widthMax && cfg.widthMax < totalWidth) {
-      totalWidth = cfg.widthMax;
-    }
-    return totalWidth - cfg.marginLeft - cfg.marginRight;
-  }
-
-  private static calculateHeight(cfg: SparklineConfig, width: number): number {
-    let height = SparklineComponent.valueToPixels(cfg.height, width);
-    if (cfg.heightMin && cfg.heightMin > height) {
-      height = cfg.heightMin;
-    }
-    if (cfg.heightMax && cfg.heightMax < height) {
-      height = cfg.heightMax;
-    }
-    return height;
+  get data(): Ohlcv[] | Quote[] | Trade[] | Scalar[] {
+    return this.currentData;
   }
 
   private static convertInterpolation(interpolation: string): d3.CurveFactory {
@@ -73,65 +51,75 @@ export class SparklineComponent implements OnChanges {
       case 'basis': return d3.curveBasis;
       case 'catmullrom': return d3.curveCatmullRom;
       case 'cardinal': return d3.curveCardinal;
+      case 'monotonex': return d3.curveMonotoneX;
+      case 'monotoney': return d3.curveMonotoneY;
       default: return d3.curveLinear;
     }
   }
 
-  ngOnChanges() {
+  constructor(private ref: ElementRef) { }
+
+  ngOnChanges(changes: any) {
     this.render();
+    // console.log('onChanges', changes);
+  }
+  ngAfterViewInit() {
+    // this.render();
   }
 
-  @HostListener('window:resize', [])
   public render(): void {
-    const chartId = '#chart';
-    // console.log('width=' + this.container.nativeElement.getBoundingClientRect().width);
-    // console.log('offsetWidth=' + this.container.nativeElement.offsetWidth);
-    // const w = this.container.nativeElement.getBoundingClientRect().width;
-    const w = this.container.nativeElement.offsetWidth;
-    const cfg = this.config;
-    const width = SparklineComponent.calculateWidth(cfg, w);
-    const height = SparklineComponent.calculateHeight(cfg, width);
-    d3.select(chartId).select('svg').remove();
-    const svg: any = d3.select(chartId).append('svg').attr('preserveAspectRatio', 'xMinYMin meet')
-      .attr('width', width).attr('height', height).attr('viewBox', `0 0 ${width} ${height}`);
+    const sel = d3.select(this.ref.nativeElement);
+    sel.select('svg').remove();
+    const dat = this.currentData;
+    if (!dat) {
+      return;
+    }
+    const cfg = this.currentConfiguration;
+    const w = this.width;
+    const h = this.height;
+    const svg: any = sel.append('svg').attr('preserveAspectRatio', 'xMinYMin meet')
+      .attr('width', w).attr('height', h).attr('viewBox', `0 0 ${w} ${h}`);
 
-    const xScale = d3.scaleLinear().domain([0, cfg.data.length - 1]).range([0, width]);
+    const xScale = d3.scaleLinear().domain([0, dat.length - 1]).range([0, w]);
+
     let yExtent: any[];
     let getY: any;
-    if (cfg.data as Ohlcv[]) {
-      yExtent = d3.extent(cfg.data as Ohlcv[], d => d.close);
+    if ((dat as Ohlcv[])[0].close !== undefined) {
+      yExtent = d3.extent(dat as Ohlcv[], d => d.close);
       getY = (d: any) => (d as Ohlcv).close;
-    } else if (cfg.data as Trade[]) {
-      yExtent = d3.extent(cfg.data as Trade[], d => d.price);
+    } else if ((dat as Trade[])[0].price !== undefined) {
+      yExtent = d3.extent(dat as Trade[], d => d.price);
       getY = (d: any) => (d as Trade).price;
-    } else if (cfg.data as Quote[]) {
-      yExtent = d3.extent(cfg.data as Quote[], d => d.bidPrice);
+    } else if ((dat as Quote[])[0].bidPrice !== undefined) {
+      yExtent = d3.extent(dat as Quote[], d => d.bidPrice);
       getY = (d: any) => (d as Quote).bidPrice;
     } else {
-      yExtent = d3.extent(cfg.data as Scalar[], d => d.value);
+      yExtent = d3.extent(dat as Scalar[], d => d.value);
       getY = (d: any) => (d as Scalar).value;
     }
-    const yScale = d3.scaleLinear().domain(yExtent).range([height, 0]);
-    const root = d3.select(svg).datum(cfg.data);
-    if (cfg.fillColor) {
+
+    const interp = cfg.interpolation ? cfg.interpolation : 'linear;'
+    const yScale = d3.scaleLinear().domain(yExtent).range([h, 0]);
+    svg.datum(dat);
+    if (cfg.fillColor && cfg.fillColor !== 'none') {
       const min: number = yExtent[0];
       const area: any = d3.area()
-        .curve(SparklineComponent.convertInterpolation(cfg.interpolation))
+        .curve(SparklineComponent.convertInterpolation(interp))
         .defined((d: any) => !isNaN(getY(d)))
         .x((d: any, i: number) => xScale(i))
         .y0((d: any) => yScale(min))
         .y1((d: any) => yScale(getY(d)));
-      root.append('path').attr('class', 'area')
+      svg.append('path') // .attr('class', 'area')
         .attr('fill', cfg.fillColor)
         .attr('d', area);
     }
-    if (cfg.strokeColor && cfg.strokeWidth) {
+    if (cfg.strokeColor && cfg.strokeWidth && cfg.strokeWidth > 0 && cfg.strokeColor !== 'none') {
       const line: any = d3.line()
-        .curve(SparklineComponent.convertInterpolation(cfg.interpolation))
+        .curve(SparklineComponent.convertInterpolation(interp))
         .defined((d: any) => !isNaN(getY(d)))
         .x((d: any, i: number) => xScale(i))
         .y((d: any) => yScale(getY(d)));
-      root.append('path').attr('class', 'line')
+      svg.append('path') // .attr('class', 'line')
         .style('stroke-width', cfg.strokeColor)
         .style('stroke', cfg.strokeColor)
         .attr('stroke-linejoin', 'round')

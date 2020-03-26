@@ -16,9 +16,20 @@ export const treeNodes: MbSample[] = [
       {name: 'Instruments table', route: 'sample-1'}
     ]
   }, {
-    name: 'Ohlcv chart',
+    name: 'Components',
     children: [
-      {name: 'Candlestick chart', route: 'sample-6'}
+      {
+        name: 'Ohlcv chart',
+        children: [
+          {name: 'Candlestick chart', route: 'sample-6'}
+        ]
+      },
+      {
+        name: 'Sparkline',
+        children: [
+          {name: 'First test', route: 'comp-sparkline-1'}
+        ]
+      }
     ]
   }
 ];

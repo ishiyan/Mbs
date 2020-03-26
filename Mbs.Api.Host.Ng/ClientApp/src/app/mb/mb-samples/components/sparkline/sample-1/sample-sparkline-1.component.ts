@@ -5,7 +5,6 @@ import { SparklineConfiguration } from '../../../../../shared/mbs/charts/sparkli
 import { dataTestOhlcv } from '../../../../../shared/mbs/charts/ohlcv-chart/test-data/data-test-ohlcv';
 import { dataTestBw } from '../../../../../shared/mbs/charts/ohlcv-chart/test-data/data-test-bw';
 import { dataTestMa } from '../../../../../shared/mbs/charts/ohlcv-chart/test-data/data-test-ma';
-import { MatRadioChange } from '@angular/material/radio';
 
 @Component({
   selector: 'mb-sample-sparkline-1',
@@ -25,10 +24,10 @@ export class SampleSparkline1Component {
   ];
   readonly configLine: SparklineConfiguration = { fillColor: undefined, strokeColor: 'steelblue', strokeWidth: 0.1 };
   readonly configFill: SparklineConfiguration = { fillColor: 'steelblue', strokeColor: undefined, strokeWidth: 0.1 };
-  seldat = this.dataArray[0];
-  styleIsLine = false;
+  selectedData = this.dataArray[0];
+  configurationIsLine = false;
 
-  styleIsLineChanged(event: MatRadioChange) {
-    this.styleIsLine = event.value;
+  styleIsLineChanged() {
+    this.configurationIsLine = !this.configurationIsLine;
   }
 }

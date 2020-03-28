@@ -1,4 +1,4 @@
-import { Component, Input, ElementRef, OnChanges, ViewChild, HostListener, AfterViewInit } from '@angular/core';
+import { Component, Input, ElementRef, OnChanges, ChangeDetectionStrategy, ViewEncapsulation, HostListener, AfterViewInit } from '@angular/core';
 import * as d3 from 'd3';
 
 import { Ohlcv } from '../../data/entities/ohlcv';
@@ -6,11 +6,18 @@ import { Quote } from '../../data/entities/quote';
 import { Trade } from '../../data/entities/trade';
 import { Scalar } from '../../data/entities/scalar';
 import { SparklineConfiguration } from './sparkline-configuration.interface';
+import { computeDimensions } from '../compute-dimensions';
+import { convertInterpolation } from '../convert-interpolation';
+
+const defaultWidth = 160;
+const defaultHeight = 24;
 
 @Component({
   selector: 'mb-sparkline',
   templateUrl: './sparkline.component.html',
-  styleUrls: ['./sparkline.component.scss']
+  styleUrls: ['./sparkline.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None
 })
 export class SparklineComponent implements OnChanges, AfterViewInit {
   private currentConfiguration: SparklineConfiguration = {
@@ -19,10 +26,10 @@ export class SparklineComponent implements OnChanges, AfterViewInit {
   private currentData: Ohlcv[] | Quote[] | Trade[] | Scalar[];
 
   /** A width of the sparkline. */
-  @Input() width = 160;
+  @Input() width: number | string = defaultWidth;
 
   /** A height of the sparkline. */
-  @Input() height = 24;
+  @Input() height: number | string = defaultHeight;
 
   /** Specifies fill, stroke and interpolation. */
   @Input() set configuration(cfg: SparklineConfiguration) {
@@ -42,45 +49,34 @@ export class SparklineComponent implements OnChanges, AfterViewInit {
     return this.currentData;
   }
 
-  private static convertInterpolation(interpolation: string): d3.CurveFactory {
-    switch (interpolation.toLowerCase()) {
-      case 'step': return d3.curveStep;
-      case 'stepbefore': return d3.curveStepBefore;
-      case 'stepafter': return d3.curveStepAfter;
-      case 'natural': return d3.curveNatural;
-      case 'basis': return d3.curveBasis;
-      case 'catmullrom': return d3.curveCatmullRom;
-      case 'cardinal': return d3.curveCardinal;
-      case 'monotonex': return d3.curveMonotoneX;
-      case 'monotoney': return d3.curveMonotoneY;
-      default: return d3.curveLinear;
-    }
-  }
+  constructor(private elementRef: ElementRef) { }
 
-  constructor(private ref: ElementRef) { }
+  ngAfterViewInit() {
+    setTimeout(() => this.render(), 0);
+  }
 
   ngOnChanges(changes: any) {
     this.render();
-    // console.log('onChanges', changes);
-  }
-  ngAfterViewInit() {
-    // this.render();
   }
 
+  @HostListener('window:resize', [])
   public render(): void {
-    const sel = d3.select(this.ref.nativeElement);
+    const sel = d3.select(this.elementRef.nativeElement);
     sel.select('svg').remove();
     const dat = this.currentData;
-    if (!dat) {
+    if (!dat || dat.length < 1) {
       return;
     }
     const cfg = this.currentConfiguration;
-    const w = this.width;
-    const h = this.height;
+    const computed = computeDimensions(this.elementRef, this.width, this.height, defaultWidth, defaultHeight);
+    const w = computed[0];
+    const h = computed[1];
+
     const svg: any = sel.append('svg').attr('preserveAspectRatio', 'xMinYMin meet')
       .attr('width', w).attr('height', h).attr('viewBox', `0 0 ${w} ${h}`);
 
-    const xScale = d3.scaleLinear().domain([0, dat.length - 1]).range([0, w]);
+    // const xScale = d3.scaleLinear().domain([0, dat.length - 1]).range([0, w]);
+    const xScale = d3.scaleTime().range([0, w]).domain([dat[0].time, dat[dat.length - 1].time]);
 
     let yExtent: any[];
     let getY: any;
@@ -104,9 +100,10 @@ export class SparklineComponent implements OnChanges, AfterViewInit {
     if (cfg.fillColor && cfg.fillColor !== 'none') {
       const min: number = yExtent[0];
       const area: any = d3.area()
-        .curve(SparklineComponent.convertInterpolation(interp))
+        .curve(convertInterpolation(interp))
         .defined((d: any) => !isNaN(getY(d)))
-        .x((d: any, i: number) => xScale(i))
+        // .x((d: any, i: number) => xScale(i))
+        .x((d: any, i: number) => xScale(d.time))
         .y0((d: any) => yScale(min))
         .y1((d: any) => yScale(getY(d)));
       svg.append('path') // .attr('class', 'area')
@@ -115,9 +112,10 @@ export class SparklineComponent implements OnChanges, AfterViewInit {
     }
     if (cfg.strokeColor && cfg.strokeWidth && cfg.strokeWidth > 0 && cfg.strokeColor !== 'none') {
       const line: any = d3.line()
-        .curve(SparklineComponent.convertInterpolation(interp))
+        .curve(convertInterpolation(interp))
         .defined((d: any) => !isNaN(getY(d)))
-        .x((d: any, i: number) => xScale(i))
+        // .x((d: any, i: number) => xScale(i))
+        .x((d: any, i: number) => xScale(d.time))
         .y((d: any) => yScale(getY(d)));
       svg.append('path') // .attr('class', 'line')
         .style('stroke-width', cfg.strokeColor)

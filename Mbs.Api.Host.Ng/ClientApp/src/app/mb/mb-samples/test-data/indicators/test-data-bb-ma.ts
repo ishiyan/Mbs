@@ -1,9 +1,13 @@
-import { Scalar } from '../../../data/entities/scalar';
+import { Scalar } from '../../../../shared/mbs/data/entities/scalar';
 
-// kind: 0
-// name: ma-bb(stdev.p(20,c),2,sma(20,c))
-// description: Moving Average used by Bollinger Bands bb(stdev.p(20,c),2,sma(20,c))
-export const dataTestMa: Scalar[] = [
+/**
+ * kind: 0
+ *
+ * name: ma-bb(stdev.p(20,c),2,sma(20,c))
+ *
+ * description: Moving Average used by Bollinger Bands bb(stdev.p(20,c),2,sma(20,c))
+ */
+export const testDataBbMa: Scalar[] = [
   { time: new Date(2011, 0, 3), value: NaN },
   { time: new Date(2011, 0, 4), value: NaN },
   { time: new Date(2011, 0, 5), value: NaN },

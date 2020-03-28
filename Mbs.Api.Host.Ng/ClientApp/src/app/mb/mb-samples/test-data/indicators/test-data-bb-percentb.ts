@@ -1,10 +1,14 @@
-import { Scalar } from '../../../data/entities/scalar';
+import { Scalar } from '../../../../shared/mbs/data/entities/scalar';
 
-// kind: 4
-// name: %b(c)-bb(stdev.p(20,c),2,sma(20,c))
-// description: %B(c) of Bollinger Bands bb(stdev.p(20,c),2,sma(20,c))
-export const dataTestPercentB: Scalar[] = [
-  /*{ time: new Date(2011, 0, 3), value: NaN },
+/**
+ * kind: 4
+ *
+ * name: %b(c)-bb(stdev.p(20,c),2,sma(20,c))
+ *
+ * description: %B(c) of Bollinger Bands bb(stdev.p(20,c),2,sma(20,c))
+ */
+export const testDataBbPercentB: Scalar[] = [
+  { time: new Date(2011, 0, 3), value: NaN },
   { time: new Date(2011, 0, 4), value: NaN },
   { time: new Date(2011, 0, 5), value: NaN },
   { time: new Date(2011, 0, 6), value: NaN },
@@ -22,7 +26,7 @@ export const dataTestPercentB: Scalar[] = [
   { time: new Date(2011, 0, 24), value: NaN },
   { time: new Date(2011, 0, 25), value: NaN },
   { time: new Date(2011, 0, 26), value: NaN },
-  { time: new Date(2011, 0, 27), value: NaN },*/
+  { time: new Date(2011, 0, 27), value: NaN },
   { time: new Date(2011, 0, 28), value: 0.20901483689436764 },
   { time: new Date(2011, 0, 31), value: 0.10497215382837728 },
   { time: new Date(2011, 1, 1), value: 0.09440082559316576 },

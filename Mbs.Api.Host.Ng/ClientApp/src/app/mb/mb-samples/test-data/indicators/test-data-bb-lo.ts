@@ -1,10 +1,14 @@
-import { Scalar } from '../../../data/entities/scalar';
+import { Scalar } from '../../../../shared/mbs/data/entities/scalar';
 
-// kind: 2
-// name: lo-bb(stdev.p(20,c),2,sma(20,c))
-// description: Lower Band of Bollinger Bands bb(stdev.p(20,c),2,sma(20,c))
-export const dataTestLo: Scalar[] = [
-  /*{ time: new Date(2011, 0, 3), value: NaN },
+/**
+ * kind: 2
+ *
+ * name: lo-bb(stdev.p(20,c),2,sma(20,c))
+ *
+ * description: Lower Band of Bollinger Bands bb(stdev.p(20,c),2,sma(20,c))
+ */
+export const testDataBbLo: Scalar[] = [
+  { time: new Date(2011, 0, 3), value: NaN },
   { time: new Date(2011, 0, 4), value: NaN },
   { time: new Date(2011, 0, 5), value: NaN },
   { time: new Date(2011, 0, 6), value: NaN },
@@ -22,7 +26,7 @@ export const dataTestLo: Scalar[] = [
   { time: new Date(2011, 0, 24), value: NaN },
   { time: new Date(2011, 0, 25), value: NaN },
   { time: new Date(2011, 0, 26), value: NaN },
-  { time: new Date(2011, 0, 27), value: NaN },*/
+  { time: new Date(2011, 0, 27), value: NaN },
   { time: new Date(2011, 0, 28), value: 87.70860518678896 },
   { time: new Date(2011, 0, 31), value: 87.21646813423772 },
   { time: new Date(2011, 1, 1), value: 86.51940721266325 },

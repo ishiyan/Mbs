@@ -1,6 +1,7 @@
-import { Ohlcv } from '../../../data/entities/ohlcv';
+import { Ohlcv } from '../../../../shared/mbs/data/entities/ohlcv';
 
-export const dataTestOhlcv: Ohlcv[] = [
+/** Source data used to generate óutput for indicators. */
+export const testDataOhlcv: Ohlcv[] = [
   { time: new Date(2011, 0, 3), open: 92.5, high: 93.25, low: 90.75, close: 91.5, volume: 4077500 },
   { time: new Date(2011, 0, 4), open: 91.5, high: 94.94, low: 91.405, close: 94.815, volume: 4955900 },
   { time: new Date(2011, 0, 5), open: 95.155, high: 96.375, low: 94.25, close: 94.375, volume: 4775300 },

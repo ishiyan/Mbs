@@ -1,10 +1,14 @@
 // tslint:disable:max-line-length
-import { Heatmap } from '../../entities/heatmap';
+import { Heatmap } from '../../../../shared/mbs/charts/entities/heatmap';
 
-// kind: 1
-// name: goertzel(64, [2,64,1/10], sdc)
-// description: Normalized to [0, 1] Goertzel power spectrum goertzel(64, [2,64,1/10], sdc)
-export const dataTestGoertzel1: Heatmap[] = [
+/**
+ * kind: 1
+ *
+ * name: goertzel(64, [2,64,1/10], sdc)
+ *
+ * description: Normalized to [0, 1] Goertzel power spectrum goertzel(64, [2,64,1/10], sdc)
+ */
+export const testDataGoertzel1: Heatmap[] = [
   { time: new Date(2011, 0, 3), parameterFirst: 28, parameterLast: 2, parameterResolution: 10, valueMin: NaN, valueMax: NaN, values: [] },
   { time: new Date(2011, 0, 4), parameterFirst: 28, parameterLast: 2, parameterResolution: 10, valueMin: NaN, valueMax: NaN, values: [] },
   { time: new Date(2011, 0, 5), parameterFirst: 28, parameterLast: 2, parameterResolution: 10, valueMin: NaN, valueMax: NaN, values: [] },

@@ -1,4 +1,4 @@
-import { Ohlcv } from '../../../data/entities/ohlcv';
+import { Ohlcv } from '../../../shared/mbs/data/entities/ohlcv';
 
 export const dataOhlcvIntraday: Ohlcv[] = [
   { time: new Date(2015, 8, 1, 20, 40), open: 0.702410, high: 0.702490, low: 0.702340, close: 0.702400, volume: 37617413 },

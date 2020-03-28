@@ -1,10 +1,14 @@
-import { Scalar } from '../../../data/entities/scalar';
+import { Scalar } from '../../../../shared/mbs/data/entities/scalar';
 
-// kind: 3
-// name: up-bb(stdev.p(20,c),2,sma(20,c))
-// description: Upper Band of Bollinger Bands bb(stdev.p(20,c),2,sma(20,c))
-export const dataTestUp: Scalar[] = [
-  /*{ time: new Date(2011, 0, 3), value: NaN },
+/**
+ * kind: 3
+ *
+ * name: up-bb(stdev.p(20,c),2,sma(20,c))
+ *
+ * description: Upper Band of Bollinger Bands bb(stdev.p(20,c),2,sma(20,c))
+ */
+export const testDataBbUp: Scalar[] = [
+  { time: new Date(2011, 0, 3), value: NaN },
   { time: new Date(2011, 0, 4), value: NaN },
   { time: new Date(2011, 0, 5), value: NaN },
   { time: new Date(2011, 0, 6), value: NaN },
@@ -22,7 +26,7 @@ export const dataTestUp: Scalar[] = [
   { time: new Date(2011, 0, 24), value: NaN },
   { time: new Date(2011, 0, 25), value: NaN },
   { time: new Date(2011, 0, 26), value: NaN },
-  { time: new Date(2011, 0, 27), value: NaN },*/
+  { time: new Date(2011, 0, 27), value: NaN },
   { time: new Date(2011, 0, 28), value: 98.07339481321102 },
   { time: new Date(2011, 0, 31), value: 98.25303186576227 },
   { time: new Date(2011, 1, 1), value: 98.23109278733673 },

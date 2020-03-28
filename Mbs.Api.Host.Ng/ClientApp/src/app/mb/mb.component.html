@@ -2,7 +2,7 @@
   <button mat-button class="sidenav-toggle" (click)="mbSidenav.toggle()">
     <mat-icon>{{ mbSidenav.opened ? 'menu_open' : 'menu' }}</mat-icon>
   </button>
-  <span>Mb: {{sample.name}}</span>
+  <span>Mb: {{sample.header ? sample.header : '???'}}</span>
 </mat-toolbar>
 <mat-sidenav-container class="sidenav-container">
   <mat-sidenav #mbSidenav class="mat-elevation-z16" mode="push" fixedInViewport="false" opened="false">

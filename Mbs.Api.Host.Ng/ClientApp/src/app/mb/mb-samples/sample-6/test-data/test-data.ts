@@ -1,17 +1,17 @@
 import { Configuration } from '../../../../shared/mbs/charts/ohlcv-chart/template/configuration';
 
-import { dataTestOhlcv } from '../../../../shared/mbs/charts/ohlcv-chart/test-data/data-test-ohlcv';
-import { dataTestBb } from '../../../../shared/mbs/charts/ohlcv-chart/test-data/data-test-bb';
-import { dataTestMa } from '../../../../shared/mbs/charts/ohlcv-chart/test-data/data-test-ma';
-import { dataTestLo } from '../../../../shared/mbs/charts/ohlcv-chart/test-data/data-test-lo';
-import { dataTestUp } from '../../../../shared/mbs/charts/ohlcv-chart/test-data/data-test-up';
-import { dataTestPercentB } from '../../../../shared/mbs/charts/ohlcv-chart/test-data/data-test-percentb';
-import { dataTestBw } from '../../../../shared/mbs/charts/ohlcv-chart/test-data/data-test-bw';
-import { dataTestGoertzel1 } from '../../../../shared/mbs/charts/ohlcv-chart/test-data/data-test-goertzel_1';
+import { testDataOhlcv } from '../../test-data/indicators/test-data-ohlcv';
+import { testDataBb } from '../../test-data/indicators/test-data-bb';
+import { testDataBbMa } from '../../test-data/indicators/test-data-bb-ma';
+import { testDataBbLo } from '../../test-data/indicators/test-data-bb-lo';
+import { testDataBbUp } from '../../test-data/indicators/test-data-bb-up';
+import { testDataBbPercentB } from '../../test-data/indicators/test-data-bb-percentb';
+import { testDataBbBw } from '../../test-data/indicators/test-data-bb-bw';
+import { testDataGoertzel1 } from '../../test-data/indicators/test-data-goertzel_1';
 import { testDataOutputs } from './test-data-bb-goertzel-combined';
 
 const outputsCount = testDataOutputs.length;
-const ohlcvCount = dataTestOhlcv.length;
+const ohlcvCount = testDataOhlcv.length;
 
 export class TestData {
   private static configTemplate: Configuration = {
@@ -93,15 +93,15 @@ export class TestData {
 
   public static get configDataPrefilled(): Configuration {
     const cloned = TestData.deepCopy(TestData.configTemplate) as Configuration;
-    cloned.ohlcv.data = dataTestOhlcv;
-    cloned.pricePane.bands[0].data = dataTestBb;
-    cloned.pricePane.lines[0].data = dataTestMa;
-    cloned.pricePane.lines[1].data = dataTestLo;
-    cloned.pricePane.lines[2].data = dataTestUp;
-    cloned.indicatorPanes[0].lines[0].data = dataTestPercentB;
-    cloned.indicatorPanes[1].lineAreas[0].data = dataTestBw;
+    cloned.ohlcv.data = testDataOhlcv;
+    cloned.pricePane.bands[0].data = testDataBb;
+    cloned.pricePane.lines[0].data = testDataBbMa;
+    cloned.pricePane.lines[1].data = testDataBbLo;
+    cloned.pricePane.lines[2].data = testDataBbUp;
+    cloned.indicatorPanes[0].lines[0].data = testDataBbPercentB;
+    cloned.indicatorPanes[1].lineAreas[0].data = testDataBbBw;
     // @ts-ignore
-    cloned.indicatorPanes[2].heatmap.data = dataTestGoertzel1;
+    cloned.indicatorPanes[2].heatmap.data = testDataGoertzel1;
     TestData.addArrows(cloned);
     return cloned;
   }
@@ -110,7 +110,7 @@ export class TestData {
     const sum = currentCount + count;
     const newCount = sum > outputsCount ? outputsCount : sum;
     for (let i = currentCount; i < newCount; ++i) {
-      cfg.ohlcv.data.push(dataTestOhlcv[i]);
+      cfg.ohlcv.data.push(testDataOhlcv[i]);
       const indicators = (testDataOutputs[i] as any).indicators;
       for (const band of cfg.pricePane.bands) {
         const outputs = (indicators[band.indicator] as any).outputs;
@@ -152,14 +152,14 @@ export class TestData {
     const count = cfg.ohlcv.data.length;
     if (count > 25 && cfg.pricePane.arrows.length < 1) {
       const arrow = {
-        name: 'sell', down: true, time: dataTestOhlcv[25].time, /*value: dataTestOhlcv[25].high,*/
+        name: 'sell', down: true, time: testDataOhlcv[25].time, /*value: testDataOhlcv[25].high,*/
         indicator: 0, output: 0, color: 'rgb(255,0,0)'
       }
       cfg.pricePane.arrows.push(arrow);
     }
     if (count > 26 && cfg.pricePane.arrows.length < 2) {
       const arrow = {
-        name: 'buy', down: false, time: dataTestOhlcv[26].time, /*value: dataTestOhlcv[26].low,*/
+        name: 'buy', down: false, time: testDataOhlcv[26].time, /*value: testDataOhlcv[26].low,*/
         indicator: 0, output: 0, color: 'rgb(0,255,0)'
       }
       cfg.pricePane.arrows.push(arrow);
@@ -188,11 +188,6 @@ export class TestData {
     // Handle Object.
     if (obj instanceof Object) {
       const copy: any = {};
-      /*for (const attr in obj) {
-        if (obj.hasOwnProperty(attr)) {
-          copy[attr] = TestData.deepCopy(obj[attr])
-        };
-      }*/
       for (const attr of Object.keys(obj)) {
         copy[attr] = TestData.deepCopy(obj[attr])
       }

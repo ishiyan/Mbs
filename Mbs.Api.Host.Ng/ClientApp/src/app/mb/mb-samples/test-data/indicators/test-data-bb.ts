@@ -1,10 +1,14 @@
-import { Band } from '../../entities/band';
+import { Band } from '../../../../shared/mbs/charts/entities/band';
 
-// kind: 6
-// name: bb(stdev.p(20,c),2,sma(20,c))
-// description: Bollinger Bands bb(stdev.p(20,c),2,sma(20,c))
-export const dataTestBb: Band[] = [
-  /*{ time: new Date(2011, 0, 3), lower: NaN, upper: NaN },
+/**
+ * kind: 6
+ *
+ * name: bb(stdev.p(20,c),2,sma(20,c))
+ *
+ * description: Bollinger Bands bb(stdev.p(20,c),2,sma(20,c))
+ */
+export const testDataBb: Band[] = [
+  { time: new Date(2011, 0, 3), lower: NaN, upper: NaN },
   { time: new Date(2011, 0, 4), lower: NaN, upper: NaN },
   { time: new Date(2011, 0, 5), lower: NaN, upper: NaN },
   { time: new Date(2011, 0, 6), lower: NaN, upper: NaN },
@@ -22,7 +26,7 @@ export const dataTestBb: Band[] = [
   { time: new Date(2011, 0, 24), lower: NaN, upper: NaN },
   { time: new Date(2011, 0, 25), lower: NaN, upper: NaN },
   { time: new Date(2011, 0, 26), lower: NaN, upper: NaN },
-  { time: new Date(2011, 0, 27), lower: NaN, upper: NaN },*/
+  { time: new Date(2011, 0, 27), lower: NaN, upper: NaN },
   { time: new Date(2011, 0, 28), lower: 87.70860518678896, upper: 98.07339481321102 },
   { time: new Date(2011, 0, 31), lower: 87.21646813423772, upper: 98.25303186576227 },
   { time: new Date(2011, 1, 1), lower: 86.51940721266325, upper: 98.23109278733673 },

@@ -2,9 +2,14 @@ import { Component } from '@angular/core';
 
 import { SparklineConfiguration } from '../../../../../shared/mbs/charts/sparkline/sparkline-configuration.interface';
 
-import { dataTestOhlcv } from '../../../../../shared/mbs/charts/ohlcv-chart/test-data/data-test-ohlcv';
-import { dataTestBw } from '../../../../../shared/mbs/charts/ohlcv-chart/test-data/data-test-bw';
-import { dataTestMa } from '../../../../../shared/mbs/charts/ohlcv-chart/test-data/data-test-ma';
+import { Ohlcv } from '../../../../../shared/mbs/data/entities/ohlcv';
+import { Quote } from '../../../../../shared/mbs/data/entities/quote';
+import { Trade } from '../../../../../shared/mbs/data/entities/trade';
+import { Scalar } from '../../../../../shared/mbs/data/entities/scalar';
+
+import { testDataOhlcv } from '../../../test-data/indicators/test-data-ohlcv';
+import { testDataBbBw } from '../../../test-data/indicators/test-data-bb-bw';
+import { testDataBbMa } from '../../../test-data/indicators/test-data-bb-ma';
 
 @Component({
   selector: 'mb-sample-sparkline-1',
@@ -13,21 +18,10 @@ import { dataTestMa } from '../../../../../shared/mbs/charts/ohlcv-chart/test-da
 })
 export class SampleSparkline1Component {
 
-  dataOhlcv = dataTestOhlcv;
-  dataScalar = dataTestBw;
-  dataScalarWithNaN = dataTestMa;
+  dataOhlcv = testDataOhlcv;
+  dataScalar = testDataBbBw;
+  dataScalarWithNaN = testDataBbMa;
 
-  readonly dataArray = [
-    { data: this.dataOhlcv, name: 'Ohlcv data' },
-    { data: this.dataScalar, name: 'Scalar data' },
-    { data: this.dataScalarWithNaN, name: 'Scalar data with NaN' }
-  ];
   readonly configLine: SparklineConfiguration = { fillColor: undefined, strokeColor: 'steelblue', strokeWidth: 0.1 };
   readonly configFill: SparklineConfiguration = { fillColor: 'steelblue', strokeColor: undefined, strokeWidth: 0.1 };
-  selectedData = this.dataArray[0];
-  configurationIsLine = false;
-
-  styleIsLineChanged() {
-    this.configurationIsLine = !this.configurationIsLine;
-  }
 }

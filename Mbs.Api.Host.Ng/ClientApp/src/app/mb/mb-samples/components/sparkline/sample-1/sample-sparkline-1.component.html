@@ -1,57 +1,43 @@
 <div class="sample">
-  <p>Data types:</p>
-  <span class="nowrap">
-    Ohlcv <mb-sparkline [width]="100" [height]="20" [configuration]="{fillColor: 'cornflowerblue', strokeColor: 'none'}"
-      [data]="dataOhlcv"></mb-sparkline>
-  </span>
-  &#8203;
-  <span class="nowrap">
-    Scalar <mb-sparkline [width]="100" [height]="20"
-      [configuration]="{fillColor: undefined, strokeColor: 'steelblue', strokeWidth: 0.1}" [data]="dataScalar">
-    </mb-sparkline>
-  </span>
-  &#8203;
-  <span class="nowrap">
-    Scalar with NaN <mb-sparkline [width]="100" [height]="20"
-      [configuration]="{fillColor: undefined, strokeColor: 'cornflowerblue', strokeWidth: 0.1}"
-      [data]="dataScalarWithNaN">
-    </mb-sparkline>
-  </span>
-  <br />
-  <hr />
+  <mat-card class="example-card">
+    <mat-card-header>
+      <mat-card-title>Data types</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <span class="nowrap">
+        <mb-sparkline [width]="100" [height]="20" [configuration]="{fillColor: 'cornflowerblue', strokeColor: 'none'}"
+          [data]="dataOhlcv"></mb-sparkline>&nbsp;ohlcv,&nbsp;
+      </span>
+      &#8203;
+      <span class="nowrap">
+        <mb-sparkline [width]="100" [height]="20"
+          [configuration]="{fillColor: undefined, strokeColor: 'steelblue', strokeWidth: 0.1}" [data]="dataScalar">
+        </mb-sparkline>&nbsp; scalar,&nbsp;
+      </span>
+      &#8203;
+      <span class="nowrap">
+        <mb-sparkline [width]="100" [height]="20"
+          [configuration]="{fillColor: undefined, strokeColor: 'cornflowerblue', strokeWidth: 0.1}" [data]="dataScalarWithNaN">
+        </mb-sparkline>&nbsp;scalar with NaN
+      </span>
+      </mat-card-content>
+  </mat-card>
 
-  Default config: <mb-sparkline [data]="dataScalar"></mb-sparkline>
-  <br />
-  <hr />
+  <mat-card class="example-card">
+    <mat-card-header>
+      <mat-card-title>Default sparkline configuration</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mb-sparkline [data]="dataOhlcv"></mb-sparkline>
+    </mat-card-content>
+  </mat-card>
 
-  <p>
-    <label>Sparkline selector style:</label>&nbsp;
-    <mat-radio-group (change)="styleIsLineChanged()">
-      <mat-radio-button value="true" color="primary">&nbsp;Line</mat-radio-button>&nbsp;&nbsp;
-      <mat-radio-button value="false" color="primary" checked>&nbsp;Fill</mat-radio-button>
-    </mat-radio-group>
-  </p>
-  <br/>
-    <mat-form-field style="width:380px">
-    <mat-label>Select a sparkline</mat-label>
-    <mat-select [(value)]="selectedData">
-      <mat-select-trigger>
-        <mb-sparkline [width]="200" [height]="24" [data]="selectedData.data"
-          [configuration]="configurationIsLine ? configLine : configFill"></mb-sparkline> {{selectedData.name}}
-      </mat-select-trigger>
-      <mat-option *ngFor="let d of dataArray" [value]="d">
-        <mb-sparkline [width]="200" [height]="24" [data]="d.data"
-          [configuration]="configurationIsLine ? configLine : configFill"></mb-sparkline> {{d.name}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-  <p>
-    You selected:
-    <mb-sparkline [width]="100" [height]="16" [data]="selectedData.data"
-      [configuration]="configurationIsLine ? configFill : configLine"></mb-sparkline>
-    {{selectedData.name}}
-  </p>
-  <br />
-  <hr />
-
+  <mat-card class="example-card">
+    <mat-card-header>
+      <mat-card-title>Percentage width</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mb-sparkline style="min-width:50%;max-width:70%;" [width]="'100px'" [height]="'20%'" [data]="dataOhlcv"></mb-sparkline>
+    </mat-card-content>
+  </mat-card>
 </div>

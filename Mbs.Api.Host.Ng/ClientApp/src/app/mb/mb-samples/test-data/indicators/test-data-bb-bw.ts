@@ -1,10 +1,14 @@
-import { Scalar } from '../../../data/entities/scalar';
+import { Scalar } from '../../../../shared/mbs/data/entities/scalar';
 
-// kind: 5
-// name: bw-bb(stdev.p(20,c),2,sma(20,c))
-// description: Band Width of Bollinger Bands bb(stdev.p(20,c),2,sma(20,c))
-export const dataTestBw: Scalar[] = [
-  /*{ time: new Date(2011, 0, 3), value: NaN },
+/**
+ * kind: 5
+ *
+ * name: bw-bb(stdev.p(20,c),2,sma(20,c))
+ *
+ * description: Band Width of Bollinger Bands bb(stdev.p(20,c),2,sma(20,c))
+ */
+export const testDataBbBw: Scalar[] = [
+  { time: new Date(2011, 0, 3), value: NaN },
   { time: new Date(2011, 0, 4), value: NaN },
   { time: new Date(2011, 0, 5), value: NaN },
   { time: new Date(2011, 0, 6), value: NaN },
@@ -22,7 +26,7 @@ export const dataTestBw: Scalar[] = [
   { time: new Date(2011, 0, 24), value: NaN },
   { time: new Date(2011, 0, 25), value: NaN },
   { time: new Date(2011, 0, 26), value: NaN },
-  { time: new Date(2011, 0, 27), value: NaN },*/
+  { time: new Date(2011, 0, 27), value: NaN },
   { time: new Date(2011, 0, 28), value: 0.1115801275303535 },
   { time: new Date(2011, 0, 31), value: 0.1190121689175261 },
   { time: new Date(2011, 1, 1), value: 0.1267838038292019 },

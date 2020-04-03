@@ -21,7 +21,7 @@ const defaultHeight = 24;
 })
 export class SparklineComponent implements OnChanges, AfterViewInit {
   private currentConfiguration: SparklineConfiguration = {
-    fillColor: 'steelblue', strokeColor: undefined, strokeWidth: 0.1, interpolation: 'linear'
+    fillColor: 'steelblue', strokeColor: undefined, strokeWidth: 1, interpolation: 'linear'
   };
   private currentData: Ohlcv[] | Quote[] | Trade[] | Scalar[];
 
@@ -106,7 +106,7 @@ export class SparklineComponent implements OnChanges, AfterViewInit {
         .x((d: any, i: number) => xScale(d.time))
         .y0((d: any) => yScale(min))
         .y1((d: any) => yScale(getY(d)));
-      svg.append('path') // .attr('class', 'area')
+      svg.append('path')
         .attr('fill', cfg.fillColor)
         .attr('d', area);
     }
@@ -117,9 +117,9 @@ export class SparklineComponent implements OnChanges, AfterViewInit {
         // .x((d: any, i: number) => xScale(i))
         .x((d: any, i: number) => xScale(d.time))
         .y((d: any) => yScale(getY(d)));
-      svg.append('path') // .attr('class', 'line')
-        .style('stroke-width', cfg.strokeColor)
-        .style('stroke', cfg.strokeColor)
+      svg.append('path')
+        .attr('stroke-width', cfg.strokeWidth)
+        .attr('stroke', cfg.strokeColor)
         .attr('stroke-linejoin', 'round')
         .attr('stroke-linecap', 'round')
         .style('fill', 'none')

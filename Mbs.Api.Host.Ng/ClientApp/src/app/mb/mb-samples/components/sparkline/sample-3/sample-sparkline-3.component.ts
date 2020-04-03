@@ -40,8 +40,8 @@ export class SampleSparkline3Component {
   arrayItemsSelected6 = [ {data: this.dataOhlcv, name: 'ohlcv data'} ];
   arrayItemsSelected7 = [ {data: this.dataOhlcv, name: 'ohlcv data'} ];
 
-  readonly configLine: SparklineConfiguration = { fillColor: undefined, strokeColor: 'steelblue', strokeWidth: 0.1 };
-  readonly configFill: SparklineConfiguration = { fillColor: 'steelblue', strokeColor: undefined, strokeWidth: 0.1 };
+  readonly configLine: SparklineConfiguration = { fillColor: undefined, strokeColor: 'steelblue', strokeWidth: 1 };
+  readonly configFill: SparklineConfiguration = { fillColor: 'steelblue', strokeColor: undefined, strokeWidth: 1 };
   arrayItemIsLine1 = false;
   arrayItemIsLine2 = false;
   arrayItemIsLine3 = false;

@@ -1,3 +1,8 @@
+#Naming and styling
+We follow Angular naming conventions (https://github.com/angular/angular/blob/master/docs/NAMING.md),
+TypeScript coding guidelines (https://github.com/Microsoft/TypeScript/wiki/Coding-guidelines) and
+Angular coding style guide (https://angular.io/guide/styleguide).
+
 #Azure
 https://mbrane.visualstudio.com/IvanShiyan/_build?definitionId=10&_a=summary
 https://portal.azure.com/#@ivanshiyanalex.onmicrosoft.com/dashboard/private/5441bbe8-b3a7-4a41-a3b3-2932b0798271

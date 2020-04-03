@@ -86,7 +86,7 @@ export function realTimeChart() {
     var barG = main.append("g")
       .attr("class", "barGroup")
       .attr("transform", "translate(0, 0)")
-      .attr("clip-path", "url(#myClip")
+      .attr("clip-path", "url(#myClip)")
       .append("g");
 
     // add group for x axis

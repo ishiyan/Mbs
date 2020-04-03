@@ -59,8 +59,8 @@ export class SampleSparkline2Component {
   groupItemFixed: DataItem = this.dataGroups[0].items[0];
   groupItem: DataItem = this.dataGroups[0].items[0];
 
-  readonly configLine: SparklineConfiguration = { fillColor: undefined, strokeColor: 'steelblue', strokeWidth: 0.1 };
-  readonly configFill: SparklineConfiguration = { fillColor: 'steelblue', strokeColor: undefined, strokeWidth: 0.1 };
+  readonly configLine: SparklineConfiguration = { fillColor: undefined, strokeColor: 'steelblue', strokeWidth: 1 };
+  readonly configFill: SparklineConfiguration = { fillColor: 'steelblue', strokeColor: undefined, strokeWidth: 1 };
   arrayItemIsLineFixed = false;
   groupItemIsLineFixed = false;
   arrayItemIsLine = false;

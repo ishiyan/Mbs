@@ -25,6 +25,7 @@ export class SampleMultiline1Component {
 
   readonly priceMa = [this.dataOhlcv, this.dataScalarMa];
   readonly priceMaLoUp = [this.dataOhlcv, this.dataScalarMa, this.dataScalarLo, this.dataScalarUp];
+  readonly upMaLoPrice = [this.dataScalarUp, this.dataScalarMa, this.dataScalarLo, this.dataOhlcv];
   readonly bwPercentB = [this.dataScalarBw, this.dataScalarPercentB];
 
   readonly configLine: LineConfiguration = { fillColor: undefined, strokeColor: 'steelblue', strokeWidth: 1 };

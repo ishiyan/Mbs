@@ -1,25 +1,19 @@
 <div class="sample">
   <mat-card class="example-card">
     <mat-card-header>
-      <mat-card-title>Single line</mat-card-title>
+      <mat-card-title>Lines and areas</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <mat-card-subtitle>defaults</mat-card-subtitle>
+      <mat-card-subtitle>lines</mat-card-subtitle>
       <mb-multiline [data]="priceMaLoUp" [configuration]="category10Lines"></mb-multiline>
+    </mat-card-content>
+    <mat-card-content>
+      <mat-card-subtitle>areas</mat-card-subtitle>
+      <mb-multiline [data]="upMaLoPrice" [configuration]="[category10Areas[0],category10Areas[1],category10Areas[2],category10Lines[3]]"></mb-multiline>
     </mat-card-content>
     <mat-card-content>
       <mat-card-subtitle>defaults</mat-card-subtitle>
       <mb-multiline [data]="[dataOhlcv, dataScalarMa]" [configuration]="[configLine, configLine]"></mb-multiline>
-    </mat-card-content>
-    <mat-card-content>
-      <mat-card-subtitle>[min]="0" [max]="200"</mat-card-subtitle>
-      <mb-multiline [configuration]="[configLine]"
-          [data]="[dataOhlcv]" [min]="0"  [max]="200" [valueAxis]="['grid']"></mb-multiline>
-    </mat-card-content>
-    <mat-card-content>
-      <mat-card-subtitle>[min]="80" [max]="110"</mat-card-subtitle>
-      <mb-multiline [configuration]="[configLine]"
-          [data]="[dataOhlcv]" [min]="80"  [max]="110" [valueAxis]="['grid']"></mb-multiline>
     </mat-card-content>
   </mat-card>
 

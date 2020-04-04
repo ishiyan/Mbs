@@ -23,39 +23,37 @@ export class SampleStackline1Component {
   dataScalarLo = testDataBbLo;
   dataScalarUp = testDataBbUp;
 
-  readonly priceMa = [this.dataOhlcv, this.dataScalarMa];
   readonly priceMaLoUp = [this.dataOhlcv, this.dataScalarMa, this.dataScalarLo, this.dataScalarUp];
-  readonly upMaLoPrice = [this.dataScalarUp, this.dataScalarMa, this.dataScalarLo, this.dataOhlcv];
+  readonly maLoUp = [this.dataScalarMa, this.dataScalarLo, this.dataScalarUp];
   readonly bwPercentB = [this.dataScalarBw, this.dataScalarPercentB];
 
-  readonly configLine: LineConfiguration = { fillColor: undefined, strokeColor: 'steelblue', strokeWidth: 1 };
-  readonly configFill: LineConfiguration = { fillColor: 'steelblue', strokeColor: undefined, strokeWidth: 1 };
-
-  /** colors from d3.scale-chromatic category10 palette */
-  readonly category10Lines: LineConfiguration[] = [
-    { fillColor: undefined, strokeColor: '#1f77b4', strokeWidth: 1 },
-    { fillColor: undefined, strokeColor: '#ff7f0e', strokeWidth: 1 },
-    { fillColor: undefined, strokeColor: '#2ca02c', strokeWidth: 1 },
-    { fillColor: undefined, strokeColor: '#d62728', strokeWidth: 1 },
-    { fillColor: undefined, strokeColor: '#9467bd', strokeWidth: 1 },
-    { fillColor: undefined, strokeColor: '#8c564b', strokeWidth: 1 },
-    { fillColor: undefined, strokeColor: '#e377c2', strokeWidth: 1 },
-    { fillColor: undefined, strokeColor: '#7f7f7f', strokeWidth: 1 },
-    { fillColor: undefined, strokeColor: '#bcbd22', strokeWidth: 1 },
-    { fillColor: undefined, strokeColor: '#17becf', strokeWidth: 1 }
+  readonly lines2: LineConfiguration[] = [
+    { fillColor: undefined, strokeColor: '#5C849F', strokeWidth: 1 },
+    { fillColor: undefined, strokeColor: '#93B2C1', strokeWidth: 1 },
+    { fillColor: undefined, strokeColor: '#6BAEA7', strokeWidth: 1 },
+    { fillColor: undefined, strokeColor: '#78A9BE', strokeWidth: 1 }
   ];
 
-  /** colors from d3.scale-chromatic category10 palette */
-  readonly category10Areas: LineConfiguration[] = [
-    { fillColor: '#1f77b4', strokeColor: undefined, strokeWidth: 1 },
-    { fillColor: '#ff7f0e', strokeColor: undefined, strokeWidth: 1 },
-    { fillColor: '#2ca02c', strokeColor: undefined, strokeWidth: 1 },
-    { fillColor: '#d62728', strokeColor: undefined, strokeWidth: 1 },
-    { fillColor: '#9467bd', strokeColor: undefined, strokeWidth: 1 },
-    { fillColor: '#8c564b', strokeColor: undefined, strokeWidth: 1 },
-    { fillColor: '#e377c2', strokeColor: undefined, strokeWidth: 1 },
-    { fillColor: '#7f7f7f', strokeColor: undefined, strokeWidth: 1 },
-    { fillColor: '#bcbd22', strokeColor: undefined, strokeWidth: 1 },
-    { fillColor: '#17becf', strokeColor: undefined, strokeWidth: 1 }
+  readonly areas2: LineConfiguration[] = [
+    { fillColor: '#5C849F', strokeColor: undefined, strokeWidth: 1 },
+    { fillColor: '#93B2C1', strokeColor: undefined, strokeWidth: 1 },
+    { fillColor: '#6BAEA7', strokeColor: undefined, strokeWidth: 1 },
+    { fillColor: '#73C0DC', strokeColor: undefined, strokeWidth: 1 }
+  ];
+
+  readonly lines: LineConfiguration[] = [
+    { fillColor: undefined, strokeColor: '#31B9B0', strokeWidth: 1 },
+    { fillColor: undefined, strokeColor: '#5AF0BC', strokeWidth: 1 },
+    { fillColor: undefined, strokeColor: '#32D2BA', strokeWidth: 1 },
+    { fillColor: undefined, strokeColor: '#26BBBE', strokeWidth: 1 },
+    { fillColor: undefined, strokeColor: '#32BEA1', strokeWidth: 1 }
+  ];
+
+  readonly areas: LineConfiguration[] = [
+    { fillColor: '#31B9B0', strokeColor: undefined, strokeWidth: 1 },
+    { fillColor: '#5AF0BC', strokeColor: undefined, strokeWidth: 1 },
+    { fillColor: '#32D2BA', strokeColor: undefined, strokeWidth: 1 },
+    { fillColor: '#26BBBE', strokeColor: undefined, strokeWidth: 1 },
+    { fillColor: '#32BEA1', strokeColor: undefined, strokeWidth: 1 }
   ];
 }

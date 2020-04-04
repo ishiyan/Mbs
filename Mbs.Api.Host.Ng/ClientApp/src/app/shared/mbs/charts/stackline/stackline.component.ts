@@ -5,6 +5,7 @@ import { Ohlcv } from '../../data/entities/ohlcv';
 import { Quote } from '../../data/entities/quote';
 import { Trade } from '../../data/entities/trade';
 import { Scalar } from '../../data/entities/scalar';
+import { Band } from '../entities/band';
 import { LineConfiguration } from '../line-configuration.interface';
 import { computeDimensions } from '../compute-dimensions';
 import { convertInterpolation } from '../convert-interpolation';
@@ -32,11 +33,10 @@ const TIME_AXIS_HEIGHT = 18;
 })
 export class StacklineComponent implements OnChanges, AfterViewInit {
   private currentConfiguration: LineConfiguration[] = [];
-  private currentData: (Ohlcv[] | Quote[] | Trade[] | Scalar[])[] = [];
+  private currentDataStacked: (Band[])[] = [];
   private currentDataEmpty = true;
   private dataTimeMin: Date;
   private dataTimeMax: Date;
-  private dataValueMin: number;
   private dataValueMax: number;
   private forcedTimeMin?: Date;
   private forcedTimeMax?: Date;
@@ -116,35 +116,48 @@ export class StacklineComponent implements OnChanges, AfterViewInit {
     this.forcedTimeMax = value;
   }
 
-  /** The data array to use. */
+  /** The data arrays to use. */
   @Input() set data(dat: (Ohlcv[] | Quote[] | Trade[] | Scalar[])[]) {
-    // Assume all data series are sorted on time.
+    // Assume all data series are sorted on time and has the same time stamps.
     let minTime = MAX_DATE;
     let maxTime = MIN_DATE;
-    let minValue = Infinity;
     let maxValue = -Infinity;
     let empty = true;
+
+    const bandArrayCollection: (Band[])[] = [];
+    let maxLen = 0;
     for (const d of dat) {
+      bandArrayCollection.push([]);
       const len = d.length;
       if (len < 1) {
         continue;
       }
       empty = false;
+      if (maxLen < len) {
+        maxLen = len;
+      }
       if (minTime > d[0].time) {
         minTime = d[0].time;
       }
       if (maxTime < d[len - 1].time) {
         maxTime = d[len - 1].time;
       }
-      const accessor = lineValueAccessor(d);
-      for (const e of d) {
-        const value = accessor(e);
-        if (!isNaN(value)) {
-          if (minValue > value) {
-            minValue = value;
-          }
-          if (maxValue < value) {
-            maxValue = value;
+    }
+    const datLen = dat.length;
+    for (let i = 0; i < maxLen; ++i) {
+      let valPrev = 0;
+      for (let k = 0; k < datLen; ++k) {
+        const bandArray = bandArrayCollection[k];
+        const d = dat[k];
+        if (d.length > i) {
+          let val = lineValueAccessor(d)(d[i]);
+          if (!isNaN(val)) {
+            val += valPrev;
+            bandArray.push( { time: d[i].time, lower: valPrev, upper: val } );
+            valPrev = val;
+            if (maxValue < val) {
+              maxValue = val;
+            }
           }
         }
       }
@@ -152,12 +165,8 @@ export class StacklineComponent implements OnChanges, AfterViewInit {
     this.currentDataEmpty = empty;
     this.dataTimeMin = minTime;
     this.dataTimeMax = maxTime;
-    this.dataValueMin = minValue;
     this.dataValueMax = maxValue;
-    this.currentData = dat;
-  }
-  get data(): (Ohlcv[] | Quote[] | Trade[] | Scalar[])[] {
-    return this.currentData;
+    this.currentDataStacked = bandArrayCollection;
   }
 
   constructor(private elementRef: ElementRef) { }
@@ -174,7 +183,7 @@ export class StacklineComponent implements OnChanges, AfterViewInit {
   public render(): void {
     const sel = d3.select(this.elementRef.nativeElement);
     sel.select('svg').remove();
-    const dat = this.currentData;
+    const dat = this.currentDataStacked;
     if (this.currentDataEmpty || !dat || dat.length < 1) {
       return;
     }
@@ -226,7 +235,7 @@ export class StacklineComponent implements OnChanges, AfterViewInit {
       svg.append('g').call(xAxis);
     }
 
-    const min: number = this.forcedValueMin === undefined ? this.dataValueMin : this.forcedValueMin;
+    const min: number = this.forcedValueMin === undefined ? 0 : this.forcedValueMin;
     const max: number = this.forcedValueMax === undefined ? this.dataValueMax : this.forcedValueMax;
     const yScale = d3.scaleLinear().domain([min, max]).range([h - marginBottom, marginTop]);
     if (hasValueAxisLeft && !hasValueGrid) {
@@ -265,16 +274,15 @@ export class StacklineComponent implements OnChanges, AfterViewInit {
     const cfgLen = cfg.length;
     for (let i = 0; i < dat.length; ++i) {
       const dati = dat[i];
-      const accessor = lineValueAccessor(dati);
       const cfgi = i < cfgLen ? cfg[i] : DEFAULT_LINE_CONFIGURATION;
       const interp = cfgi.interpolation ? cfgi.interpolation : DEFAULT_LINE_INTERPOLATION;
       if (cfgi.fillColor && cfgi.fillColor !== 'none') {
         const area: any = d3.area()
           .curve(convertInterpolation(interp))
-          .defined((d: any) => !isNaN(accessor(d)) && d.time >= timeMin && d.time <= timeMax)
+          .defined((d: any) => d.time >= timeMin && d.time <= timeMax)
           .x((d: any) => xScale(d.time))
-          .y0(() => yScale(min))
-          .y1((d: any) => yScale(accessor(d)));
+          .y0((d: any) => yScale(d.lower))
+          .y1((d: any) => yScale(d.upper));
         svg.append('path')
           .datum(dati)
           .attr('fill', cfgi.fillColor)
@@ -283,9 +291,9 @@ export class StacklineComponent implements OnChanges, AfterViewInit {
       if (cfgi.strokeColor && cfgi.strokeWidth && cfgi.strokeWidth > 0 && cfgi.strokeColor !== 'none') {
         const line: any = d3.line()
           .curve(convertInterpolation(interp))
-          .defined((d: any) => !isNaN(accessor(d)) && d.time >= timeMin && d.time <= timeMax)
+          .defined((d: any) => d.time >= timeMin && d.time <= timeMax)
           .x((d: any) => xScale(d.time))
-          .y((d: any) => yScale(accessor(d)));
+          .y((d: any) => yScale(d.upper));
         svg.append('path')
           .datum(dati)
           .attr('stroke-width', cfgi.strokeWidth)

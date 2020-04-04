@@ -20,6 +20,10 @@ const routes: Routes = [
         path: 'comp-multiline', loadChildren: () =>
           import('./mb-samples/components/multiline/sample-multiline.module').then(m => m.SampleMultilineModule)
       },
+      {
+        path: 'comp-stackline', loadChildren: () =>
+          import('./mb-samples/components/stackline/sample-stackline.module').then(m => m.SampleStacklineModule)
+      },
       { path: '', component: Sample6Component }
     ]
   },

@@ -19,12 +19,13 @@ import { Sample6Component } from './mb-samples/sample-6/sample-6.component';
 
 import { SampleSparklineModule } from './mb-samples/components/sparkline/sample-sparkline.module';
 import { SampleMultilineModule } from './mb-samples/components/multiline/sample-multiline.module';
+import { SampleStacklineModule } from './mb-samples/components/stackline/sample-stackline.module';
 
 @NgModule({
   imports: [
     CommonModule, FormsModule, FlexLayoutModule,
     MbRoutingModule, MaterialModule, SnackBarModule, MbsModule, FooterModule, SvgViewerModule,
-    SampleSparklineModule, SampleMultilineModule
+    SampleSparklineModule, SampleMultilineModule, SampleStacklineModule
   ],
   declarations: [
     MbComponent, SyntheticDataComponent, Sample1Component, Table1Component, Table12Component, Sample6Component

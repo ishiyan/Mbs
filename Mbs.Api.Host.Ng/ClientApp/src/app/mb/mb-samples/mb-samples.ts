@@ -37,6 +37,12 @@ export const treeNodes: MbSample[] = [
         children: [
           {name: 'Features', header: 'Multiline features', route: 'comp-multiline/s1'},
         ]
+      },
+      {
+        name: 'Stackline',
+        children: [
+          {name: 'Features', header: 'Stackline features', route: 'comp-stackline/s1'},
+        ]
       }
     ]
   }

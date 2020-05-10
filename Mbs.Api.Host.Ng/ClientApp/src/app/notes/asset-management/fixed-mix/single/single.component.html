@@ -1,3 +1,56 @@
-<h1>Hello, World!</h1>
+<div class="sample">
+  <mat-card class="example-card">
+    <mat-card-header>
+      <mat-card-title>Alex instruments</mat-card-title>
+      <mat-card-subtitle>Sparkline width is 160px</mat-card-subtitle>
+      <mat-card-subtitle>
+      </mat-card-subtitle>
+    </mat-card-header>
 
-single
+    <mat-card-content>
+      <mat-form-field style="width:300px;margin-right:60px">
+        <mat-label>LR instrument</mat-label>
+        <mat-select [(value)]="lrInstrument">
+          <mat-select-trigger>
+            <mb-sparkline [width]="120" [height]="24" [data]="lrInstrument.data" [configuration]="lrFill">
+            </mb-sparkline> {{lrInstrument.name}}
+          </mat-select-trigger>
+          <mat-option *ngFor="let d of lrInstruments" [value]="d">
+            <mb-sparkline [width]="120" [height]="24" [data]="d.data" [configuration]="lrFill"></mb-sparkline>
+            {{d.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field style="width:300px;margin-right:60px">
+        <mat-label>HR instrument</mat-label>
+        <mat-select [(value)]="hrInstrument">
+          <mat-select-trigger>
+            <mb-sparkline [width]="120" [height]="24" [data]="hrInstrument.data" [configuration]="hrFill">
+            </mb-sparkline> {{hrInstrument.name}}
+          </mat-select-trigger>
+          <mat-option *ngFor="let d of hrInstruments" [value]="d">
+            <mb-sparkline [width]="120" [height]="24" [data]="d.data" [configuration]="hrFill"></mb-sparkline>
+            {{d.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field> <!--  appearance="fill" <span matPrefix>EUR&nbsp;</span> <span matSuffix>.00</span>-->
+        <mat-label>Initial amount</mat-label>
+        <input matInput type="number">
+      </mat-form-field>
+
+      <div>HR&nbsp;%&nbsp;<mat-slider [max]="100" [min]="0" [step]="1" [thumbLabel]="true" [(ngModel)]="hrRatio" color="primary" style="width:280px;margin-right:60px"></mat-slider></div>
+
+    </mat-card-content>
+
+    <mat-card-content>
+      <mb-stackiline [width]="'100%'" style="max-width:600px;" [height]="200" [timeAxis]="['bottom']"
+        [valueAxis]="['grid']" [data]="[hrCalculated, lrCalculated]" [configuration]="[hrFill, lrFill]"></mb-stackiline>
+    </mat-card-content>
+
+    <mat-card-actions>
+    </mat-card-actions>
+  </mat-card>
+</div>

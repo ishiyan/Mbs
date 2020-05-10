@@ -24,6 +24,10 @@ const routes: Routes = [
         path: 'comp-stackline', loadChildren: () =>
           import('./mb-samples/components/stackline/sample-stackline.module').then(m => m.SampleStacklineModule)
       },
+      {
+        path: 'comp-swatches', loadChildren: () =>
+          import('./mb-samples/components/swatches/sample-swatches.module').then(m => m.SampleSwatchesModule)
+      },
       { path: '', component: Sample6Component }
     ]
   },

@@ -34,6 +34,8 @@ import { OhlcvChartComponent } from './charts/ohlcv-chart/ohlcv-chart.component'
 import { SparklineComponent } from './charts/sparkline/sparkline.component';
 import { MultilineComponent } from './charts/multiline/multiline.component';
 import { StacklineComponent } from './charts/stackline/stackline.component';
+import { SwatchesComponent } from './colors/swatches/swatches.component';
+import { SwatchesSelectComponent } from './colors/swatches/swatches-select.component';
 
 @NgModule({
   imports: [
@@ -52,7 +54,7 @@ import { StacklineComponent } from './charts/stackline/stackline.component';
     FractionalBrownianMotionParametersComponent, GeometricBrownianMotionParametersComponent, ChirpParametersComponent,
     SawtoothParametersComponent, SquareParametersComponent, SinusoidalParametersComponent, SyntheticDataParametersComponent,
     HistoricalDataTableComponent, HistoricalDataDownloadComponent, HistoricalDataChartComponent,
-    OhlcvChartComponent, SparklineComponent, MultilineComponent, StacklineComponent
+    OhlcvChartComponent, SparklineComponent, MultilineComponent, StacklineComponent, SwatchesComponent, SwatchesSelectComponent
   ],
   declarations: [
     BusinessDayCalendarDescriptionComponent, TimeParametersComponent, WaveformParametersComponent,
@@ -60,7 +62,7 @@ import { StacklineComponent } from './charts/stackline/stackline.component';
     FractionalBrownianMotionParametersComponent, GeometricBrownianMotionParametersComponent, ChirpParametersComponent,
     SawtoothParametersComponent, SquareParametersComponent, SinusoidalParametersComponent, SyntheticDataParametersComponent,
     HistoricalDataTableComponent, HistoricalDataDownloadComponent, HistoricalDataChartComponent,
-    OhlcvChartComponent, SparklineComponent, MultilineComponent, StacklineComponent
+    OhlcvChartComponent, SparklineComponent, MultilineComponent, StacklineComponent, SwatchesComponent, SwatchesSelectComponent
   ],
   providers: [
     SyntheticDataService

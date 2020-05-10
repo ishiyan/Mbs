@@ -35,13 +35,25 @@ export const treeNodes: MbSample[] = [
       {
         name: 'Multiline',
         children: [
-          {name: 'Features', header: 'Multiline features', route: 'comp-multiline/s1'},
+          {name: 'Features', header: 'Multiline features', route: 'comp-multiline/s1'}
         ]
       },
       {
         name: 'Stackline',
         children: [
-          {name: 'Features', header: 'Stackline features', route: 'comp-stackline/s1'},
+          {name: 'Features', header: 'Stackline features', route: 'comp-stackline/s1'}
+        ]
+      },
+      {
+        name: 'Swatches',
+        children: [
+          {name: 'Features', header: 'Swatches features', route: 'comp-swatches/s1'},
+          {name: 'Material palettes', header: 'Material palettes', route: 'comp-swatches/s2'},
+          {name: 'Linear interpolated palettes', header: 'Linear interpolated palettes', route: 'comp-swatches/s3'},
+          {name: 'Random procedural palettes', header: 'Random procedural palettes', route: 'comp-swatches/s4'},
+          {name: 'Parametric procedural palettes', header: 'Parametric procedural palettes', route: 'comp-swatches/s5'},
+          {name: 'Coolors.co palettes', header: 'Coolors.co palettes', route: 'comp-swatches/s6'},
+          {name: 'Palettes from web', header: 'Palettes from web', route: 'comp-swatches/s7'}
         ]
       }
     ]

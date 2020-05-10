@@ -1,0 +1,220 @@
+<div class="sample">
+  <mat-card class="example-card">
+    <mat-card-header>
+      <mat-card-title>Material A700-400-200-100</mat-card-title>
+      <mat-card-subtitle>selector using '7241' sequence</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <mb-swatches-select [colors]="palettes" (selectionChange)="selectionChanged($event);"></mb-swatches-select>
+    </mat-card-content>
+    <mat-card-content>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            '7241' spans
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <span *ngFor="let p of palettes" style="margin-right:10px">
+          <mb-swatches [width]="160" [height]="32" [colors]="p"></mb-swatches>
+        </span>
+      </mat-expansion-panel>
+        </mat-card-content>
+  </mat-card>
+<!--
+      <mat-form-field style="width: 140px;"><!- - 120 + 20 = 140  - ->
+        <mat-label>Select a color palette</mat-label>
+        <mat-select [(value)]="selectedPalette" (selectionChange)="selectionChanged($event);"> <!- -  [multiple]="true"  - ->
+          <mat-select-trigger>
+            <mb-swatches [width]="120" [height]="24" [colors]="selectedPalette"></mb-swatches><!- - 24 * 5 = 120  - ->
+          </mat-select-trigger>
+          <mat-option *ngFor="let s of palettes" [value]="s" style="padding: 18px 0px 0px 30px">
+            <mb-swatches [width]="160" [height]="32" [colors]="s"></mb-swatches><!- - 32 * 5 = 160  - ->
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+-->
+  <mat-expansion-panel class="example-card">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Material A700-400-200-100
+      </mat-panel-title>
+      <mat-panel-description>
+        '7241' spans
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <span *ngFor="let p of palettes" style="margin-right:10px">
+      <mb-swatches [width]="160" [height]="32" [colors]="p"></mb-swatches>
+    </span>
+  </mat-expansion-panel>
+
+  <mat-card class="example-card">
+    <mat-card-header>
+      <mat-card-title>Colors</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mb-swatches [colors]="colors1" [width]="64" [height]="24"></mb-swatches>
+      <p>
+      <mb-swatches [colors]="colors2" [width]="64" [height]="24"></mb-swatches>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="example-card">
+    <mat-card-header>
+      <mat-card-title>Size</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mb-swatches [colors]="colors1" [width]="128" [height]="32"></mb-swatches>
+      <p>
+      <mb-swatches [colors]="colors2" [width]="32" [height]="8"></mb-swatches>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="example-card">
+    <mat-card-header>
+      <mat-card-title>Select</mat-card-title>
+      <mat-card-subtitle>width is 160px</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-form-field style="width: 140px;"><!-- 120 + 20 = 140  -->
+        <mat-label>Select a color palette</mat-label>
+        <mat-select [(value)]="swatchesSelected1">
+          <mat-select-trigger>
+            <mb-swatches [width]="120" [height]="24" [colors]="swatchesSelected1"></mb-swatches><!-- 24 * 5 = 120  -->
+          </mat-select-trigger>
+          <mat-option *ngFor="let s of swatchesArray1" [value]="s" style="padding: 18px 0px 0px 30px">
+            <mb-swatches [width]="160" [height]="32" [colors]="s"></mb-swatches><!-- 32 * 5 = 160  -->
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </mat-card-content>
+    <mat-card-actions>
+      You selected:
+      <mb-swatches [width]="100" [height]="16" [colors]="swatchesSelected1"></mb-swatches>
+    </mat-card-actions>
+  </mat-card>
+
+  <mat-card class="example-card">
+    <mat-card-header>
+      <mat-card-title>Sequential-5 palettes</mat-card-title>
+      <mat-card-subtitle>selector, width is 160px</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-form-field style="width: 140px;"><!-- 120 + 20 = 140  -->
+        <mat-label>Select a color palette</mat-label>
+        <mat-select [(value)]="sequential5SwatchesSelected">
+          <mat-select-trigger>
+            <mb-swatches [width]="120" [height]="24" [colors]="sequential5SwatchesSelected"></mb-swatches><!-- 24 * 5 = 120  -->
+          </mat-select-trigger>
+          <mat-option *ngFor="let s of sequential5SwatchesArray" [value]="s" style="padding: 18px 0px 0px 30px">
+            <mb-swatches [width]="160" [height]="32" [colors]="s"></mb-swatches><!-- 32 * 5 = 160  -->
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </mat-card-content>
+    <mat-card-actions>
+      You selected:
+      <mb-swatches [width]="90" [height]="16" [colors]="sequential5SwatchesSelected"></mb-swatches>
+    </mat-card-actions>
+  </mat-card>
+
+  <mat-card class="example-card">
+    <mat-card-header>
+      <mat-card-title>Linear palettes</mat-card-title>
+      <mat-card-subtitle>spans</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <span *ngFor="let s of linearPalettes; let i = index">
+        <mb-swatches [width]="160" [height]="32" [colors]="s"></mb-swatches>&nbsp;{{i + 2}}
+      </span>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="example-card">
+    <mat-card-header>
+      <mat-card-title>Random palettes</mat-card-title>
+      <mat-card-subtitle>spans</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <span *ngFor="let s of randomPalettes; let i = index">
+        <mb-swatches [width]="160" [height]="32" [colors]="s"></mb-swatches>&nbsp;{{i + 2}}
+      </span>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="example-card">
+    <mat-card-header>
+      <mat-card-title>Procedural palettes</mat-card-title>
+      <mat-card-subtitle>spans</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <span *ngFor="let s of proceduralPalettes; let i = index">
+        <mb-swatches [width]="160" [height]="32" [colors]="s"></mb-swatches>&nbsp;{{i + 2}}
+      </span>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="example-card">
+    <mat-card-header>
+      <mat-card-title>Material A799-A400-A200-A100 palettes</mat-card-title>
+      <mat-card-subtitle>spans</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <span *ngFor="let s of materialA4Palettes; let i = index">
+        <mb-swatches [width]="160" [height]="32" [colors]="s"></mb-swatches>&nbsp;{{i + 2}}
+      </span>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="example-card">
+    <mat-card-header>
+      <mat-card-title>Sequential-5 palettes</mat-card-title>
+      <mat-card-subtitle>spans</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <span *ngFor="let s of sequential5SwatchesArray; let i = index">
+        <mb-swatches [width]="160" [height]="32" [colors]="s"></mb-swatches>&nbsp;{{i + 2}}
+      </span>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="example-card">
+    <mat-card-header>
+      <mat-card-title>Sequential-5 palettes</mat-card-title>
+      <mat-card-subtitle>list</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-list style="max-width:300px">
+        <mat-list-item *ngFor="let s of sequential5SwatchesArray; let i = index">
+          <mb-swatches [width]="160" [height]="32" [colors]="s"></mb-swatches>&nbsp;{{i + 2}}
+        </mat-list-item>
+      </mat-list>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="example-card">
+    <mat-card-header>
+      <mat-card-title>Huge-5 palettes</mat-card-title>
+      <mat-card-subtitle>WHuge palette list</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <span *ngFor="let s of huge5SwatchesArray; let i = index">
+        <mb-swatches [width]="160" [height]="32" [colors]="s"></mb-swatches>&nbsp;{{i + 2}}
+      </span>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="example-card">
+    <mat-card-header>
+      <mat-card-title>Simple list</mat-card-title>
+      <mat-card-subtitle>WHuge palette list</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-list style="max-width:300px">
+        <mat-list-item *ngFor="let s of huge5SwatchesArray; let i = index">
+          <mb-swatches [width]="160" [height]="32" [colors]="s"></mb-swatches>&nbsp;{{i + 2}}
+        </mat-list-item>
+      </mat-list>
+    </mat-card-content>
+  </mat-card>
+
+</div>

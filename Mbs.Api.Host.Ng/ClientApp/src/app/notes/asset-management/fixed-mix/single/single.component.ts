@@ -49,7 +49,7 @@ export class SingleComponent {
     const allocation = this.initialAmount * this.hrRatio / 100;
     const position = allocation / this.hrInstrument.data[0].value;
     const calculated: Scalar[] = [];
-    for (let d of this.hrInstrument.data) {
+    for (const d of this.hrInstrument.data) {
       calculated.push({time: d.time, value: d.value * position});
     }
     return calculated;
@@ -59,7 +59,7 @@ export class SingleComponent {
     const allocation = this.initialAmount * (1 - this.hrRatio / 100);
     const position = allocation / this.lrInstrument.data[0].value;
     const calculated: Scalar[] = [];
-    for (let d of this.lrInstrument.data) {
+    for (const d of this.lrInstrument.data) {
       calculated.push({time: d.time, value: d.value * position});
     }
     return calculated;
@@ -67,7 +67,7 @@ export class SingleComponent {
 
   get initialCalculated(): Scalar[] {
     const calculated: Scalar[] = [];
-    for (let d of this.hrInstrument.data) {
+    for (const d of this.hrInstrument.data) {
       calculated.push({time: d.time, value: this.initialAmount});
     }
     return calculated;

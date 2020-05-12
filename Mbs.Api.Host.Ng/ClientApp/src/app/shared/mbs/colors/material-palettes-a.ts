@@ -1,10 +1,10 @@
 /**
  * Material Design sequential A700-A400-A200-A100 palettes.
- * 
+ *
  * The *sequence* parameter defines the number of colors and their order as a string with digits *7 4 2 1*.
- * 
+ *
  * The number of digits determines the number of colors, their order determines the order of colors.
- * 
+ *
  * For instance, *'27'* defines A200-A700 palettes.
  */
 export function materialPalettesA(sequence: string = '7241'): string[][] {
@@ -32,7 +32,7 @@ export function materialPalettesA(sequence: string = '7241'): string[][] {
   }
 
   const digitArray = Array.from(sequence);
-  for (let digit of digitArray) {
+  for (const digit of digitArray) {
     switch (digit) {
       case '7': {
         palettes[ 0].push('#D50000'); // red

@@ -9,12 +9,12 @@ import { materialPalettesA } from '../../../../../shared/mbs/colors/material-pal
 })
 export class SampleSwatches6Component {
 
+  palettes: string[][] =  materialPalettesA('7241');
+  selectedPalette: string[] = this.palettes[0];
+
   materialA7421Palettes(sequence: string): string[][]{
     return materialPalettesA(sequence);
   }
-
-  palettes: string[][] =  materialPalettesA('7241');
-  selectedPalette: string[] = this.palettes[0];
 
   selectionChanged(selection: string[]) {
     console.log('selection changed', selection);

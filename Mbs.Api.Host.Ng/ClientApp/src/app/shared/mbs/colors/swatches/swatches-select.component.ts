@@ -10,7 +10,7 @@ const NUMBER_OF_SWATCHES = 3;
   selector: 'mb-swatches-select',
   templateUrl: './swatches-select.component.html',
   styleUrls: ['./swatches-select.component.scss'],
-  //changeDetection: ChangeDetectionStrategy.OnPush,
+  // changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None
 })
 export class SwatchesSelectComponent {
@@ -21,7 +21,7 @@ export class SwatchesSelectComponent {
       this.palettes = newColors;
       this.selectedPalette = this.palettes[0];
       let length = 0;
-      for (let palette in this.palettes) {
+      for (const palette in this.palettes) {
         if (length < palette.length) {
           length = palette.length;
         }
@@ -33,7 +33,7 @@ export class SwatchesSelectComponent {
   }
 
   /** A label to display above the selector. */
-  @Input() label: string = 'Select colors';
+  @Input() label = 'Select colors';
 
   /** Event emitted when the selected value has been changed by the user. */
   @Output() readonly selectionChange: EventEmitter<string[]> = new EventEmitter<string[]>();
@@ -53,6 +53,6 @@ export class SwatchesSelectComponent {
   }
 
   computeWidthStyle(): any {
-    return { 'width': `${this.selectWidthPixels}px` };
+    return { width: `${this.selectWidthPixels}px` };
   }
 }

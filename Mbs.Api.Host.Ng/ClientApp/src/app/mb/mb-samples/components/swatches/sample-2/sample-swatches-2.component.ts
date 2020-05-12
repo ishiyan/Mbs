@@ -10,23 +10,23 @@ import { materialPalettes } from '../../../../../shared/mbs/colors/material-pale
 })
 export class SampleSwatches2Component {
 
-  private sequenceA:number = 7241;
+  private sequenceA = 7241;
   get paletteSequenceA(): number {
     return this.sequenceA;
   }
   set paletteSequenceA(value: number) {
     this.sequenceA = value;
     this.palettesA = materialPalettesA(this.sequenceA.toString());
-  } 
+  }
 
-  private sequence:number = 9785634120;
+  private sequence = 9785634120;
   get paletteSequence(): number {
     return this.sequence;
   }
   set paletteSequence(value: number) {
     this.sequence = value;
     this.palettes = materialPalettes(this.sequence.toString());
-  } 
+  }
 
   palettesAOrdered: string[][] = materialPalettesA('7421');
   palettesA: string[][] = materialPalettesA(this.sequenceA.toString());

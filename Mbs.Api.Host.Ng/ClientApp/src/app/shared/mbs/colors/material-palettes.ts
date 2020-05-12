@@ -1,10 +1,10 @@
 /**
  * Material Design sequential 900-800-700-600-500-400-300-200-100-50 palettes.
- * 
+ *
  * The *sequence* parameter defines the number of colors and their order as a string with digits *9 8 7 6 5 4 3 2 1 0*.
- * 
+ *
  * The number of digits determines the number of colors, their order determines the order of colors.
- * 
+ *
  * For instance, *'270'* defines 200-700-50 palettes.
  */
 export function materialPalettes(sequence: string = '9785634120'): string[][] {
@@ -35,7 +35,7 @@ export function materialPalettes(sequence: string = '9785634120'): string[][] {
   }
 
   const digitArray = Array.from(sequence);
-  for (let digit of digitArray) {
+  for (const digit of digitArray) {
     switch (digit) {
       case '9': {
         palettes[ 0].push('#B71C1C'); // red

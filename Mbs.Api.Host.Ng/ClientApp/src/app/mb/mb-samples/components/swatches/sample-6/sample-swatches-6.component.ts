@@ -17,7 +17,6 @@ export class SampleSwatches6Component {
   set paletteSequenceLength(value: number) {
     this.sequence = value;
     this.palettesSequence = colorsCoSequential5PalettesSelection(this.sequence.toString());
-    this.selectedPaletteIndex = this.palettesSequence.indexOf(this.selectedPaletteSequence);
     this.selectedPaletteSequence = this.palettesSequence[this.selectedPaletteIndex];
   }
 

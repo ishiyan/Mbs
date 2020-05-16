@@ -322,7 +322,7 @@ export class SampleSwatches3Component {
     '#FAFAFA',
     '#ECEFF1'
   ];
-  
+
   private readonly colorsCoSelectedStart: string[] = [
     '#114b5f',
     '#05668d',
@@ -444,9 +444,9 @@ export class SampleSwatches3Component {
 
   palettesMaterial: string[][] = this.linearInterpolatedPalettesMaterial(this.numberOfSwatchesMaterial);
   selectedPaletteMaterial: string[] = this.palettesMaterial[this.selectedIndexMaterial];
-  
+
   readonly linearPalettes: string[][] = this.linearSwatches();
-  
+
   get paletteLength(): number {
     return this.numberOfSwatches;
   }
@@ -466,7 +466,7 @@ export class SampleSwatches3Component {
     this.palettesMaterial = this.linearInterpolatedPalettesMaterial(this.numberOfSwatchesMaterial);
     this.selectedPaletteMaterial = this.palettesMaterial[this.selectedIndexMaterial];
   }
-  
+
   linearInterpolatedPalettes(numberOfSwatches: number): string[][]{
     const numberOfPairs = this.colorsStart.length;
     const palettes: string[][] = [];

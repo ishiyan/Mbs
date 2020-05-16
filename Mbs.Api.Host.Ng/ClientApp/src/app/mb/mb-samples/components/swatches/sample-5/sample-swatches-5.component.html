@@ -3,12 +3,17 @@
   <mat-card class="example-card">
     <mat-card-header>
       <mat-card-title>Parametric procedural palette</mat-card-title>
+      <mat-card-subtitle>
+        <mat-form-field appearance="fill">
+          <mat-label>Select number of swatches</mat-label>
+          <input matInput type="number" min="2" max="60" [(ngModel)]="generatedPaletteLength">
+        </mat-form-field>
+      </mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
-      <mat-form-field appearance="fill">
-        <mat-label>Select number of swatches</mat-label>
-        <input matInput type="number" min="2" max="60" [(ngModel)]="generatedNumberOfSwatches">
-      </mat-form-field>
+      <mb-katex [expression]="katex1"></mb-katex>
+      <mb-katex [expression]="katex2"></mb-katex>
+      <mb-katex [expression]="katex3"></mb-katex>
     </mat-card-content>
     <mat-card-content>
       <mb-swatches [width]="260" [height]="32" [colors]="generatedPalette"></mb-swatches>
@@ -46,6 +51,23 @@
         <mat-slider [min]="0" [step]="0.01" [max]="1" [thumbLabel]="true" color="primary" [(ngModel)]="d2" (input)="d2Changed($event)"></mat-slider>
         <mat-slider [min]="0" [step]="0.01" [max]="1" [thumbLabel]="true" color="primary" [(ngModel)]="d3" (input)="d3Changed($event)"></mat-slider>
       </mat-expansion-panel>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="example-card">
+    <mat-card-header>
+      <mat-card-title>Examples</mat-card-title>
+      <mat-card-subtitle>
+        <mat-form-field appearance="fill">
+          <mat-label>Select number of swatches</mat-label>
+          <input matInput type="number" min="2" max="60" [(ngModel)]="generatedPalettesLength">
+        </mat-form-field>  
+      </mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <span *ngFor="let s of generatedPalettes">
+        <div><mb-swatches [width]="260" [height]="32" [colors]="s"></mb-swatches></div>
+      </span>
     </mat-card-content>
   </mat-card>
 

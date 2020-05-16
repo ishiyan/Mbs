@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
 import { MaterialModule } from '../../../../shared/material/material.module';
+import { KatexModule } from '../../../../shared/katex/katex.module';
 import { MbsModule } from '../../../../shared/mbs/mbs.module';
 
 import { SampleSwatches1Component } from './sample-1/sample-swatches-1.component';
@@ -19,7 +20,7 @@ import { SampleSwatchesRoutingModule } from './sample-swatches-routing.module';
 @NgModule({
   imports: [
     CommonModule, FormsModule, FlexLayoutModule,
-    MaterialModule, MbsModule, SampleSwatchesRoutingModule
+    MaterialModule, KatexModule, MbsModule, SampleSwatchesRoutingModule
   ],
   declarations: [
     SampleSwatches1Component, SampleSwatches2Component, SampleSwatches3Component, SampleSwatches4Component,

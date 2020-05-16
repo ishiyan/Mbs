@@ -14,20 +14,48 @@ export class SampleSwatches5Component {
   private c = [1.0, 1.0, 1.0];
   private d = [0.0, 0.33, 0.67];
 
-  generatedNumberOfSwatches = 20;
-  generatedPalette = parametricProceduralPalette(this.generatedNumberOfSwatches, this.a, this.b, this.c, this.d);
+  katex1 = 'r_t=a_1+b_1\\cos(2\\pi(c_1t+d_1))';
+  katex2 = 'g_t=a_2+b_2\\cos(2\\pi(c_2t+d_2))';
+  katex3 = 'b_t=a_3+b_3\\cos(2\\pi(c_3t+d_3))';
+
+  generatedPalettesSwatches = 20;
+  generatedPalettes = this.generatePalettes(this.generatedPalettesSwatches);
+
+  generatedPaletteSwatches = 20;
+  generatedPalette = parametricProceduralPalette(this.generatedPaletteSwatches, this.a, this.b, this.c, this.d);
+
+  private generatePalettes(generatedPalettesSwatches: number): string[][] {
+    return [
+      parametricProceduralPalette(generatedPalettesSwatches, [0.5, 0.5, 0.5], [0.5, 0.5, 0.5], [1.0, 1.0, 1.0], [0.00, 0.33, 0.67]),
+      parametricProceduralPalette(generatedPalettesSwatches, [0.5, 0.5, 0.5], [0.5, 0.5, 0.5], [1.0, 1.0, 1.0], [0.00, 0.10, 0.20]),
+      parametricProceduralPalette(generatedPalettesSwatches, [0.5, 0.5, 0.5], [0.5, 0.5, 0.5], [1.0, 1.0, 1.0], [0.30, 0.20, 0.20]),
+      parametricProceduralPalette(generatedPalettesSwatches, [0.5, 0.5, 0.5], [0.5, 0.5, 0.5], [1.0, 1.0, 0.5], [0.80, 0.90, 0.30]),
+      parametricProceduralPalette(generatedPalettesSwatches, [0.5, 0.5, 0.5], [0.5, 0.5, 0.5], [1.0, 0.7, 0.4], [0.00, 0.15, 0.20]),
+      parametricProceduralPalette(generatedPalettesSwatches, [0.5, 0.5, 0.5], [0.5, 0.5, 0.5], [2.0, 1.0, 0.0], [0.50, 0.20, 0.25]),
+      parametricProceduralPalette(generatedPalettesSwatches, [0.8, 0.5, 0.4], [0.2, 0.4, 0.2], [2.0, 1.0, 1.0], [0.00, 0.25, 0.25]),
+      parametricProceduralPalette(generatedPalettesSwatches, [0.3, 0.5, 0.6], [0.1, 0, 0.6], [1.0, 1.0, 1.0], [0.8, 0.5, 0.25])
+    ];
+  }
 
   private regenerate() {
-    this.generatedPalette = parametricProceduralPalette(this.generatedNumberOfSwatches,
+    this.generatedPalette = parametricProceduralPalette(this.generatedPaletteSwatches,
       this.a, this.b, this.c, this.d);
   }
 
+  get generatedPalettesLength(): number {
+    return this.generatedPalettesSwatches;
+  }
+  set generatedPalettesLength(value: number) {
+    this.generatedPalettesSwatches = value;
+    this.generatedPalettes = this.generatePalettes(this.generatedPalettesSwatches);
+  }
+
   get generatedPaletteLength(): number {
-    return this.generatedNumberOfSwatches;
+    return this.generatedPaletteSwatches;
   }
   set generatedPaletteLength(value: number) {
-    this.generatedNumberOfSwatches = value;
-    this.regenerate;
+    this.generatedPaletteSwatches = value;
+    this.regenerate();
   }
 
   get a1(): number {

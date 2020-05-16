@@ -1,3 +1,6 @@
+/**
+ * Sequential palletes from *colors.co*.
+ */
 export const colorsCoSequential5Palettes: string[][] = [
   ['#114b5f', '#1a936f', '#88d498', '#c6dabf', '#f3e9d2'], // https://coolors.co/114b5f-1a936f-88d498-c6dabf-f3e9d2
   ['#05668d', '#028090', '#00a896', '#02c39a', '#f0f3bd'], // https://coolors.co/05668d-028090-00a896-02c39a-f0f3bd

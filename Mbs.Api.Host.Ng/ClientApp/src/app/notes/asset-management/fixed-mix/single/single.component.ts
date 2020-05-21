@@ -37,9 +37,9 @@ export class SingleComponent {
   selectedPalette: string[] = this.palettes[0];
 
   readonly hrInstruments: TestInstrument[] = [
+    bamGlDevMarketsEqSicav, alexSpeculative, alexVerySpeculative,
     crudeOilFuture, dowMiniFuture, luxorDowJonesIndustrialAverageEtf, sp500MiniFuture, nasdaq100MiniFuture,
-    russell2000MiniFuture, djEuroStoxxTotalMarketTr, stoxxGlobal3000Nr, stoxx1800Nr, stoxxGlobal1800ExApacNr,
-    bamGlDevMarketsEqSicav, alexSpeculative, alexVerySpeculative
+    russell2000MiniFuture, djEuroStoxxTotalMarketTr, stoxxGlobal3000Nr, stoxx1800Nr, stoxxGlobal1800ExApacNr
   ];
   readonly lrInstruments: TestInstrument[] = [
     barclays15YearEuroCorpBond, barclays35YearEuroTreasuryBond,

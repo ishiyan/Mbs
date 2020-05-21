@@ -1,12 +1,5 @@
 <div class="sample">
   <mat-card class="example-card">
-    <mat-card-header>
-      <mat-card-title>Alex instruments</mat-card-title>
-      <mat-card-subtitle>Sparkline width is 160px</mat-card-subtitle>
-      <mat-card-subtitle>
-      </mat-card-subtitle>
-    </mat-card-header>
-
     <mat-card-content>
       <mat-form-field style="width:300px;margin-right:60px">
         <mat-label>LR instrument</mat-label>
@@ -22,7 +15,7 @@
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field style="width:300px;margin-right:60px">
+      <mat-form-field style="width:300px">
         <mat-label>HR instrument</mat-label>
         <mat-select [(value)]="hrInstrument">
           <mat-select-trigger>
@@ -35,22 +28,35 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-
-      <mat-form-field> <!--  appearance="fill" <span matPrefix>EUR&nbsp;</span> <span matSuffix>.00</span>-->
-        <mat-label>Initial amount</mat-label>
-        <input matInput type="number">
-      </mat-form-field>
-
-      <div>HR&nbsp;%&nbsp;<mat-slider [max]="100" [min]="0" [step]="1" [thumbLabel]="true" [(ngModel)]="hrRatio" color="primary" style="width:280px;margin-right:60px"></mat-slider></div>
-
     </mat-card-content>
 
     <mat-card-content>
-      <mb-stackiline [width]="'100%'" style="max-width:600px;" [height]="200" [timeAxis]="['bottom']"
-        [valueAxis]="['grid']" [data]="[hrCalculated, lrCalculated]" [configuration]="[hrFill, lrFill]"></mb-stackiline>
+      <mb-stackiline [width]="'100%'" style="max-width:1200px;" [height]="200" [timeAxis]="['bottom']" [min]="0"
+        [valueAxis]="['grid']" [data]="[cashCalculated, hrCalculated, lrCalculated]" [configuration]="[cashFill, hrFill, lrFill]"></mb-stackiline>
     </mat-card-content>
 
-    <mat-card-actions>
-    </mat-card-actions>
+    <mat-card-content>
+      <mb-multiline [width]="'100%'" style="max-width:1200px;"  [timeAxis]="['bottom']"  [valueAxis]="['grid']"
+        [min]="hrPercentageMin" [max]="hrPercentageMax"
+        [data]="[hrPercentage]" [configuration]="[hrPercentageLine]"></mb-multiline>
+    </mat-card-content>
+
+    <mat-card-content>
+      <div class="rightmargin"><mat-slider [min]="5000" [max]="500000" [step]="5000" [thumbLabel]="false" [(ngModel)]="initialAmount" (input)="initialAmountChanged($event)" color="primary"></mat-slider>&nbsp;Initial amount&nbsp;€{{initialAmount / 1000}}.000</div>
+
+      <div class="rightmargin"><mat-slider [max]="100" [min]="0" [step]="1" [thumbLabel]="true" [(ngModel)]="hrIdeal" (input)="hrIdealChanged($event)" color="primary"></mat-slider>&nbsp;HR&nbsp;ideal&nbsp;{{hrIdeal}}%</div>
+
+      <div class="rightmargin"><mat-slider [max]="100" [min]="0" [step]="1" [thumbLabel]="true" [(ngModel)]="hrThreshold" (input)="hrThresholdChanged($event)" color="primary"></mat-slider>&nbsp;HR&nbsp;threshold&nbsp;{{hrThreshold}}%</div>
+
+      <p>
+        <mb-swatches-select class="rightmargin" [colors]="palettes" (selectionChange)="paletteSelectionChanged($event);"></mb-swatches-select>
+
+        <mat-slide-toggle [(ngModel)]="fractionalPositions" color="primary" style="font-size:14px">fractional positions</mat-slide-toggle>  
+      </p>
+    </mat-card-content>
+
+    <mat-card-content>
+      <p>Here be dragons</p>
+    </mat-card-content>
   </mat-card>
 </div>

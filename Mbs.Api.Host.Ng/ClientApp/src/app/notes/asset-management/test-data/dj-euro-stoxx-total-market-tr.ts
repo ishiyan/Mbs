@@ -8,7 +8,7 @@
 // currency: EUR
 
 export const djEuroStoxxTotalMarketTr: TestInstrument = {
-  name: 'DJ euro Stoxx Total Market TR',
+  name: 'DJ euro Stoxx Tot Mkt TR',
   data: [
     { time: new Date(2017, 7, 4), value: 645.18 },
     { time: new Date(2017, 7, 7), value: 645.27 },

@@ -8,7 +8,7 @@
 // currency: EUR
 
 export const stoxxGlobal1800ExApacNr: TestInstrument = {
-  name: 'Stoxx Global 1800 ex APAC NR',
+  name: 'Stoxx Gl1800 exAPAC NR',
   data: [
     { time: new Date(2017, 7, 4), value: 914.28 },
     { time: new Date(2017, 7, 7), value: 912.39 },

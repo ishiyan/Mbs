@@ -7,7 +7,7 @@
 // currency: USD
 
 export const crudeOilFuture: TestInstrument = {
-  name: 'Crude Oil Future @XCME',
+  name: 'Crude Oil Future',
   data: [
     { time: new Date(2017, 7, 4), value: 49.52 },
     { time: new Date(2017, 7, 7), value: 49.31 },

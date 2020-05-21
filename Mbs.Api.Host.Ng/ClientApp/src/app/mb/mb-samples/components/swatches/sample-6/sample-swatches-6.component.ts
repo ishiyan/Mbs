@@ -16,16 +16,17 @@ export class SampleSwatches6Component {
   }
   set paletteSequenceLength(value: number) {
     this.sequence = value;
-    this.palettesSequence = colorsCoSequential5PalettesSelection(this.sequence.toString());
+    this.palettesSequence = colorsCoSequential5PalettesSelection(this.sequenceToString());
+    this.selectedPaletteIndex = 0;
     this.selectedPaletteSequence = this.palettesSequence[this.selectedPaletteIndex];
   }
 
-  palettesSequence: string[][] = colorsCoSequential5PalettesSelection(this.sequence.toString());
-  selectedPaletteIndex = 0;
+  palettesSequence: string[][] = colorsCoSequential5PalettesSelection(this.sequenceToString());
+  private selectedPaletteIndex = 0;
   selectedPaletteSequence: string[] = this.palettesSequence[this.selectedPaletteIndex];
 
   palettesAll: string[][] = colorsCoSequential5Palettes;
-  selectedPalettesAllIndex = 0;
+  private selectedPalettesAllIndex = 0;
   selectedPalettesAll: string[] = this.palettesAll[this.selectedPalettesAllIndex];
 
   selectionChanged(selection: string[]) {
@@ -36,5 +37,9 @@ export class SampleSwatches6Component {
   selectionAllChanged(selection: string[]) {
     this.selectedPalettesAllIndex = this.palettesAll.indexOf(selection);
     this.selectedPalettesAll = selection;
+  }
+
+  private sequenceToString(): string | undefined {
+    return this.sequence === null ? undefined : this.sequence.toString();
   }
 }

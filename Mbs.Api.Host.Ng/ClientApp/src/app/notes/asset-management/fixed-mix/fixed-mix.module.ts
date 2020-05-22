@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
 import { MaterialModule } from '../../../shared/material/material.module';
+import { KatexModule } from '../../../shared/katex/katex.module';
 import { MbsModule } from '../../../shared/mbs/mbs.module';
 
 import { BucketsComponent } from './buckets/buckets.component';
@@ -16,7 +17,7 @@ import { FixedMixRoutingModule } from './fixed-mix-routing.module';
 @NgModule({
   imports: [
     CommonModule, FormsModule, FlexLayoutModule,
-    MaterialModule, MbsModule, FixedMixRoutingModule
+    MaterialModule, KatexModule, MbsModule, FixedMixRoutingModule
   ],
   declarations: [
     BucketsComponent, BucketsInteractiveComponent, SingleComponent, SingleInteractiveComponent

@@ -1,5 +1,6 @@
 <div class="sample">
   <mat-card class="example-card">
+    <mat-card-title>Fixed-percentage mix of two instruments</mat-card-title>
     <mat-card-content>
       <mat-form-field style="width:300px;margin-right:60px">
         <mat-label>LR instrument</mat-label>
@@ -44,9 +45,9 @@
     <mat-card-content>
       <div class="rightmargin"><mat-slider [min]="5000" [max]="500000" [step]="5000" [thumbLabel]="false" [(ngModel)]="initialAmount" (input)="initialAmountChanged($event)" color="primary"></mat-slider>&nbsp;Initial amount&nbsp;€{{initialAmount / 1000}}.000</div>
 
-      <div class="rightmargin"><mat-slider [max]="100" [min]="0" [step]="1" [thumbLabel]="true" [(ngModel)]="hrIdeal" (input)="hrIdealChanged($event)" color="primary"></mat-slider>&nbsp;HR&nbsp;ideal&nbsp;{{hrIdeal}}%</div>
+      <div class="rightmargin"><mat-slider [max]="100" [min]="0" [step]="1" [thumbLabel]="true" [(ngModel)]="hrIdeal" (input)="hrIdealChanged($event)" color="primary"></mat-slider>&nbsp;HR&nbsp;percentage&nbsp;{{hrIdeal}}%</div>
 
-      <div class="rightmargin"><mat-slider [max]="100" [min]="0" [step]="1" [thumbLabel]="true" [(ngModel)]="hrThreshold" (input)="hrThresholdChanged($event)" color="primary"></mat-slider>&nbsp;HR&nbsp;threshold&nbsp;{{hrThreshold}}%</div>
+      <div class="rightmargin"><mat-slider [max]="100" [min]="0" [step]="1" [thumbLabel]="true" [(ngModel)]="hrThreshold" (input)="hrThresholdChanged($event)" color="primary"></mat-slider>&nbsp;HR&nbsp;tolerance&nbsp;±{{hrThreshold}}%</div>
 
       <p>
         <mb-swatches-select class="rightmargin" [colors]="palettes" (selectionChange)="paletteSelectionChanged($event);"></mb-swatches-select>
@@ -56,7 +57,62 @@
     </mat-card-content>
 
     <mat-card-content>
-      <p>Here be dragons</p>
+      <p>
+        This simulates a fixed-percentage mix of two instruments, <span class="italic">high risk</span> (equities) and a <span class="italic">low risk</span> (bonds).
+      </p>
+      <p>
+        The concept is based on a well known believe that, ceteris paribus, stock prices tend to raise and bond prices tend to fall when interest rates fall, and vice versa.
+      </p>
+      <p>
+        At every moment, the value of assets under mamagement should have {{hrIdeal}}% of the <span class="italic">HR</span> asset with a tolerance of ±{{hrThreshold}}%.
+        The rest is filled by the <span class="italic">LR</span> asset and cash (also considered as a <span class="italic">low risk</span> asset).
+      </p>
+      <p>
+        You can select both <span class="italic">HR</span> and <span class="italic">LR</span> instruments from the pre-defined lists.
+        Note shapes of the sparklines do not reflect an absolute price level, they are normalized to the <span class="italic">[min, max]</span> of the related daily price histories.
+      </p>
+      <p>
+        The first chart shows development of assets under management consisting of cash, <span class="italic">HR</span> and <span class="italic">LR</span> stacked areas.
+        Area colors can be changed by selecting pre-defined color swatches.
+        The second chart shows the percentage of the <span class="italic">HR</span> asset measured after daily re-balance.
+      </p>
+      <p>
+        In the three sliders you can change the initial amount of cash and the <span class="italic">HR</span> percentage with its tolerance.
+      </p>
+      <p>
+        You can allow fractional positions for both instruments.
+        By default, positions are rounded to integer values, so some cash remains not invested.
+      </p>
+      <p>
+        The daily re-balancing algorithm is as follows.
+      </p>
+      <div><mb-katex [expression]="'ideal_\\%=\\frac{percentage}{100}'"></mb-katex></div>
+      <div><mb-katex [expression]="'min_\\%=\\max(0,ideal_\\%-\\frac{tolerance}{100})'"></mb-katex></div>
+      <div><mb-katex [expression]="'max_\\%=\\min(1,ideal_\\%+\\frac{tolerance}{100})'"></mb-katex></div>
+      <p></p>
+      <div><mb-katex [expression]="'\\textbf{input}\\: pos_H, pos_L, cash'"></mb-katex></div>
+      <p></p>
+      <div><mb-katex [expression]="'amt_H=pos_H \\cdot price_H'"></mb-katex></div>
+      <div><mb-katex [expression]="'amt_L=pos_L \\cdot price_L'"></mb-katex></div>
+      <div><mb-katex [expression]="'aum=amt_H+amt_L+cash'"></mb-katex></div>
+      <div><mb-katex [expression]="'current_\\%=\\frac{amt_H}{aum}'"></mb-katex></div>
+      <p></p>
+      <div><mb-katex [expression]="'\\textbf{if}\\: current_\\% \\notin \\left[ min_\\%, max_\\% \\right]\\: \\textbf{then}'"></mb-katex></div>
+      <div><mb-katex [expression]="'\\;\\;\\;\\; amt_H=aum \\cdot ideal_\\%'"></mb-katex></div>
+      <div><mb-katex [expression]="'\\;\\;\\;\\; amt_L=aum-amt_H'"></mb-katex></div>
+      <div><mb-katex [expression]="'\\;\\;\\;\\; pos_H=\\frac{amt_H}{price_H}'"></mb-katex></div>
+      <div><mb-katex [expression]="'\\;\\;\\;\\; pos_L=\\frac{amt_L}{price_L}'"></mb-katex></div>
+      <div><mb-katex [expression]="'\\;\\;\\;\\; \\textbf{if}\\: integer\\: positions\\: only\\: \\textbf{then}'"></mb-katex></div>
+      <div><mb-katex [expression]="'\\;\\;\\;\\;\\;\\;\\;\\; pos_H=\\max(0, \\lfloor pos_H-0.5 \\rceil)'"></mb-katex></div>
+      <div><mb-katex [expression]="'\\;\\;\\;\\;\\;\\;\\;\\; pos_L=\\max(0, \\lfloor pos_L-0.5 \\rceil)'"></mb-katex></div>
+      <div><mb-katex [expression]="'\\;\\;\\;\\;\\;\\;\\;\\; amt_H=pos_H \\cdot price_H'"></mb-katex></div>
+      <div><mb-katex [expression]="'\\;\\;\\;\\;\\;\\;\\;\\; amt_L=pos_L \\cdot price_L'"></mb-katex></div>
+      <div><mb-katex [expression]="'\\;\\;\\;\\; \\textbf{endif}'"></mb-katex></div>
+      <div><mb-katex [expression]="'\\;\\;\\;\\; cash=aum-amt_H-amt_L'"></mb-katex></div>
+      <div><mb-katex [expression]="'\\;\\;\\;\\; current_\\%=\\frac{amt_H}{aum}'"></mb-katex></div>
+      <div><mb-katex [expression]="'\\textbf{endif}'"></mb-katex></div>
+      <p></p>
+      <div><mb-katex [expression]="'\\textbf{output}\\: pos_H, pos_L, cash'"></mb-katex></div>
     </mat-card-content>
   </mat-card>
 </div>

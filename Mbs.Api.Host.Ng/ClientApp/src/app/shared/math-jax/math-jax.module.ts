@@ -62,7 +62,7 @@ export class MathJaxModule {
   public static forRoot(moduleConfiguration: ModuleConfiguration = {
     version: '2.7.7',
     config: 'TeX-AMS_HTML',
-    online: false
+    online: true
   }): ModuleWithProviders<MathJaxModule> {
     return {
       ngModule: MathJaxModule,

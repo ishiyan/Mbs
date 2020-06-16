@@ -1,0 +1,193 @@
+(a);0001;Oil & Gas
+(b);0500;Oil & Gas
+(c);0530;Oil & Gas Producers
+(d);0533;Exploration & Production;Companies engaged in the exploration for and drilling, production, refining and supply of oil and gas products.
+(d);0537;Integrated Oil & Gas;Integrated oil and gas companies engaged in the exploration for and drilling, production, refining, distribution and retail sales of oil and gas products.
+(c);0570;Oil Equipment, Services & Distribution
+(d);0573;Oil Equipment & Services;Suppliers of equipment and services to oil fields and offshore platforms, such as drilling, exploration, seismic-information services and platform construction.
+(d);0577;Pipelines;Operators of pipelines carrying oil, gas or other forms of fuel. Excludes pipeline operators that derive the majority of their revenues from direct sales to end users, which are classified under Gas Distribution.
+(c);0580;Alternative Energy
+(d);0583;Renewable Energy Equipment;Companies that develop or manufacture renewable energy equipment utilizing sources such as solar, wind, tidal, geothermal, hydro and waves.
+(d);0587;Alternative Fuels;Companies that produce alternative fuels such as ethanol, methanol, hydrogen and bio-fuels that are mainly used to power vehicles, and companies that are involved in the production of vehicle fuel cells and/or the development of alternative fuelling infrastructure.
+
+(a);1000;Basic Materials
+(b);1300;Chemicals
+(c);1350;Chemicals
+(d);1353;Commodity Chemicals;Producers and distributors of simple chemical products that are primarily used to formulate more complex chemicals or products, including plastics and rubber in their raw form, fiberglass and synthetic fibers.
+(d);1357;Specialty Chemicals;Producers and distributors of finished chemicals for industries or end users, Industry Structure and Definitions including dyes, cellular polymers, coatings, special plastics and other chemicals for specialized applications. Includes makers of colorings, flavors and fragrances, fertilizers, pesticides, chemicals used to make drugs, paint in its pigment form and glass in its unfinished form. Excludes producers of paint and glass products used for construction, which are classified under Building Materials & Fixtures.
+(b);1700;Basic Resources
+(c);1730;Forestry & Paper
+(d);1733;Forestry;Owners and operators of timber tracts, forest tree nurseries and sawmills. Excludes providers of finished wood products such as wooden beams, which are classified under Building Materials & Fixtures.
+(d);1737;Paper;Producers, converters, merchants and distributors of all grades of paper. Excludes makers of printed forms, which are classified under Business Support Services, and manufacturers of paper items such as cups and napkins, which are classified under Nondurable Household Products.
+(c);1750;Industrial Metals & Mining
+(d);1753;Aluminum;Companies that mine or process bauxite or manufacture and distribute aluminum bars, rods and other products for use by other industries. Excludes manufacturers of finished aluminum products, such as siding, which are categorized according to the type of end product.
+(d);1755;Nonferrous Metals;Producers and traders of metals and primary metal products other than iron, aluminum and steel. Excludes companies that make finished products, which are categorized according to the type of end product.
+(d);1757;Iron & Steel;Manufacturers and stockholders of primary iron and steel products such as pipes, wires, sheets and bars, encompassing all processes from smelting in blast furnaces to rolling mills and foundries. Includes companies that primarily mine iron ores.
+(c);1770;Mining
+(d);1771;Coal;Companies engaged in the exploration for or mining of coal.
+(d);1773;Diamonds & Gemstones;Companies engaged in the exploration for and production of diamonds and other gemstones.
+(d);1775;General Mining;Companies engaged in the exploration, extraction or refining of minerals not defined elsewhere within the Mining sector.
+(d);1777;Gold Mining;Prospectors for and extractors or refiners of gold-bearing ores.
+(d);1779;Platinum & Precious Metals;Companies engaged in the exploration for and production of platinum, silver and other precious metals not defined elsewhere.
+
+(a);2000;Industrials
+(b);2300;Construction & Materials
+(c);2350;Construction & Materials
+(d);2353;Building Materials & Fixtures;Producers of materials used in the construction and refurbishment of buildings and structures, including cement and other aggregates, wooden beams and frames, paint, glass, roofing and flooring materials other than carpets. Includes producers of bathroom and kitchen fixtures, plumbing supplies and central air-conditioning and heating equipment. Excludes producers of raw lumber, which are classified under Forestry.
+(d);2357;Heavy Construction;Companies engaged in the construction of commercial buildings, infrastructure such as roads and bridges, residential apartment buildings, and providers of services to construction companies, such as architects, masons, plumbers and electrical contractors.
+(b);2700;Industrial Goods & Services
+(c);2710;Aerospace & Defense
+(d);2713;Aerospace;Manufacturers, assemblers and distributors of aircraft and aircraft parts primarily used in commercial or private air transport. Excludes manufacturers of communications satellites, which are classified under Telecommunications Equipment.
+(d);2717;Defense;Producers of components and equipment for the defense industry, including military aircraft, radar equipment and weapons.
+(c);2720;General Industrials
+(d);2723;Containers & Packaging;Makers and distributors of cardboard, bags, boxes, cans, drums, bottles and jars and glass used for packaging.
+(d);2727;Diversified Industrials;Industrial companies engaged in three or more classes of business within the Industrial industry that differ substantially from each other.
+(c);2730;Electronic & Electrical Equipment
+(d);2733;Electrical Components & Equipment;Makers and distributors of electrical parts for finished products, such as printed circuit boards for radios, televisions and other consumer electronics. Includes makers of cables, wires, ceramics, transistors, electric adapters and security cameras.
+(d);2737;Electronic Equipment;Manufacturers and distributors of electronic products used in different industries. Includes makers of lasers, smart cards, bar scanners, fingerprinting equipment and other electronic factory equipment.
+(c);2750;Industrial Engineering
+(d);2753;Commercial Vehicles & Trucks;Manufacturers and distributors of commercial vehicles and heavy agricultural and construction machinery, including rail cars, tractors, bulldozers, cranes, buses and industrial lawn mowers. Includes non-military shipbuilders, such as builders of cruise ships and ferries.
+(d);2757;Industrial Machinery;Designers, manufacturers, distributors and installers of industrial machinery and factory equipment, such as machine tools, lathes, presses and assembly line equipment. Includes makers of pollution control equipment, castings, pressings, welded shapes, structural steelwork, compressors, pumps, bearings, elevators and escalators.
+(c);2770;Industrial Transportation
+(d);2771;Delivery Services;Operators of mail and package delivery services for commercial and consumer use. Includes courier and logistic services primarily involving air transportation.
+(d);2773;Marine Transportation;Providers of on-water transportation for commercial markets, such as container shipping. Excludes ports, which are classified under Transportation Services, and shipbuilders, which are classified under Commercial Vehicles & Trucks.
+(d);2775;Railroads;Providers of industrial railway transportation and railway lines. Excludes passenger railway companies, which are classified under Travel & Tourism, and manufacturers of rail cars, which are classified under Commercial Vehicles & Trucks.
+(d);2777;Transportation Services;Companies providing services to the Industrial Transportation sector, including companies that manage airports, train depots, roads, bridges, tunnels, ports, and providers of logistic services to shippers of goods. Includes companies that provide aircraft and vehicle maintenance services.
+(d);2779;Trucking;Companies that provide commercial trucking services. Excludes road and tunnel operators, which are classified under Transportation Services, and vehicle rental and taxi companies, which are classified under Travel & Tourism.
+(c);2790;Support Services
+(d);2791;Business Support Services;Providers of nonfinancial services to a wide range of industrial enterprises and governments. Includes providers of printing services, management consultants, office cleaning services, and companies that install, service and monitor alarm and security systems.
+(d);2793;Business Training & Employment Agencies;Providers of business or management training courses and employment services.
+(d);2795;Financial Administration;Providers of computerized transaction processing, data communication and information services, including payroll, bill payment and employee benefit services.
+(d);2797;Industrial Suppliers;Distributors and wholesalers of diversified products and equipment primarily used in the commercial and industrial sectors. Includes builders merchants.
+(d);2799;Waste & Disposal Services;Providers of pollution control and environmental services for the management, recovery and disposal of solid and hazardous waste materials, such as landfills and recycling centers. Excludes manufacturers of industrial air and water filtration equipment, which are classified under Industrial Machinery.
+
+(a);3000;Consumer Goods
+(b);3300;Automobiles & Parts
+(c);3350;Automobiles & Parts
+(d);3353;Automobiles;Makers of motorcycles and passenger vehicles, including cars, sport utility vehicles (SUVs) and light trucks. Excludes makers of heavy trucks, which are classified under Commercial Vehicles & Trucks, and makers of recreational vehicles (RVs and ATVs), which are classified under Recreational Products.
+(d);3355;Auto Parts;Manufacturers and distributors of new and replacement parts for motorcycles and automobiles, such as engines, carburetors and batteries. Excludes producers of tires, which are classified under Tires.
+(d);3357;Tires;Manufacturers, distributors and retreaders of automobile, truck and motorcycle tires.
+(b);3500;Food & Beverage
+(c);3530;Beverages
+(d);3533;Brewers;Manufacturers and shippers of cider or malt products such as beer, ale and stout.
+(d);3535;Distillers & Vintners;Producers, distillers, vintners, blenders and shippers of wine and spirits such as whisky, brandy, rum, gin or liqueurs.
+(d);3537;Soft Drinks;Manufacturers, bottlers and distributors of non-alcoholic beverages, such as soda, fruit juices, tea, coffee and bottled water.
+(c);3570;Food Producers
+(d);3573;Farming, Fishing & Plantations;Companies that grow crops or raise livestock, operate fisheries or own nontobacco plantations. Includes manufacturers of livestock feeds and seeds and other agricultural products but excludes manufacturers of fertilizers or pesticides, which are classified under Specialty Chemicals.
+(d);3577;Food Products;Food producers, including meatpacking, snacks, fruits, vegetables, dairy products and frozen seafood. Includes producers of pet food and manufacturers of dietary supplements, vitamins and related items. Excludes producers of fruit juices, tea, coffee, bottled water and other non-alcoholic beverages, which are classified under Soft Drinks.
+(b);3700;Personal & Household Goods
+(c);3720;Household Goods & Home Construction
+(d);3722;Durable Household Products;Manufacturers and distributors of domestic appliances, lighting, hand tools and power tools, hardware, cutlery, tableware, garden equipment, luggage, towels and linens.
+(d);3724;Nondurable Household Products;Producers and distributors of pens, paper goods, batteries, light bulbs, tissues, toilet paper and cleaning products such as soaps and polishes.
+(d);3726;Furnishings;Manufacturers and distributors of furniture, including chairs, tables, desks, carpeting, wallpaper and office furniture.
+(d);3728;Home Construction;Constructors of residential homes, including manufacturers of mobile and prefabricated homes intended for use in one place.
+(c);3740;Leisure Goods
+(d);3743;Consumer Electronics;Manufacturers and distributors of consumer electronics, such as TVs, VCRs, DVD players, audio equipment, cable boxes, calculators and camcorders.
+(d);3745;Recreational Products;Manufacturers and distributors of recreational equipment. Includes musical instruments, photographic equipment and supplies, RVs, ATVs and marine recreational vehicles such as yachts, dinghies and speedboats.
+(d);3747;Toys;Manufacturers and distributors of toys and video/computer games, including such toys and games as playing cards, board games, stuffed animals and dolls.
+(c);3760;Personal Goods
+(d);3763;Clothing & Accessories;Manufacturers and distributors of all types of clothing, jewelry, watches or textiles. Includes sportswear, sunglasses, eyeglass frames, leather clothing and goods, and processors of hides and skins.
+(d);3765;Footwear;Manufacturers and distributors of shoes, boots, sandals, sneakers and other types of footwear.
+(d);3767;Personal Products;Makers and distributors of cosmetics, toiletries and personal-care and hygiene products, including deodorants, soaps, toothpaste, perfumes, diapers, shampoos, razors and feminine-hygiene products. Includes makers of contraceptives other than oral contraceptives, which are classified under Pharmaceuticals.
+(c);3780;Tobacco
+(d);3785;Tobacco;Manufacturers and distributors of cigarettes, cigars and other tobacco products. Includes tobacco plantations.
+
+(a);4000;Health Care
+(b);4500;Health Care
+(c);4530;Health Care Equipment & Services
+(d);4533;Health Care Providers;Owners and operators of health maintenance organizations, hospitals, clinics, dentists, opticians, nursing homes, rehabilitation and retirement centers. Excludes veterinary services, which are classified under Specialized Consumer Services.
+(d);4535;Medical Equipment;Manufacturers and distributors of medical devices such as MRI scanners, prosthetics, pacemakers, X-ray machines and other non-disposable medical devices.
+(d);4537;Medical Supplies;Manufacturers and distributors of medical supplies used by health care providers and the general public. Includes makers of contact lenses, eyeglass lenses, bandages and other disposable medical supplies.
+(c);4570;Pharmaceuticals & Biotechnology
+(d);4573;Biotechnology;Companies engaged in research into and development of biological substances for the purposes of drug discovery and diagnostic development, and which derive the majority of their revenue from either the sale or licensing of these drugs and diagnostic tools.
+(d);4577;Pharmaceuticals;Manufacturers of prescription or over-the-counter drugs, such as aspirin, cold remedies and birth control pills. Includes vaccine producers but excludes vitamin producers, which are classified under Food Products.
+
+(a);5000;Consumer Services
+(b);5300;Retail
+(c);5330;Food & Drug Retailers
+(d);5333;Drug Retailers;Operators of pharmacies, including wholesalers and distributors catering to these businesses.
+(d);5337;Food Retailers & Wholesalers;Supermarkets, food-oriented convenience stores and other food retailers and distributors. Includes retailers of dietary supplements and vitamins.
+(c);5370;General Retailers
+(d);5371;Apparel Retailers;Retailers and wholesalers specializing mainly in clothing, shoes, jewelry, sunglasses and other accessories.
+(d);5373;Broadline Retailers;Retail outlets and wholesalers offering a wide variety of products including both hard goods and soft goods.
+(d);5375;Home Improvement Retailers;Retailers and wholesalers concentrating on the sale of home improvement products, including garden equipment, carpets, wallpaper, paint, home furniture, blinds and curtains, and building materials.
+(d);5377;Specialized Consumer Services;Providers of consumer services not included in other sector definitions such as online marketplaces, auction houses, day-care centers, dry cleaners, schools, consumer rental companies, veterinary clinics, hair salons and providers of funeral, lawn-maintenance, consumer-storage, heating and cooling installation and plumbing services.
+(d);5379;Specialty Retailers;Retailers and wholesalers concentrating on a single class of goods, such as electronics, books, automotive parts or closeouts. Includes automobile dealerships, video rental stores, dollar stores, duty-free shops and automotive fuel stations not owned by oil companies.
+(b);5500;Media
+(c);5550;Media
+(d);5553;Broadcasting & Entertainment;Producers, operators and broadcasters of radio, television, music and filmed entertainment. Excludes movie theatres, which are classified under Recreational Services.
+(d);5555;Media Agencies;Companies providing advertising, public relations and marketing services. Includes billboard providers and telemarketers.
+(d);5557;Publishing;Publishers of information via printed or electronic media.
+(b);5700;Travel & Leisure
+(c);5750;Travel & Leisure
+(d);5751;Airlines;Companies providing primarily passenger air transport. Excludes airports, which are classified under Transportation Services.
+(d);5752;Gambling;Providers of gambling and casino facilities. Includes online casinos, racetracks and the manufacturers of pachinko machines and casino and lottery equipment.
+(d);5753;Hotels;Operators and managers of hotels, motels, lodges, resorts, spas and campgrounds.
+(d);5755;Recreational Services;Providers of leisure facilities and services, including fitness centers, cruise lines, movie theatres and sports teams.
+(d);5757;Restaurants & Bars;Operators of restaurants, fast-food facilities, coffee shops and bars. Includes integrated brewery companies and catering companies.
+(d);5759;Travel & Tourism;Companies providing travel and tourism related services, including travel agents, online travel reservation services, automobile rental firms and companies that primarily provide passenger transportation, such as buses, taxis, passenger rail and ferry companies.
+
+(a);6000;Telecommunications
+(b);6500;Telecommunications
+(c);6530;Fixed Line Telecommunications
+(d);6535;Fixed Line Telecommunications;Providers of fixed-line telephone services, including regional and long-distance. Includes companies that primarily provides telephone services through the internet. Excludes companies whose primary business is Internet access, which are classified under Internet.
+(d);6570;Mobile Telecommunications
+(d);6575;Mobile Telecommunications;Providers of mobile telephone services, including cellular, satellite and paging services. Includes wireless tower companies that own, operate and lease mobile site towers to multiple wireless service providers.
+
+(a);7000;Utilities
+(b);7500;Utilities
+(c);7530;Electricity
+(d);7535;Conventional Electricity;Companies generating and distributing electricity through the burning of fossil fuels such as coal, petroleum and natural gas, and through nuclear energy.
+(d);7537;Alternative Electricity;Companies generating and distributing electricity from a renewable source. Includes companies that produce solar, water, wind and geothermal electricity.
+(c);7570;Gas, Water & Multi-utilities
+(d);7573;Gas Distribution;Distributors of gas to end users. Excludes providers of natural gas as a commodity, which are classified under the Oil & Gas industry.
+(d);7575;Multi-utilities;Utility companies with significant presence in more than one utility.
+(d);7577;Water;Companies providing water to end users, including water treatment plants.
+
+(a);8000;Financials
+(b);8300;Banks
+(c);8350;Banks
+(d);8355;Banks;Banks providing a broad range of financial services, including retail banking, loans and money transmissions.
+(b);8500;Insurance
+(c);8530;Nonlife Insurance
+(d);8532;Full Line Insurance;Insurance companies with life, health, property & casualty and reinsurance interests, no one of which predominates.
+(d);8534;Insurance Brokers;Insurance brokers and agencies.
+(d);8536;Property & Casualty Insurance;Companies engaged principally in accident, fire, automotive, marine, malpractice and other classes of nonlife insurance.
+(d);8538;Reinsurance;Companies engaged principally in reinsurance.
+(c);8570;Life Insurance
+(d);8575;Life Insurance;Companies engaged principally in life and health insurance.
+(b);8600;Real Estate
+(c);8630;Real Estate Investment & Services
+(d);8633;Real Estate Holding & Development;Companies that invest directly or indirectly in real estate through development, investment or ownership. Excludes real estate investment trusts and similar entities, which are classified as Real Estate Investment Trusts.
+(d);8637;Real Estate Services;Companies that provide services to real estate companies but do not own the properties themselves. Includes agencies, brokers, leasing companies, management companies and advisory services. Excludes real estate investment trusts and similar entities, which are classified as Real Estate Investment Trusts.
+(c);8670;Real Estate Investment Trusts
+(d);8671;Industrial & Office REITs;Real estate investment trusts or corporations (REITs) or listed property trusts (LPTs) that primarily invest in office, industrial and flex properties.
+(d);8672;Retail REITs;Real estate investment trusts or corporations (REITs) or listed property trusts (LPTs) that primarily invest in retail properties. Includes malls, shopping centers, strip centers and factory outlets.
+(d);8673;Residential REITs;Real estate investment trusts or corporations (REITs) or listed property trusts (LPTs) that primarily invest in residential home properties. Includes apartment buildings and residential communities.
+(d);8674;Diversified REITs;Real estate investment trusts or corporations (REITs) or listed property trusts (LPTs) that invest in a variety of property types without a concentration on any single type.
+(d);8675;Specialty REITs;Real estate investment trusts or corporations (REITs) or listed property trusts (LPTs) that invest in self storage properties, properties in the health care industry such as hospitals, assisted living facilities and health care laboratories, and other specialized properties such as auto dealership facilities, timber properties and net lease properties.
+(d);8676;Mortgage REITs;Real estate investment trusts or corporations (REITs) or listed property trusts (LPTs) that are directly involved in lending money to real estate owners and operators or indirectly through the purchase of mortgages or mortgage backed securities.
+(d);8677;Hotel & Lodging REITs;Real estate investment trusts or corporations (REITs) or listed property trusts (LPTs) that primarily invest in hotels or lodging properties.
+(b);8700;Financial Services
+(c);8770;Financial Services
+(d);8771;Asset Managers;Companies that provide custodial, trustee and other related fiduciary services. Includes mutual fund management companies.
+(d);8773;Consumer Finance;Credit card companies and providers of personal finance services such as personal loans and check cashing companies.
+(d);8775;Specialty Finance;Companies engaged in financial activities not specified elsewhere. Includes companies not classified under Equity Investment Instruments or Nonequity Investment Instruments engaged primarily in owning stakes in a diversified range of companies.
+(d);8777;Investment Services;Companies providing a range of specialized financial services, including securities brokers and dealers, online brokers and security or commodity exchanges.
+(d);8779;Mortgage Finance;Companies that provide mortgages, mortgage insurance and other related services.
+(c);8980;Equity Investment Instruments
+(d);8985;Equity Investment Instruments;Corporate closed-ended investment entities identified under distinguishing legislation, such as investment trusts and venture capital trusts.
+(c);8990;Nonequity Investment Instruments
+(d);8995;Nonequity Investment Instruments;Cash shells, Special Purpose Acquisition Company (SPACs), Noncorporate, openended investment instruments such as open-ended investment companies and funds, unit trusts, ETFs and currency funds and split capital trusts.
+
+(a);9000;Technology
+(b);9500;Technology
+(c);9530;Software & Computer Services
+(d);9533;Computer Services;Companies that provide consulting services to other businesses relating to information technology. Includes providers of computer-system design, systems integration, network and systems operations, data management and storage, repair services and technical support.
+(d);9535;Internet;Companies providing Internet-related services, such as Internet access providers and search engines and providers of Web site design, Web hosting, domain-name registration and e-mail services.
+(d);9537;Software;Publishers and distributors of computer software for home or corporate use. Excludes computer game producers, which are classified under Toys.
+(c);9570;Technology Hardware & Equipment
+(d);9572;Computer Hardware;Manufacturers and distributors of computers, servers, mainframes, workstations and other computer hardware and subsystems, such as mass-storage drives, mice, keyboards and printers.
+(d);9574;Electronic Office Equipment;Manufacturers and distributors of electronic office equipment, including photocopiers and fax machines.
+(d);9576;Semiconductors;Producers and distributors of semiconductors and other integrated chips, including other products related to the semiconductor industry, such as semiconductor capital equipment and motherboards. Excludes makers of printed circuit boards, which are classified under Electrical Components & Equipment.
+(d);9578;Telecommunications Equipment;Makers and distributors of high-technology communication products, including satellites, mobile telephones, fibers optics, switching devices, local and wide-area networks, teleconferencing equipment and connectivity devices for computers, including hubs and routers.

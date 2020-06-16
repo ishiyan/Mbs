@@ -1,0 +1,86 @@
+import { Component } from '@angular/core';
+
+import { SparklineConfiguration } from '../../../../../shared/mbs/charts/sparkline/sparkline-configuration.interface';
+
+import { Ohlcv } from '../../../../../shared/mbs/data/entities/ohlcv';
+import { Quote } from '../../../../../shared/mbs/data/entities/quote';
+import { Trade } from '../../../../../shared/mbs/data/entities/trade';
+import { Scalar } from '../../../../../shared/mbs/data/entities/scalar';
+
+import { testDataOhlcv } from '../../../test-data/indicators/test-data-ohlcv';
+import { testDataBbBw } from '../../../test-data/indicators/test-data-bb-bw';
+import { testDataBbMa } from '../../../test-data/indicators/test-data-bb-ma';
+
+interface DataItem {
+  data: Ohlcv[] | Quote[] | Trade[] | Scalar[];
+  name: string;
+}
+
+interface DataGroup {
+  disabled?: boolean;
+  name: string;
+  items: DataItem[];
+}
+
+@Component({
+  selector: 'mb-sample-sunburst-2',
+  templateUrl: './sample-sunburst-2.component.html',
+  styleUrls: ['./sample-sunburst-2.component.scss']
+})
+export class SampleSunburst2Component {
+
+  dataOhlcv = testDataOhlcv;
+  dataScalar = testDataBbBw;
+  dataScalarWithNaN = testDataBbMa;
+
+  readonly dataArray: DataItem[] = [
+    { data: this.dataOhlcv, name: 'ohlcv data' },
+    { data: this.dataScalar, name: 'scalar data' },
+    { data: this.dataScalarWithNaN, name: 'scalar data with NaN' }
+  ];
+  arrayItemFixed: DataItem = this.dataArray[0];
+  arrayItem: DataItem = this.dataArray[0];
+
+  readonly dataGroups: DataGroup[] = [
+    {
+      name: 'Ohlcv group',
+      items: [this.dataArray[0]]
+    },
+    {
+      name: 'Scalar group',
+      items: [this.dataArray[1], this.dataArray[2]]
+    },
+    {
+      disabled: true,
+      name: 'Quote group',
+      items: [{data: [], name: 'some name'}]
+    },
+  ];
+  groupItemFixed: DataItem = this.dataGroups[0].items[0];
+  groupItem: DataItem = this.dataGroups[0].items[0];
+
+  readonly configLine: SparklineConfiguration = { fillColor: undefined, strokeColor: 'steelblue', strokeWidth: 1 };
+  readonly configFill: SparklineConfiguration = { fillColor: 'steelblue', strokeColor: undefined, strokeWidth: 1 };
+  arrayItemIsLineFixed = false;
+  groupItemIsLineFixed = false;
+  arrayItemIsLine = false;
+  groupItemIsLine = false;
+
+  itemIsLineChangedFixed(isGroup: boolean, event: any) {
+    const value = event.value === 'true';
+    if (isGroup) {
+      this.groupItemIsLineFixed = value;
+    } else {
+      this.arrayItemIsLineFixed = value;
+    }
+  }
+
+  itemIsLineChanged(isGroup: boolean, event: any) {
+    const value = event.value === 'true';
+    if (isGroup) {
+      this.groupItemIsLine = value;
+    } else {
+      this.arrayItemIsLine = value;
+    }
+  }
+}

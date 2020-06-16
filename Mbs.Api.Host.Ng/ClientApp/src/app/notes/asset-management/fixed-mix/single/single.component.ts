@@ -119,7 +119,7 @@ export class SingleComponent {
     this.selectedPalette = selection;
     this.cashFill = { fillColor: this.selectedPalette[0], strokeColor: undefined, strokeWidth: 1 };
     this.hrFill = { fillColor: this.selectedPalette[1], strokeColor: undefined, strokeWidth: 1 };
-    this.lrFill = { fillColor: this.selectedPalette[2], strokeColor: undefined, strokeWidth: 1 }; 
+    this.lrFill = { fillColor: this.selectedPalette[2], strokeColor: undefined, strokeWidth: 1 };
     this.hrPercentageLine = { fillColor: undefined, strokeColor: this.selectedPalette[0], strokeWidth: 1 };
   }
 
@@ -178,10 +178,10 @@ export class SingleComponent {
       } else {
         // cash, hrPos and lrPos stay the same
       }
-      hrCalculated.push({time: time, value: hrAmount});
-      lrCalculated.push({time: time, value: lrAmount});
-      cashCalculated.push({time: time, value: cash});
-      percentageCalculated.push({time: time, value: hrAmount * 100 / aum});
+      hrCalculated.push({time, value: hrAmount});
+      lrCalculated.push({time, value: lrAmount});
+      cashCalculated.push({time, value: cash});
+      percentageCalculated.push({time, value: hrAmount * 100 / aum});
     }
     this.cashCalculated = cashCalculated;
     this.hrCalculated = hrCalculated;

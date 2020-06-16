@@ -45,6 +45,14 @@ export const treeNodes: MbSample[] = [
         ]
       },
       {
+        name: 'Sunbrst',
+        children: [
+          {name: 'Features', header: 'Sunburst features', route: 'comp-sunburst/s1'},
+          {name: 'Countries', header: 'Sunburst countries', route: 'comp-sunburst/s2'},
+          {name: 'Misc', header: 'Sunburst misc', route: 'comp-sunburst/s3'}
+        ]
+      },
+      {
         name: 'Swatches',
         children: [
           {name: 'Features', header: 'Swatches features', route: 'comp-swatches/s1'},

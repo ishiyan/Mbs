@@ -1,3 +1,41 @@
 <h1>Hello, World!</h1>
 
 buckets
+
+<div class="sample">
+  <mat-card class="example-card">
+    <mat-card-header>
+      <mat-card-title>Flare</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mb-sunburst [data]="dat" [diameter]="'100%'"></mb-sunburst>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="example-card">
+    <mat-card-header>
+      <mat-card-title>Countries</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mb-sunburst [data]="countr" [diameter]="'100%'" [labelFunction]="namLabFunc"></mb-sunburst>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="example-card">
+    <mat-card-header>
+      <mat-card-title>ICB</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mb-sunburst [data]="icb" [diameter]="'100%'" zoomable="true"></mb-sunburst>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="example-card">
+    <mat-card-header>
+      <mat-card-title>GICS</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mb-sunburst [data]="gics" [diameter]="'100%'"></mb-sunburst>
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -29,6 +29,10 @@ const routes: Routes = [
           import('./mb-samples/components/sunburst/sample-sunburst.module').then(m => m.SampleSunburstModule)
       },
       {
+        path: 'comp-circlepack', loadChildren: () =>
+          import('./mb-samples/components/circlepack/sample-circlepack.module').then(m => m.SampleCirclepackModule)
+      },
+      {
         path: 'comp-swatches', loadChildren: () =>
           import('./mb-samples/components/swatches/sample-swatches.module').then(m => m.SampleSwatchesModule)
       },

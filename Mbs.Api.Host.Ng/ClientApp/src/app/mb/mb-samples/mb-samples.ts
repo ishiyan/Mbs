@@ -49,7 +49,15 @@ export const treeNodes: MbSample[] = [
         children: [
           {name: 'Features', header: 'Sunburst features', route: 'comp-sunburst/s1'},
           {name: 'Countries', header: 'Sunburst countries', route: 'comp-sunburst/s2'},
-          {name: 'Misc', header: 'Sunburst misc', route: 'comp-sunburst/s3'}
+          {name: 'JDK', header: 'Sunburst JDK', route: 'comp-sunburst/s3'}
+        ]
+      },
+      {
+        name: 'Circlepack',
+        children: [
+          {name: 'Features', header: 'Circlepack features', route: 'comp-circlepack/s1'},
+          {name: 'Countries', header: 'Circlepack countries', route: 'comp-circlepack/s2'},
+          {name: 'JDK', header: 'Circlepack JDK', route: 'comp-circlepack/s3'}
         ]
       },
       {

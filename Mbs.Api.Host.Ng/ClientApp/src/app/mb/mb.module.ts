@@ -20,13 +20,15 @@ import { Sample6Component } from './mb-samples/sample-6/sample-6.component';
 import { SampleSparklineModule } from './mb-samples/components/sparkline/sample-sparkline.module';
 import { SampleMultilineModule } from './mb-samples/components/multiline/sample-multiline.module';
 import { SampleStacklineModule } from './mb-samples/components/stackline/sample-stackline.module';
+import { SampleSunburstModule } from './mb-samples/components/sunburst/sample-sunburst.module';
+import { SampleCirclepackModule } from './mb-samples/components/circlepack/sample-circlepack.module';
 import { SampleSwatchesModule } from './mb-samples/components/swatches/sample-swatches.module';
 
 @NgModule({
   imports: [
     CommonModule, FormsModule, FlexLayoutModule,
     MbRoutingModule, MaterialModule, SnackBarModule, MbsModule, FooterModule, SvgViewerModule,
-    SampleSparklineModule, SampleMultilineModule, SampleStacklineModule, SampleSwatchesModule
+    SampleSparklineModule, SampleMultilineModule, SampleStacklineModule, SampleCirclepackModule, SampleSwatchesModule
   ],
   declarations: [
     MbComponent, SyntheticDataComponent, Sample1Component, Table1Component, Table12Component, Sample6Component

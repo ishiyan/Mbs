@@ -12,19 +12,20 @@ import { HierarchyTreeTapFunction } from '../../../../../shared/mbs/charts/hiera
 import { HierarchyTreeLabelFunction, nameLabels, valueLabels, emptyLabels } from '../../../../../shared/mbs/charts/hierarchy-tree/functions/label-function';
 import { HierarchyTreeFontSizeFunction, equalFontSize8, equalFontSize10, equalFontSize12, equalFontSize14, equalFontSize16, equalFontSize18, linearFontSize } from '../../../../../shared/mbs/charts/hierarchy-tree/functions/font-size-function';
 
+import { CountryHierarchyTreeNode, countries } from '../../../test-data/hierarchies/countries';
 import { flare } from '../../../test-data/hierarchies/flare';
 import { jdk } from '../../../test-data/hierarchies/jdk';
-// import { countries } from '../../../test-data/hierarchies/countries';
 
 @Component({
-  selector: 'mb-sample-sunburst-1',
-  templateUrl: './sample-sunburst-1.component.html',
-  styleUrls: ['./sample-sunburst-1.component.scss']
+  selector: 'mb-sample-circlepack-1',
+  templateUrl: './sample-circlepack-1.component.html',
+  styleUrls: ['./sample-circlepack-1.component.scss']
 })
-export class SampleSunburst1Component {
+export class SampleCirclepack1Component {
 
-  flareHierarchy = jdk;
+  flareHierarchy = flare;
   sumFunc = sumNodeValues;
+  rainbowFillFunc = rainbowFill;
   linearOpacity = linearFillOpacity;
   nameLabel = nameLabels;
 

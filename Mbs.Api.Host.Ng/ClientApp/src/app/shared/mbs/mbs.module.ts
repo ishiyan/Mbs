@@ -34,7 +34,8 @@ import { OhlcvChartComponent } from './charts/ohlcv-chart/ohlcv-chart.component'
 import { SparklineComponent } from './charts/sparkline/sparkline.component';
 import { MultilineComponent } from './charts/multiline/multiline.component';
 import { StacklineComponent } from './charts/stackline/stackline.component';
-import { SunburstComponent } from './charts/sunburst/sunburst.component';
+import { SunburstComponent } from './charts/hierarchy-tree/sunburst/sunburst.component';
+import { CirclepackComponent } from './charts/hierarchy-tree/circlepack/circlepack.component';
 import { SwatchesComponent } from './colors/swatches/swatches.component';
 import { SwatchesSelectComponent } from './colors/swatches/swatches-select.component';
 
@@ -55,7 +56,7 @@ import { SwatchesSelectComponent } from './colors/swatches/swatches-select.compo
     FractionalBrownianMotionParametersComponent, GeometricBrownianMotionParametersComponent, ChirpParametersComponent,
     SawtoothParametersComponent, SquareParametersComponent, SinusoidalParametersComponent, SyntheticDataParametersComponent,
     HistoricalDataTableComponent, HistoricalDataDownloadComponent, HistoricalDataChartComponent,
-    OhlcvChartComponent, SparklineComponent, MultilineComponent, StacklineComponent, SunburstComponent,
+    OhlcvChartComponent, SparklineComponent, MultilineComponent, StacklineComponent, SunburstComponent, CirclepackComponent,
     SwatchesComponent, SwatchesSelectComponent
   ],
   declarations: [
@@ -64,7 +65,7 @@ import { SwatchesSelectComponent } from './colors/swatches/swatches-select.compo
     FractionalBrownianMotionParametersComponent, GeometricBrownianMotionParametersComponent, ChirpParametersComponent,
     SawtoothParametersComponent, SquareParametersComponent, SinusoidalParametersComponent, SyntheticDataParametersComponent,
     HistoricalDataTableComponent, HistoricalDataDownloadComponent, HistoricalDataChartComponent,
-    OhlcvChartComponent, SparklineComponent, MultilineComponent, StacklineComponent, SunburstComponent,
+    OhlcvChartComponent, SparklineComponent, MultilineComponent, StacklineComponent, SunburstComponent, CirclepackComponent,
     SwatchesComponent, SwatchesSelectComponent
   ],
   providers: [

@@ -1,7 +1,7 @@
 // This code is automatically generated. Do not edit!
 // tslint:disable:max-line-length
 
-import { HierarchyTreeNode } from '../../charts/hierarchy-tree';
+import { HierarchyTreeNode } from '../../charts/hierarchy-tree/hierarchy-tree';
 
 export const enum GicsRank {
   Sector = 'Sector',

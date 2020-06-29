@@ -121,9 +121,7 @@
   },
   "defaultProject": "mbs-api-host-ng",
   "cli": {
-    "warnings": {
-      "typescriptMismatch": false
-    }
+    "warnings": {}
   },
   "schematics": {
     "@schematics/angular:component": {

@@ -36,6 +36,7 @@ import { MultilineComponent } from './charts/multiline/multiline.component';
 import { StacklineComponent } from './charts/stackline/stackline.component';
 import { SunburstComponent } from './charts/hierarchy-tree/sunburst/sunburst.component';
 import { CirclepackComponent } from './charts/hierarchy-tree/circlepack/circlepack.component';
+import { IcicleComponent } from './charts/hierarchy-tree/icicle/icicle.component';
 import { SwatchesComponent } from './colors/swatches/swatches.component';
 import { SwatchesSelectComponent } from './colors/swatches/swatches-select.component';
 
@@ -57,7 +58,7 @@ import { SwatchesSelectComponent } from './colors/swatches/swatches-select.compo
     SawtoothParametersComponent, SquareParametersComponent, SinusoidalParametersComponent, SyntheticDataParametersComponent,
     HistoricalDataTableComponent, HistoricalDataDownloadComponent, HistoricalDataChartComponent,
     OhlcvChartComponent, SparklineComponent, MultilineComponent, StacklineComponent, SunburstComponent, CirclepackComponent,
-    SwatchesComponent, SwatchesSelectComponent
+    IcicleComponent, SwatchesComponent, SwatchesSelectComponent
   ],
   declarations: [
     BusinessDayCalendarDescriptionComponent, TimeParametersComponent, WaveformParametersComponent,
@@ -66,7 +67,7 @@ import { SwatchesSelectComponent } from './colors/swatches/swatches-select.compo
     SawtoothParametersComponent, SquareParametersComponent, SinusoidalParametersComponent, SyntheticDataParametersComponent,
     HistoricalDataTableComponent, HistoricalDataDownloadComponent, HistoricalDataChartComponent,
     OhlcvChartComponent, SparklineComponent, MultilineComponent, StacklineComponent, SunburstComponent, CirclepackComponent,
-    SwatchesComponent, SwatchesSelectComponent
+    IcicleComponent, SwatchesComponent, SwatchesSelectComponent
   ],
   providers: [
     SyntheticDataService

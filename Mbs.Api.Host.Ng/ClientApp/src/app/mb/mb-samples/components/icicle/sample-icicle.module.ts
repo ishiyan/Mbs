@@ -1,0 +1,24 @@
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { FlexLayoutModule } from '@angular/flex-layout';
+
+import { MaterialModule } from '../../../../shared/material/material.module';
+import { MbsModule } from '../../../../shared/mbs/mbs.module';
+
+import { SampleIcicle1Component } from './sample-1/sample-icicle-1.component';
+import { SampleIcicle2Component } from './sample-2/sample-icicle-2.component';
+import { SampleIcicle3Component } from './sample-3/sample-icicle-3.component';
+
+import { SampleIcicleRoutingModule } from './sample-icicle-routing.module';
+
+@NgModule({
+  imports: [
+    CommonModule, FormsModule, FlexLayoutModule,
+    MaterialModule, MbsModule, SampleIcicleRoutingModule
+  ],
+  declarations: [
+    SampleIcicle1Component, SampleIcicle2Component, SampleIcicle3Component
+  ]
+})
+export class SampleIcicleModule { }

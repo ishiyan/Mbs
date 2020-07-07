@@ -5,26 +5,23 @@ import { computeDimensions } from '../../compute-dimensions';
 import { HierarchyTreeNode } from '../hierarchy-tree';
 import { HierarchyTreeSumFunction, sumNumberOfLeafNodes } from '../functions/sum-function';
 import { HierarchyTreeSortFunction, sortAscending, sortDescending, sortNone } from '../functions/sort-function';
-import { HierarchyTreeLabelFunction, nameLabels } from '../functions/label-function';
+import { HierarchyTreeLabelFunction, emptyLabels } from '../functions/label-function';
 import { HierarchyTreeTooltipFunction, pathTooltips } from '../functions/tooltip-function';
 import { HierarchyTreeTapFunction, doNothingTap } from '../functions/tap-function';
 import { HierarchyTreeFillFunction, coolFill } from '../functions/fill-function';
-import { HierarchyTreeStrokeFunction, blackStroke } from '../functions/stroke-function';
-import { HierarchyTreeStrokeWidthFunction, linearStrokeWidth } from '../functions/stroke-width-function';
 import { HierarchyTreeFillOpacityFunction, opaqueFillOpacity } from '../functions/fill-opacity-function';
 import { HierarchyTreeFontSizeFunction, linearFontSize } from '../functions/font-size-function';
 
-const defaultDiameter = 300;
+const defaultWidth = 800;
+const defaultHeight = 600;
+const allLevels = 0;
 const defaultTransitionMsec = 750;
 const ascending = 'asc';
 const descending = 'desc';
-const defaultZoom = true;
+const defaultZoom = false;
 const defaultLabelFill = 'white';
-const defaultLabelShadow = '0px 0px 8px #000000';
-const defaultLabelMinRadius = 1;
-const defaultPadding = 3;
-const defaultFlat = false;
-const defaultRootCircle = false;
+const deltaX = 4;
+const deltaY = 16;
 
 @Component({
   selector: 'mb-icicle',
@@ -54,17 +51,14 @@ export class IcicleComponent implements OnChanges {
   /** Zoomable transition duration in milliseconds. */
   @Input() transitionMsec: number = defaultTransitionMsec;
 
-  /** A function returning a text string which will be displayed as a label for a node. */
-  @Input() labelFunc: HierarchyTreeLabelFunction = nameLabels;
+  /** A number of hierarchy levels to display or **0** to display all levels. */
+  @Input() levels: number = allLevels;
 
-  /** A minimum node radius for which label will be displayed. */
-  @Input() labelMinRadius: number = defaultLabelMinRadius;
+  /** A function returning a text string which will be displayed as a label for a node. */
+  @Input() labelFunc: HierarchyTreeLabelFunction = emptyLabels;
 
   /** A fill color to draw labels. */
   @Input() labelFill: string = defaultLabelFill;
-
-  /** A shadow style to draw labels. */
-  @Input() labelShadow: string = defaultLabelShadow;
 
   /** A font size used to draw the labels. */
   @Input() labelFontSizeFunc: HierarchyTreeFontSizeFunction = linearFontSize;
@@ -81,26 +75,14 @@ export class IcicleComponent implements OnChanges {
   /** A function returning a fill color opacity of a node. */
   @Input() fillOpacityFunc: HierarchyTreeFillOpacityFunction = opaqueFillOpacity;
 
-  /** A function returning a stroke color of a node. */
-  @Input() strokeFunc: HierarchyTreeStrokeFunction = blackStroke;
+  /** A width of the icicle. */
+  @Input() width: number | string = defaultWidth;
 
-  /** A function returning a stroke color of a node. */
-  @Input() strokeWidthFunc: HierarchyTreeStrokeWidthFunction = linearStrokeWidth;
-
-  /** A positive number defining the padding between circles. */
-  @Input() padding: number = defaultPadding;
-
-  /** A diameter of the sunburst. */
-  @Input() diameter: number | string = defaultDiameter;
+  /** A height of the icicle. */
+  @Input() height: number | string = defaultHeight;
 
   /** The data hierarchy to use. */
   @Input() data: HierarchyTreeNode;
-
-  /** If the hierarchy should be flatterned to an array of a leaf nodes. */
-  @Input() flat: boolean = defaultFlat;
-
-  /** If the roor circle is visible. */
-  @Input() rootCircle: boolean = defaultRootCircle;
 
   constructor(private elementRef: ElementRef) { }
 
@@ -116,102 +98,73 @@ export class IcicleComponent implements OnChanges {
     if (!dat || !dat.children || dat.children.length < 1) {
       return;
     }
-    const computed = computeDimensions(this.elementRef, this.diameter, this.diameter, defaultDiameter, defaultDiameter);
-    const s = Math.max(computed[0], computed[1]);
-    const s2 = s / 2;
-    const svg: any = sel.append('svg')
-      .attr('preserveAspectRatio', 'xMinYMin meet')
-      .attr('width', s).attr('height', s).attr('viewBox', `-${s2} -${s2} ${s} ${s}`)
-      .on('click', () => zoom(root));
+    const computed = computeDimensions(this.elementRef, this.width, this.height, defaultWidth, defaultHeight);
+    const w = computed[0];
+    const h = computed[1];
+    const svg: any = sel.append('svg').attr('preserveAspectRatio', 'xMinYMin meet')
+      .attr('width', w).attr('height', h).attr('viewBox', `0 0 ${w} ${h}`);
 
     const sortFunc: HierarchyTreeSortFunction = this.sort === ascending ?
       sortAscending : (this.sort === descending ? sortDescending : sortNone);
-    const pack = (d: HierarchyTreeNode) => {
+    const partition = (d: HierarchyTreeNode) => {
       let rootNode = d3.hierarchy(d)
         .sum(this.sumFunc);
-      if (sortFunc !== sortNone) {
-        rootNode = rootNode.sort((a: d3.HierarchyNode<HierarchyTreeNode>, b: d3.HierarchyNode<HierarchyTreeNode>) => sortFunc(a, b));
-      }
-      return d3.pack<HierarchyTreeNode>().size([s, s]).padding(this.padding)(rootNode);
+        if (sortFunc !== sortNone) {
+          rootNode = rootNode.sort((a: d3.HierarchyNode<HierarchyTreeNode>, b: d3.HierarchyNode<HierarchyTreeNode>) => sortFunc(a, b));
+        }
+        const n: number = (this.levels < 1 ? rootNode.height : this.levels) + 1;
+        return d3.partition().size([computed[1], (rootNode.height + 1) * computed[0] / n])(rootNode);
     };
-    let root = pack(dat);
-    if (this.flat) {
-      const datFlat: HierarchyTreeNode = { children: [] };
-      for (const leaf of root.leaves()) {
-        datFlat.children?.push(leaf.data);
-      }
-      root = pack(datFlat);
-    }
-
+    const root = partition(dat);
     let focus = root;
-    const node = svg.append('g')
-      .selectAll('circle')
-      .data(this.rootCircle ? root.descendants() : root.descendants().slice(1))
-      .join('circle')
-      .attr('fill', (d: d3.HierarchyCircularNode<HierarchyTreeNode>) => this.fillFunc(d))
-      .attr('fill-opacity', (d: d3.HierarchyNode<HierarchyTreeNode>) =>
-        this.fillOpacityFunc(d as d3.HierarchyCircularNode<HierarchyTreeNode>, root.height))
-      .attr('stroke', (d: d3.HierarchyCircularNode<HierarchyTreeNode>) => this.strokeFunc(d))
-      .attr('stroke-width', (d: d3.HierarchyCircularNode<HierarchyTreeNode>) => this.strokeWidthFunc(d))
-      // .style('cursor',  (d: d3.HierarchyCircularNode<HierarchyTreeNode>) => !this.flat && d.children ? 'pointer' : 'arrow')
-      .on('click', (d: d3.HierarchyCircularNode<HierarchyTreeNode>) => { d3.event.stopPropagation(); clicked(d); });
 
-    const labelFillOpacity = (d: d3.HierarchyCircularNode<HierarchyTreeNode>) =>
-      (d.parent === focus && d.r >= this.labelMinRadius) ? 1 : 0;
+    const cell = svg.selectAll('g')
+      .data(root.descendants())
+      .join('g')
+      .attr('transform', (d: d3.HierarchyRectangularNode<HierarchyTreeNode>) => `translate(${d.y0},${d.x0})`);
 
-    const label = svg.append('g')
-      .style('fill', this.labelFill)
-      .style('text-shadow', this.labelShadow)
+    const rectHeight = (d: d3.HierarchyRectangularNode<HierarchyTreeNode>) => d.x1 - d.x0 - Math.min(1, (d.x1 - d.x0) / 2);
+    const rect = cell.append('rect')
+      .style('cursor', (d: d3.HierarchyRectangularNode<HierarchyTreeNode>) => d.children && d.parent ? 'pointer' : 'arrow')
+      .attr('width', (d: d3.HierarchyRectangularNode<HierarchyTreeNode>) => d.y1 - d.y0 - 1)
+      .attr('height', (d: d3.HierarchyRectangularNode<HierarchyTreeNode>) => rectHeight(d))
+      .attr('fill', (d: d3.HierarchyRectangularNode<HierarchyTreeNode>) => this.fillFunc(d))
+      .attr('fill-opacity', (d: d3.HierarchyRectangularNode<HierarchyTreeNode>) => this.fillOpacityFunc(d as d3.HierarchyRectangularNode<HierarchyTreeNode>, root.height));
+
+    const labelVisible = (d: d3.HierarchyRectangularNode<HierarchyTreeNode>) => d.y1 <= w && d.y0 >= 0 && d.x1 - d.x0 > (this.labelFontSizeFunc(d) + deltaY);
+    const text = cell.append('text')
       .style('user-select', 'none')
       .attr('pointer-events', 'none')
-      .attr('text-anchor', 'middle')
-      .selectAll('text')
-      .data(root.descendants())
-      .enter().append('text')
-        .style('fill-opacity', labelFillOpacity)
-        .style('font-size', (d: d3.HierarchyCircularNode<HierarchyTreeNode>) => this.labelFontSizeFunc(d));
-    // single -line labels:
-    // .text((d: d3.HierarchyNode<HierarchyTreeNode>) => this.labelFunction(d));
-    // multi-line labels:
-    label.selectAll('tspan')
-      .data((d: d3.HierarchyCircularNode<HierarchyTreeNode>) => this.labelFunc(d).split(/\s+/g))
-      .join('tspan')
-        .attr('x', 0)
-        .attr('y', (d: any, i: number, nodes: any) => `${i - nodes.length / 2 + 0.8}em`)
-        .text((d: string) => d)
+      .attr('x', deltaX)
+      .attr('y', deltaY)
+      .style('fill', this.labelFill)
+      .attr('fill-opacity', (d: d3.HierarchyRectangularNode<HierarchyTreeNode>) => +labelVisible(d))
+      .attr('font-size', (d: d3.HierarchyRectangularNode<HierarchyTreeNode>) => this.labelFontSizeFunc(d));
+    text.append('tspan')
+      .text((d: d3.HierarchyNode<HierarchyTreeNode>) => this.labelFunc(d));
 
-    const clicked = (d: d3.HierarchyCircularNode<HierarchyTreeNode>) => {
-      this.tapFunc(d);
-      if (this.zoom && !this.flat && d.children && focus !== d) {
-        /* d.children && focus !== d && */ zoom(d);
+    cell.append('title')
+      .text((d: d3.HierarchyNode<HierarchyTreeNode>) => this.tooltipFunc(d));
+
+    const clicked = (p: d3.HierarchyRectangularNode<HierarchyTreeNode>) => {
+      this.tapFunc(p);
+      if (this.zoom && p.children) {
+        focus = (focus === p && p.parent) ? p = p.parent : p;
+        root.each((d: any) => d.target = {
+          x0: (d.x0 - p.x0) / (p.x1 - p.x0) * h,
+          x1: (d.x1 - p.x0) / (p.x1 - p.x0) * h,
+          y0: d.y0 - p.y0,
+          y1: d.y1 - p.y0
+        });
+        const t = cell.transition().duration(this.transitionMsec)
+          .attr('transform', (d: any) => `translate(${d.target.y0},${d.target.x0})`);
+        rect.transition(t)
+          .attr('height', (d: any) => rectHeight(d.target));
+        text.transition(t)
+          .attr('fill-opacity', (d: any) => +labelVisible(d.target));
       }
     };
 
-    let view: d3.ZoomView;
-    const zoomTo = (v: d3.ZoomView) => {
-      view = v;
-      const k = s / v[2];
-      label.attr('transform', (d: d3.HierarchyCircularNode<HierarchyTreeNode>) =>
-        `translate(${(d.x - v[0]) * k},${(d.y - v[1]) * k + this.labelFontSizeFunc(d) / 4})`);
-      node.attr('transform', (d: d3.HierarchyCircularNode<HierarchyTreeNode>) =>
-        `translate(${(d.x - v[0]) * k},${(d.y - v[1]) * k})`);
-      node.attr('r', (d: d3.HierarchyCircularNode<HierarchyTreeNode>) => d.r * k);
-    };
-
-    const zoom = (d: d3.HierarchyCircularNode<HierarchyTreeNode>) => {
-      const focus0 = focus;
-      focus = d;
-      const transition = svg.transition().duration(this.transitionMsec)
-        .tween('zoom', () => {
-          const i = d3.interpolateZoom(view, [focus.x, focus.y, focus.r * 2]);
-          return (t: any) => zoomTo(i(t));
-      });
-      label.transition(transition).style('fill-opacity', labelFillOpacity);
-    };
-
-    node.append('title')
-      .text((d: d3.HierarchyNode<HierarchyTreeNode>) => this.tooltipFunc(d));
-
-    zoomTo([root.x, root.y, root.r * 2]);
+    rect.on('click', clicked);
   }
 }

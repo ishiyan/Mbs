@@ -53,6 +53,14 @@ export const treeNodes: MbSample[] = [
         ]
       },
       {
+        name: 'Icicle',
+        children: [
+          {name: 'Features', header: 'Icicle features', route: 'comp-icicle/s1'},
+          {name: 'Countries', header: 'Icicle countries', route: 'comp-icicle/s2'},
+          {name: 'JDK', header: 'Icicle JDK', route: 'comp-icicle/s3'}
+        ]
+      },
+      {
         name: 'Circlepack',
         children: [
           {name: 'Features', header: 'Circlepack features', route: 'comp-circlepack/s1'},

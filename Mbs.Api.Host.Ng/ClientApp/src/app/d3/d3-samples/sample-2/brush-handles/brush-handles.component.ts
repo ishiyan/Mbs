@@ -38,7 +38,7 @@ export class BrushHandlesComponent implements OnInit {
       .selectAll('circle')
       .data(data)
       .enter().append('circle')
-      .attr('transform', (d: any) => { return 'translate(' + x(d) + ',' + y() + ')'; })
+      .attr('transform', (d: any) => 'translate(' + x(d) + ',' + y() + ')')
       .attr('r', 3.5);
 
     const gBrush: any = g.append('g').attr('class', 'brush').call(brush);
@@ -56,7 +56,7 @@ export class BrushHandlesComponent implements OnInit {
         .innerRadius(0)
         .outerRadius(height / 2)
         .startAngle(0)
-        .endAngle((d, i) => { return i ? Math.PI : -Math.PI; }));
+        .endAngle((d, i) => i ? Math.PI : -Math.PI));
 
     brush.on('start brush end', () => {
       const s = d3.event.selection;
@@ -65,10 +65,10 @@ export class BrushHandlesComponent implements OnInit {
         circle.classed('active', false);
       } else {
         const sx = s.map(x.invert);
-        circle.classed('active', (d: any) => { return sx[0] <= d && d <= sx[1]; });
+        circle.classed('active', (d: any) => sx[0] <= d && d <= sx[1]);
         handle
           .attr('display', null)
-          .attr('transform', (d: any, i: any) => { return 'translate(' + s[i] + ',' + height / 2 + ')'; });
+          .attr('transform', (d: any, i: any) => 'translate(' + s[i] + ',' + height / 2 + ')');
       }
     });
     gBrush.call(brush.move, [0.3, 0.5].map(x));

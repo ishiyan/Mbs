@@ -38,7 +38,7 @@ export class ClickToRecenterBrushComponent implements OnInit {
       .selectAll('circle')
       .data(data)
       .enter().append('circle')
-      .attr('transform', (d: any) => { return 'translate(' + x(d[0]) + ',' + y(d[1]) + ')'; })
+      .attr('transform', (d: any) => 'translate(' + x(d[0]) + ',' + y(d[1]) + ')')
       .attr('r', 3.5);
 
     brush.on('start brush end', () => {
@@ -47,7 +47,7 @@ export class ClickToRecenterBrushComponent implements OnInit {
         dot.classed('activa', false);
       } else {
         const sx = s.map(x.invert);
-        dot.classed('active', (d: any) => { return sx[0] <= d[0] && d[0] <= sx[1]; });
+        dot.classed('active', (d: any) => sx[0] <= d[0] && d[0] <= sx[1]);
       }
     });
 
@@ -56,7 +56,7 @@ export class ClickToRecenterBrushComponent implements OnInit {
       .call(brush.move, [3, 5].map(x))
       .selectAll('.overlay')
       .each((d: any) => { d.type = 'selection'; }) // Treat overlay interaction as move.
-      .on('mousedown touchstart', function () { // Recenter before brushing.
+      .on('mousedown touchstart', function() { // Recenter before brushing.
         const dx = x(1) - x(0); // Use a fixed width when recentering.
         // tslint:disable-next-line:no-shadowed-variable
         // @ts-ignore

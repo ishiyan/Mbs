@@ -54,7 +54,7 @@ export class D3tcTradeArrowsComponent implements OnInit {
     }
 
     const tradearrow = d3tc.plot.tradearrow().xScale(x).yScale(y)
-      .orient((z: any) => { return z.type.startsWith('buy') ? 'up' : 'down'; }).on('mouseenter', enter).on('mouseout', out);
+      .orient((z: any) => z.type.startsWith('buy') ? 'up' : 'down').on('mouseenter', enter).on('mouseout', out);
 
     function draw(dat: D3Ohlcv[], trad: any) {
       x.domain(dat.map(accessor.d));

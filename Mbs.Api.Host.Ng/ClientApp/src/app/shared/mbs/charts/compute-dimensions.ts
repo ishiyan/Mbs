@@ -193,7 +193,7 @@ function computePercentageHeight(percentage: number, name: string, element: any,
       return undefined;
     } else {
       const closest = element.closest(name);
-      if (closest !== null && closest.clientHeight && closest.clientHeight> 0) {
+      if (closest !== null && closest.clientHeight && closest.clientHeight > 0) {
         return closest.clientHeight * percentage / 100;
       }
       return undefined;
@@ -202,7 +202,7 @@ function computePercentageHeight(percentage: number, name: string, element: any,
 
   const parent = element.parentElement;
   if (parent !== null && parent.clientHeight && parent.clientHeight > 0) {
-    return parent.clientHeight* percentage / 100;
+    return parent.clientHeight * percentage / 100;
   }
   return undefined;
 }

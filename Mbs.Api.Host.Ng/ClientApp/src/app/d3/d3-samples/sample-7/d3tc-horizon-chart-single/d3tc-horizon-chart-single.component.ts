@@ -61,8 +61,8 @@ export class D3tcHorizonChartSingleComponent implements OnInit {
     }
   }
   @Input() set data(value: D3Ohlcv[]) {
-    const mean = value.map(c => c.close).reduce((p, v) => { return p + v; }, 0) / value.length;
-    this.horizonData = value.map(c => { return [c.date, c.close ? (c.close - mean) : null]; });
+    const mean = value.map(c => c.close).reduce((p, v) => p + v, 0) / value.length;
+    this.horizonData = value.map(c => [c.date, c.close ? (c.close - mean) : null]);
     if (this.g) {
       this.g.data([this.horizonData]).call(this.chart);
     }

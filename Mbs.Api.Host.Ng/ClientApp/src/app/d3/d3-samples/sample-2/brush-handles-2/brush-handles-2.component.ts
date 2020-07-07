@@ -41,7 +41,7 @@ export class BrushHandles2Component implements OnInit {
       .selectAll('circle')
       .data(data)
       .enter().append('circle')
-      .attr('transform', (d: any) => { return 'translate(' + x(d) + ',' + y() + ')'; })
+      .attr('transform', (d: any) => 'translate(' + x(d) + ',' + y() + ')')
       .attr('r', 3.5);
 
     const gBrush: any = g.append('g').attr('class', 'brush').call(brush);
@@ -74,10 +74,10 @@ export class BrushHandles2Component implements OnInit {
         circle.classed('active', false);
       } else {
         const sx = s.map(x.invert);
-        circle.classed('active', (d: any) => { return sx[0] <= d && d <= sx[1]; });
+        circle.classed('active', (d: any) => sx[0] <= d && d <= sx[1]);
         handle
           .attr('display', null)
-          .attr('transform', (d: any, i: any) => { return 'translate(' + s[i] + ',' + (-height / 4) + ')'; });
+          .attr('transform', (d: any, i: any) => 'translate(' + s[i] + ',' + (-height / 4) + ')');
       }
     });
     gBrush.call(brush.move, [0.3, 0.5].map(x));

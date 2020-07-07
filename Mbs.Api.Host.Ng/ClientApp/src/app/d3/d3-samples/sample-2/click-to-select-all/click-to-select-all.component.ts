@@ -38,7 +38,7 @@ export class ClickToSelectAllComponent implements OnInit {
       .selectAll('circle')
       .data(data)
       .enter().append('circle')
-      .attr('transform', (d: any) => { return 'translate(' + x(d[0]) + ',' + y(d[1]) + ')'; })
+      .attr('transform', (d: any) => 'translate(' + x(d[0]) + ',' + y(d[1]) + ')')
       .attr('r', 3.5);
 
     brush.on('start brush end', () => {
@@ -47,7 +47,7 @@ export class ClickToSelectAllComponent implements OnInit {
         dot.classed('activa', false);
       } else {
         const sx = s.map(x.invert);
-        dot.classed('active', (d: any) => { return sx[0] <= d[0] && d[0] <= sx[1]; });
+        dot.classed('active', (d: any) => sx[0] <= d[0] && d[0] <= sx[1]);
       }
     });
 
@@ -55,7 +55,7 @@ export class ClickToSelectAllComponent implements OnInit {
       .call(brush)
       .call(brush.move, [3, 5].map(x))
       .selectAll('.overlay')
-      .on('mousedown touchstart', function () { // Recenter before brushing.
+      .on('mousedown touchstart', function() { // Recenter before brushing.
         d3.event.stopImmediatePropagation();
         // tslint:disable-next-line:no-shadowed-variable
         // @ts-ignore

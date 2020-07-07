@@ -25,7 +25,7 @@ export class HilbertPathsComponent implements OnInit {
     const max2 = max * max;
 
     // const color: any = d3.scaleOrdinal(d3.schemeCategory20b);
-    function colors(s: any) { return s.match(/.{6}/g).map((x: any) => { return '#' + x; }); }
+    function colors(s: any) { return s.match(/.{6}/g).map((x: any) => '#' + x); }
     const category20b = colors(
       '393b795254a36b6ecf9c9ede6379398ca252b5cf6bcedb9c8c6d31bd9e39e7ba52e7cb94843c39ad494ad6616be7969c7b4173a55194ce6dbdde9ed6');
     const color = d3.scaleOrdinal(category20b);

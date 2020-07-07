@@ -94,7 +94,7 @@ export class SparklineComponent implements OnChanges, AfterViewInit {
       getY = (d: any) => (d as Scalar).value;
     }
 
-    const interp = cfg.interpolation ? cfg.interpolation : 'linear;'
+    const interp = cfg.interpolation ? cfg.interpolation : 'linear;';
     const yScale = d3.scaleLinear().domain(yExtent).range([h, 0]);
     svg.datum(dat);
     if (cfg.fillColor && cfg.fillColor !== 'none') {

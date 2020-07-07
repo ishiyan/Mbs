@@ -12,7 +12,7 @@ import { treeNodes } from './d3-samples/d3-samples';
   styleUrls: ['./d3.component.scss']
 })
 export class D3Component {
-  public sample: D3Sample= treeNodes[0];
+  public sample: D3Sample = treeNodes[0];
   public treeControl = new NestedTreeControl<D3Sample>(node => node.children);
   public dataSource = new MatTreeNestedDataSource<D3Sample>();
 

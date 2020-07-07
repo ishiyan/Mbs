@@ -25,7 +25,7 @@ export const sortNone: HierarchyTreeSortFunction = (a: d3.HierarchyNode<Hierarch
  * This function sorts nodes ascending by their value.
  */
 export const sortAscending: HierarchyTreeSortFunction = (a: d3.HierarchyNode<HierarchyTreeNode>, b: d3.HierarchyNode<HierarchyTreeNode>) =>
-  ((b && b.value)? b.value : 0) - ((a && a.value)? a.value : 0);
+  ((b && b.value) ? b.value : 0) - ((a && a.value) ? a.value : 0);
 
 /**
  * Provides an implementation of the **HierarchyTreeSortFunction** type.
@@ -33,4 +33,4 @@ export const sortAscending: HierarchyTreeSortFunction = (a: d3.HierarchyNode<Hie
  * This function sorts nodes descending by their value.
  */
 export const sortDescending: HierarchyTreeSortFunction = (a: d3.HierarchyNode<HierarchyTreeNode>, b: d3.HierarchyNode<HierarchyTreeNode>) =>
-  ((a && a.value)? a.value : 0) - ((b && b.value)? b.value : 0);
+  ((a && a.value) ? a.value : 0) - ((b && b.value) ? b.value : 0);

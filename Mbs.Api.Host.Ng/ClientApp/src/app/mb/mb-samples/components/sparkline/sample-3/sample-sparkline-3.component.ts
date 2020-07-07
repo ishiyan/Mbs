@@ -54,36 +54,36 @@ export class SampleSparkline3Component {
 
   itemIsLineChanged1(event: any) {
     const value = event.value === 'true';
-      this.arrayItemIsLine1 = value;
+    this.arrayItemIsLine1 = value;
   }
 
   itemIsLineChanged2(event: any) {
     const value = event.value === 'true';
-      this.arrayItemIsLine2 = value;
+    this.arrayItemIsLine2 = value;
   }
 
   itemIsLineChanged3(event: any) {
     const value = event.value === 'true';
-      this.arrayItemIsLine3 = value;
+    this.arrayItemIsLine3 = value;
   }
 
   itemIsLineChanged4(event: any) {
     const value = event.value === 'true';
-      this.arrayItemIsLine4 = value;
+    this.arrayItemIsLine4 = value;
   }
 
   itemIsLineChanged5(event: any) {
     const value = event.value === 'true';
-      this.arrayItemIsLine5 = value;
+    this.arrayItemIsLine5 = value;
   }
 
   itemIsLineChanged6(event: any) {
     const value = event.value === 'true';
-      this.arrayItemIsLine6 = value;
+    this.arrayItemIsLine6 = value;
   }
 
   itemIsLineChanged7(event: any) {
     const value = event.value === 'true';
-      this.arrayItemIsLine7 = value;
+    this.arrayItemIsLine7 = value;
   }
 }

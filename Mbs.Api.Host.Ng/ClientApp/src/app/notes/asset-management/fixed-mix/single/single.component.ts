@@ -192,7 +192,7 @@ export class SingleComponent {
   }
 
   get hrPercentage(): Scalar[] {
-    return this.percentageCalculated
+    return this.percentageCalculated;
   }
 
 }

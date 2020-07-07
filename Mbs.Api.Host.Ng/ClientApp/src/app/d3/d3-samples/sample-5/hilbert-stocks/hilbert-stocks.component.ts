@@ -36,14 +36,14 @@ export class HilbertStocksComponent implements OnInit {
       square.exit().remove();
       vis.selectAll('rect')
         // .style('fill', function (d, i) { return isNaN(dat[i]) ? '#000' : colour(dat[i]); })
-        .style('fill', (d: any, i: any) => { return dat[i] ? colour(dat[i]) : '#000'; })
-        .attr('x', (d: any) => { return x(d[0] - .5); })
-        .attr('y', (d: any) => { return x(d[1] - .5); })
+        .style('fill', (d: any, i: any) => dat[i] ? colour(dat[i]) : '#000')
+        .attr('x', (d: any) => x(d[0] - .5))
+        .attr('y', (d: any) => x(d[1] - .5))
         .attr('width', x(1) - x(0) + 1)
         .attr('height', x(1) - x(0) + 1);
-    }
+    };
 
     const level = 12;
-    plot(svg, level, dataOhlcvDaily.map((d, i) => { return hilbert.d2xy(level, i); }), dataOhlcvDaily);
+    plot(svg, level, dataOhlcvDaily.map((d, i) => hilbert.d2xy(level, i)), dataOhlcvDaily);
   }
 }

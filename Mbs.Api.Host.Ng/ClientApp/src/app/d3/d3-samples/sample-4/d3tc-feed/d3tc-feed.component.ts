@@ -74,10 +74,10 @@ export class D3tcFeedComponent implements OnInit {
       yVolume.domain(d3tc.scale.plot.volume(dat.slice(dat.length - 130, dat.length)).domain());
       // Setup a transition for all that support
       svg.transition() // Disable transition for now, each is only for transitions
-        .each(function () {
-        // tslint:disable-next-line:no-shadowed-variable
-        // @ts-ignore
-        const selection = d3.select(this);
+        .each(function() {
+          // tslint:disable-next-line:no-shadowed-variable
+          // @ts-ignore
+          const selection = d3.select(this);
           selection.select('g.x.axis').call(xAxis);
           selection.select('g.y.axis').call(yAxis);
           selection.select('g.volume.axis').call(volumeAxis);

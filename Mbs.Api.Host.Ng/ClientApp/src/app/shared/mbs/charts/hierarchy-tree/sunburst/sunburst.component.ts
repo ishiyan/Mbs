@@ -105,12 +105,11 @@ export class SunburstComponent implements OnChanges {
     const sortFunc: HierarchyTreeSortFunction = this.sort === ascending ?
       sortAscending : (this.sort === descending ? sortDescending : sortNone);
     const partition = (d: HierarchyTreeNode) => {
-      let rootNode = d3.hierarchy(d)
-        .sum(this.sumFunc);
-        if (sortFunc !== sortNone) {
-          rootNode = rootNode.sort((a: d3.HierarchyNode<HierarchyTreeNode>, b: d3.HierarchyNode<HierarchyTreeNode>) => sortFunc(a, b));
-        }
-        return d3.partition().size([twoPi, rootNode.height + 1])(rootNode);
+      let rootNode = d3.hierarchy(d).sum(this.sumFunc);
+      if (sortFunc !== sortNone) {
+        rootNode = rootNode.sort((a: d3.HierarchyNode<HierarchyTreeNode>, b: d3.HierarchyNode<HierarchyTreeNode>) => sortFunc(a, b));
+      }
+      return d3.partition().size([twoPi, rootNode.height + 1])(rootNode);
     };
     const root = partition(dat);
     root.each((d: any) => d.current = d);

@@ -39,7 +39,7 @@ export class SampleSunburst1Component {
       first = first.parent;
     }
     return this.rainbowInterpolate(first.data.name ? first.data.name : '');
-  };
+  }
 
   tapFunc = (d: d3.HierarchyNode<HierarchyTreeNode>) => console.log(d);
 }

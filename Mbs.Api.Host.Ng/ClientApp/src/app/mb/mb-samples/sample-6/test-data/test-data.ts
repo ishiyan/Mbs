@@ -154,14 +154,14 @@ export class TestData {
       const arrow = {
         name: 'sell', down: true, time: testDataOhlcv[25].time, /*value: testDataOhlcv[25].high,*/
         indicator: 0, output: 0, color: 'rgb(255,0,0)'
-      }
+      };
       cfg.pricePane.arrows.push(arrow);
     }
     if (count > 26 && cfg.pricePane.arrows.length < 2) {
       const arrow = {
         name: 'buy', down: false, time: testDataOhlcv[26].time, /*value: testDataOhlcv[26].low,*/
         indicator: 0, output: 0, color: 'rgb(0,255,0)'
-      }
+      };
       cfg.pricePane.arrows.push(arrow);
     }
   }
@@ -189,7 +189,7 @@ export class TestData {
     if (obj instanceof Object) {
       const copy: any = {};
       for (const attr of Object.keys(obj)) {
-        copy[attr] = TestData.deepCopy(obj[attr])
+        copy[attr] = TestData.deepCopy(obj[attr]);
       }
       return copy;
     }

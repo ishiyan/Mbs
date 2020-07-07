@@ -83,7 +83,7 @@ export class MultilineComponent implements OnChanges, AfterViewInit {
    *
    * If no value provided then nothing is visible.
    */
-  @Input() timeAxis: ('top' | 'bottom')[] =[];
+  @Input() timeAxis: ('top' | 'bottom')[] = [];
 
   /**
    * Specifies how value axis will be shown. Possible values are the combination of:

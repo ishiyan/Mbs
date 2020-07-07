@@ -12,7 +12,7 @@ import { treeNodes } from './mb-samples/mb-samples';
   styleUrls: ['./mb.component.scss']
 })
 export class MbComponent {
-  public sample: MbSample= treeNodes[0];
+  public sample: MbSample = treeNodes[0];
   public treeControl = new NestedTreeControl<MbSample>(node => node.children);
   public dataSource = new MatTreeNestedDataSource<MbSample>();
 

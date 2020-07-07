@@ -178,7 +178,7 @@ export class CirclepackComponent implements OnChanges {
       .join('tspan')
         .attr('x', 0)
         .attr('y', (d: any, i: number, nodes: any) => `${i - nodes.length / 2 + 0.8}em`)
-        .text((d: string) => d)
+        .text((d: string) => d);
 
     const clicked = (d: d3.HierarchyCircularNode<HierarchyTreeNode>) => {
       this.tapFunc(d);

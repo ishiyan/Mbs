@@ -107,13 +107,12 @@ export class IcicleComponent implements OnChanges {
     const sortFunc: HierarchyTreeSortFunction = this.sort === ascending ?
       sortAscending : (this.sort === descending ? sortDescending : sortNone);
     const partition = (d: HierarchyTreeNode) => {
-      let rootNode = d3.hierarchy(d)
-        .sum(this.sumFunc);
-        if (sortFunc !== sortNone) {
-          rootNode = rootNode.sort((a: d3.HierarchyNode<HierarchyTreeNode>, b: d3.HierarchyNode<HierarchyTreeNode>) => sortFunc(a, b));
-        }
-        const n: number = (this.levels < 1 ? rootNode.height : this.levels) + 1;
-        return d3.partition().size([computed[1], (rootNode.height + 1) * computed[0] / n])(rootNode);
+      let rootNode = d3.hierarchy(d).sum(this.sumFunc);
+      if (sortFunc !== sortNone) {
+        rootNode = rootNode.sort((a: d3.HierarchyNode<HierarchyTreeNode>, b: d3.HierarchyNode<HierarchyTreeNode>) => sortFunc(a, b));
+      }
+      const n: number = (this.levels < 1 ? rootNode.height : this.levels) + 1;
+      return d3.partition().size([computed[1], (rootNode.height + 1) * computed[0] / n])(rootNode);
     };
     const root = partition(dat);
     let focus = root;
@@ -129,9 +128,11 @@ export class IcicleComponent implements OnChanges {
       .attr('width', (d: d3.HierarchyRectangularNode<HierarchyTreeNode>) => d.y1 - d.y0 - 1)
       .attr('height', (d: d3.HierarchyRectangularNode<HierarchyTreeNode>) => rectHeight(d))
       .attr('fill', (d: d3.HierarchyRectangularNode<HierarchyTreeNode>) => this.fillFunc(d))
-      .attr('fill-opacity', (d: d3.HierarchyRectangularNode<HierarchyTreeNode>) => this.fillOpacityFunc(d as d3.HierarchyRectangularNode<HierarchyTreeNode>, root.height));
+      .attr('fill-opacity', (d: d3.HierarchyRectangularNode<HierarchyTreeNode>) =>
+        this.fillOpacityFunc(d as d3.HierarchyRectangularNode<HierarchyTreeNode>, root.height));
 
-    const labelVisible = (d: d3.HierarchyRectangularNode<HierarchyTreeNode>) => d.y1 <= w && d.y0 >= 0 && d.x1 - d.x0 > (this.labelFontSizeFunc(d) + deltaY);
+    const labelVisible = (d: d3.HierarchyRectangularNode<HierarchyTreeNode>) =>
+      d.y1 <= w && d.y0 >= 0 && d.x1 - d.x0 > (this.labelFontSizeFunc(d) + deltaY);
     const text = cell.append('text')
       .style('user-select', 'none')
       .attr('pointer-events', 'none')

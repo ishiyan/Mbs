@@ -196,5 +196,5 @@ export class SampleIcicle2Component {
       text += `, median wealth per adult: ${n.wpaMedian}`;
     }
     this.selectedNodeInfo = text;
-  };
+  }
 }

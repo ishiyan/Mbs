@@ -110,5 +110,5 @@ export class SampleIcicle3Component {
   selectedNodeInfo: string;
   tapFunc: HierarchyTreeTapFunction = (d: d3.HierarchyNode<HierarchyTreeNode>) => {
     this.selectedNodeInfo = `${d.data.name ? d.data.name : 'root'}: size: ${d.value} bytes`;
-  };
+  }
 }

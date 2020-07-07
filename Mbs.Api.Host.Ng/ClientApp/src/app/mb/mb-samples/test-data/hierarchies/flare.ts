@@ -379,4 +379,4 @@ export const flare: HierarchyTreeNode = {
       ]
     }
   ]
-}
+};

@@ -1254,3 +1254,128 @@ Note that the terms "industry" and "sector" are reversed from the ''[[Global Ind
 
 
 
+
+
+Industry Classification Standarts
+https://en.wikipedia.org/wiki/Industry_classification
+https://s3.amazonaws.com/glx-wp-downloads/2017-02-01-Sector-Industry-Business-Classification-Study-GLX.pdf
+
+GICS (Global Industry Classification Standard) – MSCI + S&P
+Used by indices: MSCI, S&P, NIFTY (or it uses own classification? see https://groww.in/blog/what-are-indexes-stock-markets/)
+Used by exchanges: ASX (https://www.asx.com.au/products/gics.htm, https://www.asx.com.au/asx/markets/equityPrices.do) NSE ? (https://www.nseindia.com/market-data/live-equity-market)
+https://www.msci.com/gics
+- sectors: 11                   10       Energy
+- industry groups: 24           1010     Energy
+- industries: 69                101010   Energy Equipment & Services
+- sub-industries: 158           10101010 Oil & Gas Drilling
+
+The 11 sectors are:
+- Energy
+- Materials
+- Industrials
+- Consumer Staples
+- Consumer Discretionary
+- Health care
+- Communication Services
+- Utilities
+- Financials
+- Information Technology
+- Real estate
+
+
+ICB (Industry Classification Benchmark) – FTSE
+Used by indices: FTSE, Russell, Dow Jones, STOXX
+Used by exchanges: NASDAQ (https://www.nasdaq.com/solutions/nasdaq-smart-sectors), Nasdaq Nordic (http://www.nasdaqomxnordic.com/shares/listed-companies/copenhagen), NYSE EuroNext (https://live.euronext.com/en/product/equities/GB00B03MLX29-XAMS/market-information)
+https://www.ftserussell.com/data/industry-classification-benchmark-icb
+- industries: 11                60       Energy
+- supersectors: 20              6010     Energy
+- sectors: 45                   601010   Oil, Gas and Coal
+- subsectors: 173               60101000 Integrated Oil and Gas
+
+The 11 industries are:
+- Technology
+- Telecommunications
+- Health Care
+- Financials
+- Real Estate
+- Consumer Discretionary
+- Consumer Staples
+- Industrials
+- Basic Materials
+- Energy
+- Utilities
+
+TRBC (Thomson Reuters Business Classification) – Thomson Reuters
+Used by indices: Refinitiv Indices
+Used by exchanges: 
+https://www.refinitiv.com/en/financial-data/indices/trbc-business-classification
+- economic sector: 10           50         Energy
+- business sector: 28           5010       Energy - fossil fuels
+- industry group: 54            501010     Coal
+- industry: 136                 50101010   Coal
+- activity: 837                 5010101011 Coal mining support
+
+
+BICS (Bloomberg Industry Classification Systems) – Bloomberg
+https://journals.plos.org/plosone/article/file?id=info%3Adoi/10.1371/journal.pone.0112525.s002&type=supplementary
+38274 traded firms broken down in 2294 sectors.
+- Macro Sector: 10              13     Energy
+- 1st Level Microsector: 46     1310   Oil, Gas & Coal
+- 2nd Level Microsector
+. . .
+- 6th Level Microsector
+
+The 10 macro sectors are:
+- Communications
+- Consumer Discretionary
+- Consumer Staples
+- Energy
+- Financials
+- Health Care
+- Industrials
+- Materials
+- Technology
+- Utilities
+
+MGECS (Morningstar Global Equity Classification) – Morningstar
+Used by indices: Morningstar Indices
+Used by exchanges: 
+https://indexes.morningstar.com/resources/PDF/Methodology%20Documents/SectorArticle.pdf
+https://assets.contentstack.io/v3/assets/bltabf2a7413d5a8f05/blt0d2da7a6ea07369f/5ea010d5f923401150072896/Construction_Rules_for_Global_Classification.pdf
+
+- super sectors: 3
+- sectors: 11
+- industry groups: 69
+- industries: 148
+
+The 3 super sectors are:
+- Cyclical
+- Defensive
+- Sensitive
+
+The 11 sectors are:
+- Energy
+- Basic Materials
+- Industrials
+- Consumer Cyclicals
+- Consumer Defensive
+- Healthcare
+- Communication Services
+- Utilities
+- Financial Services
+- Technology
+- Real estate
+
+
+
+Comparison
+
+| Name  | 1st level           | 2nd level                 | 3rd level          | 4th level          | 5th level      | # of securities |
+|=======|=====================|===========================|====================|====================|================|=================|
+| TRBC  | 10 economic sectors | 28 business sector        | 54 industry groups | 136 industries     | 837 activities | 72 000          |
+| GICS  | 11 sectors          | 24 industry groups        | 69 industries      | 158 sub-industries |                | 29 000          |
+| ICB   | 11 industries       | 20 supersectors           | 45 sectors         | 173 subsectors     |                | 75 000          |
+| BICS  | 10 macro sectors    | 46 1st Level Microsectors | *                  | *                  | *              | 38 274          |
+| MGECS | 3 super sectors     | 11 sectors                | 69 industry groups | 148 industries     |                | 42 090          |
+
+* 2nd, 3rd, 4th, 5th, 6th level Level Microsectors, data unavailable

@@ -243,7 +243,7 @@ export class HistoricalDataChartComponent implements OnInit {
     }
 
     function draw(scalarView: number, tradeView: number, quoteView: number,
-      renderVolume: boolean, temporalEntityKind: TemporalEntityKind | undefined) {
+                  renderVolume: boolean, temporalEntityKind: TemporalEntityKind | undefined) {
       const priceSelection = focus.select('g.price');
       const datum = priceSelection.datum();
       switch (temporalEntityKind) {

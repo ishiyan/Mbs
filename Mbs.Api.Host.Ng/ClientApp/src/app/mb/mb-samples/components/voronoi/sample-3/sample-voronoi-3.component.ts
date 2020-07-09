@@ -5,6 +5,8 @@ import { HierarchyTreeNode } from '../../../../../shared/mbs/charts/hierarchy-tr
 import { HierarchyTreeSumFunction, sumNodeValues, sumNumberOfNodes, sumNumberOfLeafNodes } from '../../../../../shared/mbs/charts/hierarchy-tree/functions/sum-function';
 import { HierarchyTreeFillFunction, coolFill, coolFillInverted, rainbowFill, rainbowFillInverted } from '../../../../../shared/mbs/charts/hierarchy-tree/functions/fill-function';
 import { HierarchyTreeFillOpacityFunction, transparentFillOpacity, opaqueFillOpacity, linearFillOpacity } from '../../../../../shared/mbs/charts/hierarchy-tree/functions/fill-opacity-function';
+import { HierarchyTreeStrokeFunction, noStroke, blackStroke } from '../../../../../shared/mbs/charts/hierarchy-tree/functions/stroke-function';
+import { HierarchyTreeStrokeWidthFunction, noStrokeWidth, linearStrokeWidth } from '../../../../../shared/mbs/charts/hierarchy-tree/functions/stroke-width-function';
 import { HierarchyTreeTapFunction } from '../../../../../shared/mbs/charts/hierarchy-tree/functions/tap-function';
 import { HierarchyTreeLabelFunction, nameLabels, valueLabels, emptyLabels } from '../../../../../shared/mbs/charts/hierarchy-tree/functions/label-function';
 import { HierarchyTreeFontSizeFunction, equalFontSize8, equalFontSize10, equalFontSize12, equalFontSize14, equalFontSize16, equalFontSize18, linearFontSize } from '../../../../../shared/mbs/charts/hierarchy-tree/functions/font-size-function';
@@ -31,6 +33,16 @@ interface FillOpacityFunc {
   key: string;
 }
 
+interface StrokeFunc {
+  value: HierarchyTreeStrokeFunction;
+  key: string;
+}
+
+interface StrokeWidthFunc {
+  value: HierarchyTreeStrokeWidthFunction;
+  key: string;
+}
+
 interface LabelFunc {
   value: HierarchyTreeLabelFunction;
   key: string;
@@ -42,14 +54,16 @@ interface LabelFontSizeFunc {
 }
 
 @Component({
-  selector: 'mb-sample-icicle-3',
-  templateUrl: './sample-icicle-3.component.html',
-  styleUrls: ['./sample-icicle-3.component.scss']
+  selector: 'mb-sample-voronoi-3',
+  templateUrl: './sample-voronoi-3.component.html',
+  styleUrls: ['./sample-voronoi-3.component.scss']
 })
-export class SampleIcicle3Component {
+export class SampleVoronoi3Component {
 
   readonly jdkHierarchy: HierarchyTreeNode = jdk;
   zoom = true;
+  flat = false;
+  rootCircle = false;
 
   readonly diameterArray: DiameterItam[] = [
     { key: '100%', value: '100%' },
@@ -58,13 +72,13 @@ export class SampleIcicle3Component {
   ];
   diameterSelected: number | string = this.diameterArray[0].value;
 
-  readonly levelsArray: number[] = [ 0, 1, 2, 3, 4 ];
-  levelsSelected: number = this.levelsArray[0];
+  readonly paddingArray: number[] = [ 3, 10, 1, 0 ];
+  paddingSelected: number = this.paddingArray[0];
 
   readonly sumFuncArray: SumFunc[] = [
     { key: 'size in bytes', value: sumNodeValues },
-    { key: 'number of files', value: sumNumberOfLeafNodes },
-    { key: 'number of files and folders', value: sumNumberOfNodes }
+    { key: '# files', value: sumNumberOfLeafNodes },
+    { key: '# files and folders', value: sumNumberOfNodes }
   ];
   sumFuncSelected: HierarchyTreeSumFunction = this.sumFuncArray[0].value;
 
@@ -86,6 +100,18 @@ export class SampleIcicle3Component {
   ];
   fillOpacityFuncSelected: HierarchyTreeFillOpacityFunction = this.fillOpacityFuncArray[0].value;
 
+  readonly strokeFuncArray: StrokeFunc[] = [
+    { key: 'none', value: noStroke },
+    { key: 'black', value: blackStroke }
+  ];
+  strokeFuncSelected: HierarchyTreeStrokeFunction = this.strokeFuncArray[0].value;
+
+  readonly strokeWidthFuncArray: StrokeWidthFunc[] = [
+    { key: 'none', value: noStrokeWidth },
+    { key: 'linear', value: linearStrokeWidth }
+  ];
+  strokeWidthFuncSelected: HierarchyTreeStrokeWidthFunction = this.strokeWidthFuncArray[0].value;
+
   readonly labelFuncArray: LabelFunc[] = [
     { key: 'none', value: emptyLabels },
     { key: 'name', value: nameLabels },
@@ -93,8 +119,14 @@ export class SampleIcicle3Component {
   ];
   labelFuncSelected: HierarchyTreeLabelFunction = this.labelFuncArray[0].value;
 
+  readonly labelMinRadiusArray: number[] = [ 15, 10, 5, 1 ];
+  labelMinRadiusSelected: number = this.labelMinRadiusArray[0];
+
   readonly labelFillArray: string[] = [ 'white', 'black', 'transparent' ];
   labelFillSelected: string = this.labelFillArray[0];
+
+  readonly labelShadowArray: string[] = [ '0px 0px 8px #000000', '0px 0px 8px #ffffff', 'none' ];
+  labelShadowSelected: string = this.labelShadowArray[0];
 
   readonly labelFontSizeFuncArray: LabelFontSizeFunc[] = [
     { key: 'linear', value: linearFontSize },

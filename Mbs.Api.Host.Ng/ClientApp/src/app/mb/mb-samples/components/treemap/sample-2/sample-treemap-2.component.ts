@@ -53,11 +53,11 @@ interface LabelFontSizeFunc {
 }
 
 @Component({
-  selector: 'mb-sample-icicle-2',
-  templateUrl: './sample-icicle-2.component.html',
-  styleUrls: ['./sample-icicle-2.component.scss']
+  selector: 'mb-sample-treemap-2',
+  templateUrl: './sample-treemap-2.component.html',
+  styleUrls: ['./sample-treemap-2.component.scss']
 })
-export class SampleIcicle2Component {
+export class SampleTreemap2Component {
 
   readonly contriesHierarchy: CountryHierarchyTreeNode = countries;
   zoom = true;

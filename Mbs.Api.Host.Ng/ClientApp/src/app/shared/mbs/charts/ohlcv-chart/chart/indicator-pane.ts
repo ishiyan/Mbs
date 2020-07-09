@@ -199,7 +199,7 @@ export class IndicatorPane {
   }
 
   private heatColumn(heatmap: Heatmap, periodMin: number, periodRes: number, periodInverted: boolean, min: number, max: number,
-    color: any, invertColor: boolean, width: number, height: number): HTMLCanvasElement {
+                     color: any, invertColor: boolean, width: number, height: number): HTMLCanvasElement {
     const canvas = document.createElement('canvas');
     canvas.width = width;
     canvas.height = height;

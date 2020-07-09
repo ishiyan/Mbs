@@ -5,6 +5,8 @@ import { HierarchyTreeNode } from '../../../../../shared/mbs/charts/hierarchy-tr
 import { HierarchyTreeSumFunction, sumNumberOfLeafNodes } from '../../../../../shared/mbs/charts/hierarchy-tree/functions/sum-function';
 import { HierarchyTreeFillFunction, coolFill, coolFillInverted, rainbowFill, rainbowFillInverted } from '../../../../../shared/mbs/charts/hierarchy-tree/functions/fill-function';
 import { HierarchyTreeFillOpacityFunction, transparentFillOpacity, opaqueFillOpacity, linearFillOpacity } from '../../../../../shared/mbs/charts/hierarchy-tree/functions/fill-opacity-function';
+import { HierarchyTreeStrokeFunction, noStroke, blackStroke } from '../../../../../shared/mbs/charts/hierarchy-tree/functions/stroke-function';
+import { HierarchyTreeStrokeWidthFunction, noStrokeWidth, linearStrokeWidth } from '../../../../../shared/mbs/charts/hierarchy-tree/functions/stroke-width-function';
 import { HierarchyTreeTapFunction } from '../../../../../shared/mbs/charts/hierarchy-tree/functions/tap-function';
 import { HierarchyTreeLabelFunction, nameLabels, valueLabels, emptyLabels } from '../../../../../shared/mbs/charts/hierarchy-tree/functions/label-function';
 import { HierarchyTreeFontSizeFunction, equalFontSize8, equalFontSize10, equalFontSize12, equalFontSize14, equalFontSize16, equalFontSize18, linearFontSize } from '../../../../../shared/mbs/charts/hierarchy-tree/functions/font-size-function';
@@ -42,6 +44,16 @@ interface FillOpacityFunc {
   key: string;
 }
 
+interface StrokeFunc {
+  value: HierarchyTreeStrokeFunction;
+  key: string;
+}
+
+interface StrokeWidthFunc {
+  value: HierarchyTreeStrokeWidthFunction;
+  key: string;
+}
+
 interface LabelFunc {
   value: HierarchyTreeLabelFunction;
   key: string;
@@ -53,49 +65,26 @@ interface LabelFontSizeFunc {
 }
 
 @Component({
-  selector: 'mb-sample-icicle-2',
-  templateUrl: './sample-icicle-2.component.html',
-  styleUrls: ['./sample-icicle-2.component.scss']
+  selector: 'mb-sample-voronoi-2',
+  templateUrl: './sample-voronoi-2.component.html',
+  styleUrls: ['./sample-voronoi-2.component.scss']
 })
-export class SampleIcicle2Component {
+export class SampleVoronoi2Component {
 
   readonly contriesHierarchy: CountryHierarchyTreeNode = countries;
   zoom = true;
+  flat = false;
+  rootCircle = false;
 
-  readonly widthArray: DiameterItam[] = [
+  readonly diameterArray: DiameterItam[] = [
     { key: '100%', value: '100%' },
-    { key: '1200', value: 1200 },
     { key: '1000', value: 1000 },
-    { key: '900', value: 900 },
-    { key: '800', value: 800 },
-    { key: '700', value: 700 },
-    { key: '600', value: 600 },
-    { key: '500', value: 500 },
-    { key: '400', value: 400 },
-    { key: '300', value: 300 },
-    { key: '200', value: 200 },
-    { key: '100', value: 100 }
+    { key: '200', value: 200 }
   ];
-  widthSelected: number | string = this.widthArray[0].value;
+  diameterSelected: number | string = this.diameterArray[0].value;
 
-  readonly heightArray: DiameterItam[] = [
-    { key: '100%', value: '100%' },
-    { key: '1200', value: 1200 },
-    { key: '1000', value: 1000 },
-    { key: '900', value: 900 },
-    { key: '800', value: 800 },
-    { key: '700', value: 700 },
-    { key: '600', value: 600 },
-    { key: '500', value: 500 },
-    { key: '400', value: 400 },
-    { key: '300', value: 300 },
-    { key: '200', value: 200 },
-    { key: '100', value: 100 }
-  ];
-  heightSelected: number | string = this.heightArray[0].value;
-
-  readonly levelsArray: number[] = [ 0, 1, 2, 3, 4 ];
-  levelsSelected: number = this.levelsArray[0];
+  readonly paddingArray: number[] = [ 3, 10, 1, 0 ];
+  paddingSelected: number = this.paddingArray[0];
 
   readonly sumFuncArray: SumFunc[] = [
     { key: 'median wealth per adult', value: sumFuncWpaMedian },
@@ -127,18 +116,21 @@ export class SampleIcicle2Component {
   readonly fillOpacityFuncArray: FillOpacityFunc[] = [
     { key: 'opaque', value: opaqueFillOpacity },
     { key: 'linear', value: linearFillOpacity },
-    { key: '0.9', value: () => 0.9 },
-    { key: '0.8', value: () => 0.8 },
-    { key: '0.7', value: () => 0.7 },
-    { key: '0.6', value: () => 0.6 },
-    { key: '0.5', value: () => 0.5 },
-    { key: '0.4', value: () => 0.4 },
-    { key: '0.3', value: () => 0.3 },
-    { key: '0.2', value: () => 0.2 },
-    { key: '0.1', value: () => 0.1 },
     { key: 'transparent', value: transparentFillOpacity }
   ];
   fillOpacityFuncSelected: HierarchyTreeFillOpacityFunction = this.fillOpacityFuncArray[0].value;
+
+  readonly strokeFuncArray: StrokeFunc[] = [
+    { key: 'none', value: noStroke },
+    { key: 'black', value: blackStroke }
+  ];
+  strokeFuncSelected: HierarchyTreeStrokeFunction = this.strokeFuncArray[0].value;
+
+  readonly strokeWidthFuncArray: StrokeWidthFunc[] = [
+    { key: 'none', value: noStrokeWidth },
+    { key: 'linear', value: linearStrokeWidth }
+  ];
+  strokeWidthFuncSelected: HierarchyTreeStrokeWidthFunction = this.strokeWidthFuncArray[0].value;
 
   readonly labelFuncArray: LabelFunc[] = [
     { key: 'none', value: emptyLabels },
@@ -147,8 +139,14 @@ export class SampleIcicle2Component {
   ];
   labelFuncSelected: HierarchyTreeLabelFunction = this.labelFuncArray[0].value;
 
+  readonly labelMinRadiusArray: number[] = [ 15, 10, 5, 1 ];
+  labelMinRadiusSelected: number = this.labelMinRadiusArray[0];
+
   readonly labelFillArray: string[] = [ 'white', 'black', 'transparent' ];
   labelFillSelected: string = this.labelFillArray[0];
+
+  readonly labelShadowArray: string[] = [ '0px 0px 8px #000000', '0px 0px 8px #ffffff', 'none' ];
+  labelShadowSelected: string = this.labelShadowArray[0];
 
   readonly labelFontSizeFuncArray: LabelFontSizeFunc[] = [
     { key: 'linear', value: linearFontSize },

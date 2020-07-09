@@ -61,11 +61,27 @@ export const treeNodes: MbSample[] = [
         ]
       },
       {
+        name: 'Treemap',
+        children: [
+          {name: 'Features', header: 'Treemap features', route: 'comp-treemap/s1'},
+          {name: 'Countries', header: 'Treemap countries', route: 'comp-treemap/s2'},
+          {name: 'JDK', header: 'Treemap JDK', route: 'comp-treemap/s3'}
+        ]
+      },
+      {
         name: 'Circlepack',
         children: [
           {name: 'Features', header: 'Circlepack features', route: 'comp-circlepack/s1'},
           {name: 'Countries', header: 'Circlepack countries', route: 'comp-circlepack/s2'},
           {name: 'JDK', header: 'Circlepack JDK', route: 'comp-circlepack/s3'}
+        ]
+      },
+      {
+        name: 'Voronoi',
+        children: [
+          {name: 'Features', header: 'Voronoi features', route: 'comp-voronoi/s1'},
+          {name: 'Countries', header: 'Voronoi countries', route: 'comp-voronoi/s2'},
+          {name: 'JDK', header: 'Voronoi JDK', route: 'comp-voronoi/s3'}
         ]
       },
       {

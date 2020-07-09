@@ -33,8 +33,16 @@ const routes: Routes = [
           import('./mb-samples/components/icicle/sample-icicle.module').then(m => m.SampleIcicleModule)
       },
       {
+        path: 'comp-treemap', loadChildren: () =>
+          import('./mb-samples/components/treemap/sample-treemap.module').then(m => m.SampleTreemapModule)
+      },
+      {
         path: 'comp-circlepack', loadChildren: () =>
           import('./mb-samples/components/circlepack/sample-circlepack.module').then(m => m.SampleCirclepackModule)
+      },
+      {
+        path: 'comp-voronoi', loadChildren: () =>
+          import('./mb-samples/components/voronoi/sample-voronoi.module').then(m => m.SampleVoronoiModule)
       },
       {
         path: 'comp-swatches', loadChildren: () =>

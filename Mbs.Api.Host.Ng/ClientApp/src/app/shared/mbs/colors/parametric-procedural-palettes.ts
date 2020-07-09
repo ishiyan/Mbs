@@ -41,8 +41,7 @@
  * https://iquilezles.org/www/articles/palettes/palettes.htm
  */
 export function parametricProceduralPalette(numberOfSwatches: number,
-  a: number[], b: number[], c: number[], d: number[]): string[] {
-
+                                            a: number[], b: number[], c: number[], d: number[]): string[] {
   const func = proceduralScale(a, b, c, d);
   const swatches: string[] = [];
   const coef = 1 / (numberOfSwatches - 1);

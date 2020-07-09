@@ -1,8 +1,7 @@
 import { ElementRef } from '@angular/core';
 
 export function computeDimensions(elementRef: ElementRef, width: number | string, height: number | string,
-  defaultWidth: number, defaultHeight: number): [number, number] {
-
+                                  defaultWidth: number, defaultHeight: number): [number, number] {
   let w = defaultWidth;
   let h = defaultHeight;
   const nativeElement = elementRef.nativeElement;

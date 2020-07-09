@@ -37,6 +37,8 @@ import { StacklineComponent } from './charts/stackline/stackline.component';
 import { SunburstComponent } from './charts/hierarchy-tree/sunburst/sunburst.component';
 import { CirclepackComponent } from './charts/hierarchy-tree/circlepack/circlepack.component';
 import { IcicleComponent } from './charts/hierarchy-tree/icicle/icicle.component';
+import { TreemapComponent } from './charts/hierarchy-tree/treemap/treemap.component';
+import { VoronoiComponent } from './charts/hierarchy-tree/voronoi/voronoi.component';
 import { SwatchesComponent } from './colors/swatches/swatches.component';
 import { SwatchesSelectComponent } from './colors/swatches/swatches-select.component';
 
@@ -58,7 +60,7 @@ import { SwatchesSelectComponent } from './colors/swatches/swatches-select.compo
     SawtoothParametersComponent, SquareParametersComponent, SinusoidalParametersComponent, SyntheticDataParametersComponent,
     HistoricalDataTableComponent, HistoricalDataDownloadComponent, HistoricalDataChartComponent,
     OhlcvChartComponent, SparklineComponent, MultilineComponent, StacklineComponent, SunburstComponent, CirclepackComponent,
-    IcicleComponent, SwatchesComponent, SwatchesSelectComponent
+    IcicleComponent, TreemapComponent, VoronoiComponent, SwatchesComponent, SwatchesSelectComponent
   ],
   declarations: [
     BusinessDayCalendarDescriptionComponent, TimeParametersComponent, WaveformParametersComponent,
@@ -67,7 +69,7 @@ import { SwatchesSelectComponent } from './colors/swatches/swatches-select.compo
     SawtoothParametersComponent, SquareParametersComponent, SinusoidalParametersComponent, SyntheticDataParametersComponent,
     HistoricalDataTableComponent, HistoricalDataDownloadComponent, HistoricalDataChartComponent,
     OhlcvChartComponent, SparklineComponent, MultilineComponent, StacklineComponent, SunburstComponent, CirclepackComponent,
-    IcicleComponent, SwatchesComponent, SwatchesSelectComponent
+    IcicleComponent, TreemapComponent, VoronoiComponent, SwatchesComponent, SwatchesSelectComponent
   ],
   providers: [
     SyntheticDataService

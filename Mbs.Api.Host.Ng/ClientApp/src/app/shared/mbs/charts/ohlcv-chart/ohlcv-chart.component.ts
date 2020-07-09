@@ -131,7 +131,7 @@ export class OhlcvChartComponent implements OnChanges {
   }
 
   private static layoutVertical(svg: any, cfg: Template.Configuration,
-    lh: Chart.HorizontalLayout): Chart.VerticalLayout {
+                                lh: Chart.HorizontalLayout): Chart.VerticalLayout {
     const t = svg.append('text').text(`w`);
     const lineHeight = OhlcvChartComponent.textBoundingClientRect(t, true).height;
     const heightPricePaneLegend: number = OhlcvChartComponent.appendLegend(svg, cfg.margin.top, lineHeight, lh.content.left,
@@ -195,7 +195,7 @@ export class OhlcvChartComponent implements OnChanges {
   }
 
   private static appendLegend(g: any, top: number, lineHeight: number, left: number, width: number,
-    pane: Template.Pane, instrument: string = ''): number {
+                              pane: Template.Pane, instrument: string = ''): number {
     g = g.append('g').attr('class', 'legend');
     top += lineHeight / 2;
     left += whitespaceBetweenAxisAndLegend;
@@ -390,8 +390,8 @@ export class OhlcvChartComponent implements OnChanges {
   }
 
   private static createPricePane(cfg: Template.Configuration, lh: Chart.HorizontalLayout,
-    lv: Chart.VerticalLayout, timeScale: any, timeAnnotationBottom: any, svg: any,
-    isCandlestick: boolean, isVolume: boolean, isCrossHair: boolean): Chart.PricePane {
+                                 lv: Chart.VerticalLayout, timeScale: any, timeAnnotationBottom: any, svg: any,
+                                 isCandlestick: boolean, isVolume: boolean, isCrossHair: boolean): Chart.PricePane {
 
     const cf = cfg.pricePane;
     const pane = new Chart.PricePane();
@@ -556,8 +556,8 @@ export class OhlcvChartComponent implements OnChanges {
   }
 
   private static createIndicatorPane(index: number, cfg: Template.Configuration, lh: Chart.HorizontalLayout,
-    lv: Chart.VerticalLayout, timeScale: any, timeAxisBottom: any, svg: any, isCrossHair: boolean): Chart.IndicatorPane {
-
+                                     lv: Chart.VerticalLayout, timeScale: any, timeAxisBottom: any, svg: any,
+                                     isCrossHair: boolean): Chart.IndicatorPane {
     const block = lv.indicatorPanes[index];
     const cf = cfg.indicatorPanes[index];
     const pane = new Chart.IndicatorPane();
@@ -707,8 +707,7 @@ export class OhlcvChartComponent implements OnChanges {
   }
 
   private static createNavPane(cfg: Template.Configuration, lh: Chart.HorizontalLayout,
-    lv: Chart.VerticalLayout, svg: any): Chart.NavigationPane {
-
+                               lv: Chart.VerticalLayout, svg: any): Chart.NavigationPane {
     const width = lh.content.width;
     const height = lv.navigationPane.height;
     const pane = new Chart.NavigationPane();
@@ -754,8 +753,7 @@ export class OhlcvChartComponent implements OnChanges {
   }
 
   private static createTimePane(cfg: Template.Configuration, lh: Chart.HorizontalLayout,
-    lv: Chart.VerticalLayout, svg: any): Chart.TimePane {
-
+                                lv: Chart.VerticalLayout, svg: any): Chart.TimePane {
     const pane = new Chart.TimePane();
     pane.timeScale = d3ts.scale.financetime().range([0, lh.content.width]);
     pane.timeAxis = d3.axisBottom(pane.timeScale).tickSizeOuter(0);

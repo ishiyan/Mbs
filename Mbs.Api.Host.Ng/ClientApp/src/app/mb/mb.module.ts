@@ -21,14 +21,19 @@ import { SampleSparklineModule } from './mb-samples/components/sparkline/sample-
 import { SampleMultilineModule } from './mb-samples/components/multiline/sample-multiline.module';
 import { SampleStacklineModule } from './mb-samples/components/stackline/sample-stackline.module';
 import { SampleSunburstModule } from './mb-samples/components/sunburst/sample-sunburst.module';
+import { SampleIcicleModule } from './mb-samples/components/icicle/sample-icicle.module';
+import { SampleTreemapModule } from './mb-samples/components/treemap/sample-treemap.module';
 import { SampleCirclepackModule } from './mb-samples/components/circlepack/sample-circlepack.module';
+import { SampleVoronoiModule } from './mb-samples/components/voronoi/sample-voronoi.module';
 import { SampleSwatchesModule } from './mb-samples/components/swatches/sample-swatches.module';
 
 @NgModule({
   imports: [
     CommonModule, FormsModule, FlexLayoutModule,
     MbRoutingModule, MaterialModule, SnackBarModule, MbsModule, FooterModule, SvgViewerModule,
-    SampleSparklineModule, SampleMultilineModule, SampleStacklineModule, SampleCirclepackModule, SampleSwatchesModule
+    SampleSparklineModule, SampleMultilineModule, SampleStacklineModule, SampleCirclepackModule,
+    SampleSunburstModule, SampleIcicleModule, SampleTreemapModule, SampleCirclepackModule, SampleVoronoiModule,
+    SampleSwatchesModule
   ],
   declarations: [
     MbComponent, SyntheticDataComponent, Sample1Component, Table1Component, Table12Component, Sample6Component

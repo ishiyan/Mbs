@@ -12,50 +12,50 @@ import { dataOhlcvDaily } from '../../data/data-ohlcv-daily';
   styleUrls: ['./d3tc-horizon-chart-single.component.scss']
 })
 export class D3tcHorizonChartSingleComponent implements OnInit {
-  private _width = 700;
-  private _height = 40;
-  private _bands = 3;
-  private _mode = 'mirror';
-  private _interpolation = d3.curveCatmullRom;
-  private _colors = ['#08519c', '#bdd7e7', '#bae4b3', '#006d2c'];
+  private theWidth = 700;
+  private theHeight = 40;
+  private theBands = 3;
+  private theMode = 'mirror';
+  private theInterpolation = d3.curveCatmullRom;
+  private theColors = ['#08519c', '#bdd7e7', '#bae4b3', '#006d2c'];
   private horizonData: (number | Date | null)[][];
   private svg: any;
   private g: any;
   private chart: any;
   @Input() set width(value: number) {
-    this._width = value;
+    this.theWidth = value;
     if (this.svg) {
       this.svg.attr('width', value);
       this.g.call(this.chart.duration(0).width(value));
     }
   }
   @Input() set height(value: number) {
-    this._height = value;
+    this.theHeight = value;
     if (this.svg) {
       this.svg.attr('height', value);
       this.g.call(this.chart.duration(0).height(value));
     }
   }
   @Input() set bands(value: number) {
-    this._bands = value;
+    this.theBands = value;
     if (this.g) {
       this.g.call(this.chart.duration(0).bands(value));
     }
   }
   @Input() set mode(value: string) {
-    this._mode = value;
+    this.theMode = value;
     if (this.g) {
       this.g.call(this.chart.duration(500).mode(value));
     }
   }
   @Input() set colors(value: string[]) {
-    this._colors = value;
+    this.theColors = value;
     if (this.g) {
       this.g.call(this.chart.duration(500).colors(value));
     }
   }
   @Input() set interpolation(value: any) {
-    this._interpolation = value;
+    this.theInterpolation = value;
     if (this.g) {
       this.g.call(this.chart.duration(500).interpolate(value));
     }
@@ -72,10 +72,10 @@ export class D3tcHorizonChartSingleComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.svg = d3.select(this.element.nativeElement).select('svg').attr('width', this._width).attr('height', this._height);
+    this.svg = d3.select(this.element.nativeElement).select('svg').attr('width', this.theWidth).attr('height', this.theHeight);
     this.g = this.svg.append('g');
-    this.chart = d3tc.horizonChart().width(this._width).height(this._height).bands(this._bands)
-      .mode(this._mode).colors(this._colors).interpolate(this._interpolation).defined((d: any) => d[1]);
+    this.chart = d3tc.horizonChart().width(this.theWidth).height(this.theHeight).bands(this.theBands)
+      .mode(this.theMode).colors(this.theColors).interpolate(this.theInterpolation).defined((d: any) => d[1]);
     this.g.data([this.horizonData]).call(this.chart);
   }
 }

@@ -42,11 +42,11 @@ interface LabelFontSizeFunc {
 }
 
 @Component({
-  selector: 'mb-sample-icicle-3',
-  templateUrl: './sample-icicle-3.component.html',
-  styleUrls: ['./sample-icicle-3.component.scss']
+  selector: 'mb-sample-treemap-3',
+  templateUrl: './sample-treemap-3.component.html',
+  styleUrls: ['./sample-treemap-3.component.scss']
 })
-export class SampleIcicle3Component {
+export class SampleTreemap3Component {
 
   readonly jdkHierarchy: HierarchyTreeNode = jdk;
   zoom = true;

@@ -127,7 +127,7 @@ export class TreemapComponent implements OnChanges {
       .style('cursor', (d: d3.HierarchyRectangularNode<HierarchyTreeNode>) => d.children && d.parent ? 'pointer' : 'arrow')
       .attr('width', (d: d3.HierarchyRectangularNode<HierarchyTreeNode>) => d.y1 - d.y0 - 1)
       .attr('height', (d: d3.HierarchyRectangularNode<HierarchyTreeNode>) => rectHeight(d))
-      .attr('fill', (d: d3.HierarchyRectangularNode<HierarchyTreeNode>) => this.fillFunc(d))
+      .attr('fill', /*(d: d3.HierarchyRectangularNode<HierarchyTreeNode>) => */this.fillFunc/*(d)*/)
       .attr('fill-opacity', (d: d3.HierarchyRectangularNode<HierarchyTreeNode>) =>
         this.fillOpacityFunc(d as d3.HierarchyRectangularNode<HierarchyTreeNode>, root.height));
 

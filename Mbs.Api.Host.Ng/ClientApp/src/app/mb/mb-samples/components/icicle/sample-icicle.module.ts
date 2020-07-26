@@ -9,6 +9,8 @@ import { MbsModule } from '../../../../shared/mbs/mbs.module';
 import { SampleIcicle1Component } from './sample-1/sample-icicle-1.component';
 import { SampleIcicle2Component } from './sample-2/sample-icicle-2.component';
 import { SampleIcicle3Component } from './sample-3/sample-icicle-3.component';
+import { SampleIcicle4Component } from './sample-4/sample-icicle-4.component';
+import { SampleIcicle5Component } from './sample-5/sample-icicle-5.component';
 
 import { SampleIcicleRoutingModule } from './sample-icicle-routing.module';
 
@@ -18,7 +20,8 @@ import { SampleIcicleRoutingModule } from './sample-icicle-routing.module';
     MaterialModule, MbsModule, SampleIcicleRoutingModule
   ],
   declarations: [
-    SampleIcicle1Component, SampleIcicle2Component, SampleIcicle3Component
+    SampleIcicle1Component, SampleIcicle2Component, SampleIcicle3Component,
+    SampleIcicle4Component, SampleIcicle5Component
   ]
 })
 export class SampleIcicleModule { }

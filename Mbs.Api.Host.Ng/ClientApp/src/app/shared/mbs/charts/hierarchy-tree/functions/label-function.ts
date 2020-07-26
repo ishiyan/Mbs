@@ -24,7 +24,8 @@ export const nameLabels: HierarchyTreeLabelFunction = (d: d3.HierarchyNode<Hiera
  *
  * For each node, this function returns its value or an empty string if the value is undefined.
  */
-export const valueLabels: HierarchyTreeLabelFunction = (d: d3.HierarchyNode<HierarchyTreeNode>) => d.data.value ? d.data.value.toString() : '';
+export const valueLabels: HierarchyTreeLabelFunction = (d: d3.HierarchyNode<HierarchyTreeNode>) =>
+  d.data.value ? d.data.value.toString() : (d.value ? d.value.toString() : '');
 
 /**
  * Provides an implementation of the **HierarchyTreeLabelFunction** type.

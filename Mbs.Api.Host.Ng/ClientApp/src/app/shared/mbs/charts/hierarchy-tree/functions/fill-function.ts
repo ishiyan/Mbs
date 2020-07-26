@@ -5,8 +5,10 @@ import { HierarchyTreeNode } from '../hierarchy-tree';
 /**
  * Defines a function called when a node is displayed and returning a string representing a fill color.
  */
-export type HierarchyTreeFillFunction =
-  (d: d3.HierarchyRectangularNode<HierarchyTreeNode> | d3.HierarchyCircularNode<HierarchyTreeNode>) => string;
+export type HierarchyTreeFillFunction = (
+  d: d3.HierarchyRectangularNode<HierarchyTreeNode> | d3.HierarchyCircularNode<HierarchyTreeNode>,
+  minValue: number,
+  maxValue: number) => string;
 
 const fourPi = 4 * Math.PI;
 
@@ -21,81 +23,128 @@ export const rainbowMiddleFill: HierarchyTreeFillFunction = (d: d3.HierarchyRect
   // return d3.interpolateHslLong("yellow", "blue")(t);
 };
 
-/**
- * Provides an implementation of the **HierarchyTreeFillFunction** type which will uss the
- * **d3.interpolateRainbow** to fill a node acconding to the middle angle of the angular sector it occupies.
- */
-export const rainbowFill2: HierarchyTreeFillFunction = (d: d3.HierarchyCircularNode<HierarchyTreeNode>) => {
-  let firstLevel = d;
-  while (firstLevel.depth > 1 && firstLevel.parent != null) {
-    firstLevel = firstLevel.parent;
-  }
-  let root = d;
-  while (root.parent != null) {
-    root = root.parent;
-  }
-  const rootChildren = root.children ? root.children : [];
-  // const rainbowInterpolate = d3.scaleOrdinal(d3.quantize(d3.interpolateRainbow, rootChildren.length + 1));
-  const index = rootChildren.indexOf(firstLevel);
-  const t = index ? index / (rootChildren.length + 1) : 0;
-  // const t = index ? index / rootChildren.length : 0;
-  // let theColor = d3.hsl(d3.interpolateGnBu(t)).darker();
-  // d3.hsl(d3.interpolateBlues(t)).darker()
-  const theColor = d3.hsl(d3.interpolateBuGn(t))/*.brighter()*/; // rainbowInterpolate((index ? index : 0).toString()));
-  // let theColor = d3.hsl(d3.interpolateViridis(1 - t)); // rainbowInterpolate((index ? index : 0).toString()));
-  // let theColor = d3.hsl(d3.interpolateHslLong("lightgreen", "darkblue")(t));
-  const depth = d.depth;
-  // console.log(theColor.hex(), depth, '==>');
-  theColor.l += depth === 1 ? 0 : depth * .1;
-  // console.log(theColor.hex());
-  return theColor.hex();
-  // return d3.interpolateViridis(t);
-  // return d3.interpolateHslLong("yellow", "blue")(t);
+export const gradientValueFill = (
+  d: d3.HierarchyNode<HierarchyTreeNode>,
+  minValue: number,
+  maxValue: number,
+  colorFirst: string,
+  colorLast: string,
+  invert: boolean = false,
+  brighter: boolean = false,
+  darker: boolean = false) => {
+  const func = (t: any) => d3.interpolateHslLong(colorFirst, colorLast)(t);
+  return interpolationValueFill(d, minValue, maxValue, func, invert, brighter, darker);
 };
 
-const brighter = 1;
-const darker = 2;
-
-const interpolationFill = (d: d3.HierarchyNode<HierarchyTreeNode>, func: any, invert: boolean = false, brighterOrDarker: number = 0) => {
-  let firstLevel = d;
-  while (firstLevel.depth > 1 && firstLevel.parent != null) {
-    firstLevel = firstLevel.parent;
-  }
-  let root = d;
-  while (root.parent != null) {
-    root = root.parent;
-  }
-  const rootChildren = root.children ? root.children : [];
-  const index = rootChildren.indexOf(firstLevel);
-  const t = index ? index / (rootChildren.length + 1) : 0;
-  // const t = index ? index / rootChildren.length : 0;
+export const interpolationValueFill = (
+  d: d3.HierarchyNode<HierarchyTreeNode>,
+  minValue: number,
+  maxValue: number,
+  func: any,
+  invert: boolean = false,
+  brighter: boolean = false,
+  darker: boolean = false) => {
+  const delta = maxValue === minValue ? 1 : (maxValue - minValue);
+  const v = d.value ? d.value : (d.data.value ? d.data.value : 0);
+  const t = (v - minValue) / delta;
   let theColor = invert ? d3.hsl(func(1 - t)) : d3.hsl(func(t));
-  if (brighterOrDarker === brighter) {
+  if (brighter) {
     theColor = theColor.brighter();
-  } else if (brighterOrDarker === darker) {
+  } else if (darker === darker) {
     theColor = theColor.darker();
   }
-  const depth = d.depth;
-  theColor.l += depth === 1 ? 0 : depth * .1;
   return theColor.hex();
 };
 
-const interpolationFillInverted = (d: d3.HierarchyNode<HierarchyTreeNode>, func: any) => {
+// ------------------------------------------------------------------------------------------
+// Fill colors based on a node value within the value range.
+// Used in Voronoi flat diagrams.
+// ------------------------------------------------------------------------------------------
+
+export const coolValueFill: HierarchyTreeFillFunction =
+  (d: d3.HierarchyRectangularNode<HierarchyTreeNode> | d3.HierarchyCircularNode<HierarchyTreeNode>, minValue: number, maxValue: number) =>
+  interpolationValueFill(d, minValue, maxValue, d3.interpolateCool, false, false, false);
+export const coolValueFillInverted: HierarchyTreeFillFunction =
+  (d: d3.HierarchyRectangularNode<HierarchyTreeNode> | d3.HierarchyCircularNode<HierarchyTreeNode>, minValue: number, maxValue: number) =>
+  interpolationValueFill(d, minValue, maxValue, d3.interpolateCool, true, false, false);
+export const warmValueFill: HierarchyTreeFillFunction =
+  (d: d3.HierarchyRectangularNode<HierarchyTreeNode> | d3.HierarchyCircularNode<HierarchyTreeNode>, minValue: number, maxValue: number) =>
+  interpolationValueFill(d, minValue, maxValue, d3.interpolateWarm, false, false, false);
+export const warmValueFillInverted: HierarchyTreeFillFunction =
+  (d: d3.HierarchyRectangularNode<HierarchyTreeNode> | d3.HierarchyCircularNode<HierarchyTreeNode>, minValue: number, maxValue: number) =>
+  interpolationValueFill(d, minValue, maxValue, d3.interpolateWarm, true, false, true);
+export const viridisValueFill: HierarchyTreeFillFunction =
+  (d: d3.HierarchyRectangularNode<HierarchyTreeNode> | d3.HierarchyCircularNode<HierarchyTreeNode>, minValue: number, maxValue: number) =>
+  interpolationValueFill(d, minValue, maxValue, d3.interpolateViridis, false, false, false);
+export const viridisValueFillInverted: HierarchyTreeFillFunction =
+  (d: d3.HierarchyRectangularNode<HierarchyTreeNode> | d3.HierarchyCircularNode<HierarchyTreeNode>, minValue: number, maxValue: number) =>
+  interpolationValueFill(d, minValue, maxValue, d3.interpolateViridis, true, false, true);
+export const bluesValueFill: HierarchyTreeFillFunction =
+  (d: d3.HierarchyRectangularNode<HierarchyTreeNode> | d3.HierarchyCircularNode<HierarchyTreeNode>, minValue: number, maxValue: number) =>
+  interpolationValueFill(d, minValue, maxValue, d3.interpolateBlues, false, false, true);
+export const bluesValueFillInverted: HierarchyTreeFillFunction =
+  (d: d3.HierarchyRectangularNode<HierarchyTreeNode> | d3.HierarchyCircularNode<HierarchyTreeNode>, minValue: number, maxValue: number) =>
+  interpolationValueFill(d, minValue, maxValue, d3.interpolateBlues, true, false, true);
+export const rainbowValueFill: HierarchyTreeFillFunction =
+  (d: d3.HierarchyRectangularNode<HierarchyTreeNode> | d3.HierarchyCircularNode<HierarchyTreeNode>, minValue: number, maxValue: number) =>
+  interpolationValueFill(d, minValue, maxValue, d3.interpolateRainbow, false, false, true);
+export const rainbowValueFillInverted: HierarchyTreeFillFunction =
+  (d: d3.HierarchyRectangularNode<HierarchyTreeNode> | d3.HierarchyCircularNode<HierarchyTreeNode>, minValue: number, maxValue: number) =>
+  interpolationValueFill(d, minValue, maxValue, d3.interpolateRainbow, true, false, true);
+export const greensValueFill: HierarchyTreeFillFunction =
+  (d: d3.HierarchyRectangularNode<HierarchyTreeNode> | d3.HierarchyCircularNode<HierarchyTreeNode>, minValue: number, maxValue: number) =>
+  interpolationValueFill(d, minValue, maxValue, d3.interpolateGreens, false, false, true);
+export const greensValueFillInverted: HierarchyTreeFillFunction =
+  (d: d3.HierarchyRectangularNode<HierarchyTreeNode> | d3.HierarchyCircularNode<HierarchyTreeNode>, minValue: number, maxValue: number) =>
+  interpolationValueFill(d, minValue, maxValue, d3.interpolateGreens, true, false, true);
+export const greysValueFill: HierarchyTreeFillFunction =
+  (d: d3.HierarchyRectangularNode<HierarchyTreeNode> | d3.HierarchyCircularNode<HierarchyTreeNode>, minValue: number, maxValue: number) =>
+  interpolationValueFill(d, minValue, maxValue, d3.interpolateGreys, false, false, true);
+export const greysValueFillInverted: HierarchyTreeFillFunction =
+  (d: d3.HierarchyRectangularNode<HierarchyTreeNode> | d3.HierarchyCircularNode<HierarchyTreeNode>, minValue: number, maxValue: number) =>
+  interpolationValueFill(d, minValue, maxValue, d3.interpolateGreys, true, false, true);
+
+export const gradientFill = (
+  d: d3.HierarchyNode<HierarchyTreeNode>,
+  colorFirst: string,
+  colorLast: string,
+  invert: boolean = false,
+  brighter: boolean = false,
+  darker: boolean = false,
+  lighterWithDepth: boolean = true) => {
+    const func = (t: any) => d3.interpolateHslLong(colorFirst, colorLast)(t);
+    return interpolationFill(d, func, invert, brighter, darker, lighterWithDepth);
+  };
+
+export const interpolationFill = (
+  d: d3.HierarchyNode<HierarchyTreeNode>,
+  func: any,
+  invert: boolean = false,
+  brighter: boolean = false,
+  darker: boolean = false,
+  lighterWithDepth: boolean = true) => {
   let firstLevel = d;
   while (firstLevel.depth > 1 && firstLevel.parent != null) {
     firstLevel = firstLevel.parent;
   }
-  let root = d;
+  let root = firstLevel;
   while (root.parent != null) {
     root = root.parent;
   }
   const rootChildren = root.children ? root.children : [];
   const index = rootChildren.indexOf(firstLevel);
-  const t = index ? index / (rootChildren.length + 1) : 0;
-  // const t = index ? index / rootChildren.length : 0;
-  const theColor = d3.hsl(func(1 - t));
-  const depth = d.depth;
-  theColor.l += depth === 1 ? 0 : depth * .1;
+  // const t = index ? index / (rootChildren.length + 1) : 0;
+  const t = index ? index / rootChildren.length : 0;
+  let theColor = invert ? d3.hsl(func(1 - t)) : d3.hsl(func(t));
+  if (brighter) {
+    theColor = theColor.brighter();
+  } else if (darker === darker) {
+    theColor = theColor.darker();
+  }
+  if (lighterWithDepth) {
+    const depth = d.depth;
+    theColor.l += depth === 1 ? 0 : depth * .1;
+  }
   return theColor.hex();
 };
 
@@ -115,7 +164,7 @@ export const coolFill: HierarchyTreeFillFunction =
  */
 export const coolFillInverted: HierarchyTreeFillFunction =
   (d: d3.HierarchyRectangularNode<HierarchyTreeNode> | d3.HierarchyCircularNode<HierarchyTreeNode>) =>
-  interpolationFillInverted(d, d3.interpolateCool);
+  interpolationFill(d, d3.interpolateCool, true);
 
 /**
  * Provides an implementation of the **HierarchyTreeFillFunction** type which will use the
@@ -133,7 +182,7 @@ export const warmFill: HierarchyTreeFillFunction =
  */
 export const warmFillInverted: HierarchyTreeFillFunction =
   (d: d3.HierarchyRectangularNode<HierarchyTreeNode> | d3.HierarchyCircularNode<HierarchyTreeNode>) =>
-  interpolationFill(d, d3.interpolateWarm, true, darker);
+  interpolationFill(d, d3.interpolateWarm, true, false, true);
 
 /**
  * Provides an implementation of the **HierarchyTreeFillFunction** type which will use the
@@ -151,7 +200,7 @@ export const viridisFill: HierarchyTreeFillFunction =
  */
 export const viridisFillInverted: HierarchyTreeFillFunction =
   (d: d3.HierarchyRectangularNode<HierarchyTreeNode> | d3.HierarchyCircularNode<HierarchyTreeNode>) =>
-  interpolationFill(d, d3.interpolateViridis, true, darker);
+  interpolationFill(d, d3.interpolateViridis, true, false, true);
 
 /**
  * Provides an implementation of the **HierarchyTreeFillFunction** type which will use the
@@ -160,7 +209,7 @@ export const viridisFillInverted: HierarchyTreeFillFunction =
  */
 export const bluesFill: HierarchyTreeFillFunction =
   (d: d3.HierarchyRectangularNode<HierarchyTreeNode> | d3.HierarchyCircularNode<HierarchyTreeNode>) =>
-  interpolationFill(d, d3.interpolateBlues, false, darker);
+  interpolationFill(d, d3.interpolateBlues, false, false, true);
 
 /**
  * Provides an implementation of the **HierarchyTreeFillFunction** type which will use the
@@ -169,7 +218,7 @@ export const bluesFill: HierarchyTreeFillFunction =
  */
 export const bluesFillInverted: HierarchyTreeFillFunction =
   (d: d3.HierarchyRectangularNode<HierarchyTreeNode> | d3.HierarchyCircularNode<HierarchyTreeNode>) =>
-  interpolationFill(d, d3.interpolateBlues, true, darker);
+  interpolationFill(d, d3.interpolateBlues, true, false, true);
 
 /**
  * Provides an implementation of the **HierarchyTreeFillFunction** type which will use the
@@ -188,3 +237,64 @@ export const rainbowFill: HierarchyTreeFillFunction =
 export const rainbowFillInverted: HierarchyTreeFillFunction =
   (d: d3.HierarchyRectangularNode<HierarchyTreeNode> | d3.HierarchyCircularNode<HierarchyTreeNode>) =>
   interpolationFill(d, d3.interpolateRainbow, true);
+
+// ------------------------------------------------------------------------------------------
+// Fill colors based on first-level ancestor of a node without lightening depending on depth.
+// Used in Voronoi diagrams.
+// ------------------------------------------------------------------------------------------
+
+export const coolFillFirstLevel: HierarchyTreeFillFunction =
+  (d: d3.HierarchyRectangularNode<HierarchyTreeNode> | d3.HierarchyCircularNode<HierarchyTreeNode>) =>
+  interpolationFill(d, d3.interpolateCool, false, false, false, false);
+
+export const coolFillFirstLevelInverted: HierarchyTreeFillFunction =
+  (d: d3.HierarchyRectangularNode<HierarchyTreeNode> | d3.HierarchyCircularNode<HierarchyTreeNode>) =>
+  interpolationFill(d, d3.interpolateCool, true, false, false, false);
+
+export const warmFillFirstLevel: HierarchyTreeFillFunction =
+  (d: d3.HierarchyRectangularNode<HierarchyTreeNode> | d3.HierarchyCircularNode<HierarchyTreeNode>) =>
+  interpolationFill(d, d3.interpolateWarm, false, false, false, false);
+
+export const warmFillFirstLevelInverted: HierarchyTreeFillFunction =
+  (d: d3.HierarchyRectangularNode<HierarchyTreeNode> | d3.HierarchyCircularNode<HierarchyTreeNode>) =>
+  interpolationFill(d, d3.interpolateWarm, true, false, true, false);
+
+export const viridisFillFirstLevel: HierarchyTreeFillFunction =
+  (d: d3.HierarchyRectangularNode<HierarchyTreeNode> | d3.HierarchyCircularNode<HierarchyTreeNode>) =>
+  interpolationFill(d, d3.interpolateViridis, false, false, false, false);
+
+export const viridisFillFirstLevelInverted: HierarchyTreeFillFunction =
+  (d: d3.HierarchyRectangularNode<HierarchyTreeNode> | d3.HierarchyCircularNode<HierarchyTreeNode>) =>
+  interpolationFill(d, d3.interpolateViridis, true, false, true, false);
+
+export const bluesFillFirstLevel: HierarchyTreeFillFunction =
+  (d: d3.HierarchyRectangularNode<HierarchyTreeNode> | d3.HierarchyCircularNode<HierarchyTreeNode>) =>
+  interpolationFill(d, d3.interpolateBlues, false, false, true, false);
+
+export const bluesFillFirstLevelInverted: HierarchyTreeFillFunction =
+  (d: d3.HierarchyRectangularNode<HierarchyTreeNode> | d3.HierarchyCircularNode<HierarchyTreeNode>) =>
+  interpolationFill(d, d3.interpolateBlues, true, false, true, false);
+
+export const rainbowFillFirstLevel: HierarchyTreeFillFunction =
+  (d: d3.HierarchyRectangularNode<HierarchyTreeNode> | d3.HierarchyCircularNode<HierarchyTreeNode>) =>
+  interpolationFill(d, d3.interpolateRainbow, false, false, true, false);
+
+export const rainbowFillFirstLevelInverted: HierarchyTreeFillFunction =
+  (d: d3.HierarchyRectangularNode<HierarchyTreeNode> | d3.HierarchyCircularNode<HierarchyTreeNode>) =>
+  interpolationFill(d, d3.interpolateRainbow, true, false, true, false);
+
+export const greensFillFirstLevel: HierarchyTreeFillFunction =
+  (d: d3.HierarchyRectangularNode<HierarchyTreeNode> | d3.HierarchyCircularNode<HierarchyTreeNode>) =>
+  interpolationFill(d, d3.interpolateGreens, false, false, true, false);
+
+export const greensFillFirstLevelInverted: HierarchyTreeFillFunction =
+  (d: d3.HierarchyRectangularNode<HierarchyTreeNode> | d3.HierarchyCircularNode<HierarchyTreeNode>) =>
+  interpolationFill(d, d3.interpolateGreens, true, false, true, false);
+
+export const greysFillFirstLevel: HierarchyTreeFillFunction =
+  (d: d3.HierarchyRectangularNode<HierarchyTreeNode> | d3.HierarchyCircularNode<HierarchyTreeNode>) =>
+  interpolationFill(d, d3.interpolateGreys, false, false, true, false);
+
+export const greysFillFirstLevelInverted: HierarchyTreeFillFunction =
+  (d: d3.HierarchyRectangularNode<HierarchyTreeNode> | d3.HierarchyCircularNode<HierarchyTreeNode>) =>
+  interpolationFill(d, d3.interpolateGreys, true, false, true, false);

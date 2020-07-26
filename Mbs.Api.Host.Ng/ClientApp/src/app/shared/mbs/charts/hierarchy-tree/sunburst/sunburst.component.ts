@@ -167,7 +167,7 @@ export class SunburstComponent implements OnChanges {
       .selectAll('path')
       .data(root.descendants().slice(1))
       .join('path')
-        .attr('fill', (d: d3.HierarchyRectangularNode<HierarchyTreeNode>) => this.fillFunc(d))
+        .attr('fill', /*(d: d3.HierarchyRectangularNode<HierarchyTreeNode>) => */this.fillFunc/*(d)*/)
         .attr('fill-opacity', (d: any) => arcVisible(d.current) ?
           this.fillOpacityFunc(d as d3.HierarchyRectangularNode<HierarchyTreeNode>, root.height) : 0)
         .attr('d', (d: any) => arc(d.current))

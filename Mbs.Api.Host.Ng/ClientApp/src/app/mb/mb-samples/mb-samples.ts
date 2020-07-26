@@ -49,7 +49,9 @@ export const treeNodes: MbSample[] = [
         children: [
           {name: 'Features', header: 'Sunburst features', route: 'comp-sunburst/s1'},
           {name: 'Countries', header: 'Sunburst countries', route: 'comp-sunburst/s2'},
-          {name: 'JDK', header: 'Sunburst JDK', route: 'comp-sunburst/s3'}
+          {name: 'AEX', header: 'Sunburst AEX-index', route: 'comp-sunburst/s3'},
+          {name: 'OMXN40', header: 'Sunburst OMXN40', route: 'comp-sunburst/s4'},
+          {name: 'JDK', header: 'Sunburst JDK', route: 'comp-sunburst/s5'}
         ]
       },
       {
@@ -57,7 +59,9 @@ export const treeNodes: MbSample[] = [
         children: [
           {name: 'Features', header: 'Icicle features', route: 'comp-icicle/s1'},
           {name: 'Countries', header: 'Icicle countries', route: 'comp-icicle/s2'},
-          {name: 'JDK', header: 'Icicle JDK', route: 'comp-icicle/s3'}
+          {name: 'AEX', header: 'Icicle AEX-index', route: 'comp-icicle/s3'},
+          {name: 'OMXN40', header: 'Icicle OMXN40', route: 'comp-icicle/s4'},
+          {name: 'JDK', header: 'Icicle JDK', route: 'comp-icicle/s5'}
         ]
       },
       {
@@ -73,7 +77,9 @@ export const treeNodes: MbSample[] = [
         children: [
           {name: 'Features', header: 'Circlepack features', route: 'comp-circlepack/s1'},
           {name: 'Countries', header: 'Circlepack countries', route: 'comp-circlepack/s2'},
-          {name: 'JDK', header: 'Circlepack JDK', route: 'comp-circlepack/s3'}
+          {name: 'AEX', header: 'Circlepack AEX-index', route: 'comp-circlepack/s3'},
+          {name: 'OMXN40', header: 'Circlepack OMXN40', route: 'comp-circlepack/s4'},
+          {name: 'JDK', header: 'Circlepack JDK', route: 'comp-circlepack/s5'}
         ]
       },
       {
@@ -81,7 +87,9 @@ export const treeNodes: MbSample[] = [
         children: [
           {name: 'Features', header: 'Voronoi features', route: 'comp-voronoi/s1'},
           {name: 'Countries', header: 'Voronoi countries', route: 'comp-voronoi/s2'},
-          {name: 'JDK', header: 'Voronoi JDK', route: 'comp-voronoi/s3'}
+          {name: 'AEX', header: 'Voronoi AEX-index', route: 'comp-voronoi/s3'},
+          {name: 'OMXN40', header: 'Voronoi OMXN40', route: 'comp-voronoi/s4'},
+          {name: 'JDK', header: 'Voronoi JDK', route: 'comp-voronoi/s5'}
         ]
       },
       {

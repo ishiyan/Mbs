@@ -340,7 +340,7 @@ export const countries: CountryHierarchyTreeNode = {
               name: 'Germany', area: 357168, population: 83149300, density: 232.8, ihdi: 0.861, hdi: 0.939, gdpPerCapita: 50200, igini: 0.319, wgini: 0.816, sirop: 0.111, wpaMean: 216654, wpaMedian: 35313
             },
             {
-              name: 'Liechtenstein', area: 160, population: 38380, density: 239.88, ihdi: 9999, hdi: 0.917, gdpPerCapita: 139100
+              name: 'Liechtenstein', area: 160, population: 38380, density: 239.88, hdi: 0.917, gdpPerCapita: 139100
             },
             {
               name: 'Luxembourg', area: 2586, population: 613894, density: 237.39, ihdi: 0.822, hdi: 0.909, gdpPerCapita: 109100, igini: 0.349, wgini: 0.663, sirop: 0.092, wpaMean: 358003, wpaMedian: 139789
@@ -608,7 +608,7 @@ export const countries: CountryHierarchyTreeNode = {
               name: 'Uganda', area: 241551, population: 40006700, density: 165.62, ihdi: 0.387, hdi: 0.528, gdpPerCapita: 2400, igini: 0.428, wgini: 0.714, wpaMean: 1603, wpaMedian: 612
             },
             {
-              name: 'Tanzania', area: 945087, population: 55890747, density: 59.14, ihdi: 0.397, hdi: 0.528, gdpPerCapita: 3300, igini: 40.5, wgini: 0.65, wpaMean: 3069, wpaMedian: 1282
+              name: 'Tanzania', area: 945087, population: 55890747, density: 59.14, ihdi: 0.397, hdi: 0.528, gdpPerCapita: 3300, igini: 0.405, wgini: 0.65, wpaMean: 3069, wpaMedian: 1282
             },
             {
               name: 'Zambia', area: 752612, population: 16405229, density: 21.8, ihdi: 0.394, hdi: 0.591, gdpPerCapita: 4000, igini: 0.571, wgini: 0.787, wpaMean: 2565, wpaMedian: 784

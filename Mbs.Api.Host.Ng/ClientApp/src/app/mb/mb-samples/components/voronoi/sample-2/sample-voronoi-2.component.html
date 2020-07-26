@@ -1,16 +1,51 @@
 <div class="sample">
   <mat-card class="example-card">
     <mat-card-content>
-      <p>
-        <mat-slide-toggle [(ngModel)]="zoom" color="primary" class="form-field">zoom</mat-slide-toggle>  
-        <mat-slide-toggle [(ngModel)]="flat" color="primary" class="form-field">flat</mat-slide-toggle>  
-        <mat-slide-toggle [(ngModel)]="rootCircle" color="primary" class="form-field">rootCircle</mat-slide-toggle>  
-      </p>
       <mat-form-field class="form-field-60">
-        <mat-label>diameter</mat-label>
-        <mat-select [(ngModel)]="diameterSelected" name="diameter">
-          <mat-option *ngFor="let diameter of diameterArray" [value]="diameter.value">
-            {{diameter.key}}
+        <mat-label>width</mat-label>
+        <mat-select [(ngModel)]="widthSelected" name="width">
+          <mat-option *ngFor="let width of widthArray" [value]="width.value">
+            {{width.key}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="form-field-90">
+        <mat-label>height</mat-label>
+        <mat-select [(ngModel)]="heightSelected" name="height">
+          <mat-option *ngFor="let height of heightArray" [value]="height.value">
+            {{height.key}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="form-field-80">
+        <mat-label>shape</mat-label>
+        <mat-select [(ngModel)]="shapeSelected" name="shape">
+          <mat-option *ngFor="let shape of shapeArray" [value]="shape">
+            {{shape}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="form-field-90">
+        <mat-label>convergenceRatio</mat-label>
+        <mat-select [(ngModel)]="convergenceRatioSelected" name="convergenceRatio">
+          <mat-option *ngFor="let convergenceRatio of convergenceRatioArray" [value]="convergenceRatio">
+            {{convergenceRatio}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="form-field-90">
+        <mat-label>minWeightRatio</mat-label>
+        <mat-select [(ngModel)]="minWeightRatioSelected" name="minWeightRatio">
+          <mat-option *ngFor="let minWeightRatio of minWeightRatioArray" [value]="minWeightRatio">
+            {{minWeightRatio}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="form-field-90">
+        <mat-label>maxIterationCount</mat-label>
+        <mat-select [(ngModel)]="maxIterationCountSelected" name="maxIterationCount">
+          <mat-option *ngFor="let maxIterationCount of maxIterationCountArray" [value]="maxIterationCount">
+            {{maxIterationCount}}
           </mat-option>
         </mat-select>
       </mat-form-field>
@@ -62,7 +97,7 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-form-field class="form-field-80">
+      <mat-form-field class="form-field-90">
         <mat-label>strokeWidthFunc</mat-label>
         <mat-select [(ngModel)]="strokeWidthFuncSelected" name="strokeWidthFunc">
           <mat-option *ngFor="let strokeWidthFunc of strokeWidthFuncArray" [value]="strokeWidthFunc.value">
@@ -79,10 +114,10 @@
         </mat-select>
       </mat-form-field>
       <mat-form-field class="form-field-80">
-        <mat-label>labelMinRadius</mat-label>
-        <mat-select [(ngModel)]="labelMinRadiusSelected" name="labelMinRadius">
-          <mat-option *ngFor="let labelMinRadius of labelMinRadiusArray" [value]="labelMinRadius">
-            {{labelMinRadius}}
+        <mat-label>labelMinRatio</mat-label>
+        <mat-select [(ngModel)]="labelMinRatioSelected" name="labelMinRatio">
+          <mat-option *ngFor="let labelMinRatio of labelMinRatioArray" [value]="labelMinRatio">
+            {{labelMinRatio}}
           </mat-option>
         </mat-select>
       </mat-form-field>
@@ -110,17 +145,19 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
+      <mat-slide-toggle [(ngModel)]="flat" color="primary" class="form-field">flat</mat-slide-toggle>  
     </mat-card-content>
   </mat-card>
 
   <mat-card class="example-card">
     <mat-card-content>
-      <mb-circlepack [data]="contriesHierarchy" [diameter]="diameterSelected" [padding]="paddingSelected"
+      <mb-voronoi [data]="contriesHierarchy" [width]="widthSelected"  [height]="heightSelected" [padding]="paddingSelected" [shape]="shapeSelected"
+        [convergenceRatio]="convergenceRatioSelected" [minWeightRatio]="minWeightRatioSelected" [maxIterationCount]="maxIterationCountSelected"
         [sumFunc]="sumFuncSelected" [sort]="sortSelected" [fillFunc]="fillFuncSelected" [fillOpacityFunc]="fillOpacityFuncSelected"
         [strokeFunc]="strokeFuncSelected" [strokeWidthFunc]="strokeWidthFuncSelected"
-        [zoom]="zoom" [flat]="flat" [rootCircle]="rootCircle" [tapFunc]="tapFunc" [labelFunc]="labelFuncSelected"
-        [labelMinRadius]="labelMinRadiusSelected" [labelFill]="labelFillSelected" [labelShadow]="labelShadowSelected"
-        [labelFontSizeFunc]="labelFontSizeFuncSelected"></mb-circlepack>
+        [flat]="flat" [tapFunc]="tapFunc" [labelFunc]="labelFuncSelected"
+        [labelMinRatio]="labelMinRatioSelected" [labelFill]="labelFillSelected" [labelShadow]="labelShadowSelected"
+        [labelFontSizeFunc]="labelFontSizeFuncSelected"></mb-voronoi>
     </mat-card-content>
     <mat-card-actions>
     {{selectedNodeInfo}}

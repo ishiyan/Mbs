@@ -21,6 +21,17 @@ export const emptyTooltips: HierarchyTreeTooltipFunction = (d: d3.HierarchyNode<
 
 const format = d3.format(',d');
 
+export const pathParentTooltips: HierarchyTreeTooltipFunction = (d: d3.HierarchyNode<HierarchyTreeNode>) => {
+  let text = d.data.name ? d.data.name : '???';
+  while (d.parent && d.parent != null) {
+    d = d.parent;
+    if (d.data.name) {
+      text = d.data.name + '/' + text;
+    }
+  }
+  return text;
+};
+
 /**
  * Provides an implementation of the **HierarchyTreeTooltipFunction** type.
  *

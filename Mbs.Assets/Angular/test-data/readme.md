@@ -1367,6 +1367,18 @@ The 11 sectors are:
 - Real estate
 
 
+HSICS -- Hang Seng Industry Classification System
+https://www.hsi.com.hk/eng/our-services/hsics
+https://www.hsi.com.hk/eng/resources-education/faf-cap-factor
+https://www.hsi.com.hk/eng/resources-education/index-operation-guide
+https://www.hsi.com.hk/eng/indexes/all-indexes/hsi
+
+
+DAX
+https://www.boerse-frankfurt.de/index/frankfurt-dax-indikation
+https://www.boerse-frankfurt.de/aktie/basf-se/kurshistorie/historische-kurse-und-umsaetze
+https://www.boerse-frankfurt.de/aktien/realtime-quotes/DE0008469008
+
 
 Comparison
 
@@ -1379,3 +1391,23 @@ Comparison
 | MGECS | 3 super sectors     | 11 sectors                | 69 industry groups | 148 industries     |                | 42 090          |
 
 * 2nd, 3rd, 4th, 5th, 6th level Level Microsectors, data unavailable
+
+
+
+https://en.wikipedia.org/wiki/List_of_Latin_phrases_(full)
+file:///D:/Mbrane/Repos/Mbs/Mbs.Assets/Angular/test-data/trbc/trbc-business-classification-quick-guide.pdf
+
+https://github.com/Kcnarf/d3-voronoi-map
+https://github.com/Kcnarf/d3-voronoi-treemap
+https://observablehq.com/@trebor/zoomable-voronoi-treemap#renderChart
+https://observablehq.com/@will-r-chase/voronoi-treemap
+https://observablehq.com/@ladataviz/wip-voronoi-data-generator
+
+https://teamcity.binckbank.nv/login.html
+https://www.binck.nl/uitgelogd/select-uitgelogd
+http://dynamicmultiplier.t8-comfort.k8sb.otas.nv/swagger/index.html
+http://dynamicmultiplier.a1-comfort.k8ssa.otas.nv/swagger/index.html
+http://dynamicmultiplier.a1-comfort.k8ssa.otas.nv/GetByDate?date=2020-04-14
+http://underlyingpositionsbatch.a1-comfort.k8ssa.otas.nv/swagger/index.html
+https://kibana.elk-v7.k8sca.binckbank.nv/login?next=%2F#?_g=()
+https://binckigwebapiservice.t7-iam.k8sb.otas.nv/swagger/index.html

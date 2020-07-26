@@ -3,11 +3,12 @@ import { Component } from '@angular/core';
 // tslint:disable:max-line-length
 import { HierarchyTreeNode } from '../../../../../shared/mbs/charts/hierarchy-tree/hierarchy-tree';
 import { HierarchyTreeSumFunction, sumNumberOfLeafNodes } from '../../../../../shared/mbs/charts/hierarchy-tree/functions/sum-function';
-import { HierarchyTreeFillFunction, coolFill, coolFillInverted, rainbowFill, rainbowFillInverted } from '../../../../../shared/mbs/charts/hierarchy-tree/functions/fill-function';
+import { HierarchyTreeFillFunction, coolFill, coolFillInverted, warmFill, warmFillInverted, viridisFill, viridisFillInverted, bluesFill, bluesFillInverted, rainbowFill, rainbowFillInverted } from '../../../../../shared/mbs/charts/hierarchy-tree/functions/fill-function';
 import { HierarchyTreeFillOpacityFunction, transparentFillOpacity, opaqueFillOpacity, linearFillOpacity } from '../../../../../shared/mbs/charts/hierarchy-tree/functions/fill-opacity-function';
-import { HierarchyTreeStrokeFunction, noStroke, blackStroke } from '../../../../../shared/mbs/charts/hierarchy-tree/functions/stroke-function';
-import { HierarchyTreeStrokeWidthFunction, noStrokeWidth, linearStrokeWidth } from '../../../../../shared/mbs/charts/hierarchy-tree/functions/stroke-width-function';
+import { HierarchyTreeStrokeFunction, noStroke, blackStroke, whiteStroke, transparentStroke } from '../../../../../shared/mbs/charts/hierarchy-tree/functions/stroke-function';
+import { HierarchyTreeStrokeWidthFunction, noStrokeWidth, linearStrokeWidthThin, linearStrokeWidth, linearStrokeWidthThick, linearStrokeWidthExtraThick } from '../../../../../shared/mbs/charts/hierarchy-tree/functions/stroke-width-function';
 import { HierarchyTreeTapFunction } from '../../../../../shared/mbs/charts/hierarchy-tree/functions/tap-function';
+import { pathParentTooltips } from '../../../../../shared/mbs/charts/hierarchy-tree/functions/tooltip-function';
 import { HierarchyTreeLabelFunction, nameLabels, valueLabels, emptyLabels } from '../../../../../shared/mbs/charts/hierarchy-tree/functions/label-function';
 import { HierarchyTreeFontSizeFunction, equalFontSize8, equalFontSize10, equalFontSize12, equalFontSize14, equalFontSize16, equalFontSize18, linearFontSize } from '../../../../../shared/mbs/charts/hierarchy-tree/functions/font-size-function';
 
@@ -78,12 +79,21 @@ export class SampleCirclepack2Component {
 
   readonly diameterArray: DiameterItam[] = [
     { key: '100%', value: '100%' },
-    { key: '1000', value: 1000 },
+    { key: '75%', value: '75%' },
+    { key: '50%', value: '50%' },
+    { key: '25%', value: '25%' },
+    { key: '900', value: 900 },
+    { key: '800', value: 800 },
+    { key: '700', value: 700 },
+    { key: '600', value: 600 },
+    { key: '500', value: 500 },
+    { key: '400', value: 400 },
+    { key: '300', value: 300 },
     { key: '200', value: 200 }
   ];
   diameterSelected: number | string = this.diameterArray[0].value;
 
-  readonly paddingArray: number[] = [ 3, 10, 1, 0 ];
+  readonly paddingArray: number[] = [ 1, 0, 2, 3, 4, 5, 10, 20 ];
   paddingSelected: number = this.paddingArray[0];
 
   readonly sumFuncArray: SumFunc[] = [
@@ -107,39 +117,60 @@ export class SampleCirclepack2Component {
 
   readonly fillFuncArray: FillFunc[] = [
     { key: 'cool', value: coolFill },
-    { key: 'cool inverted', value: coolFillInverted },
+    { key: 'warm', value: warmFill },
+    { key: 'viridis', value: viridisFill },
+    { key: 'blues', value: bluesFill },
     { key: 'rainbow', value: rainbowFill },
-    { key: 'rainbow inverted', value: rainbowFillInverted }
+
+    { key: 'cool inv', value: coolFillInverted },
+    { key: 'warm inv', value: warmFillInverted },
+    { key: 'viridis inv', value: viridisFillInverted },
+    { key: 'blues inv', value: bluesFillInverted },
+    { key: 'rainbow inv', value: rainbowFillInverted },
   ];
   fillFuncSelected: HierarchyTreeFillFunction = this.fillFuncArray[0].value;
 
   readonly fillOpacityFuncArray: FillOpacityFunc[] = [
     { key: 'opaque', value: opaqueFillOpacity },
     { key: 'linear', value: linearFillOpacity },
+    { key: '90%', value: (d: any) => 0.9 },
+    { key: '80%', value: (d: any) => 0.8 },
+    { key: '70%', value: (d: any) => 0.7 },
+    { key: '60%', value: (d: any) => 0.6 },
+    { key: '50%', value: (d: any) => 0.5 },
+    { key: '60%', value: (d: any) => 0.4 },
+    { key: '70%', value: (d: any) => 0.3 },
+    { key: '80%', value: (d: any) => 0.2 },
+    { key: '10%', value: (d: any) => 0.1 },
     { key: 'transparent', value: transparentFillOpacity }
   ];
   fillOpacityFuncSelected: HierarchyTreeFillOpacityFunction = this.fillOpacityFuncArray[0].value;
 
   readonly strokeFuncArray: StrokeFunc[] = [
     { key: 'none', value: noStroke },
-    { key: 'black', value: blackStroke }
+    { key: 'white', value: whiteStroke },
+    { key: 'black', value: blackStroke },
+    { key: 'transparent', value: transparentStroke },
   ];
   strokeFuncSelected: HierarchyTreeStrokeFunction = this.strokeFuncArray[0].value;
 
   readonly strokeWidthFuncArray: StrokeWidthFunc[] = [
-    { key: 'none', value: noStrokeWidth },
-    { key: 'linear', value: linearStrokeWidth }
+    { key: 'thin', value: linearStrokeWidthThin },
+    { key: 'normal', value: linearStrokeWidth },
+    { key: 'thick', value: linearStrokeWidthThick },
+    { key: 'extra thick', value: linearStrokeWidthExtraThick },
+    { key: 'none', value: noStrokeWidth }
   ];
   strokeWidthFuncSelected: HierarchyTreeStrokeWidthFunction = this.strokeWidthFuncArray[0].value;
 
   readonly labelFuncArray: LabelFunc[] = [
-    { key: 'none', value: emptyLabels },
     { key: 'name', value: nameLabels },
-    { key: 'value', value: valueLabels }
+    { key: 'value', value: valueLabels },
+    { key: 'none', value: emptyLabels }
   ];
   labelFuncSelected: HierarchyTreeLabelFunction = this.labelFuncArray[0].value;
 
-  readonly labelMinRadiusArray: number[] = [ 15, 10, 5, 1 ];
+  readonly labelMinRadiusArray: number[] = [ 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 16, 17, 18, 19, 20, 25, 30, 35, 40 ];
   labelMinRadiusSelected: number = this.labelMinRadiusArray[0];
 
   readonly labelFillArray: string[] = [ 'white', 'black', 'transparent' ];
@@ -155,14 +186,18 @@ export class SampleCirclepack2Component {
     { key: '14', value: equalFontSize14 },
     { key: '12', value: equalFontSize12 },
     { key: '10', value: equalFontSize10 },
-    { key: '8', value: equalFontSize8 }
+    { key: '9', value: (t: any) => 9 },
+    { key: '8', value: equalFontSize8 },
+    { key: '7', value: (t: any) => 7 },
+    { key: '6', value: (t: any) => 6 }
   ];
   labelFontSizeFuncSelected: HierarchyTreeFontSizeFunction = this.labelFontSizeFuncArray[0].value;
 
   selectedNodeInfo: string;
   tapFunc: HierarchyTreeTapFunction = (d: d3.HierarchyNode<HierarchyTreeNode>) => {
+    const t = pathParentTooltips(d);
     const n = d.data as CountryHierarchyTreeNode;
-    let text = `${n.name ? n.name : 'root'}: value: ${d.value}`;
+    let text = `${n.name ? t : 'root'}: value: ${d.value}`;
     if (!n.children) {
       text += ` area: ${n.area}, population: ${n.population}`;
     }

@@ -9,6 +9,8 @@ import { MbsModule } from '../../../../shared/mbs/mbs.module';
 import { SampleVoronoi1Component } from './sample-1/sample-voronoi-1.component';
 import { SampleVoronoi2Component } from './sample-2/sample-voronoi-2.component';
 import { SampleVoronoi3Component } from './sample-3/sample-voronoi-3.component';
+import { SampleVoronoi4Component } from './sample-4/sample-voronoi-4.component';
+import { SampleVoronoi5Component } from './sample-5/sample-voronoi-5.component';
 
 import { SampleVoronoiRoutingModule } from './sample-voronoi-routing.module';
 
@@ -18,7 +20,8 @@ import { SampleVoronoiRoutingModule } from './sample-voronoi-routing.module';
     MaterialModule, MbsModule, SampleVoronoiRoutingModule
   ],
   declarations: [
-    SampleVoronoi1Component, SampleVoronoi2Component, SampleVoronoi3Component
+    SampleVoronoi1Component, SampleVoronoi2Component, SampleVoronoi3Component,
+    SampleVoronoi4Component, SampleVoronoi5Component
   ]
 })
 export class SampleVoronoiModule { }

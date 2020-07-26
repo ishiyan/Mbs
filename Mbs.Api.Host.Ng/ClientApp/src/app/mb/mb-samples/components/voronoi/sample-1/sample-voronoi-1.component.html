@@ -4,25 +4,7 @@
       <mat-card-title>Default</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <mb-circlepack [data]="flareHierarchy"></mb-circlepack>
-    </mat-card-content>
-  </mat-card>
-
-  <mat-card class="example-card">
-    <mat-card-header>
-      <mat-card-title>Flare</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <mb-circlepack [data]="flareHierarchy" [sumFunc]="sumFunc" [diameter]="'100%'" [tapFunc]="tapFunc" [zoom]="true" [labelFunc]="nameLabel"></mb-circlepack>
-    </mat-card-content>
-  </mat-card>
-
-  <mat-card class="example-card">
-    <mat-card-header>
-      <mat-card-title>Flare</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <mb-circlepack [data]="flareHierarchy" [diameter]="'100%'" [tapFunc]="tapFunc" [zoom]="true" [fillFunc]="rainbowFillFunc" [labelFunc]="nameLabel"></mb-circlepack>
+      <mb-voronoi [data]="flareHierarchy"></mb-voronoi>
     </mat-card-content>
   </mat-card>
 </div>

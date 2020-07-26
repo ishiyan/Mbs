@@ -148,7 +148,7 @@ export class CirclepackComponent implements OnChanges {
       .selectAll('circle')
       .data(this.rootCircle ? root.descendants() : root.descendants().slice(1))
       .join('circle')
-      .attr('fill', (d: d3.HierarchyCircularNode<HierarchyTreeNode>) => this.fillFunc(d))
+      .attr('fill', /*(d: d3.HierarchyCircularNode<HierarchyTreeNode>) => */this.fillFunc/*(d)*/)
       .attr('fill-opacity', (d: d3.HierarchyNode<HierarchyTreeNode>) =>
         this.fillOpacityFunc(d as d3.HierarchyCircularNode<HierarchyTreeNode>, root.height))
       .attr('stroke', (d: d3.HierarchyCircularNode<HierarchyTreeNode>) => this.strokeFunc(d))

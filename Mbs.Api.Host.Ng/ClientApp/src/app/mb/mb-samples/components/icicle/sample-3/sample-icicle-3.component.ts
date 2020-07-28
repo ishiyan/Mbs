@@ -74,6 +74,7 @@ export class SampleIcicle3Component {
   datasetSelected: AexIndexHierarchyTreeNode = this.datasetArray[0].value;
 
   zoom = true;
+  rootVisible = false;
 
   readonly widthArray: NumberOrStringItem[] = [
     { key: '100%', value: '100%' },

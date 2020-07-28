@@ -72,6 +72,7 @@ export class SampleIcicle4Component {
   datasetSelected: Omxn40HierarchyTreeNode = this.datasetArray[0].value;
 
   zoom = true;
+  rootVisible = false;
 
   readonly widthArray: NumberOrStringItem[] = [
     { key: '100%', value: '100%' },

@@ -19,6 +19,7 @@ const defaultTransitionMsec = 750;
 const ascending = 'asc';
 const descending = 'desc';
 const defaultZoom = false;
+const defaultRootVisible = false;
 const defaultLabelFill = 'white';
 const deltaX = 4;
 const deltaY = 16;
@@ -84,6 +85,9 @@ export class IcicleComponent implements OnChanges {
   /** The data hierarchy to use. */
   @Input() data: HierarchyTreeNode;
 
+  /** If the root node should be visible. */
+  @Input() rootVisible: boolean = defaultRootVisible;
+
   constructor(private elementRef: ElementRef) { }
 
   ngOnChanges(changes: any) {
@@ -111,28 +115,30 @@ export class IcicleComponent implements OnChanges {
       if (sortFunc !== sortNone) {
         rootNode = rootNode.sort((a: d3.HierarchyNode<HierarchyTreeNode>, b: d3.HierarchyNode<HierarchyTreeNode>) => sortFunc(a, b));
       }
-      const n: number = (this.levels < 1 ? rootNode.height : this.levels) + 1;
+      const n: number = (this.levels < 1 ? rootNode.height : this.levels) + (this.rootVisible ? 1 : 0);
       return d3.partition().size([computed[1], (rootNode.height + 1) * computed[0] / n])(rootNode);
     };
     const root = partition(dat);
     let focus = root;
+    const rootWidth = this.rootVisible ? 0 : root.y1;
 
     const cell = svg.selectAll('g')
       .data(root.descendants())
       .join('g')
-      .attr('transform', (d: d3.HierarchyRectangularNode<HierarchyTreeNode>) => `translate(${d.y0},${d.x0})`);
+      .attr('transform', (d: d3.HierarchyRectangularNode<HierarchyTreeNode>) => `translate(${d.y0 - rootWidth },${d.x0})`);
 
     const rectHeight = (d: d3.HierarchyRectangularNode<HierarchyTreeNode>) => d.x1 - d.x0 - Math.min(1, (d.x1 - d.x0) / 2);
     const rect = cell.append('rect')
       .style('cursor', (d: d3.HierarchyRectangularNode<HierarchyTreeNode>) => d.children && d.parent ? 'pointer' : 'arrow')
       .attr('width', (d: d3.HierarchyRectangularNode<HierarchyTreeNode>) => d.y1 - d.y0 - 1)
       .attr('height', (d: d3.HierarchyRectangularNode<HierarchyTreeNode>) => rectHeight(d))
-      .attr('fill', /*(d: d3.HierarchyRectangularNode<HierarchyTreeNode>) => */this.fillFunc/*(d)*/)
+      // .attr('fill', (d: d3.HierarchyRectangularNode<HierarchyTreeNode>) => this.fillFunc(d, min, max))
+      .attr('fill', this.fillFunc)
       .attr('fill-opacity', (d: d3.HierarchyRectangularNode<HierarchyTreeNode>) =>
         this.fillOpacityFunc(d as d3.HierarchyRectangularNode<HierarchyTreeNode>, root.height));
 
     const labelVisible = (d: d3.HierarchyRectangularNode<HierarchyTreeNode>) =>
-      d.y1 <= w && d.y0 >= 0 && d.x1 - d.x0 > (this.labelFontSizeFunc(d) + deltaY);
+      /* d.y1 <= w && d.y0 >= 0 && */ d.x1 - d.x0 > (this.labelFontSizeFunc(d) + deltaY);
     const text = cell.append('text')
       .style('user-select', 'none')
       .attr('pointer-events', 'none')
@@ -151,11 +157,12 @@ export class IcicleComponent implements OnChanges {
       this.tapFunc(p);
       if (this.zoom && p.children) {
         focus = (focus === p && p.parent) ? p = p.parent : p;
+        const delta = p === root ? rootWidth : 0;
         root.each((d: any) => d.target = {
           x0: (d.x0 - p.x0) / (p.x1 - p.x0) * h,
           x1: (d.x1 - p.x0) / (p.x1 - p.x0) * h,
-          y0: d.y0 - p.y0,
-          y1: d.y1 - p.y0
+          y0: d.y0 - p.y0 - delta,
+          y1: d.y1 - p.y0 - delta
         });
         const t = cell.transition().duration(this.transitionMsec)
           .attr('transform', (d: any) => `translate(${d.target.y0},${d.target.x0})`);

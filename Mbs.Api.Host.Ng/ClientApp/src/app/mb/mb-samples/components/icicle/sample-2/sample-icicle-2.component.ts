@@ -63,6 +63,7 @@ export class SampleIcicle2Component {
 
   readonly contriesHierarchy: CountryHierarchyTreeNode = countries;
   zoom = true;
+  rootVisible = false;
 
   readonly widthArray: NumberOrStringItem[] = [
     { key: '100%', value: '100%' },

@@ -52,6 +52,7 @@ export class SampleIcicle5Component {
 
   readonly jdkHierarchy: HierarchyTreeNode = jdk;
   zoom = true;
+  rootVisible = false;
 
   readonly widthArray: NumberOrStringItem[] = [
     { key: '100%', value: '100%' },

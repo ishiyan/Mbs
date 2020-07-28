@@ -180,7 +180,7 @@ export class TreemapComponent implements OnChanges {
     const text = svg.selectAll('g')
       .selectAll('text')
       .data(allLeaves)
-      .enter().append('text')    
+      .enter().append('text')
       .style('user-select', 'none')
       .attr('pointer-events', 'none')
       .attr('y', deltaY)

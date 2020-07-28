@@ -9,6 +9,8 @@ import { MbsModule } from '../../../../shared/mbs/mbs.module';
 import { SampleTreemap1Component } from './sample-1/sample-treemap-1.component';
 import { SampleTreemap2Component } from './sample-2/sample-treemap-2.component';
 import { SampleTreemap3Component } from './sample-3/sample-treemap-3.component';
+import { SampleTreemap4Component } from './sample-4/sample-treemap-4.component';
+import { SampleTreemap5Component } from './sample-5/sample-treemap-5.component';
 
 import { SampleTreemapRoutingModule } from './sample-treemap-routing.module';
 
@@ -18,7 +20,8 @@ import { SampleTreemapRoutingModule } from './sample-treemap-routing.module';
     MaterialModule, MbsModule, SampleTreemapRoutingModule
   ],
   declarations: [
-    SampleTreemap1Component, SampleTreemap2Component, SampleTreemap3Component
+    SampleTreemap1Component, SampleTreemap2Component, SampleTreemap3Component,
+    SampleTreemap4Component, SampleTreemap5Component
   ]
 })
 export class SampleTreemapModule { }

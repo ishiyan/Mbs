@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 // tslint:disable:max-line-length
 import { HierarchyTreeNode } from '../../../../../shared/mbs/charts/hierarchy-tree/hierarchy-tree';
-import { HierarchyTreeSumFunction, sumNumberOfLeafNodes, sumNumberOfNodes } from '../../../../../shared/mbs/charts/hierarchy-tree/functions/sum-function';
+import { HierarchyTreeSumFunction, sumNumberOfLeafNodes } from '../../../../../shared/mbs/charts/hierarchy-tree/functions/sum-function';
 import { HierarchyTreeFillFunction, coolFill, coolFillInverted, warmFill, warmFillInverted, viridisFill, viridisFillInverted, bluesFill, bluesFillInverted, rainbowFill, rainbowFillInverted } from '../../../../../shared/mbs/charts/hierarchy-tree/functions/fill-function';
 import { coolFillFirstLevel, coolFillFirstLevelInverted, warmFillFirstLevel, warmFillFirstLevelInverted, viridisFillFirstLevel, viridisFillFirstLevelInverted, bluesFillFirstLevel, bluesFillFirstLevelInverted, rainbowFillFirstLevel, rainbowFillFirstLevelInverted, greensFillFirstLevel, greensFillFirstLevelInverted, greysFillFirstLevel, greysFillFirstLevelInverted, gradientFill } from '../../../../../shared/mbs/charts/hierarchy-tree/functions/fill-function';
 import { coolValueFill, coolValueFillInverted, warmValueFill, warmValueFillInverted, viridisValueFill, viridisValueFillInverted, bluesValueFill, bluesValueFillInverted, rainbowValueFill, rainbowValueFillInverted, greensValueFill, greensValueFillInverted, greysValueFill, greysValueFillInverted, gradientValueFill } from '../../../../../shared/mbs/charts/hierarchy-tree/functions/fill-function';
@@ -14,10 +14,10 @@ import { pathParentTooltips } from '../../../../../shared/mbs/charts/hierarchy-t
 import { HierarchyTreeLabelFunction, nameLabels, valueLabels, emptyLabels } from '../../../../../shared/mbs/charts/hierarchy-tree/functions/label-function';
 import { HierarchyTreeFontSizeFunction, equalFontSize8, equalFontSize10, equalFontSize12, equalFontSize14, equalFontSize16, equalFontSize18, linearFontSize } from '../../../../../shared/mbs/charts/hierarchy-tree/functions/font-size-function';
 
-import { AexIndexHierarchyTreeNode, aexIndexTickers, aexIndexIssuerCountries, aexIndexIcb } from '../../../test-data/hierarchies/aex-index';
+import { Omxn40HierarchyTreeNode, omxn40Tickers, omxn40Currencies, omxn40Icb, omxn40Ms, omxn40MsStyle, omxn40MsStyleCapValueGrowth, omxn40MsStyleValueGrowthCap } from '../../../test-data/hierarchies/omxn40';
 
 interface Dataset {
-  value: AexIndexHierarchyTreeNode;
+  value: Omxn40HierarchyTreeNode;
   key: string;
 }
 
@@ -36,17 +36,11 @@ interface SumFunc {
   key: string;
 }
 
-const sumFuncWeightPerc: HierarchyTreeSumFunction = (d: AexIndexHierarchyTreeNode) => d.constituent ? d.constituent.weightPerc : 0;
-const sumFuncTransactions: HierarchyTreeSumFunction = (d: AexIndexHierarchyTreeNode) => d.constituent ? d.constituent.transactions : 0;
-const sumFuncVolume: HierarchyTreeSumFunction = (d: AexIndexHierarchyTreeNode) => d.constituent ? d.constituent.volume : 0;
-const sumFuncTurnoverEur: HierarchyTreeSumFunction = (d: AexIndexHierarchyTreeNode) => d.constituent ? d.constituent.turnoverEur : 0;
-const sumFuncPriceEur: HierarchyTreeSumFunction = (d: AexIndexHierarchyTreeNode) => d.constituent ? d.constituent.close : 0;
-const sumFuncReturnEur: HierarchyTreeSumFunction = (d: AexIndexHierarchyTreeNode) => d.constituent ? d.constituent.returnEur : 0;
-const sumFuncReturnEurNeg: HierarchyTreeSumFunction = (d: AexIndexHierarchyTreeNode) => d.constituent ? -d.constituent.returnEur : 0;
-const sumFuncReturnPerc: HierarchyTreeSumFunction = (d: AexIndexHierarchyTreeNode) => d.constituent ? d.constituent.returnPerc : 0;
-const sumFuncReturnPercNeg: HierarchyTreeSumFunction = (d: AexIndexHierarchyTreeNode) => d.constituent ? -d.constituent.returnPerc : 0;
-const sumFuncMarketCapBn: HierarchyTreeSumFunction = (d: AexIndexHierarchyTreeNode) => d.constituent ? d.constituent.marketCapBn : 0;
-const sumFuncSharesOutstanding: HierarchyTreeSumFunction = (d: AexIndexHierarchyTreeNode) => d.constituent ? d.constituent.sharesOutstanding : 0;
+const sumFuncValueEur: HierarchyTreeSumFunction = (d: Omxn40HierarchyTreeNode) => d.constituent ? d.constituent.ratio * d.constituent.close : 0;
+const sumFuncTransactions: HierarchyTreeSumFunction = (d: Omxn40HierarchyTreeNode) => d.constituent ? d.constituent.transactions : 0;
+const sumFuncVolume: HierarchyTreeSumFunction = (d: Omxn40HierarchyTreeNode) => d.constituent ? d.constituent.volume : 0;
+const sumFuncTurnoverEur: HierarchyTreeSumFunction = (d: Omxn40HierarchyTreeNode) => d.constituent ? d.constituent.ratio * d.constituent.turnover : 0;
+const sumFuncMarketCapBnEur: HierarchyTreeSumFunction = (d: Omxn40HierarchyTreeNode) => d.constituent ? d.constituent.ratio * d.constituent.marketCap : 0;
 
 interface FillFunc {
   value: HierarchyTreeFillFunction;
@@ -79,20 +73,24 @@ interface LabelFontSizeFunc {
 }
 
 @Component({
-  selector: 'mb-sample-treemap-3',
-  templateUrl: './sample-treemap-3.component.html',
-  styleUrls: ['./sample-treemap-3.component.scss']
+  selector: 'mb-sample-treemap-4',
+  templateUrl: './sample-treemap-4.component.html',
+  styleUrls: ['./sample-treemap-4.component.scss']
 })
-export class SampleTreemap3Component {
+export class SampleTreemap4Component {
 
   flat = false;
 
   readonly datasetArray: Dataset[] = [
-    { key: 'countries', value: aexIndexIssuerCountries },
-    { key: 'tickers', value: aexIndexTickers },
-    { key: 'icb', value: aexIndexIcb }
+    { key: 'currencies', value: omxn40Currencies },
+    { key: 'tickers', value: omxn40Tickers },
+    { key: 'icb', value: omxn40Icb },
+    { key: 'ms', value: omxn40Ms },
+    { key: 'ms style', value: omxn40MsStyle },
+    { key: 'ms cap val', value: omxn40MsStyleCapValueGrowth },
+    { key: 'ms val cap', value: omxn40MsStyleValueGrowthCap }
   ];
-  datasetSelected: AexIndexHierarchyTreeNode = this.datasetArray[0].value;
+  datasetSelected: Omxn40HierarchyTreeNode = this.datasetArray[0].value;
 
   readonly widthArray: NumberOrStringItem[] = [
     { key: '100%', value: '100%' },
@@ -142,17 +140,11 @@ export class SampleTreemap3Component {
   rectangleRatioSelected: number = this.rectangleRatioArray[0].value;
 
   readonly sumFuncArray: SumFunc[] = [
-    { key: 'weight %', value: sumFuncWeightPerc },
+    { key: 'value eur', value: sumFuncValueEur },
     { key: 'transactions', value: sumFuncTransactions },
     { key: 'volume', value: sumFuncVolume },
     { key: 'turnover eur', value: sumFuncTurnoverEur },
-    { key: 'price eur', value: sumFuncPriceEur },
-    { key: 'pos return eur', value: sumFuncReturnEur },
-    { key: 'neg return eur', value: sumFuncReturnEurNeg },
-    { key: 'pos return %', value: sumFuncReturnPerc },
-    { key: 'neg return %', value: sumFuncReturnPercNeg },
-    { key: 'market cap, bn eur', value: sumFuncMarketCapBn },
-    { key: 'shares outstanding', value: sumFuncSharesOutstanding },
+    { key: 'market cap, bn eur', value: sumFuncMarketCapBnEur },
     { key: '# tickers', value: sumNumberOfLeafNodes }
   ];
   sumFuncSelected: HierarchyTreeSumFunction = this.sumFuncArray[0].value;
@@ -237,11 +229,11 @@ export class SampleTreemap3Component {
   strokeFuncSelected: HierarchyTreeStrokeFunction = this.strokeFuncArray[0].value;
 
   readonly strokeWidthFuncArray: StrokeWidthFunc[] = [
-    { key: 'thick', value: linearStrokeWidthThick },
-    { key: 'extra thick', value: linearStrokeWidthExtraThick },
-    { key: 'normal', value: linearStrokeWidth },
+    { key: 'none', value: noStrokeWidth },
     { key: 'thin', value: linearStrokeWidthThin },
-    { key: 'none', value: noStrokeWidth }
+    { key: 'normal', value: linearStrokeWidth },
+    { key: 'thick', value: linearStrokeWidthThick },
+    { key: 'extra thick', value: linearStrokeWidthExtraThick }
   ];
   strokeWidthFuncSelected: HierarchyTreeStrokeWidthFunction = this.strokeWidthFuncArray[0].value;
 
@@ -276,14 +268,16 @@ export class SampleTreemap3Component {
   selectedNodeInfo: string;
   tapFunc: HierarchyTreeTapFunction = (d: d3.HierarchyNode<HierarchyTreeNode>) => {
     const t = pathParentTooltips(d);
-    const n = d.data as AexIndexHierarchyTreeNode;
-    let text = `${t}: value: ${d.value}`;
+    const n = d.data as Omxn40HierarchyTreeNode;
+    let text = `${t}: value: ${d.value ? d.value.toFixed(2) : d.value}`;
     if (n.constituent) {
       const c = n.constituent;
-      text += ` ticker: ${c.ticker}, isin: ${c.isin}, name: ${c.name}, issuer country: ${c.issuerCountry},`;
-      text += ` icb: ${c.icb}, weight: ${c.weightPerc}%, price: ${c.close} EUR, turnover: ${c.turnoverEur} EUR,`;
-      text += ` transactions: ${c.transactions}, volume: ${c.volume}, return: ${c.returnEur} EUR, ${c.returnPerc}%,`;
-      text += ` market cap: ${c.marketCapBn} Bn EUR, shares outstanding: ${c.sharesOutstanding}`;
+      text += ` ticker: ${c.ticker}, isin: ${c.isin}, mic: ${c.mic}, name: ${c.name}, country: ${c.country},`;
+      text += ` icb: ${c.icb}, icb industry: ${c.icbIndustry}, icb supersector: ${c.icbSupersector},`;
+      text += ` morningstar sector: ${c.msSector}, morningstar industry: ${c.msIndustry}, morningstar stock style: ${c.msStockStyle},`;
+      text += ` price: EUR ${(c.close * c.ratio).toFixed(2)} (${c.currency} ${c.close}), turnover: EUR ${(c.turnover * c.ratio).toFixed(2)} (${c.currency} ${c.turnover}),`;
+      text += ` transactions: ${c.transactions}, volume: ${c.volume},`;
+      text += ` market cap: EUR ${(c.marketCap * c.ratio).toFixed(2)} Bn (${c.currency} ${c.marketCap} Bn),`;
       text += ` description: ${c.description}`;
     }
     this.selectedNodeInfo = text;

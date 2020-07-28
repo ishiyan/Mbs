@@ -69,7 +69,9 @@ export const treeNodes: MbSample[] = [
         children: [
           {name: 'Features', header: 'Treemap features', route: 'comp-treemap/s1'},
           {name: 'Countries', header: 'Treemap countries', route: 'comp-treemap/s2'},
-          {name: 'JDK', header: 'Treemap JDK', route: 'comp-treemap/s3'}
+          {name: 'AEX', header: 'Treemap AEX-index', route: 'comp-treemap/s3'},
+          {name: 'OMXN40', header: 'Treemap OMXN40', route: 'comp-treemap/s4'},
+          {name: 'JDK', header: 'Treemap JDK', route: 'comp-treemap/s5'}
         ]
       },
       {

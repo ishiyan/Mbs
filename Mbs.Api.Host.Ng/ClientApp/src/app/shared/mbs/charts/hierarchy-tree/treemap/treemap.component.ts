@@ -8,18 +8,21 @@ import { HierarchyTreeSortFunction, sortAscending, sortDescending, sortNone } fr
 import { HierarchyTreeLabelFunction, emptyLabels } from '../functions/label-function';
 import { HierarchyTreeTooltipFunction, pathTooltips } from '../functions/tooltip-function';
 import { HierarchyTreeTapFunction, doNothingTap } from '../functions/tap-function';
+import { HierarchyTreeStrokeFunction, transparentStroke } from '../functions/stroke-function';
+import { HierarchyTreeStrokeWidthFunction, linearStrokeWidth } from '../functions/stroke-width-function';
 import { HierarchyTreeFillFunction, coolFill } from '../functions/fill-function';
 import { HierarchyTreeFillOpacityFunction, opaqueFillOpacity } from '../functions/fill-opacity-function';
 import { HierarchyTreeFontSizeFunction, linearFontSize } from '../functions/font-size-function';
 
-const defaultWidth = 800;
-const defaultHeight = 600;
-const allLevels = 0;
-const defaultTransitionMsec = 750;
+const defaultWidth = 300;
+const defaultHeight = 300;
+const defaultPadding = 1;
+const defaultRectangleRatio = 1.618;
 const ascending = 'asc';
 const descending = 'desc';
-const defaultZoom = false;
+const defaultFlat = false;
 const defaultLabelFill = 'white';
+const defaultLabelMinRatio = 0.1;
 const deltaX = 4;
 const deltaY = 16;
 
@@ -45,17 +48,11 @@ export class TreemapComponent implements OnChanges {
    */
   @Input() sort: string = ascending;
 
-  /** If the chart is zoomable. Tapping on a sector zooms in, tapping in the center zooms out. */
-  @Input() zoom: boolean = defaultZoom;
-
-  /** Zoomable transition duration in milliseconds. */
-  @Input() transitionMsec: number = defaultTransitionMsec;
-
-  /** A number of hierarchy levels to display or **0** to display all levels. */
-  @Input() levels: number = allLevels;
-
   /** A function returning a text string which will be displayed as a label for a node. */
   @Input() labelFunc: HierarchyTreeLabelFunction = emptyLabels;
+
+  /** A minimum ratio of a leaf node value within the all-leaf value range for which the label will be displayed. */
+  @Input() labelMinRatio: number = defaultLabelMinRatio;
 
   /** A fill color to draw labels. */
   @Input() labelFill: string = defaultLabelFill;
@@ -75,14 +72,29 @@ export class TreemapComponent implements OnChanges {
   /** A function returning a fill color opacity of a node. */
   @Input() fillOpacityFunc: HierarchyTreeFillOpacityFunction = opaqueFillOpacity;
 
+  /** A function returning a stroke color of a node. */
+  @Input() strokeFunc: HierarchyTreeStrokeFunction = transparentStroke;
+
+  /** A function returning a stroke color of a node. */
+  @Input() strokeWidthFunc: HierarchyTreeStrokeWidthFunction = linearStrokeWidth;
+
+  /** A padding in pixels surrounding the shape. */
+  @Input() padding: number = defaultPadding;
+
   /** A width of the icicle. */
   @Input() width: number | string = defaultWidth;
 
   /** A height of the icicle. */
   @Input() height: number | string = defaultHeight;
 
+  /** If the width to height ratio for leaf rectangles. */
+  @Input() rectangleRatio: number = defaultRectangleRatio;
+
   /** The data hierarchy to use. */
   @Input() data: HierarchyTreeNode;
+
+  /** If the hierarchy should be flatterned to an array of a leaf nodes. */
+  @Input() flat: boolean = defaultFlat;
 
   constructor(private elementRef: ElementRef) { }
 
@@ -98,6 +110,7 @@ export class TreemapComponent implements OnChanges {
     if (!dat || !dat.children || dat.children.length < 1) {
       return;
     }
+
     const computed = computeDimensions(this.elementRef, this.width, this.height, defaultWidth, defaultHeight);
     const w = computed[0];
     const h = computed[1];
@@ -106,66 +119,81 @@ export class TreemapComponent implements OnChanges {
 
     const sortFunc: HierarchyTreeSortFunction = this.sort === ascending ?
       sortAscending : (this.sort === descending ? sortDescending : sortNone);
-    const partition = (d: HierarchyTreeNode) => {
+    const squarify = (d: HierarchyTreeNode) => {
       let rootNode = d3.hierarchy(d).sum(this.sumFunc);
       if (sortFunc !== sortNone) {
         rootNode = rootNode.sort((a: d3.HierarchyNode<HierarchyTreeNode>, b: d3.HierarchyNode<HierarchyTreeNode>) => sortFunc(a, b));
       }
-      const n: number = (this.levels < 1 ? rootNode.height : this.levels) + 1;
-      return d3.partition().size([computed[1], (rootNode.height + 1) * computed[0] / n])(rootNode);
+      return d3.treemap().tile(d3.treemapSquarify.ratio(1)).size([w / this.rectangleRatio, h]).padding(this.padding).round(false)(rootNode);
     };
-    const root = partition(dat);
-    let focus = root;
+    let root = squarify(dat);
+    if (this.flat) {
+      const datFlat: HierarchyTreeNode = { children: [] };
+      for (const leaf of root.leaves()) {
+        datFlat.children?.push(leaf.data as HierarchyTreeNode);
+      }
+      root = squarify(datFlat);
+    }
+    const allLeaves = root.leaves();
+    let min = Number.MAX_SAFE_INTEGER;
+    let max = Number.MIN_SAFE_INTEGER;
+    for (const leaf of allLeaves) {
+      if (leaf.value) {
+        const v = leaf.value;
+        if (v < min) {
+          min = v;
+        }
+        if (v > max) {
+          max = v;
+        }
+      }
+    }
 
     const cell = svg.selectAll('g')
-      .data(root.descendants())
+      .data(allLeaves)
       .join('g')
-      .attr('transform', (d: d3.HierarchyRectangularNode<HierarchyTreeNode>) => `translate(${d.y0},${d.x0})`);
+      .attr('transform', (d: d3.HierarchyRectangularNode<HierarchyTreeNode>) =>
+        `translate(${d.x0 * this.rectangleRatio},${d.y0})`);
 
-    const rectHeight = (d: d3.HierarchyRectangularNode<HierarchyTreeNode>) => d.x1 - d.x0 - Math.min(1, (d.x1 - d.x0) / 2);
-    const rect = cell.append('rect')
-      .style('cursor', (d: d3.HierarchyRectangularNode<HierarchyTreeNode>) => d.children && d.parent ? 'pointer' : 'arrow')
-      .attr('width', (d: d3.HierarchyRectangularNode<HierarchyTreeNode>) => d.y1 - d.y0 - 1)
-      .attr('height', (d: d3.HierarchyRectangularNode<HierarchyTreeNode>) => rectHeight(d))
-      .attr('fill', /*(d: d3.HierarchyRectangularNode<HierarchyTreeNode>) => */this.fillFunc/*(d)*/)
-      .attr('fill-opacity', (d: d3.HierarchyRectangularNode<HierarchyTreeNode>) =>
-        this.fillOpacityFunc(d as d3.HierarchyRectangularNode<HierarchyTreeNode>, root.height));
+    cell.append('rect')
+      .attr('width', (d: d3.HierarchyRectangularNode<HierarchyTreeNode>) =>
+        d.x1 * this.rectangleRatio - d.x0 * this.rectangleRatio)
+      .attr('height', (d: d3.HierarchyRectangularNode<HierarchyTreeNode>) =>
+        d.y1 - d.y0)
+      .attr('fill', (d: d3.HierarchyCircularNode<HierarchyTreeNode>) =>
+        d.children ? 'transparent' : this.fillFunc(d, min, max))
+      .attr('fill-opacity', (d: d3.HierarchyNode<HierarchyTreeNode>) =>
+        d.children ? 0 : this.fillOpacityFunc(d as d3.HierarchyCircularNode<HierarchyTreeNode>, root.height))
+      .attr('stroke', (d: d3.HierarchyCircularNode<HierarchyTreeNode>) => this.strokeFunc(d))
+      .attr('stroke-width', (d: d3.HierarchyCircularNode<HierarchyTreeNode>) => this.strokeWidthFunc(d))
+      .attr('pointer-events', (d: d3.HierarchyNode<HierarchyTreeNode>) => d.children ? 'none' : 'all')
+      .on('click', (d: d3.HierarchyCircularNode<HierarchyTreeNode>) => this.tapFunc(d));
 
-    const labelVisible = (d: d3.HierarchyRectangularNode<HierarchyTreeNode>) =>
-      d.y1 <= w && d.y0 >= 0 && d.x1 - d.x0 > (this.labelFontSizeFunc(d) + deltaY);
-    const text = cell.append('text')
+    const cutoff = min + this.labelMinRatio * (max - min);
+    const labelText = (d: d3.HierarchyRectangularNode<HierarchyTreeNode>) => {
+      const valueVisible = d.value ? (d.value > cutoff) : false;
+      const vertVisible = (d.y1 - d.y0) > (this.labelFontSizeFunc(d) + deltaY);
+      const horzVisible = (d.x1 - d.x0) > 50;
+      return (valueVisible && vertVisible && horzVisible) ? this.labelFunc(d) : '';
+    };
+
+    const text = svg.selectAll('g')
+      .selectAll('text')
+      .data(allLeaves)
+      .enter().append('text')    
       .style('user-select', 'none')
       .attr('pointer-events', 'none')
-      .attr('x', deltaX)
       .attr('y', deltaY)
       .style('fill', this.labelFill)
-      .attr('fill-opacity', (d: d3.HierarchyRectangularNode<HierarchyTreeNode>) => +labelVisible(d))
       .attr('font-size', (d: d3.HierarchyRectangularNode<HierarchyTreeNode>) => this.labelFontSizeFunc(d));
     text.append('tspan')
-      .text((d: d3.HierarchyNode<HierarchyTreeNode>) => this.labelFunc(d));
+      .data((d: d3.HierarchyRectangularNode<HierarchyTreeNode>) => labelText(d).split(/\s+/g))
+      .join('tspan')
+        .attr('x', deltaX)
+        .attr('y', (d: any, i: number, nodes: any) => `${i - nodes.length / 3 + 2}em`)
+        .text((d: string) => d);
 
     cell.append('title')
       .text((d: d3.HierarchyNode<HierarchyTreeNode>) => this.tooltipFunc(d));
-
-    const clicked = (p: d3.HierarchyRectangularNode<HierarchyTreeNode>) => {
-      this.tapFunc(p);
-      if (this.zoom && p.children) {
-        focus = (focus === p && p.parent) ? p = p.parent : p;
-        root.each((d: any) => d.target = {
-          x0: (d.x0 - p.x0) / (p.x1 - p.x0) * h,
-          x1: (d.x1 - p.x0) / (p.x1 - p.x0) * h,
-          y0: d.y0 - p.y0,
-          y1: d.y1 - p.y0
-        });
-        const t = cell.transition().duration(this.transitionMsec)
-          .attr('transform', (d: any) => `translate(${d.target.y0},${d.target.x0})`);
-        rect.transition(t)
-          .attr('height', (d: any) => rectHeight(d.target));
-        text.transition(t)
-          .attr('fill-opacity', (d: any) => +labelVisible(d.target));
-      }
-    };
-
-    rect.on('click', clicked);
   }
 }

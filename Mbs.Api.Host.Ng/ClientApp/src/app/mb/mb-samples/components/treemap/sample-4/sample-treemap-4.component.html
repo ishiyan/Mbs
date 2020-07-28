@@ -1,6 +1,14 @@
 <div class="sample">
   <mat-card class="example-card">
     <mat-card-content>
+      <mat-form-field class="form-field-90">
+        <mat-label>data</mat-label>
+        <mat-select [(ngModel)]="datasetSelected" name="dataset">
+          <mat-option *ngFor="let dataset of datasetArray" [value]="dataset.value">
+            {{dataset.key}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
       <mat-form-field class="form-field-60">
         <mat-label>width</mat-label>
         <mat-select [(ngModel)]="widthSelected" name="width">
@@ -119,7 +127,7 @@
 
   <mat-card class="example-card">
     <mat-card-content>
-      <mb-treemap [data]="contriesHierarchy" [width]="widthSelected" [height]="heightSelected"  [padding]="paddingSelected"
+      <mb-treemap [data]="datasetSelected" [width]="widthSelected" [height]="heightSelected"  [padding]="paddingSelected"
         [rectangleRatio]="rectangleRatioSelected"  [strokeFunc]="strokeFuncSelected" [strokeWidthFunc]="strokeWidthFuncSelected"
         [sumFunc]="sumFuncSelected" [sort]="sortSelected" [fillFunc]="fillFuncSelected" [fillOpacityFunc]="fillOpacityFuncSelected"
         [flat]="flat" [tapFunc]="tapFunc" [labelFunc]="labelFuncSelected" [labelMinRatio]="labelMinRatioSelected" 

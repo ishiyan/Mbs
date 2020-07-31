@@ -1,0 +1,39 @@
+table {
+  margin-top: 0px;
+  width: 100%;
+  // outline: thin solid red !important;
+}
+
+.example-card {
+  // max-width: 1024px;
+  margin-bottom: 16px;
+  // outline: thin solid green !important;
+  text-align: center;
+}
+
+.tdcenter {
+  text-align: center;
+}
+
+.tdleft {
+  text-align: left;
+}
+
+.tdheader {
+  text-align: center;
+  font-size: x-large;
+  font-weight: bold;
+  padding-bottom: 20px;
+}
+
+.tdheadervertical {
+  text-align: center;
+  font-size: x-large;
+  font-weight: bold;
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  transform: rotate(90deg);
+  max-width: 50px;
+}

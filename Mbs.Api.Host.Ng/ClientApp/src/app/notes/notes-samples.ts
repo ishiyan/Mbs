@@ -5,6 +5,13 @@ export const treeNodes: NotesSample[] = [
     name: 'Asset Management simulations',
     children: [
       {
+        name: 'Hierarchies',
+        children: [
+          { name: 'Demo', header: 'Visualising hierarchical data', route: 'am/hi/d1' },
+          { name: 'Industry classifications', header: 'Industry classifications', route: 'am/hi/d2' }
+        ]
+      },
+      {
         name: 'Fixed mix',
         children: [
           { name: 'Single', header: 'AM fixed mix single', route: 'am/fm/s1' },

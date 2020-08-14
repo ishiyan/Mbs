@@ -12,7 +12,7 @@ namespace Mbs.Trading.Indicators.JohnBollinger
     /// Bollinger Bands are a type of price envelope invented by John Bollinger in the 1980s. Bollinger bands consist of:
     /// <para>❶ a middle band being an <c>ℓ</c>-period moving average (MA)</para>
     /// <para>❷ an upper band at <c>K</c> times an <c>ℓ</c>-period standard deviation <c>σ</c> above the middle band (<c>MA + Kσ</c>)</para>
-    /// <para>❸ an lower band at <c>K</c> times an <c>ℓ</c>-period standard deviation <c>σ</c> below the middle band (<c>MA - Kσ</c>)</para>
+    /// <para>❸ a lower band at <c>K</c> times an <c>ℓ</c>-period standard deviation <c>σ</c> below the middle band (<c>MA - Kσ</c>)</para>
     /// <para>Typical values for <c>ℓ</c> and <c>K</c> are 20 and 2, respectively. The default choice for the average is a simple moving average, but other types of averages can be employed as needed.</para>
     /// <para>Exponential moving averages are a common second choice. Usually the same period is used for both the middle band and the calculation of standard deviation.</para>
     /// </summary>

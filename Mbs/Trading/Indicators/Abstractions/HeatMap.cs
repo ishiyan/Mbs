@@ -25,7 +25,7 @@ namespace Mbs.Trading.Indicators.Abstractions
         public double ParameterLast { get; }
 
         /// <summary>
-        /// A parameter resolution (positive number). A value of 10 means that <see cref="HeatMap"/> values are evaluated at every 0.1 of parameter range.
+        /// A parameter resolution value (positive number). A value of 10 means that <see cref="HeatMap"/> values are evaluated at every 0.1 of parameter range.
         /// A parameter corresponding to the i-th value can be calculated as <c>min(ParameterFirst,ParameterLast) + i / ParameterResolution</c>.
         /// </summary>
         public double ParameterResolution { get; }

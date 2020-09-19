@@ -2,26 +2,26 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>Mbs</id>
-    <version>1.0.1-alpha003</version>
+    <version>1.0.1</version>
     <description>Mbs library</description>
     <authors>Mbrane</authors>
     <owners>Mbrane</owners>
-    <copyright>Copyright © 2019 Mbrane. All rights reserved.</copyright>
+    <copyright>Copyright © 2020 Mbrane. All rights reserved.</copyright>
     <projectUrl>http://www.angular.io</projectUrl>
-    <iconUrl>https://github.com/ishiyan/NgCli.NetCore/raw/master/mb.png</iconUrl>
+    <icon>icon.png</icon>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <developmentDependency>false</developmentDependency>
     <releaseNotes>Release notes</releaseNotes>
     <tags>mbrane mbs</tags>
-    <dependencies>
+    <!-- dependencies>
       <dependency id="Microsoft.AspNetCore.All" version="2.2.0" />
-    </dependencies>
+    </dependencies -->
   </metadata>
   <files>
     <file src="mb.png" target="icon.png" />
-    <file src="bin\Release\netcoreapp2.2\Mbs.dll" target="lib\netcoreapp2.2\Mbs.dll" />
-    <file src="bin\Release\netcoreapp2.2\Mbs.pdb" target="lib\netcoreapp2.2\Mbs.pdb" />
-    <file src="bin\Release\netcoreapp2.2\Mbs.xml" target="lib\netcoreapp2.2\Mbs.xml" />
-    <file src="bin\Release\netcoreapp2.2\Mbs.deps.json" target="lib\netcoreapp2.2\Mbs.deps.json" />
+    <file src="bin\Release\published\Mbs.dll" target="lib\netcoreapp3.1\Mbs.dll" />
+    <file src="bin\Release\published\Mbs.pdb" target="lib\netcoreapp3.1\Mbs.pdb" />
+    <file src="bin\Release\published\Mbs.xml" target="lib\netcoreapp3.1\Mbs.xml" />
+    <file src="bin\Release\published\Mbs.deps.json" target="lib\netcoreapp3.1\Mbs.deps.json" />
   </files>
 </package>

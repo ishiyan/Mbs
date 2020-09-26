@@ -161,8 +161,8 @@ export class D3tcFinanceTimeComponent implements OnInit {
       svg.select('g.x.axis.intraday-utc.nonclamped').call(xAxisIntradayUtcNonClamped);
     }
 
-    function zoomed() {
-      const transform = d3.event.transform;
+    function zoomed(event: any) {
+      const transform = event.transform;
       time.zoomable().domain(transform.rescaleX(timeInit).domain());
       timeNonClamped.zoomable().domain(transform.rescaleX(timeNonClampedInit).domain());
       timeUtcNonClamped.zoomable().domain(transform.rescaleX(timeUtcNonClampedInit).domain());

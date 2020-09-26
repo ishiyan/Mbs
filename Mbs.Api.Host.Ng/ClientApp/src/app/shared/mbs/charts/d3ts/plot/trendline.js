@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function(d3_behavior_drag, d3_event, d3_select, d3_dispatch, accessor_trendline, plot, plotMixin) {  // Injected dependencies
+module.exports = function(d3_behavior_drag, d3_select, d3_dispatch, accessor_trendline, plot, plotMixin) {  // Injected dependencies
   function Trendline() { // Closure function
     var p = {},  // Container for private, direct access mixed in variables
         dispatch = d3_dispatch('mouseenter', 'mouseout', 'mousemove', 'drag', 'dragstart', 'dragend');
@@ -48,11 +48,11 @@ module.exports = function(d3_behavior_drag, d3_event, d3_select, d3_dispatch, ac
   function dragEnd(dispatch, accessor, accessor_x, x, accessor_y, y) {
     var drag = d3_behavior_drag();
 
-    drag.subject(function(d) {
+    drag.subject(function(event, d) {
       return { x: x(accessor_x(d)), y: y(accessor_y(d)) };
     })
-    .on('drag', function(d) {
-      updateEnd(accessor_x, x, d3_event().x, accessor_y, y, d3_event().y, d);
+    .on('drag', function(event, d) {
+      updateEnd(accessor_x, x, event.x, accessor_y, y, event.y, d);
       refresh(d3_select(this.parentNode.parentNode.parentNode), accessor, x, y);
       dispatch.call('drag', this, d);
     });
@@ -64,17 +64,17 @@ module.exports = function(d3_behavior_drag, d3_event, d3_select, d3_dispatch, ac
     var dragStart = {}, // State information, grabs the start coords of the line
         drag = d3_behavior_drag();
 
-    drag.subject(function(d) {
+    drag.subject(function(event, d) {
       dragStart.start = { date: x(accessor.st(d)), value: y(accessor.sv(d)) };
       dragStart.end = { date: x(accessor.et(d)), value: y(accessor.ev(d)) };
       return { x: 0, y: 0 };
     })
-    .on('drag', function(d) {
-      updateEnd(accessor.st, x, d3_event().x + dragStart.start.date,
-        accessor.sv, y, d3_event().y + dragStart.start.value,
+    .on('drag', function(event, d) {
+      updateEnd(accessor.st, x, event.x + dragStart.start.date,
+        accessor.sv, y, event.y + dragStart.start.value,
         d);
-      updateEnd(accessor.et, x, d3_event().x + dragStart.end.date,
-        accessor.ev, y, d3_event().y + dragStart.end.value,
+      updateEnd(accessor.et, x, event.x + dragStart.end.date,
+        accessor.ev, y, event.y + dragStart.end.value,
         d);
       refresh(d3_select(this.parentNode.parentNode.parentNode), accessor, x, y);
       dispatch.call('drag', this, d);

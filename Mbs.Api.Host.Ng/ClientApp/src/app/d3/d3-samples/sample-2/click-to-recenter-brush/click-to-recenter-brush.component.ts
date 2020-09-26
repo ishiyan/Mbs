@@ -1,6 +1,8 @@
 import { Component, OnInit, ElementRef, ViewChild, Input } from '@angular/core';
 import * as d3 from 'd3';
 
+// https://observablehq.com/@d3/click-to-recenter-brush
+
 @Component({
   selector: 'd3-sample-click-to-recenter-brush',
   templateUrl: './click-to-recenter-brush.component.html',
@@ -41,8 +43,8 @@ export class ClickToRecenterBrushComponent implements OnInit {
       .attr('transform', (d: any) => 'translate(' + x(d[0]) + ',' + y(d[1]) + ')')
       .attr('r', 3.5);
 
-    brush.on('start brush end', () => {
-      const s = d3.event.selection;
+    brush.on('start brush end', (event: any) => {
+      const s = event.selection;
       if (s == null) {
         dot.classed('activa', false);
       } else {
@@ -56,11 +58,11 @@ export class ClickToRecenterBrushComponent implements OnInit {
       .call(brush.move, [3, 5].map(x))
       .selectAll('.overlay')
       .each((d: any) => { d.type = 'selection'; }) // Treat overlay interaction as move.
-      .on('mousedown touchstart', function() { // Recenter before brushing.
+      .on('mousedown touchstart', function(event: any) { // Recenter before brushing.
         const dx = x(1) - x(0); // Use a fixed width when recentering.
         // tslint:disable-next-line:no-shadowed-variable
         // @ts-ignore
-        const cx = d3.mouse(this)[0];
+        const cx = d3.pointers(event)[0][0];
         const x0 = cx - dx / 2;
         const x1 = cx + dx / 2;
         // tslint:disable-next-line:no-shadowed-variable

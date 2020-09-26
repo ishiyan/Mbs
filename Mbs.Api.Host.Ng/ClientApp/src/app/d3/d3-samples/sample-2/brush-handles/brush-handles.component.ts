@@ -1,6 +1,8 @@
 import { Component, OnInit, OnChanges, ViewChild, ElementRef, Input, ViewEncapsulation } from '@angular/core';
 import * as d3 from 'd3';
 
+// https://observablehq.com/@d3/brush-handles
+
 @Component({
   selector: 'd3-sample-brush-handles',
   templateUrl: './brush-handles.component.html',
@@ -58,8 +60,8 @@ export class BrushHandlesComponent implements OnInit {
         .startAngle(0)
         .endAngle((d, i) => i ? Math.PI : -Math.PI));
 
-    brush.on('start brush end', () => {
-      const s = d3.event.selection;
+    brush.on('start brush end', (event: any) => {
+      const s = event.selection;
       if (s == null) {
         handle.attr('display', 'none');
         circle.classed('active', false);

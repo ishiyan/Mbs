@@ -153,7 +153,7 @@ export class IcicleComponent implements OnChanges {
     cell.append('title')
       .text((d: d3.HierarchyNode<HierarchyTreeNode>) => this.tooltipFunc(d));
 
-    const clicked = (p: d3.HierarchyRectangularNode<HierarchyTreeNode>) => {
+    const clicked = (event: any, p: d3.HierarchyRectangularNode<HierarchyTreeNode>) => {
       this.tapFunc(p);
       if (this.zoom && p.children) {
         focus = (focus === p && p.parent) ? p = p.parent : p;

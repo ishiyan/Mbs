@@ -67,8 +67,8 @@ export class BrushHandles2Component implements OnInit {
       .attr('cursor', 'ew-resize')
       .attr('d', brushResizePath);
 
-    brush.on('start brush end', () => {
-      const s = d3.event.selection;
+    brush.on('start brush end', (event: any) => {
+      const s = event.selection;
       if (s == null) {
         handle.attr('display', 'none');
         circle.classed('active', false);

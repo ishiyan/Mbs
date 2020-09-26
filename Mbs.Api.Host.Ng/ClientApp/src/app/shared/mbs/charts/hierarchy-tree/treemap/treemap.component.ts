@@ -167,7 +167,7 @@ export class TreemapComponent implements OnChanges {
       .attr('stroke', (d: d3.HierarchyCircularNode<HierarchyTreeNode>) => this.strokeFunc(d))
       .attr('stroke-width', (d: d3.HierarchyCircularNode<HierarchyTreeNode>) => this.strokeWidthFunc(d))
       .attr('pointer-events', (d: d3.HierarchyNode<HierarchyTreeNode>) => d.children ? 'none' : 'all')
-      .on('click', (d: d3.HierarchyCircularNode<HierarchyTreeNode>) => this.tapFunc(d));
+      .on('click', (event: any, d: d3.HierarchyCircularNode<HierarchyTreeNode>) => this.tapFunc(d));
 
     const cutoff = min + this.labelMinRatio * (max - min);
     const labelText = (d: d3.HierarchyRectangularNode<HierarchyTreeNode>) => {

@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function(d3_select, d3_functor, d3_mouse, d3_dispatch, accessor_trade, plot, plotMixin, svg_arrow) {  // Injected dependencies
+module.exports = function(d3_select, d3_functor, d3_pointer, d3_dispatch, accessor_trade, plot, plotMixin, svg_arrow) {  // Injected dependencies
   return function() { // Closure function
     var p = {},  // Container for private, direct access mixed in variables
         dispatch = d3_dispatch('mouseenter', 'mouseout'),
@@ -16,15 +16,15 @@ module.exports = function(d3_select, d3_functor, d3_mouse, d3_dispatch, accessor
       group.entry.append('path').attr('class', 'highlight').style('pointer-events', 'none'); // Do not want mouse events on the highlight
 
       group.selection.selectAll('path.tradearrow')
-        .on('mouseenter', function(data) {
-          var nearest = findNearest(data, d3_mouse(this)[0]);
+        .on('mouseenter', function(event, data) {
+          var nearest = findNearest(data, d3_pointer(event)[0]);
           // Watch out here, not using generator as this is single element, not grouped
           // Done purely to get this node correctly classed and technically only 1 node can be selected for the moment
           d3_select(this.parentNode).select('path.highlight').datum(nearest.d).attr('d', svgArrow).call(classed, classes);
           dispatch.call('mouseenter', this, nearest.d, nearest.i);
         }).on('mouseout', function(data) {
           d3_select(this.parentNode).selectAll('path.highlight').datum([]).attr('d', null).attr('class', 'highlight');
-          var nearest = findNearest(data, d3_mouse(this)[0]);
+          var nearest = findNearest(data, d3_pointer(event)[0]);
           dispatch.call('mouseout', this, nearest.d, nearest.i);
         });
 

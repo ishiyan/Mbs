@@ -95,12 +95,12 @@ export class D3tcBrushComponent implements OnInit {
       focus.select('g.y.axis').call(yAxisLeft);
     }
 
-    function brushed() {
+    function brushed(event: any) {
       const zoomable = x.zoomable();
       const zoomableNav = xNav.zoomable();
       zoomable.domain(zoomableNav.domain());
-      if (d3.event.selection !== null) {
-        zoomable.domain(d3.event.selection.map(zoomable.invert));
+      if (event.selection !== null) {
+        zoomable.domain(event.selection.map(zoomable.invert));
       }
       draw();
     }

@@ -133,7 +133,7 @@ export class SunburstComponent implements OnChanges {
       return `rotate(${x - 90}) translate(${y},0) rotate(${x < 180 ? 0 : 180})`;
     };
 
-    const clicked = (p: d3.HierarchyRectangularNode<HierarchyTreeNode>) => {
+    const clicked = (event: any, p: d3.HierarchyRectangularNode<HierarchyTreeNode>) => {
       this.tapFunc(p);
       if (this.zoom && p.children) {
         parent.datum(p.parent || root);

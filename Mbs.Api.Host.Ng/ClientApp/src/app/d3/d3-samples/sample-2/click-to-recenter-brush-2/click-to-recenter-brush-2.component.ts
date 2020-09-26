@@ -41,8 +41,8 @@ export class ClickToRecenterBrush2Component implements OnInit {
       .attr('transform', (d: any) => 'translate(' + x(d[0]) + ',' + y(d[1]) + ')')
       .attr('r', 3.5);
 
-    brush.on('start brush', () => {
-      const s = d3.event.selection;
+    brush.on('start brush', (event: any) => {
+      const s = event.selection;
       if (!s) {
         return; // Ignore empty selections.
       }
@@ -50,11 +50,11 @@ export class ClickToRecenterBrush2Component implements OnInit {
       dot.classed('active', (d: any) => sx[0] <= d[0] && d[0] <= sx[1]);
     });
 
-    brush.on('end', function() {
-      if (!d3.event.sourceEvent) {
+    brush.on('end', function(event: any) {
+      if (!event.sourceEvent) {
         return; // Only transition after input.
       }
-      const s = d3.event.selection;
+      const s = event.selection;
       if (!s) {
         return; // Ignore empty selections.
       }
@@ -74,11 +74,11 @@ export class ClickToRecenterBrush2Component implements OnInit {
       .call(brush.move, [3, 5].map(x))
       .selectAll('.overlay')
       .each((d: any) => { d.type = 'selection'; }) // Treat overlay interaction as move.
-      .on('mousedown touchstart', function() { // Recenter before brushing.
+      .on('mousedown touchstart', function(event: any) { // Recenter before brushing.
         const dx = x(1) - x(0); // Use a fixed width when recentering.
         // tslint:disable-next-line:no-shadowed-variable
         // @ts-ignore
-        const cx = d3.mouse(this)[0];
+        const cx = d3.pointers(event)[0][0];
         const x0 = cx - dx / 2;
         const x1 = cx + dx / 2;
         // tslint:disable-next-line:no-shadowed-variable

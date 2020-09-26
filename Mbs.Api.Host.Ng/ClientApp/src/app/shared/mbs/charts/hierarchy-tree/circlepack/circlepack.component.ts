@@ -122,7 +122,7 @@ export class CirclepackComponent implements OnChanges {
     const svg: any = sel.append('svg')
       .attr('preserveAspectRatio', 'xMinYMin meet')
       .attr('width', s).attr('height', s).attr('viewBox', `-${s2} -${s2} ${s} ${s}`)
-      .on('click', () => zoom(root));
+      .on('click', (event: any) => zoom(event, root));
 
     const sortFunc: HierarchyTreeSortFunction = this.sort === ascending ?
       sortAscending : (this.sort === descending ? sortDescending : sortNone);
@@ -154,7 +154,7 @@ export class CirclepackComponent implements OnChanges {
       .attr('stroke', (d: d3.HierarchyCircularNode<HierarchyTreeNode>) => this.strokeFunc(d))
       .attr('stroke-width', (d: d3.HierarchyCircularNode<HierarchyTreeNode>) => this.strokeWidthFunc(d))
       // .style('cursor',  (d: d3.HierarchyCircularNode<HierarchyTreeNode>) => !this.flat && d.children ? 'pointer' : 'arrow')
-      .on('click', (d: d3.HierarchyCircularNode<HierarchyTreeNode>) => { d3.event.stopPropagation(); clicked(d); });
+      .on('click', (event: any, d: d3.HierarchyCircularNode<HierarchyTreeNode>) => { event.stopPropagation(); clicked(event, d); });
 
     const labelFillOpacity = (d: d3.HierarchyCircularNode<HierarchyTreeNode>) =>
       (d.parent === focus && d.r >= this.labelMinRadius) ? 1 : 0;
@@ -180,10 +180,10 @@ export class CirclepackComponent implements OnChanges {
         .attr('y', (d: any, i: number, nodes: any) => `${i - nodes.length / 2 + 0.8}em`)
         .text((d: string) => d);
 
-    const clicked = (d: d3.HierarchyCircularNode<HierarchyTreeNode>) => {
+    const clicked = (event: any, d: d3.HierarchyCircularNode<HierarchyTreeNode>) => {
       this.tapFunc(d);
       if (this.zoom && !this.flat && d.children && focus !== d) {
-        /* d.children && focus !== d && */ zoom(d);
+        /* d.children && focus !== d && */ zoom(event, d);
       }
     };
 
@@ -198,7 +198,7 @@ export class CirclepackComponent implements OnChanges {
       node.attr('r', (d: d3.HierarchyCircularNode<HierarchyTreeNode>) => d.r * k);
     };
 
-    const zoom = (d: d3.HierarchyCircularNode<HierarchyTreeNode>) => {
+    const zoom = (event: any, d: d3.HierarchyCircularNode<HierarchyTreeNode>) => {
       const focus0 = focus;
       focus = d;
       const transition = svg.transition().duration(this.transitionMsec)

@@ -41,8 +41,8 @@ export class ClickToSelectAllComponent implements OnInit {
       .attr('transform', (d: any) => 'translate(' + x(d[0]) + ',' + y(d[1]) + ')')
       .attr('r', 3.5);
 
-    brush.on('start brush end', () => {
-      const s = d3.event.selection;
+    brush.on('start brush end', (event: any) => {
+      const s = event.selection;
       if (s == null) {
         dot.classed('activa', false);
       } else {
@@ -55,8 +55,8 @@ export class ClickToSelectAllComponent implements OnInit {
       .call(brush)
       .call(brush.move, [3, 5].map(x))
       .selectAll('.overlay')
-      .on('mousedown touchstart', function() { // Recenter before brushing.
-        d3.event.stopImmediatePropagation();
+      .on('mousedown touchstart', function(event: any) { // Recenter before brushing.
+        event.stopImmediatePropagation();
         // tslint:disable-next-line:no-shadowed-variable
         // @ts-ignore
         d3.select(this.parentNode).transition().call(brush.move, x.range());

@@ -277,27 +277,27 @@ module.exports = function(d3_svg_line, d3_svg_area, d3_line_interpolate, d3_sele
     interaction: {
       mousedispatch: function(dispatch) {
         return function(selection) {
-          return selection.on('mouseenter', function(d) {
+          return selection.on('mouseenter', function(event, d) {
             d3_select(this.parentNode).classed('mouseover', true);
             dispatch.call('mouseenter', this, d);
           })
-          .on('mouseleave', function(d) {
+          .on('mouseleave', function(event, d) {
             var parentElement = d3_select(this.parentNode);
             if(!parentElement.classed('dragging')) {
               parentElement.classed('mouseover', false);
               dispatch.call('mouseout', this, d);
             }
           })
-          .on('mousemove', function(d) { dispatch.call('mousemove', this, d); });
+          .on('mousemove', function(event, d) { dispatch.call('mousemove', this, d); });
         };
       },
 
       dragStartEndDispatch: function(drag, dispatch) {
-        return drag.on('start', function(d) {
+        return drag.on('start', function(event, d) {
           d3_select(this.parentNode.parentNode).classed('dragging', true);
           dispatch.call('dragstart', this, d);
         })
-        .on('end', function(d) {
+        .on('end', function(event, d) {
           d3_select(this.parentNode.parentNode).classed('dragging', false);
           dispatch.call('dragend', this, d);
         });

@@ -55,12 +55,12 @@ export class D3tcZoomingComponent implements OnInit {
     }
 
     let zoomableInit: any;
-    function zoomed() {
-      const rescaledY = d3.event.transform.rescaleY(y);
+    function zoomed(event: any) {
+      const rescaledY = event.transform.rescaleY(y);
       yAxis.scale(rescaledY);
       candlestick.yScale(rescaledY);
       // Emulates D3 behaviour, required for financetime due to secondary zoomable scale
-      x.zoomable().domain(d3.event.transform.rescaleX(zoomableInit).domain());
+      x.zoomable().domain(event.transform.rescaleX(zoomableInit).domain());
       draw();
     }
 

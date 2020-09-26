@@ -971,31 +971,31 @@ export class OhlcvChartComponent implements OnChanges {
 
     const setCurrentSelection = (x: any) => { this.currentSelection = x; };
 
-    function brushed(): void {
+    function brushed(event: any): void {
       const zoomable = timePane.timeScale.zoomable();
       const zoomableNav = navPane.timeScale.zoomable();
       zoomable.domain(zoomableNav.domain());
-      if (!d3.event.selection) {
+      if (!event.selection) {
         setCurrentSelection(null);
         draw();
       } else {
-        setCurrentSelection(d3.event.selection);
-        zoomable.domain(d3.event.selection.map(zoomable.invert));
+        setCurrentSelection(event.selection);
+        zoomable.domain(event.selection.map(zoomable.invert));
         if (!smoothBrushing) {
           draw();
         }
       }
     }
 
-    function brushing(): void {
-      if (d3.event.selection) {
-        const sel = d3.event.selection;
+    function brushing(event: any): void {
+      if (event.selection) {
+        const sel = event.selection;
         if (sel[1] - sel[0] > minSelection) {
           // setCurrentSelection(sel);
           const zoomable = timePane.timeScale.zoomable();
           const zoomableNav = navPane.timeScale.zoomable();
           zoomable.domain(zoomableNav.domain());
-          zoomable.domain(d3.event.selection.map(zoomable.invert));
+          zoomable.domain(event.selection.map(zoomable.invert));
           draw();
         }
       }

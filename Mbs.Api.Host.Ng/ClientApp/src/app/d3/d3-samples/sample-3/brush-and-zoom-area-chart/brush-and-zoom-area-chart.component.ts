@@ -4,6 +4,8 @@ import * as d3 from 'd3';
 import { D3DatePrice } from '../../data/d3-date-price';
 import { d3Sp500 } from '../../data/d3-sp500';
 
+// https://observablehq.com/@d3/focus-context
+
 @Component({
   selector: 'd3-sample-brush-and-zoom-area-chart',
   templateUrl: './brush-and-zoom-area-chart.component.html',
@@ -100,28 +102,26 @@ export class BrushAndZoomAreaChartComponent implements OnInit {
       .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')').call(zoom);
     // data end ----------------------------------
 
-    brush.on('brush end', () => {
-      if (d3.event.sourceEvent && d3.event.sourceEvent.type === 'zoom') {
-        return; // ignore brush-by-zoom
-      }
-      const s = d3.event.selection || x2.range();
-      x.domain(s.map(x2.invert, x2));
-      focus.select('.area').attr('d', area);
-      focus.select('.axis--x').call(xAxis);
-      svg.select('.zoom').call(zoom.transform, d3.zoomIdentity
-        .scale(width / (s[1] - s[0]))
-        .translate(-s[0], 0));
+    brush.on('brush end', (event: any) => {
+      if (event.type === 'brush') {
+        const s = event.selection || x2.range();
+        x.domain(s.map(x2.invert, x2));
+        focus.select('.area').attr('d', area);
+        focus.select('.axis--x').call(xAxis);
+        svg.select('.zoom').call(zoom.transform, d3.zoomIdentity
+          .scale(width / (s[1] - s[0]))
+          .translate(-s[0], 0));
+        }
     });
 
-    zoom.on('zoom', () => {
-      if (d3.event.sourceEvent && d3.event.sourceEvent.type === 'brush') {
-        return; // ignore zoom-by-brush
-      }
-      const t = d3.event.transform;
-      x.domain(t.rescaleX(x2).domain());
-      focus.select('.area').attr('d', area);
-      focus.select('.axis--x').call(xAxis);
-      context.select('.brush').call(brush.move, x.range().map(t.invertX, t));
+    zoom.on('zoom', (event: any) => {
+      if (event.type === 'zoom') {
+        const t = event.transform;
+        x.domain(t.rescaleX(x2).domain());
+        focus.select('.area').attr('d', area);
+        focus.select('.axis--x').call(xAxis);
+        context.select('.brush').call(brush.move, x.range().map(t.invertX, t));
+        }
     });
   }
 }

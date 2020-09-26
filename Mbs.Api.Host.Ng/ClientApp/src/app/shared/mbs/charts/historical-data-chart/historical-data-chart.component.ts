@@ -306,12 +306,12 @@ export class HistoricalDataChartComponent implements OnInit {
     const qv = this.quoteView;
     const rv = this.renderVolume;
     const tek = this.temporalEntityKind;
-    function brushed() {
+    function brushed(event: any) {
       const zoomable = x.zoomable();
       const zoomableNav = xNav.zoomable();
       zoomable.domain(zoomableNav.domain());
-      if (d3.event.selection !== null) {
-        zoomable.domain(d3.event.selection.map(zoomable.invert));
+      if (event.selection !== null) {
+        zoomable.domain(event.selection.map(zoomable.invert));
       }
       draw(sv, tv, qv, rv, tek);
     }

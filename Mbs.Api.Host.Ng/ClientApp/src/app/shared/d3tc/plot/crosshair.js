@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function(d3_select, d3_event, d3_mouse, d3_dispatch, accessor_crosshair, plot, plotMixin) { // Injected dependencies
+module.exports = function(d3_select, d3_pointer, d3_dispatch, accessor_crosshair, plot, plotMixin) { // Injected dependencies
   return function() { // Closure function
     var p = {},  // Container for private, direct access mixed in variables
         dispatcher = d3_dispatch('enter', 'out', 'move'),
@@ -42,10 +42,10 @@ module.exports = function(d3_select, d3_event, d3_mouse, d3_dispatch, accessor_c
         .attr('y', Math.min.apply(null, yRange))
         .attr('height', Math.abs(yRange[yRange.length-1] - yRange[0]))
         .attr('width', Math.abs(xRange[xRange.length-1] - xRange[0]))
-        .on('mouseenter', function() {
+        .on('mouseenter', function(event) {
           dispatcher.call('enter', this);
         })
-        .on('mouseout', function() {
+        .on('mouseout', function(event) {
           dispatcher.call('out', this);
           // Redraw with null values to ensure when we enter again, there is nothing cached when redisplayed
           delete group.node().__coord__;
@@ -61,9 +61,9 @@ module.exports = function(d3_select, d3_event, d3_mouse, d3_dispatch, accessor_c
 
     function mousemoveRefresh(selection, pathVerticalSelection, pathHorizontalSelection,
                               xAnnotationSelection, yAnnotationSelection) {
-      return function() {
+      return function(event) {
         // Cache coordinates past this mouse move
-        selection.node().__coord__ = d3_mouse(this);
+        selection.node().__coord__ = d3_pointer(event);
         refresh(selection, pathVerticalSelection, pathHorizontalSelection, xAnnotationSelection, yAnnotationSelection);
       };
     }

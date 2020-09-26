@@ -211,9 +211,9 @@ export function realTimeChart() {
     var sel;
     var viewport = d3.brushX()
       .extent([[0, 0], [widthNav, heightNav]])
-      .on("brush end", function () {
+      .on("brush end", function (event) {
         // get the current time extent of viewport
-        var extent = d3.event.selection || xNav.range();
+        var extent = event.selection || xNav.range();
         // console.log(extent);
 
         startTimeViewport = xNav.invert(extent[0]);
@@ -235,7 +235,7 @@ export function realTimeChart() {
         // update the x axis of the main chart
         xAxis.scale(x)(xAxisG);
 
-        sel = d3.event.selection || xNav.range();
+        sel = event.selection || xNav.range();
         x.domain(sel.map(xNav.invert, xNav));
 
         // update display

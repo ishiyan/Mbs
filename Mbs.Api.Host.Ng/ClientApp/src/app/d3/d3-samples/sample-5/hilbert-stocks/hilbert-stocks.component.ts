@@ -39,8 +39,8 @@ export class HilbertStocksComponent implements OnInit {
         .style('fill', (d: any, i: any) => dat[i] ? colour(dat[i]) : '#000')
         .attr('x', (d: any) => x(d[0] - .5))
         .attr('y', (d: any) => x(d[1] - .5))
-        .attr('width', x(1) - x(0) + 1)
-        .attr('height', x(1) - x(0) + 1);
+        .attr('width', <number>x(1) - <number>x(0) + 1)
+        .attr('height', <number>x(1) - <number>x(0) + 1);
     };
 
     const level = 12;

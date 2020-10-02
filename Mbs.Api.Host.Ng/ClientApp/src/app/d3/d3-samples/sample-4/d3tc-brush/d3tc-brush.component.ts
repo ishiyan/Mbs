@@ -37,7 +37,7 @@ export class D3tcBrushComponent implements OnInit {
 
     const x = d3tc.scale.financetime().range([0, width]);
     const y = d3.scaleLinear().range([height, 0]);
-    const yVolume = d3.scaleLinear().range([y(0), y(0.3)]);
+    const yVolume = d3.scaleLinear().range([<number>y(0), <number>y(0.3)]);
     const xNav = d3tc.scale.financetime().range([0, width]);
     const yNav = d3.scaleLinear().range([heightNav, 0]);
     const brush = d3.brushX().extent([[0, 0], [width, heightNav]]);
@@ -64,7 +64,7 @@ export class D3tcBrushComponent implements OnInit {
 
     const focus = svg.append('g').attr('class', 'focus').attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
     focus.append('clipPath').attr('id', 'clip')
-      .append('rect').attr('x', 0).attr('y', y(1)).attr('width', width).attr('height', y(0) - y(1));
+      .append('rect').attr('x', 0).attr('y', y(1)).attr('width', width).attr('height', <number>y(0) - <number>y(1));
     focus.append('g').attr('class', 'volume').attr('clip-path', 'url(#clip)');
     focus.append('g').attr('class', 'candlestick').attr('clip-path', 'url(#clip)');
     focus.append('g').attr('class', 'x axis').attr('transform', 'translate(0,' + height + ')');

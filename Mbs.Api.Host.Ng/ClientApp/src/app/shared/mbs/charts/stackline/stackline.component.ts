@@ -280,9 +280,9 @@ export class StacklineComponent implements OnChanges, AfterViewInit {
         const area: any = d3.area()
           .curve(convertInterpolation(interp))
           .defined((d: any) => d.time >= timeMin && d.time <= timeMax)
-          .x((d: any) => xScale(d.time))
-          .y0((d: any) => yScale(d.lower))
-          .y1((d: any) => yScale(d.upper));
+          .x((d: any) => <number>xScale(d.time))
+          .y0((d: any) => <number>yScale(d.lower))
+          .y1((d: any) => <number>yScale(d.upper));
         svg.append('path')
           .datum(dati)
           .attr('fill', cfgi.fillColor)
@@ -292,8 +292,8 @@ export class StacklineComponent implements OnChanges, AfterViewInit {
         const line: any = d3.line()
           .curve(convertInterpolation(interp))
           .defined((d: any) => d.time >= timeMin && d.time <= timeMax)
-          .x((d: any) => xScale(d.time))
-          .y((d: any) => yScale(d.upper));
+          .x((d: any) => <number>xScale(d.time))
+          .y((d: any) => <number>yScale(d.upper));
         svg.append('path')
           .datum(dati)
           .attr('stroke-width', cfgi.strokeWidth)

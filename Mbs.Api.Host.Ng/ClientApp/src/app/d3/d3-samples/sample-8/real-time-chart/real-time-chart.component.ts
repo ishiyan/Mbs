@@ -40,7 +40,7 @@ export class RealTimeChartComponent implements OnInit, OnDestroy {
     const data = d3.range(300).map((d, i, arr) => {
       const val = valueScale(Math.random()); // random data
       // const val = Math.round((d % 60) / 60 * 95); // ramp data
-      const int = Math.round(timeScale(normal()));
+      const int = Math.round(<number>timeScale(normal()));
       currMs += int;
       const t = new Date(currMs);
       return { interval: int, value: val, time: t, ts: currMs };
@@ -62,7 +62,7 @@ export class RealTimeChartComponent implements OnInit, OnDestroy {
     chart.isRunning(true);
     this.chart = chart;
     function dataGenerator() {
-      const timeout = Math.round(timeScale(normal()));
+      const timeout = Math.round(<number>timeScale(normal()));
       setTimeout(() => {
         // create new data item
         const now = new Date();

@@ -272,9 +272,9 @@ export class MultilineComponent implements OnChanges, AfterViewInit {
         const area: any = d3.area()
           .curve(convertInterpolation(interp))
           .defined((d: any) => !isNaN(accessor(d)) && d.time >= timeMin && d.time <= timeMax)
-          .x((d: any) => xScale(d.time))
-          .y0(() => yScale(min))
-          .y1((d: any) => yScale(accessor(d)));
+          .x((d: any) => <number>xScale(d.time))
+          .y0(() => <number>yScale(min))
+          .y1((d: any) => <number>yScale(accessor(d)));
         svg.append('path')
           .datum(dati)
           .attr('fill', cfgi.fillColor)
@@ -284,8 +284,8 @@ export class MultilineComponent implements OnChanges, AfterViewInit {
         const line: any = d3.line()
           .curve(convertInterpolation(interp))
           .defined((d: any) => !isNaN(accessor(d)) && d.time >= timeMin && d.time <= timeMax)
-          .x((d: any) => xScale(d.time))
-          .y((d: any) => yScale(accessor(d)));
+          .x((d: any) => <number>xScale(d.time))
+          .y((d: any) => <number>yScale(accessor(d)));
         svg.append('path')
           .datum(dati)
           .attr('stroke-width', cfgi.strokeWidth)

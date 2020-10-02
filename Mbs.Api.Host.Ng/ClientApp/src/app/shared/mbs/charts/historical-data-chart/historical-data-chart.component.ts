@@ -217,12 +217,12 @@ export class HistoricalDataChartComponent implements OnInit {
 
     const focus = svg.append('g').attr('class', 'focus').attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
     focus.append('clipPath').attr('id', 'clip')
-      .append('rect').attr('x', 0).attr('y', y(1)).attr('width', width).attr('height', y(0) - y(1));
+      .append('rect').attr('x', 0).attr('y', y(1)).attr('width', width).attr('height', <number>y(0) - <number>y(1));
 
     let yVolume: d3.ScaleLinear<number, number>;
     let volume: any;
     if (this.renderVolume) {
-      yVolume = d3.scaleLinear().range([y(0), y(0.3)]);
+      yVolume = d3.scaleLinear().range([<number>y(0), <number>y(0.3)]);
       volume = d3ts.plot.volume().xScale(x).yScale(yVolume);
       focus.append('g').attr('class', 'volume').attr('clip-path', 'url(#clip)');
     }

@@ -103,9 +103,9 @@ export class SparklineComponent implements OnChanges, AfterViewInit {
         .curve(convertInterpolation(interp))
         .defined((d: any) => !isNaN(getY(d)))
         // .x((d: any, i: number) => xScale(i))
-        .x((d: any, i: number) => xScale(d.time))
-        .y0((d: any) => yScale(min))
-        .y1((d: any) => yScale(getY(d)));
+        .x((d: any, i: number) => <number>xScale(d.time))
+        .y0((d: any) => <number>yScale(min))
+        .y1((d: any) => <number>yScale(getY(d)));
       svg.append('path')
         .attr('fill', cfg.fillColor)
         .attr('d', area);
@@ -115,8 +115,8 @@ export class SparklineComponent implements OnChanges, AfterViewInit {
         .curve(convertInterpolation(interp))
         .defined((d: any) => !isNaN(getY(d)))
         // .x((d: any, i: number) => xScale(i))
-        .x((d: any, i: number) => xScale(d.time))
-        .y((d: any) => yScale(getY(d)));
+        .x((d: any, i: number) => <number>xScale(d.time))
+        .y((d: any) => <number>yScale(getY(d)));
       svg.append('path')
         .attr('stroke-width', cfg.strokeWidth)
         .attr('stroke', cfg.strokeColor)

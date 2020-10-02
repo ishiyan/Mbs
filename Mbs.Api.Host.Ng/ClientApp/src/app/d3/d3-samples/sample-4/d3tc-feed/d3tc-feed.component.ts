@@ -31,7 +31,7 @@ export class D3tcFeedComponent implements OnInit {
 
     const x = d3tc.scale.financetime().range([0, width]);
     const y = d3.scaleLinear().range([height, 0]);
-    const yVolume = d3.scaleLinear().range([y(0), y(0.2)]);
+    const yVolume = d3.scaleLinear().range([<number>y(0), <number>y(0.2)]);
     const ohlc = d3tc.plot.ohlc().xScale(x).yScale(y);
     const accessor = ohlc.accessor();
     // Set the accessor to a ohlc accessor so we get highlighted bars.

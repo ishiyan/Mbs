@@ -56,7 +56,9 @@ https://docs.microsoft.com/en-us/aspnet/core/tutorials/dotnet-watch?view=aspnetc
 10. https://github.com/angular/zone.js/blob/master/CHANGELOG.md
 11. https://github.com/Microsoft/tslib/releases
 12. https://github.com/zloirock/core-js/blob/master/CHANGELOG.md
-13. 
+13. https://github.com/Kcnarf/d3-voronoi-treemap/releases
+14. https://github.com/Kcnarf/d3-voronoi-map/releases
+15. 
 
 # MathJax in CLI project
 1. Create a new project

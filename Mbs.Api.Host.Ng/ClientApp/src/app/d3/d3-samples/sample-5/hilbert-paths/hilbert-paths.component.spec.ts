@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { HilbertPathsComponent } from './hilbert-paths.component';
 
@@ -6,7 +6,7 @@ describe('HilbertPathsComponent', () => {
   let component: HilbertPathsComponent;
   let fixture: ComponentFixture<HilbertPathsComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ HilbertPathsComponent ]
     })

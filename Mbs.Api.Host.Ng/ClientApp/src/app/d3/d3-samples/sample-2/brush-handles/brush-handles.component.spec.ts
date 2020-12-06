@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { BrushHandlesComponent } from './brush-handles.component';
 
@@ -6,7 +6,7 @@ describe('BrushHandlesComponent', () => {
   let component: BrushHandlesComponent;
   let fixture: ComponentFixture<BrushHandlesComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ BrushHandlesComponent ]
     })

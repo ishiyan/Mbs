@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ClickToRecenterBrushComponent } from './click-to-recenter-brush.component';
 
@@ -6,7 +6,7 @@ describe('ClickToRecenterBrushComponent', () => {
   let component: ClickToRecenterBrushComponent;
   let fixture: ComponentFixture<ClickToRecenterBrushComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ClickToRecenterBrushComponent ]
     })

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { TexListComponent } from './tex-list.component';
 
@@ -6,7 +6,7 @@ describe('TexEditorComponent', () => {
   let component: TexListComponent;
   let fixture: ComponentFixture<TexListComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ TexListComponent ]
     })

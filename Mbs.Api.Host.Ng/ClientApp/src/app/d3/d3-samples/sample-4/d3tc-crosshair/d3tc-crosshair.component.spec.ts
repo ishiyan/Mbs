@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { D3tcCrosshairComponent } from './d3tc-crosshair.component';
 
@@ -6,7 +6,7 @@ describe('D3tcCrosshairComponent', () => {
   let component: D3tcCrosshairComponent;
   let fixture: ComponentFixture<D3tcCrosshairComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ D3tcCrosshairComponent ]
     })

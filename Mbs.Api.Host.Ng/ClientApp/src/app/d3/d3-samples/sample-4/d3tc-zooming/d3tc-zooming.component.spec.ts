@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { D3tcZoomingComponent } from './d3tc-zooming.component';
 
@@ -6,7 +6,7 @@ describe('D3tcZoomingComponent', () => {
   let component: D3tcZoomingComponent;
   let fixture: ComponentFixture<D3tcZoomingComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ D3tcZoomingComponent ]
     })

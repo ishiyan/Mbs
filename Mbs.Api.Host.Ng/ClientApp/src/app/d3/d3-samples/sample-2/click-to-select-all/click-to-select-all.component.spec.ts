@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ClickToSelectAllComponent } from './click-to-select-all.component';
 
@@ -6,7 +6,7 @@ describe('ClickToSelectAllComponent', () => {
   let component: ClickToSelectAllComponent;
   let fixture: ComponentFixture<ClickToSelectAllComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ClickToSelectAllComponent ]
     })

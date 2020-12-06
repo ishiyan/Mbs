@@ -1,9 +1,9 @@
-import {async, TestBed} from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import {ThemePickerComponent} from './theme-picker.component';
 import {ThemePickerModule} from './theme-picker.module';
 
 describe('ThemePickerComponent', () => {
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ThemePickerModule],
     }).compileComponents();

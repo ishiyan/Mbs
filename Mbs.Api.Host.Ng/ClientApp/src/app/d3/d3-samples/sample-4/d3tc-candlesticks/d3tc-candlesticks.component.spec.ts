@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { D3tcCandlesticksComponent } from './d3tc-candlesticks.component';
 
@@ -6,7 +6,7 @@ describe('D3tcCandlesticksComponent', () => {
   let component: D3tcCandlesticksComponent;
   let fixture: ComponentFixture<D3tcCandlesticksComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ D3tcCandlesticksComponent ]
     })

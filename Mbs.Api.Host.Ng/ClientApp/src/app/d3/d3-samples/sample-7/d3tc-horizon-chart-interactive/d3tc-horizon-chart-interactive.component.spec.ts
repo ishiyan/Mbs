@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { D3tcHorizonChartInteractiveComponent } from './d3tc-horizon-chart-interactive.component';
 
@@ -6,7 +6,7 @@ describe('D3tcHorizonChartDemoComponent', () => {
   let component: D3tcHorizonChartInteractiveComponent;
   let fixture: ComponentFixture<D3tcHorizonChartInteractiveComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ D3tcHorizonChartInteractiveComponent ]
     })

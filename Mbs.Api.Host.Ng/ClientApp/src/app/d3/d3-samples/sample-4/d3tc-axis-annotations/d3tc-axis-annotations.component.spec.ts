@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { D3tcAxisAnnotationsComponent } from './d3tc-axis-annotations.component';
 
@@ -6,7 +6,7 @@ describe('D3tcAxisAnnotationsComponent', () => {
   let component: D3tcAxisAnnotationsComponent;
   let fixture: ComponentFixture<D3tcAxisAnnotationsComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ D3tcAxisAnnotationsComponent ]
     })

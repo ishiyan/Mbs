@@ -76,9 +76,9 @@ const smoothBrushing = false;
 export class OhlcvChartComponent implements OnChanges {
   private config: Template.Configuration;
   private currentSelection: any = null;
-  private renderVolume = this.config ? this.config.volumeInPricePane : true;
-  private renderCrosshair = this.config ? this.config.crosshair : true;
-  private ohlcvView: number = (this.config && !this.config.ohlcv.candlesticks) ? ohlcvViewBars : ohlcvViewCandlesticks;
+  private renderVolume: boolean;
+  private renderCrosshair: boolean;
+  private ohlcvView: number;
   public readonly ohlcvViewCandlesticks = ohlcvViewCandlesticks;
   public readonly ohlcvViewBars = ohlcvViewBars;
   @ViewChild('container', { static: true }) container: ElementRef;
@@ -921,6 +921,10 @@ export class OhlcvChartComponent implements OnChanges {
       sanitizer.bypassSecurityTrustResourceUrl('assets/img/mb-candlesticks.svg'));
     iconRegistry.addSvgIcon('mb-bars',
       sanitizer.bypassSecurityTrustResourceUrl('assets/img/mb-bars.svg'));
+
+    this.renderVolume = this.config ? this.config.volumeInPricePane : true;
+    this.renderCrosshair = this.config ? this.config.crosshair : true;
+    this.ohlcvView = (this.config && !this.config.ohlcv.candlesticks) ? ohlcvViewBars : ohlcvViewCandlesticks;
   }
 
   public downloadSvg(): void {

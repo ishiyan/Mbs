@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { D3tcMultipleSmallPlotsComponent } from './d3tc-multiple-small-plots.component';
 
@@ -6,7 +6,7 @@ describe('D3tcMultipleSmallPlotsComponent', () => {
   let component: D3tcMultipleSmallPlotsComponent;
   let fixture: ComponentFixture<D3tcMultipleSmallPlotsComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ D3tcMultipleSmallPlotsComponent ]
     })

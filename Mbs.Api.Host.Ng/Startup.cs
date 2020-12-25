@@ -85,7 +85,6 @@ namespace Mbs.Api.Host.Ng
                 app.UseMbsApiSwagger();
             }
 
-            /* app.UseAngularRouting() */
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
             app.UseRouting();
@@ -94,6 +93,7 @@ namespace Mbs.Api.Host.Ng
                 endpoints.MapControllerRoute("default", "{controller}/{action=Index}/{id?}");
             });
 
+#pragma warning disable S1075 // URIs should not be hardcoded
             app.UseSpa(spa =>
             {
                 // See https://go.microsoft.com/fwlink/?linkid=864501
@@ -105,6 +105,7 @@ namespace Mbs.Api.Host.Ng
 
                     // When you want to launch the application: cd ClientApp; ng serve; cd ..; dotnet run
                     // spa.UseProxyToSpaDevelopmentServer("http://localhost:4200")
+                    spa.UseProxyToSpaDevelopmentServer("http://localhost:5000");
                 }
             });
         }

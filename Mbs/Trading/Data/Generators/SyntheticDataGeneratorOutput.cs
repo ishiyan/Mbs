@@ -22,13 +22,11 @@ namespace Mbs.Trading.Data.Generators
         [Required(ErrorMessage = ErrorMessages.FieldIsRequired, AllowEmptyStrings = false)]
         public string Moniker { get; set; }
 
-#pragma warning disable CA1819 // Properties should not return arrays
         /// <summary>
         /// Gets or sets the generated data.
         /// </summary>
         [Required(ErrorMessage = ErrorMessages.FieldIsRequired, AllowEmptyStrings = false)]
         public T[] Data { get; set; }
-#pragma warning restore CA1819 // Properties should not return arrays
 
         /// <inheritdoc />
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

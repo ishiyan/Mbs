@@ -1,4 +1,4 @@
-namespace Mbs
+namespace Mbs.Utilities
 {
     /// <summary>
     /// Error messages used in parameter validation.

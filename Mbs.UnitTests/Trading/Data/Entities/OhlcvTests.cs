@@ -2,7 +2,7 @@
 using Mbs.Trading.Data;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Mbs.UnitTests.Trading.Data
+namespace Mbs.UnitTests.Trading.Data.Entities
 {
     [TestClass]
     public class OhlcvTests
@@ -22,12 +22,6 @@ namespace Mbs.UnitTests.Trading.Data
         private static readonly DateTime LesserDateTime = new DateTime(2009, 4, 4, 11, 3, 5);
         private static readonly DateTime GreaterDateTime = new DateTime(2099, 5, 5, 12, 4, 6);
 
-        private static Ohlcv CreateDefaultInstance()
-        {
-            return new Ohlcv(DefaultDateTime, DefaultOpen, DefaultHigh, DefaultLow, DefaultClose, DefaultVolume);
-        }
-
-        // ReSharper disable InconsistentNaming
         [TestMethod]
         public void Ohlcv_Open_CorrectValue()
         {
@@ -410,11 +404,11 @@ namespace Mbs.UnitTests.Trading.Data
         [TestMethod]
         public void Ohlcv_Aggregate_Ohlcv_CorrectResult()
         {
-            const double NewOpen = DefaultOpen + 1d;
-            const double NewHigh = DefaultHigh + 1d;
-            const double NewLow = DefaultLow + 1d;
-            const double NewClose = DefaultClose + 1d;
-            const double NewVolume = DefaultVolume + 1d;
+            const double newOpen = DefaultOpen + 1d;
+            const double newHigh = DefaultHigh + 1d;
+            const double newLow = DefaultLow + 1d;
+            const double newClose = DefaultClose + 1d;
+            const double newVolume = DefaultVolume + 1d;
 
             var target = new Ohlcv(LesserDateTime);
             var other = CreateDefaultInstance();
@@ -427,26 +421,26 @@ namespace Mbs.UnitTests.Trading.Data
             Assert.AreEqual(other.Close, target.Close);
             Assert.AreEqual(other.Volume, target.Volume);
 
-            other = new Ohlcv(GreaterDateTime, NewOpen, NewHigh, NewLow, NewClose, NewVolume);
+            other = new Ohlcv(GreaterDateTime, newOpen, newHigh, newLow, newClose, newVolume);
             target.Aggregate(other);
             Assert.AreEqual(other.Time, target.Time);
             Assert.AreEqual(DefaultOpen, target.Open);
-            Assert.AreEqual(NewHigh, target.High);
+            Assert.AreEqual(newHigh, target.High);
             Assert.AreEqual(DefaultLow, target.Low);
-            Assert.AreEqual(NewClose, target.Close);
-            Assert.AreEqual(DefaultVolume + NewVolume, target.Volume);
+            Assert.AreEqual(newClose, target.Close);
+            Assert.AreEqual(DefaultVolume + newVolume, target.Volume);
         }
 
         [TestMethod]
         public void Ohlcv_Aggregate_Trade_CorrectResult()
         {
-            const double OldPrice = DefaultClose;
-            const double NewPrice = OldPrice + 1d;
-            const double OldVolume = DefaultVolume;
-            const double NewVolume = OldVolume + 1d;
+            const double oldPrice = DefaultClose;
+            const double newPrice = oldPrice + 1d;
+            const double oldVolume = DefaultVolume;
+            const double newVolume = oldVolume + 1d;
 
             var target = new Ohlcv(LesserDateTime);
-            var other = new Trade(DefaultDateTime, OldPrice, OldVolume);
+            var other = new Trade(DefaultDateTime, oldPrice, oldVolume);
 
             target.Aggregate(other);
             Assert.AreEqual(other.Time, target.Time);
@@ -456,24 +450,24 @@ namespace Mbs.UnitTests.Trading.Data
             Assert.AreEqual(other.Price, target.Close);
             Assert.AreEqual(other.Volume, target.Volume);
 
-            other = new Trade(GreaterDateTime, NewPrice, NewVolume);
+            other = new Trade(GreaterDateTime, newPrice, newVolume);
             target.Aggregate(other);
             Assert.AreEqual(other.Time, target.Time);
-            Assert.AreEqual(OldPrice, target.Open);
-            Assert.AreEqual(NewPrice, target.High);
-            Assert.AreEqual(OldPrice, target.Low);
-            Assert.AreEqual(NewPrice, target.Close);
-            Assert.AreEqual(OldVolume + NewVolume, target.Volume);
+            Assert.AreEqual(oldPrice, target.Open);
+            Assert.AreEqual(newPrice, target.High);
+            Assert.AreEqual(oldPrice, target.Low);
+            Assert.AreEqual(newPrice, target.Close);
+            Assert.AreEqual(oldVolume + newVolume, target.Volume);
         }
 
         [TestMethod]
         public void Ohlcv_Aggregate_Scalar_CorrectResult()
         {
-            const double OldValue = DefaultClose;
-            const double NewValue = OldValue + 1d;
+            const double oldValue = DefaultClose;
+            const double newValue = oldValue + 1d;
 
             var target = new Ohlcv(LesserDateTime);
-            var other = new Scalar(DefaultDateTime, OldValue);
+            var other = new Scalar(DefaultDateTime, oldValue);
 
             target.Aggregate(other);
             Assert.AreEqual(other.Time, target.Time);
@@ -483,13 +477,13 @@ namespace Mbs.UnitTests.Trading.Data
             Assert.AreEqual(other.Value, target.Close);
             Assert.IsTrue(double.IsNaN(target.Volume));
 
-            other = new Scalar(GreaterDateTime, NewValue);
+            other = new Scalar(GreaterDateTime, newValue);
             target.Aggregate(other);
             Assert.AreEqual(other.Time, target.Time);
-            Assert.AreEqual(OldValue, target.Open);
-            Assert.AreEqual(NewValue, target.High);
-            Assert.AreEqual(OldValue, target.Low);
-            Assert.AreEqual(NewValue, target.Close);
+            Assert.AreEqual(oldValue, target.Open);
+            Assert.AreEqual(newValue, target.High);
+            Assert.AreEqual(oldValue, target.Low);
+            Assert.AreEqual(newValue, target.Close);
             Assert.IsTrue(double.IsNaN(target.Volume));
         }
 
@@ -517,6 +511,11 @@ namespace Mbs.UnitTests.Trading.Data
             Assert.IsTrue(double.IsNaN(target.Low));
             Assert.IsTrue(double.IsNaN(target.Close));
             Assert.IsTrue(double.IsNaN(target.Volume));
+        }
+
+        private static Ohlcv CreateDefaultInstance()
+        {
+            return new Ohlcv(DefaultDateTime, DefaultOpen, DefaultHigh, DefaultLow, DefaultClose, DefaultVolume);
         }
     }
 }

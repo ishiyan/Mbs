@@ -1,16 +1,15 @@
-﻿// ReSharper disable once CheckNamespace
-namespace Mbs.Numerics.Random
+﻿namespace Mbs.Numerics.RandomGenerators.Well
 {
     /// <summary>
-    /// The Well19937c pseudo-random number generator as described in a paper by François Panneton, Pierre L'Ecuyer and Makoto Matsumoto.
+    /// The Well19937c pseudo-random number generator as described in a paper by François Panneton, Pierre L'Ecuyer and Makoto Matsumoto:
     /// <para />
-    /// http://www.iro.umontreal.ca/~lecuyer/myftp/papers/wellrng.pdf
+    /// http://www.iro.umontreal.ca/~lecuyer/myftp/papers/wellrng.pdf.
     /// <para />
     /// Improved Long-Period Generators Based on Linear Recurrences Modulo 2, ACM Transactions on Mathematical Software, 32, 1 (2006).
     /// <para />
-    /// The errata for the paper are in
+    /// The errata for the paper are in:
     /// <para />
-    /// http://www.iro.umontreal.ca/~lecuyer/myftp/papers/wellrng-errata.txt
+    /// http://www.iro.umontreal.ca/~lecuyer/myftp/papers/wellrng-errata.txt.
     /// <para />
     /// See also http://www.iro.umontreal.ca/~panneton/WELLRNG.html.
     /// </summary>
@@ -97,8 +96,8 @@ namespace Mbs.Numerics.Random
             Index = indexRm1;
 
             // Add Matsumoto-Kurita tempering to get a maximally-equidistributed generator.
-            z4 ^= ((z4 << 7) & 0xe46e1700U);
-            z4 ^= ((z4 << 15) & 0x9b868000U);
+            z4 ^= (z4 << 7) & 0xe46e1700U;
+            z4 ^= (z4 << 15) & 0x9b868000U;
 
             return z4;
         }

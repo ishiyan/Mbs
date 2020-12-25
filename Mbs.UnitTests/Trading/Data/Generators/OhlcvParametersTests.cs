@@ -11,8 +11,6 @@ namespace Mbs.UnitTests.Trading.Data.Generators
     [TestClass]
     public class OhlcvParametersTests
     {
-        // ReSharper disable InconsistentNaming
-
         [TestMethod]
         [ExpectedException(typeof(ValidationException))]
         public void OhlcvParameters_Validate_CandlestickBodyFractionGreaterThanCandlestickShadowFraction_Exception()
@@ -20,7 +18,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
             var parameters = new OhlcvParameters
             {
                 CandlestickShadowFraction = DefaultParameterValues.CandlestickBodyFraction,
-                CandlestickBodyFraction = DefaultParameterValues.CandlestickShadowFraction
+                CandlestickBodyFraction = DefaultParameterValues.CandlestickShadowFraction,
             };
 
             var context = new ValidationContext(parameters);
@@ -33,7 +31,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
             var parameters = new OhlcvParameters
             {
                 CandlestickShadowFraction = DefaultParameterValues.CandlestickBodyFraction,
-                CandlestickBodyFraction = DefaultParameterValues.CandlestickShadowFraction
+                CandlestickBodyFraction = DefaultParameterValues.CandlestickShadowFraction,
             };
 
             string expectedMessage =
@@ -69,7 +67,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
         {
             var parameters = new OhlcvParameters
             {
-                CandlestickShadowFraction = 1.1
+                CandlestickShadowFraction = 1.1,
             };
 
             var context = new ValidationContext(parameters);
@@ -81,7 +79,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
         {
             var parameters = new OhlcvParameters
             {
-                CandlestickShadowFraction = 1.1
+                CandlestickShadowFraction = 1.1,
             };
 
             var expectedMessage = string.Format(
@@ -104,7 +102,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
         {
             var parameters = new OhlcvParameters
             {
-                CandlestickBodyFraction = -0.1
+                CandlestickBodyFraction = -0.1,
             };
 
             var context = new ValidationContext(parameters);
@@ -116,7 +114,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
         {
             var parameters = new OhlcvParameters
             {
-                CandlestickBodyFraction = -0.1
+                CandlestickBodyFraction = -0.1,
             };
 
             var expectedMessage = string.Format(
@@ -139,7 +137,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
         {
             var parameters = new OhlcvParameters
             {
-                Volume = -11
+                Volume = -11,
             };
 
             var context = new ValidationContext(parameters);
@@ -151,7 +149,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
         {
             var parameters = new OhlcvParameters
             {
-                Volume = -0.01
+                Volume = -0.01,
             };
 
             var expectedMessage = string.Format(
@@ -189,7 +187,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
             {
                 CandlestickShadowFraction = candlestickShadowFraction,
                 CandlestickBodyFraction = candlestickBodyFraction,
-                Volume = volume
+                Volume = volume,
             };
 
             Assert.AreEqual(candlestickShadowFraction, parameters.CandlestickShadowFraction, "candlestick shadow fraction");
@@ -200,7 +198,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
         [TestMethod]
         public void OhlcvParameters_DeserializeFromJson_ValidInput_CorrectValidationResults()
         {
-            var json = @"{
+            const string json = @"{
 candlestickShadowFraction: 0.3,
 candlestickBodyFraction: 0.2,
 volume: 100

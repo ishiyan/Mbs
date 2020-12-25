@@ -1,4 +1,6 @@
-﻿namespace Mbs.Trading.Markets
+﻿// ReSharper disable CommentTypo
+// ReSharper disable IdentifierTypo
+namespace Mbs.Trading.Markets
 {
     /// <summary>
     /// NYSE Euronext (http://www.euronext.com) exchanges MIC helper.
@@ -75,8 +77,10 @@
 
         /// <summary>EURONEXT - EURONEXT AMSTERDAM</summary>
         Xams,
+
         /// <summary>EURONEXT - ALTERNEXT AMSTERDAM</summary>
         Alxa,
+
         /// <summary>EURONEXT - TRADED BUT NOT LISTED AMSTERDAM</summary>
         Tnla,
 
@@ -99,6 +103,6 @@
         Ensy,
 
         /// <summary>EURONEXT OTHER OR UNKNOWN</summary>
-        Xxxx
+        Xxxx,
     }
 }

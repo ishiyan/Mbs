@@ -14,18 +14,18 @@ namespace Mbs.Trading.Indicators.Abstractions
         /// <returns>A short string.</returns>
         public static string ToShortString(this OhlcvComponent component)
         {
-            switch (component)
+            return component switch
             {
-                case OhlcvComponent.OpeningPrice: return "o";
-                case OhlcvComponent.HighestPrice: return "h";
-                case OhlcvComponent.LowestPrice: return "l";
-                case OhlcvComponent.ClosingPrice: return "c";
-                case OhlcvComponent.TypicalPrice: return "t";
-                case OhlcvComponent.MedianPrice: return "m";
-                case OhlcvComponent.WeightedPrice: return "w";
-                case OhlcvComponent.Volume: return "v";
-                default: return "?";
-            }
+                OhlcvComponent.OpeningPrice => "o",
+                OhlcvComponent.HighestPrice => "h",
+                OhlcvComponent.LowestPrice => "l",
+                OhlcvComponent.ClosingPrice => "c",
+                OhlcvComponent.TypicalPrice => "t",
+                OhlcvComponent.MedianPrice => "m",
+                OhlcvComponent.WeightedPrice => "w",
+                OhlcvComponent.Volume => "v",
+                _ => "?"
+            };
         }
     }
 }

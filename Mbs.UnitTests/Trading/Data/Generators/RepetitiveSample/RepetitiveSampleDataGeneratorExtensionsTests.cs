@@ -7,8 +7,6 @@ namespace Mbs.UnitTests.Trading.Data.Generators.RepetitiveSample
     [TestClass]
     public class RepetitiveSampleDataGeneratorExtensionsTests
     {
-        // ReSharper disable InconsistentNaming
-
         [TestMethod]
         public async Task RepetitiveSampleDataGeneratorExtensions_GenerateAsync_Ohlcv_CorrectLength()
         {

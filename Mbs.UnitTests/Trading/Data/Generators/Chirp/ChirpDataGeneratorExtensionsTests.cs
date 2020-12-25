@@ -7,8 +7,6 @@ namespace Mbs.UnitTests.Trading.Data.Generators.Chirp
     [TestClass]
     public class ChirpDataGeneratorExtensionsTests
     {
-        // ReSharper disable InconsistentNaming
-
         [TestMethod]
         public async Task ChirpDataGeneratorExtensions_GenerateAsync_Ohlcv_CorrectLength()
         {

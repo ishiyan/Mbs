@@ -23,8 +23,11 @@ namespace Mbs.Trading.Data
         internal static IEnumerable<T> Range<T>(this List<T> list, DateTime startTime, DateTime endTime)
             where T : TemporalEntity
         {
-            if (null == list || 0 == list.Count)
+            if (list == null || list.Count == 0)
+            {
                 yield break;
+            }
+
             bool checkBeginTime = startTime.IsNotZero(), checkEndTime = endTime.IsNotZero();
             if (checkBeginTime || checkEndTime)
             {
@@ -32,24 +35,32 @@ namespace Mbs.Trading.Data
                 if (checkBeginTime)
                 {
                     index = list.FindIndex(t => t.Time >= startTime);
-                    if (0 <= index)
+                    if (index >= 0)
+                    {
                         firstIndex = index;
+                    }
                 }
 
                 if (checkEndTime)
                 {
                     index = list.FindLastIndex(t => t.Time <= endTime);
-                    if (0 <= index)
+                    if (index >= 0)
+                    {
                         lastIndex = index;
+                    }
                 }
 
                 for (index = firstIndex; index <= lastIndex; index++)
+                {
                     yield return list[index];
+                }
             }
             else
             {
                 foreach (T t in list)
+                {
                     yield return t;
+                }
             }
         }
 
@@ -131,93 +142,6 @@ namespace Mbs.Trading.Data
             return AggregateDays(list, startTime, endTime, count, EuronextTradingDayBinThreshold);
         }
 
-        private static IEnumerable<Ohlcv> AggregateDays(List<Ohlcv> list, DateTime startTime, DateTime endTime, int count, Func<TemporalEntity, int, DateTime> thresholdDateTime)
-        {
-            Ohlcv ohlcv = null;
-            var dateTime = new DateTime(0L);
-            int index, firstIndex = 0, lastIndex = list.Count - 1;
-            if (startTime.IsNotZero())
-            {
-                index = list.FindIndex(o => o.Time >= startTime);
-                if (0 <= index)
-                    firstIndex = index;
-            }
-
-            if (endTime.IsNotZero())
-            {
-                index = list.FindLastIndex(o => o.Time <= endTime);
-                if (0 <= index)
-                    lastIndex = index;
-            }
-
-            for (index = firstIndex; index <= lastIndex; index++)
-            {
-                Ohlcv currentOhlcv = list[index];
-                if (dateTime > currentOhlcv.Time)
-                {
-                    if (null != ohlcv)
-                        ohlcv.Aggregate(currentOhlcv);
-                    else
-                        ohlcv = currentOhlcv.CloneAggregation();
-                }
-                else
-                {
-                    if (null != ohlcv)
-                    {
-                        // ohlcv.Time = dateTime;
-                        yield return ohlcv;
-                    }
-
-                    ohlcv = currentOhlcv.CloneAggregation();
-                    dateTime = thresholdDateTime(currentOhlcv, count);
-                }
-            }
-
-            if (null != ohlcv)
-                yield return ohlcv;
-        }
-
-        private static IEnumerable<Scalar> AggregateDays(List<Scalar> list, DateTime startTime, DateTime endTime, int count, Func<TemporalEntity, int, DateTime> thresholdDateTime)
-        {
-            var aggregator = new ScalarAggregator();
-            var dateTime = new DateTime(0L);
-            int index, firstIndex = 0, lastIndex = list.Count - 1;
-            if (startTime.IsNotZero())
-            {
-                index = list.FindIndex(o => o.Time >= startTime);
-                if (0 <= index)
-                    firstIndex = index;
-            }
-
-            if (endTime.IsNotZero())
-            {
-                index = list.FindLastIndex(o => o.Time <= endTime);
-                if (0 <= index)
-                    lastIndex = index;
-            }
-
-            for (index = firstIndex; index <= lastIndex; index++)
-            {
-                Scalar scalar = list[index];
-                if (dateTime > scalar.Time)
-                {
-                    aggregator.Aggregate(scalar);
-                }
-                else
-                {
-                    if (!aggregator.IsEmpty)
-                    {
-                        yield return aggregator.Emit(/*dateTime*/);
-                    }
-
-                    dateTime = thresholdDateTime(scalar, count);
-                }
-            }
-
-            if (!aggregator.IsEmpty)
-                yield return aggregator.Emit();
-        }
-
         /// <summary>
         /// Aggregates a range of a one-week ohlcv list and converts it to a multi-week enumerable.
         /// </summary>
@@ -234,15 +158,19 @@ namespace Mbs.Trading.Data
             if (startTime.IsNotZero())
             {
                 index = list.FindIndex(o => o.Time >= startTime);
-                if (0 <= index)
+                if (index >= 0)
+                {
                     firstIndex = index;
+                }
             }
 
             if (endTime.IsNotZero())
             {
                 index = list.FindLastIndex(o => o.Time <= endTime);
-                if (0 <= index)
+                if (index >= 0)
+                {
                     lastIndex = index;
+                }
             }
 
             for (index = firstIndex; index <= lastIndex; ++index)
@@ -250,16 +178,19 @@ namespace Mbs.Trading.Data
                 Ohlcv currentOhlcv = list[index];
                 if (dateTime > currentOhlcv.Time)
                 {
-                    if (null != ohlcv)
+                    if (ohlcv != null)
+                    {
                         ohlcv.Aggregate(currentOhlcv);
+                    }
                     else
+                    {
                         ohlcv = currentOhlcv.CloneAggregation();
+                    }
                 }
                 else
                 {
-                    if (null != ohlcv)
+                    if (ohlcv != null)
                     {
-                        // ohlcv.Time = dateTime;
                         yield return ohlcv;
                     }
 
@@ -268,8 +199,10 @@ namespace Mbs.Trading.Data
                 }
             }
 
-            if (null != ohlcv)
+            if (ohlcv != null)
+            {
                 yield return ohlcv;
+            }
         }
 
         /// <summary>
@@ -288,15 +221,19 @@ namespace Mbs.Trading.Data
             if (startTime.IsNotZero())
             {
                 index = list.FindIndex(o => o.Time >= startTime);
-                if (0 <= index)
+                if (index >= 0)
+                {
                     firstIndex = index;
+                }
             }
 
             if (endTime.IsNotZero())
             {
                 index = list.FindLastIndex(o => o.Time <= endTime);
-                if (0 <= index)
+                if (index >= 0)
+                {
                     lastIndex = index;
+                }
             }
 
             for (index = firstIndex; index <= lastIndex; index++)
@@ -304,16 +241,19 @@ namespace Mbs.Trading.Data
                 Ohlcv currentOhlcv = list[index];
                 if (dateTime > currentOhlcv.Time)
                 {
-                    if (null != ohlcv)
+                    if (ohlcv != null)
+                    {
                         ohlcv.Aggregate(currentOhlcv);
+                    }
                     else
+                    {
                         ohlcv = currentOhlcv.CloneAggregation();
+                    }
                 }
                 else
                 {
-                    if (null != ohlcv)
+                    if (ohlcv != null)
                     {
-                        // ohlcv.Time = dateTime;
                         yield return ohlcv;
                     }
 
@@ -322,8 +262,10 @@ namespace Mbs.Trading.Data
                 }
             }
 
-            if (null != ohlcv)
+            if (ohlcv != null)
+            {
                 yield return ohlcv;
+            }
         }
 
         /// <summary>
@@ -342,15 +284,19 @@ namespace Mbs.Trading.Data
             if (startTime.IsNotZero())
             {
                 index = list.FindIndex(o => o.Time >= startTime);
-                if (0 <= index)
+                if (index >= 0)
+                {
                     firstIndex = index;
+                }
             }
 
             if (endTime.IsNotZero())
             {
                 index = list.FindLastIndex(o => o.Time <= endTime);
-                if (0 <= index)
+                if (index >= 0)
+                {
                     lastIndex = index;
+                }
             }
 
             for (index = firstIndex; index <= lastIndex; index++)
@@ -358,16 +304,19 @@ namespace Mbs.Trading.Data
                 Ohlcv currentOhlcv = list[index];
                 if (dateTime > currentOhlcv.Time)
                 {
-                    if (null != ohlcv)
+                    if (ohlcv != null)
+                    {
                         ohlcv.Aggregate(currentOhlcv);
+                    }
                     else
+                    {
                         ohlcv = currentOhlcv.CloneAggregation();
+                    }
                 }
                 else
                 {
-                    if (null != ohlcv)
+                    if (ohlcv != null)
                     {
-                        // ohlcv.Time = dateTime;
                         yield return ohlcv;
                     }
 
@@ -376,8 +325,10 @@ namespace Mbs.Trading.Data
                 }
             }
 
-            if (null != ohlcv)
+            if (ohlcv != null)
+            {
                 yield return ohlcv;
+            }
         }
 
         /// <summary>
@@ -395,41 +346,42 @@ namespace Mbs.Trading.Data
             if (startTime.IsNotZero())
             {
                 index = list.FindIndex(o => o.Time >= startTime);
-                if (0 <= index)
+                if (index >= 0)
+                {
                     firstIndex = index;
+                }
             }
 
             if (endTime.IsNotZero())
             {
                 index = list.FindLastIndex(o => o.Time <= endTime);
-                if (0 <= index)
+                if (index >= 0)
+                {
                     lastIndex = index;
+                }
             }
 
             Ohlcv aggregatedOhlcv = null;
             var dateTime = new DateTime(0L);
             Func<TemporalEntity, int, DateTime> thresholdDateTime = SelectThresholdDateTime(timeGranularity);
-            /*if (timeGranularity.IsWeek())
-                thresholdDateTime = WeekBinThreshold;
-            else if (timeGranularity.IsMonth())
-                thresholdDateTime = MonthBinThreshold;
-            else
-                thresholdDateTime = YearBinThreshold;*/
             for (index = firstIndex; index <= lastIndex; index++)
             {
                 Ohlcv ohlcv = list[index];
                 if (dateTime > ohlcv.Time)
                 {
-                    if (null != aggregatedOhlcv)
+                    if (aggregatedOhlcv != null)
+                    {
                         aggregatedOhlcv.Aggregate(ohlcv);
+                    }
                     else
+                    {
                         aggregatedOhlcv = ohlcv.CloneAggregation();
+                    }
                 }
                 else
                 {
-                    if (null != aggregatedOhlcv)
+                    if (aggregatedOhlcv != null)
                     {
-                        // aggregatedOhlcv.Time = dateTime;
                         yield return aggregatedOhlcv;
                     }
 
@@ -438,8 +390,10 @@ namespace Mbs.Trading.Data
                 }
             }
 
-            if (null != aggregatedOhlcv)
+            if (aggregatedOhlcv != null)
+            {
                 yield return aggregatedOhlcv;
+            }
         }
 
         /// <summary>
@@ -457,34 +411,24 @@ namespace Mbs.Trading.Data
             if (startTime.IsNotZero())
             {
                 index = list.FindIndex(o => o.Time >= startTime);
-                if (0 <= index)
+                if (index >= 0)
+                {
                     firstIndex = index;
+                }
             }
 
             if (endTime.IsNotZero())
             {
                 index = list.FindLastIndex(o => o.Time <= endTime);
-                if (0 <= index)
+                if (index >= 0)
+                {
                     lastIndex = index;
+                }
             }
 
             var dateTime = new DateTime(0L);
             Func<TemporalEntity, int, DateTime> thresholdDateTime = SelectThresholdDateTime(timeGranularity);
             var aggregator = new ScalarAggregator();
-            /*if (timeGranularity.IsDay())
-                thresholdDateTime = DayBinThreshold;
-            else if (timeGranularity.IsSecond())
-                thresholdDateTime = SecondBinThreshold;
-            else if (timeGranularity.IsMinute())
-                thresholdDateTime = MinuteBinThreshold;
-            else if (timeGranularity.IsHour())
-                thresholdDateTime = HourBinThreshold;
-            else if (timeGranularity.IsWeek())
-                thresholdDateTime = WeekBinThreshold;
-            else if (timeGranularity.IsMonth())
-                thresholdDateTime = MonthBinThreshold;
-            else
-                thresholdDateTime = YearBinThreshold;*/
             for (index = firstIndex; index <= lastIndex; index++)
             {
                 Scalar scalar = list[index];
@@ -504,7 +448,9 @@ namespace Mbs.Trading.Data
             }
 
             if (!aggregator.IsEmpty)
+            {
                 yield return aggregator.Emit();
+            }
         }
 
         /// <summary>
@@ -599,7 +545,7 @@ namespace Mbs.Trading.Data
                 {
                     dateTime = dateTime.AddDays(sign);
                 }
-                while (DayOfWeek.Saturday == dateTime.DayOfWeek || DayOfWeek.Sunday == dateTime.DayOfWeek);
+                while (dateTime.DayOfWeek == DayOfWeek.Saturday || dateTime.DayOfWeek == DayOfWeek.Sunday);
             }
 
             return dateTime;
@@ -641,7 +587,10 @@ namespace Mbs.Trading.Data
                 Convert.ToInt32(CultureInfo.InvariantCulture.DateTimeFormat.FirstDayOfWeek, CultureInfo.InvariantCulture) -
                 Convert.ToInt32(dateTime.DayOfWeek, CultureInfo.InvariantCulture) + 7;
             if (daysTillNextWeek == 8)
+            {
                 daysTillNextWeek = 1;
+            }
+
             return dateTime.AddDays(daysTillNextWeek + 7 * (duration - 1));
         }
 
@@ -690,27 +639,41 @@ namespace Mbs.Trading.Data
         /// <returns>The selected date-time bin threshold function.</returns>
         internal static Func<TemporalEntity, int, DateTime> SelectThresholdDateTime(TimeGranularity timeGranularity)
         {
-            // TODO: Here you can select a bisinessCalender/Euronext BinThrechold
+            // TODO: Here you can select a BusinessCalender/Euronext BinThreshold
             if (timeGranularity.IsDay())
+            {
                 return DayBinThreshold;
+            }
 
             if (timeGranularity.IsHour())
+            {
                 return HourBinThreshold;
+            }
 
             if (timeGranularity.IsMinute())
+            {
                 return MinuteBinThreshold;
+            }
 
             if (timeGranularity.IsSecond())
+            {
                 return SecondBinThreshold;
+            }
 
             if (timeGranularity.IsWeek())
+            {
                 return WeekBinThreshold;
+            }
 
             if (timeGranularity.IsMonth())
+            {
                 return MonthBinThreshold;
+            }
 
             if (timeGranularity.IsYear())
+            {
                 return YearBinThreshold;
+            }
 
             return null; // Time granularity is in trades.
         }
@@ -724,59 +687,42 @@ namespace Mbs.Trading.Data
         internal static bool CanAggregate(TimeGranularity timeGranularitySource, TimeGranularity timeGranularityTarget)
         {
             if (timeGranularitySource > timeGranularityTarget)
+            {
                 return false;
+            }
 
             if (timeGranularitySource == timeGranularityTarget)
             {
                 int durationSource = timeGranularitySource.NumberOfUnits();
                 int durationTarget = timeGranularityTarget.NumberOfUnits();
                 if (durationSource > durationTarget)
+                {
                     return false;
+                }
 
                 if (durationSource == durationTarget)
+                {
                     return true;
+                }
 
-                return 0 == (durationTarget % durationSource);
+                return (durationTarget % durationSource) == 0;
             }
 
             if (timeGranularitySource.IsAperiodic())
+            {
                 return true;
+            }
 
-            if ((timeGranularitySource.IsIntraday() || timeGranularitySource.IsDay()) &&
-                (timeGranularityTarget.IsEndofday() && !timeGranularitySource.IsDay()))
+            if ((timeGranularitySource.IsIntraday() || timeGranularitySource.IsDay())
+                && timeGranularityTarget.IsEndofday() && !timeGranularitySource.IsDay())
+            {
                 return true;
+            }
 
             // Convert to seconds and compare.
             long secondsSource = ConvertToSeconds(timeGranularitySource);
             long secondsTarget = ConvertToSeconds(timeGranularityTarget);
-            return 0 == (secondsTarget % secondsSource);
-        }
-
-        private static long ConvertToSeconds(TimeGranularity timeGranularity)
-        {
-            int numberOfUnits = timeGranularity.NumberOfUnits();
-            if (timeGranularity.IsSecond())
-                return numberOfUnits;
-
-            if (timeGranularity.IsMinute())
-                return 60L * numberOfUnits;
-
-            if (timeGranularity.IsHour())
-                return 3600L * numberOfUnits;
-
-            if (timeGranularity.IsDay())
-                return 24L * 3600L * numberOfUnits;
-
-            if (timeGranularity.IsWeek())
-                return 7L * 24L * 3600L * numberOfUnits;
-
-            if (timeGranularity.IsMonth())
-                return 30L * 7L * 24L * 3600L * numberOfUnits;
-
-            if (timeGranularity.IsYear())
-                return 365L * 24L * 3600L * numberOfUnits;
-
-            return 0;
+            return secondsTarget % secondsSource == 0;
         }
 
         /// <summary>
@@ -784,7 +730,7 @@ namespace Mbs.Trading.Data
         /// </summary>
         /// <param name="enumerable">The enumerable to convert from.</param>
         /// <returns>The converted enumerable.</returns>
-        internal static IEnumerable<Ohlcv> ConvertToOhlcv(IEnumerable<Scalar> enumerable /*, TimeSpan endOfDayTime*/)
+        internal static IEnumerable<Ohlcv> ConvertToOhlcv(IEnumerable<Scalar> enumerable)
             => enumerable.Select(Ohlcv.CloneAggregation);
 
         /// <summary>
@@ -792,7 +738,7 @@ namespace Mbs.Trading.Data
         /// </summary>
         /// <param name="enumerable">The enumerable to convert from.</param>
         /// <returns>The converted enumerable.</returns>
-        internal static IEnumerable<Ohlcv> ConvertToOhlcv(IEnumerable<Trade> enumerable /*, TimeSpan endOfDayTime*/)
+        internal static IEnumerable<Ohlcv> ConvertToOhlcv(IEnumerable<Trade> enumerable)
             => enumerable.Select(Ohlcv.CloneAggregation);
 
         /// <summary>
@@ -805,19 +751,24 @@ namespace Mbs.Trading.Data
         internal static IEnumerable<Ohlcv> Aggregate(
             IEnumerable<Ohlcv> enumerable,
             TimeGranularity timeGranularity,
-            Func<TemporalEntity, int, DateTime> thresholdDateTime /*, TimeSpan endOfDayTime*/)
+            Func<TemporalEntity, int, DateTime> thresholdDateTime)
         {
             int numberOfUnits = timeGranularity.NumberOfUnits();
             Ohlcv ohlcv = null;
-            if (null == thresholdDateTime)
+            if (thresholdDateTime == null)
             {
                 int current = 0;
                 foreach (var o in enumerable)
                 {
-                    if (null == ohlcv)
+                    if (ohlcv == null)
+                    {
                         ohlcv = new Ohlcv(o.Time, o.Open, o.High, o.Low, o.Close, o.Volume);
+                    }
                     else
+                    {
                         ohlcv.Aggregate(o);
+                    }
+
                     if (++current == numberOfUnits)
                     {
                         yield return ohlcv;
@@ -833,16 +784,19 @@ namespace Mbs.Trading.Data
                 {
                     if (dateTime > o.Time)
                     {
-                        if (null == ohlcv)
+                        if (ohlcv == null)
+                        {
                             ohlcv = new Ohlcv(o.Time, o.Open, o.High, o.Low, o.Close, o.Volume);
+                        }
                         else
+                        {
                             ohlcv.Aggregate(o);
+                        }
                     }
                     else
                     {
-                        if (null != ohlcv)
+                        if (ohlcv != null)
                         {
-                            // ohlcv.Time = dateTime; // dateTime or endOfDayTime? TODO: review is it right
                             yield return ohlcv;
                         }
 
@@ -852,8 +806,10 @@ namespace Mbs.Trading.Data
                 }
             }
 
-            if (null != ohlcv)
-                yield return ohlcv; // dateTime or endOfDayTime? TODO: review is it right
+            if (ohlcv != null)
+            {
+                yield return ohlcv;
+            }
         }
 
         /// <summary>
@@ -867,19 +823,24 @@ namespace Mbs.Trading.Data
         internal static IEnumerable<Ohlcv> Aggregate(
             IEnumerable<Scalar> enumerable,
             TimeGranularity timeGranularity,
-            Func<TemporalEntity, int, DateTime> thresholdDateTime /*, TimeSpan endOfDayTime*/)
+            Func<TemporalEntity, int, DateTime> thresholdDateTime)
         {
             int numberOfUnits = timeGranularity.NumberOfUnits();
             Ohlcv ohlcv = null;
-            if (null == thresholdDateTime)
+            if (thresholdDateTime == null)
             {
                 int current = 0;
                 foreach (var scalar in enumerable)
                 {
-                    if (null == ohlcv)
+                    if (ohlcv == null)
+                    {
                         ohlcv = Ohlcv.CloneAggregation(scalar);
+                    }
                     else
+                    {
                         ohlcv.Aggregate(scalar);
+                    }
+
                     if (++current == numberOfUnits)
                     {
                         yield return ohlcv;
@@ -895,16 +856,19 @@ namespace Mbs.Trading.Data
                 {
                     if (dateTime > scalar.Time)
                     {
-                        if (null == ohlcv)
+                        if (ohlcv == null)
+                        {
                             ohlcv = Ohlcv.CloneAggregation(scalar);
+                        }
                         else
+                        {
                             ohlcv.Aggregate(scalar);
+                        }
                     }
                     else
                     {
-                        if (null != ohlcv)
+                        if (ohlcv != null)
                         {
-                            // ohlcv.Time = dateTime; // dateTime or endOfDayTime? TODO: review is it right
                             yield return ohlcv;
                         }
 
@@ -914,8 +878,10 @@ namespace Mbs.Trading.Data
                 }
             }
 
-            if (null != ohlcv)
-                yield return ohlcv; // dateTime or endOfDayTimee? TODO: review is it right
+            if (ohlcv != null)
+            {
+                yield return ohlcv;
+            }
         }
 
         /// <summary>
@@ -926,22 +892,27 @@ namespace Mbs.Trading.Data
         /// <param name="timeGranularity">The time granularity.</param>
         /// <param name="thresholdDateTime">The threshold date and time.</param>
         /// <returns>The aggregated and converted enumerable.</returns>
-        public static IEnumerable<Ohlcv> Aggregate(
+        internal static IEnumerable<Ohlcv> Aggregate(
             IEnumerable<Trade> enumerable,
             TimeGranularity timeGranularity,
-            Func<TemporalEntity, int, DateTime> thresholdDateTime /*, TimeSpan endOfDayTime*/)
+            Func<TemporalEntity, int, DateTime> thresholdDateTime)
         {
             int numberOfUnits = timeGranularity.NumberOfUnits();
             Ohlcv ohlcv = null;
-            if (null == thresholdDateTime)
+            if (thresholdDateTime == null)
             {
                 int current = 0;
                 foreach (var trade in enumerable)
                 {
-                    if (null == ohlcv)
+                    if (ohlcv == null)
+                    {
                         ohlcv = Ohlcv.CloneAggregation(trade);
+                    }
                     else
+                    {
                         ohlcv.Aggregate(trade);
+                    }
+
                     if (++current == numberOfUnits)
                     {
                         yield return ohlcv;
@@ -957,16 +928,19 @@ namespace Mbs.Trading.Data
                 {
                     if (dateTime > trade.Time)
                     {
-                        if (null == ohlcv)
+                        if (ohlcv == null)
+                        {
                             ohlcv = Ohlcv.CloneAggregation(trade);
+                        }
                         else
+                        {
                             ohlcv.Aggregate(trade);
+                        }
                     }
                     else
                     {
-                        if (null != ohlcv)
+                        if (ohlcv != null)
                         {
-                            // ohlcv.Time = dateTime; // dateTime or endOfDayTime? TODO: review is it right
                             yield return ohlcv;
                         }
 
@@ -976,8 +950,10 @@ namespace Mbs.Trading.Data
                 }
             }
 
-            if (null != ohlcv)
-                yield return ohlcv; // dateTime or endOfDayTimee? TODO: review is it right
+            if (ohlcv != null)
+            {
+                yield return ohlcv;
+            }
         }
 
         /// <summary>
@@ -990,15 +966,15 @@ namespace Mbs.Trading.Data
         internal static IEnumerable<Scalar> Aggregate(
             IEnumerable<Scalar> enumerable,
             int count,
-            Func<TemporalEntity, int, DateTime> thresholdDateTime /*, TimeSpan endOfDayTime*/)
+            Func<TemporalEntity, int, DateTime> thresholdDateTime)
         {
             var aggregator = new ScalarAggregator();
-            if (null == thresholdDateTime)
+            if (thresholdDateTime == null)
             {
                 int current = 0;
                 foreach (var scalar in enumerable)
                 {
-                    if (0 == current++)
+                    if (current++ == 0)
                     {
                         aggregator.Aggregate(scalar);
                     }
@@ -1029,7 +1005,7 @@ namespace Mbs.Trading.Data
                     {
                         if (!aggregator.IsEmpty)
                         {
-                            yield return aggregator.Emit(/*dateTime or endOfDayTime*/); // TODO: review is it right: was commented: for days, weeks, month, years
+                            yield return aggregator.Emit(/*dateTime or endOfDayTime*/);
                         }
 
                         dateTime = thresholdDateTime(scalar, count);
@@ -1038,7 +1014,152 @@ namespace Mbs.Trading.Data
             }
 
             if (aggregator.IsNotEmpty)
-                yield return aggregator.Emit(/*dateTime or endOfDayTime*/); // TODO: review is it right
+            {
+                yield return aggregator.Emit(/*dateTime or endOfDayTime*/);
+            }
+        }
+
+        private static IEnumerable<Ohlcv> AggregateDays(List<Ohlcv> list, DateTime startTime, DateTime endTime, int count, Func<TemporalEntity, int, DateTime> thresholdDateTime)
+        {
+            Ohlcv ohlcv = null;
+            var dateTime = new DateTime(0L);
+            int index, firstIndex = 0, lastIndex = list.Count - 1;
+            if (startTime.IsNotZero())
+            {
+                index = list.FindIndex(o => o.Time >= startTime);
+                if (index >= 0)
+                {
+                    firstIndex = index;
+                }
+            }
+
+            if (endTime.IsNotZero())
+            {
+                index = list.FindLastIndex(o => o.Time <= endTime);
+                if (index >= 0)
+                {
+                    lastIndex = index;
+                }
+            }
+
+            for (index = firstIndex; index <= lastIndex; index++)
+            {
+                Ohlcv currentOhlcv = list[index];
+                if (dateTime > currentOhlcv.Time)
+                {
+                    if (ohlcv != null)
+                    {
+                        ohlcv.Aggregate(currentOhlcv);
+                    }
+                    else
+                    {
+                        ohlcv = currentOhlcv.CloneAggregation();
+                    }
+                }
+                else
+                {
+                    if (ohlcv != null)
+                    {
+                        yield return ohlcv;
+                    }
+
+                    ohlcv = currentOhlcv.CloneAggregation();
+                    dateTime = thresholdDateTime(currentOhlcv, count);
+                }
+            }
+
+            if (ohlcv != null)
+            {
+                yield return ohlcv;
+            }
+        }
+
+        private static IEnumerable<Scalar> AggregateDays(List<Scalar> list, DateTime startTime, DateTime endTime, int count, Func<TemporalEntity, int, DateTime> thresholdDateTime)
+        {
+            var aggregator = new ScalarAggregator();
+            var dateTime = new DateTime(0L);
+            int index, firstIndex = 0, lastIndex = list.Count - 1;
+            if (startTime.IsNotZero())
+            {
+                index = list.FindIndex(o => o.Time >= startTime);
+                if (index >= 0)
+                {
+                    firstIndex = index;
+                }
+            }
+
+            if (endTime.IsNotZero())
+            {
+                index = list.FindLastIndex(o => o.Time <= endTime);
+                if (index >= 0)
+                {
+                    lastIndex = index;
+                }
+            }
+
+            for (index = firstIndex; index <= lastIndex; index++)
+            {
+                Scalar scalar = list[index];
+                if (dateTime > scalar.Time)
+                {
+                    aggregator.Aggregate(scalar);
+                }
+                else
+                {
+                    if (!aggregator.IsEmpty)
+                    {
+                        yield return aggregator.Emit(/*dateTime*/);
+                    }
+
+                    dateTime = thresholdDateTime(scalar, count);
+                }
+            }
+
+            if (!aggregator.IsEmpty)
+            {
+                yield return aggregator.Emit();
+            }
+        }
+
+        private static long ConvertToSeconds(TimeGranularity timeGranularity)
+        {
+            int numberOfUnits = timeGranularity.NumberOfUnits();
+            if (timeGranularity.IsSecond())
+            {
+                return numberOfUnits;
+            }
+
+            if (timeGranularity.IsMinute())
+            {
+                return 60L * numberOfUnits;
+            }
+
+            if (timeGranularity.IsHour())
+            {
+                return 3600L * numberOfUnits;
+            }
+
+            if (timeGranularity.IsDay())
+            {
+                return 24L * 3600L * numberOfUnits;
+            }
+
+            if (timeGranularity.IsWeek())
+            {
+                return 7L * 24L * 3600L * numberOfUnits;
+            }
+
+            if (timeGranularity.IsMonth())
+            {
+                return 30L * 7L * 24L * 3600L * numberOfUnits;
+            }
+
+            if (timeGranularity.IsYear())
+            {
+                return 365L * 24L * 3600L * numberOfUnits;
+            }
+
+            return 0;
         }
     }
 }

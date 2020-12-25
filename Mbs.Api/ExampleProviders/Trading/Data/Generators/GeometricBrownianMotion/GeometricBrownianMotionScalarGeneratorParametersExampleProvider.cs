@@ -19,7 +19,7 @@ namespace Mbs.Api.ExampleProviders.Trading.Data.Generators.GeometricBrownianMoti
                     SessionEndTime = DefaultParameterValues.SessionEndTime,
                     StartDate = DefaultParameterValues.StartDate,
                     TimeGranularity = DefaultParameterValues.TimeGranularity,
-                    BusinessDayCalendar = DefaultParameterValues.BusinessDayCalendar
+                    BusinessDayCalendar = DefaultParameterValues.BusinessDayCalendar,
                 },
                 WaveformParameters = new WaveformParameters
                 {
@@ -28,7 +28,7 @@ namespace Mbs.Api.ExampleProviders.Trading.Data.Generators.GeometricBrownianMoti
                     RepetitionsCount = DefaultParameterValues.RepetitionsCount,
                     NoiseAmplitudeFraction = DefaultParameterValues.NoiseAmplitudeFraction,
                     NoiseUniformRandomGeneratorKind = DefaultParameterValues.NoiseUniformRandomGeneratorKind,
-                    NoiseUniformRandomGeneratorSeed = DefaultParameterValues.NoiseUniformRandomGeneratorSeed
+                    NoiseUniformRandomGeneratorSeed = DefaultParameterValues.NoiseUniformRandomGeneratorSeed,
                 },
                 GbmParameters = new GeometricBrownianMotionParameters
                 {
@@ -38,8 +38,8 @@ namespace Mbs.Api.ExampleProviders.Trading.Data.Generators.GeometricBrownianMoti
                     Volatility = DefaultParameterValues.GbmVolatility,
                     NormalRandomGeneratorKind = DefaultParameterValues.GbmNormalRandomGeneratorKind,
                     AssociatedUniformRandomGeneratorKind = DefaultParameterValues.GbmAssociatedUniformRandomGeneratorKind,
-                    Seed = DefaultParameterValues.GbmSeed
-                }
+                    Seed = DefaultParameterValues.GbmSeed,
+                },
             };
         }
     }

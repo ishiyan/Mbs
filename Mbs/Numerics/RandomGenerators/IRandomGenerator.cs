@@ -1,4 +1,4 @@
-﻿namespace Mbs.Numerics.Random
+﻿namespace Mbs.Numerics.RandomGenerators
 {
     /// <summary>
     /// A common interface for all random number generators.

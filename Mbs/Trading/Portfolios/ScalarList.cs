@@ -13,7 +13,6 @@ namespace Mbs.Trading.Portfolios
         private readonly List<Scalar> list = new List<Scalar>();
         private readonly object updateLock = new object();
         private Scalar scalar = new Scalar(new DateTime(0L));
-        // private double valueOld;
 
         /// <summary>
         /// Gets the read-only collection of scalars.
@@ -89,7 +88,6 @@ namespace Mbs.Trading.Portfolios
                 {
                     scalar = new Scalar(dateTime, value + scalar.Value);
                     list.Add(scalar);
-                    //valueOld = scalar.Value;
                 }
             }
         }

@@ -7,8 +7,6 @@ namespace Mbs.UnitTests.Trading.Data.Generators.Sinusoidal
     [TestClass]
     public class SinusoidalDataGeneratorExtensionsTests
     {
-        // ReSharper disable InconsistentNaming
-
         [TestMethod]
         public async Task SinusoidalDataGeneratorExtensions_GenerateAsync_Ohlcv_CorrectLength()
         {

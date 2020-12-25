@@ -44,7 +44,10 @@ namespace Mbs.Api.Services.Trading.Instruments
                 IEnumerable<Instrument> list;
                 lock (ListDictionaryLock)
                     if (!ListDictionary.TryGetValue(name, out list))
+                    {
                         return EmptyList;
+                    }
+
                 return list;
             })
             .ConfigureAwait(false);
@@ -54,7 +57,9 @@ namespace Mbs.Api.Services.Trading.Instruments
         {
             lock (ListDictionaryLock)
                 if (!ListDictionary.TryAdd(name, list))
+                {
                     throw new ArgumentException($"List name \"{name}\" is already in use.", nameof(name));
+                }
         }
     }
 }

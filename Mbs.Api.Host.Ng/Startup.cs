@@ -4,6 +4,7 @@ using Mbs.Api.Extensions.ExceptionHandling;
 using Mbs.Api.Extensions.Swagger;
 using Mbs.Api.Host.Ng.Extensions;
 using Mbs.Api.Services.Trading.Instruments;
+using Mbs.Utilities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
@@ -13,31 +14,27 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-// ReSharper disable once ClassNeverInstantiated.Global
-// ReSharper disable UnusedMember.Global
-#pragma warning disable CA1812 // Avoid uninstantiated internal classes
-#pragma warning disable CA1822 // Mark members as static
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-
 namespace Mbs.Api.Host.Ng
 {
     public class Startup
     {
+        private readonly IConfiguration configuration;
+        private readonly bool enableSwagger;
+
         public Startup(IConfiguration configuration)
         {
             this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             enableSwagger = configuration.GetSection("EnableSwagger").Get<bool>();
         }
 
-        private readonly IConfiguration configuration;
-        private readonly bool enableSwagger;
-
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors();
             services.AddMbsApi();
             if (enableSwagger)
+            {
                 services.AddMbsApiSwagger("Mbs.Api.Host.Ng");
+            }
 
             services
                 .AddControllers()
@@ -48,6 +45,7 @@ namespace Mbs.Api.Host.Ng
                     options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
                     options.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
                 });
+#pragma warning disable S125 // Sections of code should not be commented out
                 /* use microsoft json; this still doesn't work together with swagger */
                 /*.AddJsonOptions(options =>
                 {
@@ -56,6 +54,7 @@ namespace Mbs.Api.Host.Ng
                     options.JsonSerializerOptions.Converters.Add(new TimeSpanJsonConverter());
                     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase, false));
                 });*/
+#pragma warning restore S125
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(conf => conf.RootPath = "wwwroot");
@@ -64,9 +63,14 @@ namespace Mbs.Api.Host.Ng
         public void Configure(IApplicationBuilder app, IWebHostEnvironment environment, ILoggerFactory loggerFactory, IInstrumentListDataService instrumentList)
         {
             if (loggerFactory == null)
+            {
                 throw new ArgumentNullException(nameof(loggerFactory));
+            }
+
             if (instrumentList == null)
+            {
                 throw new ArgumentNullException(nameof(instrumentList));
+            }
 
             Log.SetLogger(loggerFactory.CreateLogger("Mbs"));
             Log.SetLoggerFactory(loggerFactory);
@@ -77,9 +81,11 @@ namespace Mbs.Api.Host.Ng
             app.UseMbsApiExceptionHandling();
             app.UseCorsConfiguration(configuration);
             if (enableSwagger)
+            {
                 app.UseMbsApiSwagger();
-            /* app.UseAngularRouting(); */
+            }
 
+            /* app.UseAngularRouting() */
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
             app.UseRouting();
@@ -98,7 +104,7 @@ namespace Mbs.Api.Host.Ng
                     spa.UseAngularCliServer(npmScript: "start");
 
                     // When you want to launch the application: cd ClientApp; ng serve; cd ..; dotnet run
-                    // spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
+                    // spa.UseProxyToSpaDevelopmentServer("http://localhost:4200")
                 }
             });
         }

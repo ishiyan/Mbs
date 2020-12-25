@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Mbs.Trading.Time;
+using Mbs.Utilities;
 
+// ReSharper disable once CheckNamespace
 namespace Mbs.Trading.Data.Historical
 {
     /// <summary>
@@ -29,7 +31,9 @@ namespace Mbs.Trading.Data.Historical
         {
             InstrumentCsvInfo instrumentCsvInfo = CsvRepository.InstrumentInfo(historicalDataRequest.Instrument);
             if (instrumentCsvInfo == null)
+            {
                 return new List<Ohlcv>();
+            }
 
             var csvRequest = new CsvRequest { StartDate = historicalDataRequest.StartDate, EndDate = historicalDataRequest.EndDate };
             TimeGranularity timeGranularity = historicalDataRequest.TimeGranularity;
@@ -43,7 +47,10 @@ namespace Mbs.Trading.Data.Historical
                 {
                     historicalDataRequest.IsDataAdjusted = csvInfo.IsAdjustedData;
                     if (isEndofday && csvInfo.TimeGranularity.IsEndofday())
+                    {
                         csvRequest.EndofdayClosingTime = historicalDataRequest.EndofdayClosingTime;
+                    }
+
                     return CsvRepository.EnumerateOhlcvAsync(csvInfo, csvRequest);
                 }
 
@@ -52,7 +59,10 @@ namespace Mbs.Trading.Data.Historical
                 {
                     historicalDataRequest.IsDataAdjusted = csvInfo.IsAdjustedData;
                     if (isEndofday && csvInfo.TimeGranularity.IsEndofday())
+                    {
                         csvRequest.EndofdayClosingTime = historicalDataRequest.EndofdayClosingTime;
+                    }
+
                     var enumerable = CsvRepository.EnumerateOhlcvAsync(csvInfo, csvRequest);
                     return AggregatingConverter.Aggregate(enumerable, timeGranularity, thresholdDateTime);
                 }
@@ -65,7 +75,10 @@ namespace Mbs.Trading.Data.Historical
                 {
                     historicalDataRequest.IsDataAdjusted = csvInfo.IsAdjustedData;
                     if (isEndofday && csvInfo.TimeGranularity.IsEndofday())
+                    {
                         csvRequest.EndofdayClosingTime = historicalDataRequest.EndofdayClosingTime;
+                    }
+
                     return CsvRepository.EnumerateOhlcvAsync(csvInfo, csvRequest);
                 }
 
@@ -74,7 +87,10 @@ namespace Mbs.Trading.Data.Historical
                 {
                     historicalDataRequest.IsDataAdjusted = csvInfo.IsAdjustedData;
                     if (isEndofday && csvInfo.TimeGranularity.IsEndofday())
+                    {
                         csvRequest.EndofdayClosingTime = historicalDataRequest.EndofdayClosingTime;
+                    }
+
                     var enumerable = CsvRepository.EnumerateOhlcvAsync(csvInfo, csvRequest);
                     return AggregatingConverter.Aggregate(enumerable, timeGranularity, thresholdDateTime);
                 }
@@ -99,7 +115,10 @@ namespace Mbs.Trading.Data.Historical
                 {
                     historicalDataRequest.IsDataAdjusted = csvInfo.IsAdjustedData;
                     if (isEndofday && csvInfo.TimeGranularity.IsEndofday())
+                    {
                         csvRequest.EndofdayClosingTime = historicalDataRequest.EndofdayClosingTime;
+                    }
+
                     var enumerable = CsvRepository.EnumerateScalarAsync(csvInfo, csvRequest);
                     return AggregatingConverter.ConvertToOhlcv(enumerable);
                 }
@@ -109,7 +128,10 @@ namespace Mbs.Trading.Data.Historical
                 {
                     historicalDataRequest.IsDataAdjusted = csvInfo.IsAdjustedData;
                     if (isEndofday && csvInfo.TimeGranularity.IsEndofday())
+                    {
                         csvRequest.EndofdayClosingTime = historicalDataRequest.EndofdayClosingTime;
+                    }
+
                     var enumerable = CsvRepository.EnumerateScalarAsync(csvInfo, csvRequest);
                     return AggregatingConverter.Aggregate(enumerable, timeGranularity, thresholdDateTime);
                 }

@@ -11,15 +11,15 @@ namespace Mbs.UnitTests.Trading.Holidays
         [TestMethod]
         public void IcelandicHoliday_IsIcelandicHoliday_ExplicitlyKnownDays_AreAlwaysHolidays()
         {
-             Assert.IsTrue(new DateTime(2016, 1, 1).IsIcelandicHoliday(), "2016 January 01, Fri [New Year's Day]");
-             Assert.IsTrue(new DateTime(2016, 3, 24).IsIcelandicHoliday(), "2016 March 24, Thu [Holy Thursday]");
-             Assert.IsTrue(new DateTime(2016, 3, 25).IsIcelandicHoliday(), "2016 March 25, Fri [Good Friday]");
-             Assert.IsTrue(new DateTime(2016, 3, 28).IsIcelandicHoliday(), "2016 March 28, Mon [Easter Monday]");
-             Assert.IsTrue(new DateTime(2016, 5, 5).IsIcelandicHoliday(), "2016 May 5, Thu [Ascension]");
-             Assert.IsTrue(new DateTime(2016, 5, 16).IsIcelandicHoliday(), "2016 May 16, Mon [Whit Monday]");
-             Assert.IsTrue(new DateTime(2016, 6, 17).IsIcelandicHoliday(), "2016 June 17, Fri [Independence Day]");
-             Assert.IsTrue(new DateTime(2016, 8, 1).IsIcelandicHoliday(), "2016 August 1, Mon [Commerce Day]");
-             Assert.IsTrue(new DateTime(2016, 12, 26).IsIcelandicHoliday(), "2016 December 26, Mon [Boxing Day]");
+            Assert.IsTrue(new DateTime(2016, 1, 1).IsIcelandicHoliday(), "2016 January 01, Fri [New Year's Day]");
+            Assert.IsTrue(new DateTime(2016, 3, 24).IsIcelandicHoliday(), "2016 March 24, Thu [Holy Thursday]");
+            Assert.IsTrue(new DateTime(2016, 3, 25).IsIcelandicHoliday(), "2016 March 25, Fri [Good Friday]");
+            Assert.IsTrue(new DateTime(2016, 3, 28).IsIcelandicHoliday(), "2016 March 28, Mon [Easter Monday]");
+            Assert.IsTrue(new DateTime(2016, 5, 5).IsIcelandicHoliday(), "2016 May 5, Thu [Ascension]");
+            Assert.IsTrue(new DateTime(2016, 5, 16).IsIcelandicHoliday(), "2016 May 16, Mon [Whit Monday]");
+            Assert.IsTrue(new DateTime(2016, 6, 17).IsIcelandicHoliday(), "2016 June 17, Fri [Independence Day]");
+            Assert.IsTrue(new DateTime(2016, 8, 1).IsIcelandicHoliday(), "2016 August 1, Mon [Commerce Day]");
+            Assert.IsTrue(new DateTime(2016, 12, 26).IsIcelandicHoliday(), "2016 December 26, Mon [Boxing Day]");
 
             Assert.IsTrue(new DateTime(2017, 1, 1).IsIcelandicHoliday(), "2017 January 01, Sun [New Year's Day]");
             Assert.IsTrue(new DateTime(2017, 4, 13).IsIcelandicHoliday(), "2017 April 13, Thu [Holy Thursday]");

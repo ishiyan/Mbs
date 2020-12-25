@@ -44,6 +44,6 @@ namespace Mbs.Trading.Brokers
         /// <summary>
         /// Gets a collection of all single order tickets.
         /// </summary>
-        ReadOnlyCollection<ISingleOrderTicket> SingleOrderTickets { get; }
+        ReadOnlyCollection<ISingleOrderTicket> GetAllTickets();
     }
 }

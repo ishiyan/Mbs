@@ -2,16 +2,16 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace Mbs.Numerics.Random
+namespace Mbs.Numerics.RandomGenerators.Ziggurat
 {
     /// <summary>
-    /// A fast Gaussian distribution sampler for .Net by Colin Green, 11/09/2011
+    /// A fast Gaussian distribution sampler for .Net by Colin Green, 11/09/2011.
     /// <para/>
     /// An implementation of the Ziggurat algorithm for random sampling from a Gaussian distribution. See:
     /// <para/>
-    /// (1) Wikipedia:Ziggurat algorithm, http://en.wikipedia.org/wiki/Ziggurat_algorithm
+    /// (1) Wikipedia:Ziggurat algorithm, http://en.wikipedia.org/wiki/Ziggurat_algorithm.
     /// <para/>
-    /// (2) The Ziggurat Method for Generating Random Variables, George Marsaglia and Wai Wan Tsang, http://www.jstatsoft.org/v05/i08/paper
+    /// (2) The Ziggurat Method for Generating Random Variables, George Marsaglia and Wai Wan Tsang, http://www.jstatsoft.org/v05/i08/paper.
     /// <para/>
     /// (3) An Improved Ziggurat Method to Generate Normal Random Samples, Jurgen A Doornik, http://www.doornik.com/research/ziggurat.pdf.
     /// </summary>
@@ -23,7 +23,8 @@ namespace Mbs.Numerics.Random
         private const int BlockCount = 128;
 
         /// <summary>
-        /// Right hand x coord of the base rectangle, thus also the left hand x coord of the tail (pre-determined/computed for 128 blocks).
+        /// Right hand x coordinate of the base rectangle,
+        /// thus also the left hand x coordinate of the tail (pre-determined/computed for 128 blocks).
         /// </summary>
         private const double BaseRectangleRightX = 3.442619855899;
 
@@ -41,12 +42,12 @@ namespace Mbs.Numerics.Random
         private readonly Func<double> sampleFn;
 
         /// <summary>
-        /// The x coordinaate of the top-right position ox rectangle i.
+        /// The x coordinate of the top-right position ox rectangle i.
         /// </summary>
         private readonly double[] xRight;
 
         /// <summary>
-        /// The y coordinaate of the top-right position ox rectangle i.
+        /// The y coordinate of the top-right position ox rectangle i.
         /// </summary>
         private readonly double[] yTop;
 
@@ -108,7 +109,7 @@ namespace Mbs.Numerics.Random
             // Determine top right position of the base rectangle/box (the rectangle with the Gaussian tale attached).
             // We call this Box 0 or B0 for short. xRight[0] also describes the right-hand edge of B1.
             xRight[0] = BaseRectangleRightX;
-            yTop[0] = GaussianPdfDenorm(BaseRectangleRightX);
+            yTop[0] = GaussianPdfNormalized(BaseRectangleRightX);
 
             // Useful precomputed values.
             areaDividedByHeightB0 = RectangleArea / yTop[0];
@@ -118,12 +119,14 @@ namespace Mbs.Numerics.Random
         }
 
         /// <summary>
-        /// Gets a value indicating whether the <see cref="ZigguratNormalRandom"/> can be reset, so that it produces the same pseudo-random number sequence again.
+        /// Gets a value indicating whether the <see cref="ZigguratNormalRandom"/> can be reset,
+        /// so that it produces the same pseudo-random number sequence again.
         /// </summary>
         public bool CanReset => rng.CanReset;
 
         /// <summary>
-        /// Resets the random number generator, so that it produces the same random number sequence again.
+        /// Resets the <see cref="ZigguratNormalRandom"/>,
+        /// so that it produces the same random number sequence again.
         /// </summary>
         public void Reset()
         {
@@ -132,7 +135,7 @@ namespace Mbs.Numerics.Random
             // Determine top right position of the base rectangle/box (the rectangle with the Gaussian tale attached).
             // We call this Box 0 or B0 for short. xRight[0] also describes the right-hand edge of B1.
             xRight[0] = BaseRectangleRightX;
-            yTop[0] = GaussianPdfDenorm(BaseRectangleRightX);
+            yTop[0] = GaussianPdfNormalized(BaseRectangleRightX);
 
             // The next box (B1) has a right hand X edge the same as B0.
             // B1's height is the box area divided by its width, hence B1 has a smaller height
@@ -143,7 +146,7 @@ namespace Mbs.Numerics.Random
             // Calculate positions of all remaining rectangles.
             for (int i = 2; i < BlockCount; ++i)
             {
-                xRight[i] = GaussianPdfDenormInv(yTop[i - 1]);
+                xRight[i] = GaussianPdfNormalizedInverse(yTop[i - 1]);
                 yTop[i] = yTop[i - 1] + (RectangleArea / xRight[i]);
             }
 
@@ -204,7 +207,7 @@ namespace Mbs.Numerics.Random
                 uint u2 = rng.NextUInt();
 
                 // Special case for the base segment.
-                if (0 == i)
+                if (i == 0)
                 {
                     if (u2 < xComp[0])
                     {
@@ -228,11 +231,35 @@ namespace Mbs.Numerics.Random
                 // This execution path is relatively slow/expensive (makes a call to Math.Exp()) but relatively rarely executed,
                 // although more often than the 'tail' path (above).
                 double x = u2 * UIntToU * xRight[i];
-                if (yTop[i - 1] + (yTop[i] - yTop[i - 1]) * rng.NextDouble() < GaussianPdfDenorm(x))
+                if (yTop[i - 1] + (yTop[i] - yTop[i - 1]) * rng.NextDouble() < GaussianPdfNormalized(x))
                 {
                     return x * sign;
                 }
             }
+        }
+
+        /// <summary>
+        /// Gaussian probability density function, normalized, that is, y = e^-(x^2/2).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static double GaussianPdfNormalized(double x)
+        {
+            return Math.Exp(-x * x / 2);
+        }
+
+        /// <summary>
+        /// Inverse function of <c>GaussianPdfNormalized(x)</c>.
+        /// <para/>
+        /// Operates over the y range (0,1], which happens to be the y range of the pdf, with the exception
+        /// that it does not include y=0, but we would never call with y=0 so it doesn't matter.
+        /// <para/>
+        /// Remember that a Gaussian effectively has a tail going off into x=infinity, hence asking what
+        /// is x when y=0 is an invalid question in the context of this class.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static double GaussianPdfNormalizedInverse(double y)
+        {
+            return Math.Sqrt(-2 * Math.Log(y));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -261,24 +288,6 @@ namespace Mbs.Numerics.Random
             }
             while (y + y < x * x);
             return BaseRectangleRightX + x;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static double GaussianPdfDenorm(double x)
-        {
-            // Gaussian probability density function, denormalised, that is, y = e^-(x^2/2).
-            return Math.Exp(-x * x / 2);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static double GaussianPdfDenormInv(double y)
-        {
-            // Inverse function of GaussianPdfDenorm(x).
-            // Operates over the y range (0,1], which happens to be the y range of the pdf, with the exception
-            // that it does not include y=0, but we would never call with y = 0 so it doesn't matter. Remember
-            // that a Gaussian effectively has a tail going off into x == infinity, hence asking what is x when
-            // y = 0 is an invalid question in the context of this class.
-            return Math.Sqrt(-2 * Math.Log(y));
         }
     }
 }

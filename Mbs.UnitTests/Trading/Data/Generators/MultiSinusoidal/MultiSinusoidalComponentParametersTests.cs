@@ -12,15 +12,13 @@ namespace Mbs.UnitTests.Trading.Data.Generators.MultiSinusoidal
     [TestClass]
     public class MultiSinusoidalComponentParametersTests
     {
-        // ReSharper disable InconsistentNaming
-
         [TestMethod]
         [ExpectedException(typeof(ValidationException))]
         public void MultiSinusoidalComponentParameters_Validate_AmplitudeOutOfRange_Exception()
         {
             var parameters = new MultiSinusoidalComponentParameters
             {
-                Amplitude = -1
+                Amplitude = -1,
             };
 
             var context = new ValidationContext(parameters);
@@ -32,7 +30,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.MultiSinusoidal
         {
             var parameters = new MultiSinusoidalComponentParameters
             {
-                Amplitude = -1
+                Amplitude = -1,
             };
 
             var expectedMessage = string.Format(
@@ -55,7 +53,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.MultiSinusoidal
         {
             var parameters = new MultiSinusoidalComponentParameters
             {
-                Period = 1
+                Period = 1,
             };
 
             var context = new ValidationContext(parameters);
@@ -67,7 +65,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.MultiSinusoidal
         {
             var parameters = new MultiSinusoidalComponentParameters
             {
-                Period = 0
+                Period = 0,
             };
 
             var expectedMessage = string.Format(
@@ -90,7 +88,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.MultiSinusoidal
         {
             var parameters = new MultiSinusoidalComponentParameters
             {
-                PhaseInPi = -2
+                PhaseInPi = -2,
             };
 
             var context = new ValidationContext(parameters);
@@ -102,7 +100,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.MultiSinusoidal
         {
             var parameters = new MultiSinusoidalComponentParameters
             {
-                PhaseInPi = 2
+                PhaseInPi = 2,
             };
 
             string expectedMessage = string.Format(
@@ -126,7 +124,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.MultiSinusoidal
             {
                 Amplitude = -1,
                 Period = 1,
-                PhaseInPi = -2
+                PhaseInPi = -2,
             };
 
             var results = new List<ValidationResult>();
@@ -178,7 +176,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.MultiSinusoidal
             {
                 Amplitude = amplitude,
                 Period = period,
-                PhaseInPi = phaseInPi
+                PhaseInPi = phaseInPi,
             };
 
             Assert.AreEqual(amplitude, parameters.Amplitude, "amplitude");
@@ -189,7 +187,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.MultiSinusoidal
         [TestMethod]
         public void MultiSinusoidalComponentParameters_DeserializeFromJson_ValidInput_CorrectValidationResults()
         {
-            var json = @"{
+            const string json = @"{
 amplitude: 100,
 period: 16,
 phaseInPi: 0

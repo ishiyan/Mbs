@@ -7,8 +7,6 @@ namespace Mbs.UnitTests.Trading.Data.Generators.MultiSinusoidal
     [TestClass]
     public class MultiSinusoidalOhlcvGeneratorTests
     {
-        // ReSharper disable InconsistentNaming
-
         [TestMethod]
         public void MultiSinusoidalOhlcvGenerator_Construction_DefaultConstructor_PropertyValuesCorrect()
         {

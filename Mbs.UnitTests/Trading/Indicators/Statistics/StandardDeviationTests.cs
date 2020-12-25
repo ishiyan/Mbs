@@ -1,17 +1,15 @@
 using System;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 using Mbs.Trading.Data;
 using Mbs.Trading.Indicators.Abstractions;
 using Mbs.Trading.Indicators.Statistics;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Mbs.UnitTests.Trading.Indicators.Statistics
 {
     [TestClass]
     public class StandardDeviationTests
     {
-        #region Test data
         private const int Decimals = 8;
 
         /// <summary>
@@ -19,14 +17,14 @@ namespace Mbs.UnitTests.Trading.Indicators.Statistics
         /// </summary>
         private static readonly double[] StdevInput =
         {
-             91.5000,  94.8150,  94.3750,  95.0950,  93.7800,  94.6250,  92.5300,  92.7500,  90.3150,  92.4700,
-             96.1250,  97.2500,  98.5000,  89.8750,  91.0000,  92.8150,  89.1550,  89.3450,  91.6250,  89.8750,
-             88.3750,  87.6250,  84.7800,  83.0000,  83.5000,  81.3750,  84.4400,  89.2500,  86.3750,  86.2500,
-             85.2500,  87.1250,  85.8150,  88.9700,  88.4700,  86.8750,  86.8150,  84.8750,  84.1900,  83.8750,
-             83.3750,  85.5000,  89.1900,  89.4400,  91.0950,  90.7500,  91.4400,  89.0000,  91.0000,  90.5000,
-             89.0300,  88.8150,  84.2800,  83.5000,  82.6900,  84.7500,  85.6550,  86.1900,  88.9400,  89.2800,
-             88.6250,  88.5000,  91.9700,  91.5000,  93.2500,  93.5000,  93.1550,  91.7200,  90.0000,  89.6900,
-             88.8750,  85.1900,  83.3750,  84.8750,  85.9400,  97.2500,  99.8750, 104.9400, 106.0000, 102.5000,
+            91.5000, 94.8150, 94.3750, 95.0950, 93.7800, 94.6250, 92.5300, 92.7500, 90.3150, 92.4700,
+            96.1250, 97.2500, 98.5000, 89.8750, 91.0000, 92.8150, 89.1550, 89.3450, 91.6250, 89.8750,
+            88.3750, 87.6250, 84.7800, 83.0000, 83.5000, 81.3750, 84.4400, 89.2500, 86.3750, 86.2500,
+            85.2500, 87.1250, 85.8150, 88.9700, 88.4700, 86.8750, 86.8150, 84.8750, 84.1900, 83.8750,
+            83.3750, 85.5000, 89.1900, 89.4400, 91.0950, 90.7500, 91.4400, 89.0000, 91.0000, 90.5000,
+            89.0300, 88.8150, 84.2800, 83.5000, 82.6900, 84.7500, 85.6550, 86.1900, 88.9400, 89.2800,
+            88.6250, 88.5000, 91.9700, 91.5000, 93.2500, 93.5000, 93.1550, 91.7200, 90.0000, 89.6900,
+            88.8750, 85.1900, 83.3750, 84.8750, 85.9400, 97.2500, 99.8750, 104.9400, 106.0000, 102.5000,
             102.4050, 104.5950, 106.1250, 106.0000, 106.0650, 104.6250, 108.6250, 109.3150, 110.5000, 112.7500,
             123.0000, 119.6250, 118.7500, 119.2500, 117.9400, 116.4400, 115.1900, 111.8750, 110.5950, 118.1250,
             116.0000, 116.0000, 112.0000, 113.7500, 112.9400, 116.0000, 120.5000, 116.6200, 117.0000, 115.2500,
@@ -39,12 +37,12 @@ namespace Mbs.UnitTests.Trading.Indicators.Statistics
             132.0000, 130.7500, 134.7500, 135.0000, 132.3800, 133.3100, 131.9400, 130.0000, 125.3700, 130.1300,
             127.1200, 125.1900, 122.0000, 125.0000, 123.0000, 123.5000, 120.0600, 121.0000, 117.7500, 119.8700,
             122.0000, 119.1900, 116.3700, 113.5000, 114.2500, 110.0000, 105.0600, 107.0000, 107.8700, 107.0000,
-            107.1200, 107.0000,  91.0000,  93.9400,  93.8700,  95.5000,  93.0000,  94.9400,  98.2500,  96.7500,
-             94.8100,  94.3700,  91.5600,  90.2500,  93.9400,  93.6200,  97.0000,  95.0000,  95.8700,  94.0600,
-             94.6200,  93.7500,  98.0000, 103.9400, 107.8700, 106.0600, 104.5000, 105.0000, 104.1900, 103.0600,
+            107.1200, 107.0000, 91.0000, 93.9400, 93.8700, 95.5000, 93.0000, 94.9400, 98.2500, 96.7500,
+            94.8100, 94.3700, 91.5600, 90.2500, 93.9400, 93.6200, 97.0000, 95.0000, 95.8700, 94.0600,
+            94.6200, 93.7500, 98.0000, 103.9400, 107.8700, 106.0600, 104.5000, 105.0000, 104.1900, 103.0600,
             103.4200, 105.2700, 111.8700, 116.0000, 116.6200, 118.2800, 113.3700, 109.0000, 109.7000, 109.2500,
             107.0000, 109.1900, 110.0000, 109.2000, 110.1200, 108.0000, 108.6200, 109.7500, 109.8100, 109.0000,
-            108.7500, 107.8700
+            108.7500, 107.8700,
         };
 
         /// <summary>
@@ -102,7 +100,7 @@ namespace Mbs.UnitTests.Trading.Indicators.Statistics
             5.421588697051820, 4.672564178264440, 2.305501247017660, 3.238552763195310, 3.666974774933690,
             3.553471542027600, 2.070986238486390, 0.942409677369668, 1.056851929079940, 1.011205221505510,
             1.120578422066030, 0.758218965734834, 0.807722724701986, 0.762375235694340, 0.809864186144813,
-            0.686515841040831, 0.500503746239725, 0.714355653718789
+            0.686515841040831, 0.500503746239725, 0.714355653718789,
         };
 
         /// <summary>
@@ -160,18 +158,13 @@ namespace Mbs.UnitTests.Trading.Indicators.Statistics
             6.0615204363261900, 5.2240855659148600, 2.5776287552710100, 3.6208120636122500, 4.0998024342643600,
             3.9729019620423600, 2.3154330048610800, 1.0536460506261100, 1.1815963777872700, 1.1305618072445200,
             1.2528447629295500, 0.8477145746063360, 0.9030614597024950, 0.8523614256874840, 0.9054556863811730,
-            0.7675480440988690, 0.5595801997926650, 0.7986739009132570
+            0.7675480440988690, 0.5595801997926650, 0.7986739009132570,
         };
-        #endregion
 
         [TestMethod]
         public void StandardDeviation_Metadata_ValuesAreCorrect()
         {
-            var parameters = new StandardDeviation.Parameters()
-            {
-                Length = 7,
-                IsUnbiased = true
-            };
+            var parameters = new StandardDeviation.Parameters { Length = 7, IsUnbiased = true };
 
             var target = new StandardDeviation(parameters);
             var metadata = target.Metadata;
@@ -186,11 +179,7 @@ namespace Mbs.UnitTests.Trading.Indicators.Statistics
         [TestMethod]
         public void StandardDeviation_Metadata_SampleVariance_NameAndDescriptionAreCorrect()
         {
-            var parameters = new StandardDeviation.Parameters()
-            {
-                Length = 7,
-                IsUnbiased = true
-            };
+            var parameters = new StandardDeviation.Parameters { Length = 7, IsUnbiased = true };
 
             var target = new StandardDeviation(parameters);
             var metadata = target.Metadata;
@@ -202,11 +191,7 @@ namespace Mbs.UnitTests.Trading.Indicators.Statistics
         [TestMethod]
         public void StandardDeviation_Metadata_PopulationVariance_NameAndDescriptionAreCorrect()
         {
-            var parameters = new StandardDeviation.Parameters()
-            {
-                Length = 7,
-                IsUnbiased = false
-            };
+            var parameters = new StandardDeviation.Parameters { Length = 7, IsUnbiased = false };
 
             var target = new StandardDeviation(parameters);
             var metadata = target.Metadata;
@@ -222,11 +207,7 @@ namespace Mbs.UnitTests.Trading.Indicators.Statistics
             var scalar = new Scalar(DateTime.Now, 1d);
             int count = StdevInput.Length;
 
-            var parameters = new StandardDeviation.Parameters()
-            {
-                Length = 5,
-                IsUnbiased = false
-            };
+            var parameters = new StandardDeviation.Parameters { Length = 5, IsUnbiased = false };
             var target = new StandardDeviation(parameters);
 
             for (int i = 0; i < 4; ++i)
@@ -256,11 +237,7 @@ namespace Mbs.UnitTests.Trading.Indicators.Statistics
                 scalarArray[i] = new Scalar { Time = DateTime.UtcNow, Value = StdevInput[i] };
             }
 
-            var parameters = new StandardDeviation.Parameters()
-            {
-                Length = 5,
-                IsUnbiased = false
-            };
+            var parameters = new StandardDeviation.Parameters { Length = 5, IsUnbiased = false };
             var target = new StandardDeviation(parameters);
 
             var outputs = target.Update(scalarArray).ToList();
@@ -286,11 +263,7 @@ namespace Mbs.UnitTests.Trading.Indicators.Statistics
             var scalar = new Scalar(DateTime.Now, 1d);
             int count = StdevInput.Length;
 
-            var parameters = new StandardDeviation.Parameters()
-            {
-                Length = 5,
-                IsUnbiased = true
-            };
+            var parameters = new StandardDeviation.Parameters { Length = 5, IsUnbiased = true };
             var target = new StandardDeviation(parameters);
 
             for (int i = 0; i < 4; ++i)
@@ -320,11 +293,7 @@ namespace Mbs.UnitTests.Trading.Indicators.Statistics
                 scalarArray[i] = new Scalar { Time = DateTime.UtcNow, Value = StdevInput[i] };
             }
 
-            var parameters = new StandardDeviation.Parameters()
-            {
-                Length = 5,
-                IsUnbiased = true
-            };
+            var parameters = new StandardDeviation.Parameters { Length = 5, IsUnbiased = true };
             var target = new StandardDeviation(parameters);
 
             var outputs = target.Update(scalarArray).ToList();
@@ -349,11 +318,7 @@ namespace Mbs.UnitTests.Trading.Indicators.Statistics
             var scalar = new Scalar(DateTime.Now, 1d);
             int count = StdevInput.Length;
 
-            var parameters = new StandardDeviation.Parameters()
-            {
-                Length = 5,
-                IsUnbiased = false
-            };
+            var parameters = new StandardDeviation.Parameters { Length = 5, IsUnbiased = false };
             var target = new StandardDeviation(parameters);
             var target2 = new StandardDeviation(parameters);
 
@@ -382,11 +347,7 @@ namespace Mbs.UnitTests.Trading.Indicators.Statistics
             var scalar = new Scalar(DateTime.Now, 1d);
             int count = StdevInput.Length;
 
-            var parameters = new StandardDeviation.Parameters()
-            {
-                Length = 5,
-                IsUnbiased = false
-            };
+            var parameters = new StandardDeviation.Parameters { Length = 5, IsUnbiased = false };
             var target = new StandardDeviation(parameters);
 
             for (int i = 0; i < 4; ++i)
@@ -427,10 +388,7 @@ namespace Mbs.UnitTests.Trading.Indicators.Statistics
         [TestMethod]
         public void StandardDeviation_Constructor_CreatesAnInstance()
         {
-            var parameters = new StandardDeviation.Parameters
-            {
-                Length = 5
-            };
+            var parameters = new StandardDeviation.Parameters { Length = 5 };
 
             var target = new StandardDeviation(parameters);
 
@@ -441,10 +399,7 @@ namespace Mbs.UnitTests.Trading.Indicators.Statistics
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void StandardDeviation_Constructor_LengthIsNegative_ThrowsException()
         {
-            var parameters = new StandardDeviation.Parameters
-            {
-                Length = -1
-            };
+            var parameters = new StandardDeviation.Parameters { Length = -1 };
 
             var target = new StandardDeviation(parameters);
 
@@ -466,15 +421,11 @@ namespace Mbs.UnitTests.Trading.Indicators.Statistics
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void StandardDeviation_Constructor_LengthIsOne_ThrowsException()
         {
-            var parameters = new StandardDeviation.Parameters
-            {
-                Length = 1
-            };
+            var parameters = new StandardDeviation.Parameters { Length = 1 };
 
             var target = new StandardDeviation(parameters);
 
             Assert.IsNotNull(target);
         }
     }
-
 }

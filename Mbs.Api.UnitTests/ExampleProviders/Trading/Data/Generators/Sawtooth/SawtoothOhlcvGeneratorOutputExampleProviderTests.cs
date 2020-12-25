@@ -1,5 +1,4 @@
 ﻿using Mbs.Api.ExampleProviders.Trading.Data.Generators.Sawtooth;
-using Mbs.Trading.Data;
 using Mbs.Trading.Data.Generators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -8,11 +7,10 @@ namespace Mbs.Api.UnitTests.ExampleProviders.Trading.Data.Generators.Sawtooth
     [TestClass]
     public class SawtoothOhlcvGeneratorOutputExampleProviderTests
     {
-        // ReSharper disable InconsistentNaming
         [TestMethod]
         public void SawtoothOhlcvGeneratorOutputExampleProvider_GetExamples_CorrectValues()
         {
-            var example = (SyntheticDataGeneratorOutput<Ohlcv>) new SawtoothOhlcvGeneratorOutputExampleProvider().GetExamples();
+            var example = new SawtoothOhlcvGeneratorOutputExampleProvider().GetExamples();
 
             Assert.AreEqual(SawtoothOhlcvGeneratorOutputExampleProvider.Name, example.Name, "name");
             Assert.AreEqual(SawtoothOhlcvGeneratorOutputExampleProvider.Moniker, example.Moniker, "moniker");

@@ -1,5 +1,6 @@
 ﻿using System;
 
+// ReSharper disable once CheckNamespace
 namespace Mbs.Numerics
 {
     /// <summary>
@@ -20,14 +21,23 @@ namespace Mbs.Numerics
         public static Complex SphericalHarmonic(int l, int m, double theta, double phi)
         {
             if (l < 0)
+            {
                 return Complex.NaN;
+            }
+
             if (m > l || m < -l)
+            {
                 return Complex.NaN;
+            }
+
             if (m < 0)
             {
                 Complex y = SphericalHarmonic(l, -m, theta, phi);
                 if ((m % 2) != 0)
+                {
                     y = -y;
+                }
+
                 return y.Conjugate;
             }
 

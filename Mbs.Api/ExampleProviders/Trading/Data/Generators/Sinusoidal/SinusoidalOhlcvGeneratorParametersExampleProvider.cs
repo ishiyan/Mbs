@@ -19,7 +19,7 @@ namespace Mbs.Api.ExampleProviders.Trading.Data.Generators.Sinusoidal
                     SessionEndTime = DefaultParameterValues.SessionEndTime,
                     StartDate = DefaultParameterValues.StartDate,
                     TimeGranularity = DefaultParameterValues.TimeGranularity,
-                    BusinessDayCalendar = DefaultParameterValues.BusinessDayCalendar
+                    BusinessDayCalendar = DefaultParameterValues.BusinessDayCalendar,
                 },
                 WaveformParameters = new WaveformParameters
                 {
@@ -28,21 +28,21 @@ namespace Mbs.Api.ExampleProviders.Trading.Data.Generators.Sinusoidal
                     RepetitionsCount = DefaultParameterValues.RepetitionsCount,
                     NoiseAmplitudeFraction = DefaultParameterValues.NoiseAmplitudeFraction,
                     NoiseUniformRandomGeneratorKind = DefaultParameterValues.NoiseUniformRandomGeneratorKind,
-                    NoiseUniformRandomGeneratorSeed = DefaultParameterValues.NoiseUniformRandomGeneratorSeed
+                    NoiseUniformRandomGeneratorSeed = DefaultParameterValues.NoiseUniformRandomGeneratorSeed,
                 },
                 SinusoidalParameters = new SinusoidalParameters
                 {
                     Amplitude = DefaultParameterValues.SinusoidalAmplitude,
                     MinimalValue = DefaultParameterValues.SinusoidalMinimalValue,
                     Period = DefaultParameterValues.SinusoidalPeriod,
-                    PhaseInPi = DefaultParameterValues.SinusoidalPhaseInPi
+                    PhaseInPi = DefaultParameterValues.SinusoidalPhaseInPi,
                 },
                 OhlcvParameters = new OhlcvParameters
                 {
                     CandlestickShadowFraction = DefaultParameterValues.CandlestickShadowFraction,
                     CandlestickBodyFraction = DefaultParameterValues.CandlestickBodyFraction,
-                    Volume = DefaultParameterValues.CandlestickVolume
-                }
+                    Volume = DefaultParameterValues.CandlestickVolume,
+                },
             };
         }
     }

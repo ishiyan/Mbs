@@ -2,9 +2,9 @@
 using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
-using Mbs;
 using Mbs.Trading.Data;
 using Mbs.Trading.Data.Historical;
+using Mbs.Utilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -12,8 +12,14 @@ using Microsoft.Extensions.Logging;
 
 namespace CsvHistoricalInstrumentData
 {
-    internal class Program
+    // ReSharper disable once ClassNeverInstantiated.Global
+    // ReSharper disable once ConvertToStaticClass
+    internal sealed class Program
     {
+        private Program()
+        {
+        }
+
         private static async Task Main()
         {
             var host = new HostBuilder()
@@ -60,14 +66,16 @@ namespace CsvHistoricalInstrumentData
 
             var csvInstrumentInfos = configuration.GetSection("CsvInstrumentInfos").Get<CsvInstrumentInfo[]>();
             foreach (var csv in csvInstrumentInfos)
+            {
                 CsvRepository.Add(csv.Instrument, csv.CsvInfo);
+            }
 
             var instrumentHistoricalDataRequests = configuration.GetSection("InstrumentHistoricalDataRequests").Get<InstrumentHistoricalDataRequest[]>();
             foreach (var req in instrumentHistoricalDataRequests)
             {
                 logger.LogInformation($"fetching {req.Moniker}");
                 var hdr = req.HistoricalDataRequest;
-                var entityType = req.EntityType;
+                var entityType = req.GetEntityType();
 
                 if (entityType == typeof(Ohlcv))
                 {
@@ -75,8 +83,10 @@ namespace CsvHistoricalInstrumentData
                     foreach (var e in enumerable)
                     {
                         if (e != null)
+                        {
                             Console.WriteLine(
                                 $"{e.Time.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)}; {e.Open.ToString(CultureInfo.InvariantCulture)}; {e.High.ToString(CultureInfo.InvariantCulture)}; {e.Low.ToString(CultureInfo.InvariantCulture)}; {e.Close.ToString(CultureInfo.InvariantCulture)}; {e.Volume.ToString(CultureInfo.InvariantCulture)}");
+                        }
                     }
                 }
                 else if (entityType == typeof(Trade))

@@ -9,19 +9,19 @@ namespace Mbs.Trading.Indicators.Abstractions
     public interface IIndicator
     {
         /// <summary>
-        /// Resets the indicator.
-        /// </summary>
-        void Reset();
-
-        /// <summary>
-        /// If indicator is primed.
+        /// Gets a value indicating whether an indicator is primed.
         /// </summary>
         bool IsPrimed { get; }
 
         /// <summary>
-        /// Describes output data of an indicator.
+        /// Gets description of output data of an indicator.
         /// </summary>
         IndicatorMetadata Metadata { get; }
+
+        /// <summary>
+        /// Resets the indicator.
+        /// </summary>
+        void Reset();
 
         /// <summary>
         /// Updates the value of the indicator given the next <see cref="Scalar"/> sample.

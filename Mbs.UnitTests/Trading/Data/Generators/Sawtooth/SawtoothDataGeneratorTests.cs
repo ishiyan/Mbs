@@ -7,8 +7,6 @@ namespace Mbs.UnitTests.Trading.Data.Generators.Sawtooth
     [TestClass]
     public class SawtoothDataGeneratorTests
     {
-        // ReSharper disable InconsistentNaming
-
         [TestMethod]
         public void SawtoothDataGenerator_Construction_DefaultConstructor_PropertyValuesCorrect()
         {

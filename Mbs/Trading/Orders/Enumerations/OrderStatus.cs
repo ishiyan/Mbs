@@ -1,4 +1,4 @@
-﻿namespace Mbs.Trading.Orders
+﻿namespace Mbs.Trading.Orders.Enumerations
 {
     /// <summary>
     /// The states an order runs through during its lifetime.
@@ -95,6 +95,6 @@
         /// The order may still be partially filled.
         /// This is a terminal state of an order, no further changes are allowed.
         /// </remarks>
-        Canceled
+        Canceled,
     }
 }

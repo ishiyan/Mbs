@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
+using Mbs.Utilities;
 
 // ReSharper disable once CheckNamespace
 namespace Mbs.Trading.Data
@@ -11,6 +12,32 @@ namespace Mbs.Trading.Data
     [DataContract]
     public sealed class Ohlcv : TemporalEntity
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Ohlcv"/> class.
+        /// </summary>
+        /// <param name="dateTime">The date and time of the closing price.</param>
+        /// <param name="open">The opening price.</param>
+        /// <param name="high">The highest price.</param>
+        /// <param name="low">The lowest price.</param>
+        /// <param name="close">The closing price.</param>
+        /// <param name="volume">The volume.</param>
+        public Ohlcv(DateTime dateTime, double open = double.NaN, double high = double.NaN, double low = double.NaN, double close = double.NaN, double volume = double.NaN)
+            : base(dateTime)
+        {
+            Open = open;
+            High = high;
+            Low = low;
+            Close = close;
+            Volume = volume;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Ohlcv"/> class.
+        /// </summary>
+        public Ohlcv()
+        {
+        }
+
         /// <summary>
         /// Gets or sets the opening price.
         /// </summary>
@@ -107,6 +134,43 @@ namespace Mbs.Trading.Data
         public bool IsWeightedEmpty => double.IsNaN(Close) || double.IsNaN(Low) || double.IsNaN(High);
 
         /// <summary>
+        /// Gets a value indicating whether this is a rising bar, i.e. the opening price is less than the closing price.
+        /// </summary>
+        public bool IsRising => Open < Close;
+
+        /// <summary>
+        /// Gets a value indicating whether this is a falling bar, i.e. the closing price is less than the opening price.
+        /// </summary>
+        public bool IsFalling => Open > Close;
+
+        /// <summary>
+        /// Gets a deep copy of this object.
+        /// </summary>
+        public override TemporalEntity Clone => new Ohlcv(Time, Open, High, Low, Close, Volume);
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Ohlcv"/> class using the specified trade and the time granularity.
+        /// </summary>
+        /// <param name="trade">The trade.</param>
+        /// <returns>The constructed object.</returns>
+        public static Ohlcv CloneAggregation(Trade trade)
+        {
+            var value = trade.Price;
+            return new Ohlcv(trade.Time, value, value, value, value, trade.Volume);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Ohlcv"/> class using the specified scalar and the time granularity.
+        /// </summary>
+        /// <param name="scalar">The scalar.</param>
+        /// <returns>The constructed object.</returns>
+        public static Ohlcv CloneAggregation(Scalar scalar)
+        {
+            var value = scalar.Value;
+            return new Ohlcv(scalar.Time, value, value, value, value);
+        }
+
+        /// <summary>
         /// The value of the specified price type.
         /// </summary>
         /// <param name="priceType">The price type.</param>
@@ -148,16 +212,6 @@ namespace Mbs.Trading.Data
         }
 
         /// <summary>
-        /// Gets a value indicating whether this is a rising bar, i.e. the opening price is less than the closing price.
-        /// </summary>
-        public bool IsRising => Open < Close;
-
-        /// <summary>
-        /// Gets a value indicating whether this is a falling bar, i.e. the closing price is less than the opening price.
-        /// </summary>
-        public bool IsFalling => Open > Close;
-
-        /// <summary>
         /// Un-initializes the bar data; the date and time remain unchanged.
         /// </summary>
         public void Empty()
@@ -176,28 +230,6 @@ namespace Mbs.Trading.Data
         public Ohlcv CloneAggregation()
         {
             return new Ohlcv(Time, Open, High, Low, Close, Volume);
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Ohlcv"/> class using the specified trade and the time granularity.
-        /// </summary>
-        /// <param name="trade">The trade.</param>
-        /// <returns>The constructed object.</returns>
-        public static Ohlcv CloneAggregation(Trade trade)
-        {
-            var value = trade.Price;
-            return new Ohlcv(trade.Time, value, value, value, value, trade.Volume);
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Ohlcv"/> class using the specified scalar and the time granularity.
-        /// </summary>
-        /// <param name="scalar">The scalar.</param>
-        /// <returns>The constructed object.</returns>
-        public static Ohlcv CloneAggregation(Scalar scalar)
-        {
-            var value = scalar.Value;
-            return new Ohlcv(scalar.Time, value, value, value, value);
         }
 
         /// <summary>
@@ -220,9 +252,14 @@ namespace Mbs.Trading.Data
             {
                 Volume += other.Volume;
                 if (High < other.High)
+                {
                     High = other.High;
+                }
+
                 if (Low > other.Low)
+                {
                     Low = other.Low;
+                }
             }
         }
 
@@ -247,9 +284,14 @@ namespace Mbs.Trading.Data
             {
                 Volume += trade.Volume;
                 if (High < value)
+                {
                     High = value;
+                }
+
                 if (Low > value)
+                {
                     Low = value;
+                }
             }
         }
 
@@ -273,41 +315,15 @@ namespace Mbs.Trading.Data
             else
             {
                 if (High < value)
+                {
                     High = value;
+                }
+
                 if (Low > value)
+                {
                     Low = value;
+                }
             }
         }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Ohlcv"/> class.
-        /// </summary>
-        /// <param name="dateTime">The date and time of the closing price.</param>
-        /// <param name="open">The opening price.</param>
-        /// <param name="high">The highest price.</param>
-        /// <param name="low">The lowest price.</param>
-        /// <param name="close">The closing price.</param>
-        /// <param name="volume">The volume.</param>
-        public Ohlcv(DateTime dateTime, double open = double.NaN, double high = double.NaN, double low = double.NaN, double close = double.NaN, double volume = double.NaN)
-            : base(dateTime)
-        {
-            Open = open;
-            High = high;
-            Low = low;
-            Close = close;
-            Volume = volume;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Ohlcv"/> class.
-        /// </summary>
-        public Ohlcv()
-        {
-        }
-
-        /// <summary>
-        /// Gets a deep copy of this object.
-        /// </summary>
-        public override TemporalEntity Clone => new Ohlcv(Time, Open, High, Low, Close, Volume);
     }
 }

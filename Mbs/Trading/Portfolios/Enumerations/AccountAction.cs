@@ -1,4 +1,4 @@
-namespace Mbs.Trading.Portfolios
+namespace Mbs.Trading.Portfolios.Enumerations
 {
     /// <summary>
     /// An account action enumeration.
@@ -13,6 +13,6 @@ namespace Mbs.Trading.Portfolios
         /// <summary>
         /// Deposit.
         /// </summary>
-        Deposit
+        Deposit,
     }
 }

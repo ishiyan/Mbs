@@ -14,6 +14,6 @@
         /// <summary>
         /// Beleggingsadvies.
         /// </summary>
-        Beleggingsadvies
+        Beleggingsadvies,
     }
 }

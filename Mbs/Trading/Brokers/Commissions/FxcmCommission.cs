@@ -15,7 +15,7 @@ namespace Mbs.Trading.Brokers.Commissions
     {
         private static readonly List<string> GroupCommissionSchedule = new List<string>
         {
-            "EURUSD", "GBPUSD", "USDJPY", "USDCHF", "AUDUSD", "EURJPY", "GBPJPY"
+            "EURUSD", "GBPUSD", "USDJPY", "USDCHF", "AUDUSD", "EURJPY", "GBPJPY",
         };
 
         /// <inheritdoc />
@@ -38,11 +38,15 @@ namespace Mbs.Trading.Brokers.Commissions
             // CFD: no commissions
             Instrument instrument = order.Instrument;
             if (instrument.Type != InstrumentType.Forex)
+            {
                 return 0;
+            }
 
             string symbol = instrument.Symbol?.ToUpperInvariant();
             if (string.IsNullOrWhiteSpace(symbol))
+            {
                 return 0;
+            }
 
             double commissionRate = GroupCommissionSchedule.Contains(symbol) ? 0.04 : 0.06;
 

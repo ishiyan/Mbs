@@ -7,8 +7,6 @@ namespace Mbs.UnitTests.Trading.Data.Generators.Square
     [TestClass]
     public class SquareOhlcvGeneratorTests
     {
-        // ReSharper disable InconsistentNaming
-
         [TestMethod]
         public void SquareOhlcvGenerator_Construction_DefaultConstructor_PropertyValuesCorrect()
         {

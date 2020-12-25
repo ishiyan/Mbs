@@ -9,42 +9,33 @@ using Mbs.Trading.Time;
 // ReSharper disable once ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable MemberCanBePrivate.Global
-// ReSharper disable IdentifierTypo
 namespace CsvHistoricalInstrumentData
 {
-    internal class InstrumentHistoricalDataRequest
+    internal sealed class InstrumentHistoricalDataRequest
     {
         public string Symbol { get; set; }
+
         public string Isin { get; set; }
+
         public ExchangeMic Mic { get; set; }
+
         public TimeGranularity TimeGranularity { get; set; }
+
         public InstrumentType Type { get; set; }
+
         [DataType(DataType.Date)]
+
         public DateTime DateStart { get; set; }
+
         [DataType(DataType.Date)]
         public DateTime DateEnd { get; set; }
+
         public bool AdjustedDataIfPresent { get; set; }
+
         public TimeSpan EndofdayClosingTime { get; set; }
+
         [DataType("Type")]
         public string Entity { get; set; }
-
-        public Type EntityType
-        {
-            get
-            {
-                if (Entity == null)
-                    throw new ArgumentNullException(nameof(Entity));
-
-                return Entity.ToLowerInvariant() switch
-                {
-                    "ohlcv" => typeof(Ohlcv),
-                    "trade" => typeof(Trade),
-                    "quote" => typeof(Quote),
-                    "scalar" => typeof(Scalar),
-                    _ => throw new ArgumentException(nameof(Entity), $"Unknown entity type: {Entity}")
-                };
-            }
-        }
 
         public HistoricalDataRequest HistoricalDataRequest => new HistoricalDataRequest(
             new Instrument(Symbol, Mic, Isin) { Type = Type },
@@ -57,5 +48,21 @@ namespace CsvHistoricalInstrumentData
         public string Moniker =>
             $"{Symbol} - {Isin}@{Mic}@{TimeGranularity} [{DateStart.ToShortDateString()} - {DateEnd.ToShortDateString()}]@{EndofdayClosingTime.ToString()}";
 
+        public Type GetEntityType()
+        {
+            if (Entity == null)
+            {
+                throw new ArgumentException("Entity cannot be null");
+            }
+
+            return Entity.ToLowerInvariant() switch
+            {
+                "ohlcv" => typeof(Ohlcv),
+                "trade" => typeof(Trade),
+                "quote" => typeof(Quote),
+                "scalar" => typeof(Scalar),
+                _ => throw new ArgumentException(nameof(Entity), $"Unknown entity type: {Entity}")
+            };
+        }
     }
 }

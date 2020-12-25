@@ -1,14 +1,15 @@
-﻿namespace Mbs.Numerics
-{
-    using System;
+﻿using System;
 
+// ReSharper disable once CheckNamespace
+namespace Mbs.Numerics
+{
     /// <summary>
     /// Contains assorted special functions.
     /// </summary>
     public static partial class SpecialFunctions
     {
         /// <summary>
-        /// Computes the Lambert W function, which is the solution of the transcendental equation
+        /// Computes the Lambert W function, which is the solution of the transcendental equation:
         /// <para />
         /// W(x)∙℮ᵂ⁽ˣ⁾ = x.
         /// <para />
@@ -21,12 +22,13 @@
         public static double LambertW(double x)
         {
             if (x < -Constants.InvE)
-                return double.NaN; // throw new ArgumentOutOfRangeException("x");
+            {
+                return double.NaN; // Or throw an argument out of range exception.
+            }
 
             double w;
             if (x < 0d)
             {
-                // this was commented out...
                 double p = Constants.Sqrt2 * Math.Sqrt(1d + Constants.E * x);
                 w = ((0.50000000254110366 + p * (2.077082690400045 + p * (1.4275043714348843 + p * 0.18169293085614638))) / (1d + p * (1.3257391022094323 + p * (0.43856420102046717 + p * 0.0265500411085822)))) - 1.5;
             }

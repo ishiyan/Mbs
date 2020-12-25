@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Globalization;
-using Mbs.Numerics.Random;
+using Mbs.Numerics.RandomGenerators;
 using Mbs.Trading.Time;
+using Mbs.Trading.Time.Conventions;
 
 namespace Mbs.Trading.Data.Generators.Sawtooth
 {
@@ -18,21 +19,6 @@ namespace Mbs.Trading.Data.Generators.Sawtooth
     /// </summary>
     public sealed class SawtoothQuoteGenerator : SawtoothDataGenerator<Quote>
     {
-        /// <summary>
-        /// Gets the spread fraction, ρs, which determines the ask and bid prices as a fraction of the mid price.
-        /// </summary>
-        public double SpreadFraction { get; }
-
-        /// <summary>
-        /// Gets the value of the ask size, which is the same for all quotes; should be positive.
-        /// </summary>
-        public double AskSize { get; }
-
-        /// <summary>
-        /// Gets the value of the bid size, which is the same for all quotes; should be positive.
-        /// </summary>
-        public double BidSize { get; }
-
         internal const string WaveformName = "Sawtooth quote waveform";
 
         /// <summary>
@@ -108,20 +94,20 @@ namespace Mbs.Trading.Data.Generators.Sawtooth
             Initialize();
         }
 
-        private void Initialize()
-        {
-            const double delta = 0.00005;
-            if (Math.Abs(SpreadFraction) > delta)
-                Moniker = string.Format(CultureInfo.InvariantCulture, "{0}, ρs={1:0.####}", Moniker, SpreadFraction);
+        /// <summary>
+        /// Gets the spread fraction, ρs, which determines the ask and bid prices as a fraction of the mid price.
+        /// </summary>
+        public double SpreadFraction { get; }
 
-            if (Math.Abs(AskSize) > delta)
-                Moniker = string.Format(CultureInfo.InvariantCulture, "{0}, as={1:0.####}", Moniker, AskSize);
+        /// <summary>
+        /// Gets the value of the ask size, which is the same for all quotes; should be positive.
+        /// </summary>
+        public double AskSize { get; }
 
-            if (Math.Abs(BidSize) > delta)
-                Moniker = string.Format(CultureInfo.InvariantCulture, "{0}, bs={1:0.####}", Moniker, BidSize);
-
-            Name = WaveformName;
-        }
+        /// <summary>
+        /// Gets the value of the bid size, which is the same for all quotes; should be positive.
+        /// </summary>
+        public double BidSize { get; }
 
         /// <inheritdoc />
         public override Quote GenerateNext()
@@ -134,6 +120,27 @@ namespace Mbs.Trading.Data.Generators.Sawtooth
             quote.AskSize = AskSize;
             quote.BidSize = BidSize;
             return quote;
+        }
+
+        private void Initialize()
+        {
+            const double delta = 0.00005;
+            if (Math.Abs(SpreadFraction) > delta)
+            {
+                Moniker = string.Format(CultureInfo.InvariantCulture, "{0}, ρs={1:0.####}", Moniker, SpreadFraction);
+            }
+
+            if (Math.Abs(AskSize) > delta)
+            {
+                Moniker = string.Format(CultureInfo.InvariantCulture, "{0}, as={1:0.####}", Moniker, AskSize);
+            }
+
+            if (Math.Abs(BidSize) > delta)
+            {
+                Moniker = string.Format(CultureInfo.InvariantCulture, "{0}, bs={1:0.####}", Moniker, BidSize);
+            }
+
+            Name = WaveformName;
         }
     }
 }

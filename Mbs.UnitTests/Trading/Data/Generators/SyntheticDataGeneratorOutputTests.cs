@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
@@ -12,8 +13,6 @@ namespace Mbs.UnitTests.Trading.Data.Generators
     [TestClass]
     public class SyntheticDataGeneratorOutputTests
     {
-        // ReSharper disable InconsistentNaming
-
         [TestMethod]
         public void SyntheticDataGeneratorOutput_Validate_ValidInput_CorrectValidationResults()
         {
@@ -21,7 +20,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
             {
                 Name = "a",
                 Moniker = "b",
-                Data = new []{ new Scalar() }
+                Data = new[] { new Scalar() },
             };
 
             var results = new List<ValidationResult>();
@@ -38,7 +37,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
             var output = new SyntheticDataGeneratorOutput<Scalar>
             {
                 Moniker = "b",
-                Data = new[] { new Scalar() }
+                Data = new[] { new Scalar() },
             };
 
             var context = new ValidationContext(output);
@@ -51,9 +50,9 @@ namespace Mbs.UnitTests.Trading.Data.Generators
         {
             var output = new SyntheticDataGeneratorOutput<Scalar>
             {
-                Name = "",
+                Name = string.Empty,
                 Moniker = "b",
-                Data = new[] { new Scalar() }
+                Data = new[] { new Scalar() },
             };
 
             var context = new ValidationContext(output);
@@ -66,7 +65,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
             var output = new SyntheticDataGeneratorOutput<Scalar>
             {
                 Moniker = "b",
-                Data = new[] { new Scalar() }
+                Data = new[] { new Scalar() },
             };
 
             var expectedMessage = string.Format(
@@ -88,9 +87,9 @@ namespace Mbs.UnitTests.Trading.Data.Generators
         {
             var output = new SyntheticDataGeneratorOutput<Scalar>
             {
-                Name = "",
+                Name = string.Empty,
                 Moniker = "b",
-                Data = new[] { new Scalar() }
+                Data = new[] { new Scalar() },
             };
 
             var expectedMessage = string.Format(
@@ -114,7 +113,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
             var output = new SyntheticDataGeneratorOutput<Scalar>
             {
                 Name = "a",
-                Data = new[] { new Scalar() }
+                Data = new[] { new Scalar() },
             };
 
             var context = new ValidationContext(output);
@@ -128,8 +127,8 @@ namespace Mbs.UnitTests.Trading.Data.Generators
             var output = new SyntheticDataGeneratorOutput<Scalar>
             {
                 Name = "a",
-                Moniker = "",
-                Data = new[] { new Scalar() }
+                Moniker = string.Empty,
+                Data = new[] { new Scalar() },
             };
 
             var context = new ValidationContext(output);
@@ -142,7 +141,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
             var output = new SyntheticDataGeneratorOutput<Scalar>
             {
                 Name = "a",
-                Data = new[] { new Scalar() }
+                Data = new[] { new Scalar() },
             };
 
             var expectedMessage = string.Format(
@@ -165,8 +164,8 @@ namespace Mbs.UnitTests.Trading.Data.Generators
             var output = new SyntheticDataGeneratorOutput<Scalar>
             {
                 Name = "a",
-                Moniker = "",
-                Data = new[] { new Scalar() }
+                Moniker = string.Empty,
+                Data = new[] { new Scalar() },
             };
 
             var expectedMessage = string.Format(
@@ -190,7 +189,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
             var output = new SyntheticDataGeneratorOutput<Scalar>
             {
                 Name = "a",
-                Moniker = "b"
+                Moniker = "b",
             };
 
             var context = new ValidationContext(output);
@@ -205,7 +204,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
             {
                 Name = "a",
                 Moniker = "b",
-                Data = new Scalar[0]
+                Data = Array.Empty<Scalar>(),
             };
 
             var context = new ValidationContext(output);
@@ -218,7 +217,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
             var output = new SyntheticDataGeneratorOutput<Scalar>
             {
                 Name = "a",
-                Moniker = "b"
+                Moniker = "b",
             };
 
             var expectedMessage = string.Format(
@@ -242,7 +241,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
             {
                 Name = "a",
                 Moniker = "b",
-                Data = new Scalar[0]
+                Data = Array.Empty<Scalar>(),
             };
 
             var expectedMessage =
@@ -278,7 +277,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
 
             var output = new SyntheticDataGeneratorOutput<Scalar>
             {
-                Name = name, Moniker = moniker, Data = data
+                Name = name, Moniker = moniker, Data = data,
             };
 
             Assert.AreEqual(name, output.Name, "name");
@@ -290,7 +289,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
         [TestMethod]
         public void SyntheticDataGeneratorOutput_DeserializeFromJson_ValidInput_CorrectValidationResults()
         {
-            var json = @"{
+            const string json = @"{
 name: ""name"",
 moniker: ""moniker"",
 data: [{time: ""2000-01-03"", value: 123.45}]

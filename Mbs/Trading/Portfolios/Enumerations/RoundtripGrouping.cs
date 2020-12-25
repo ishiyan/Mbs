@@ -1,4 +1,4 @@
-namespace Mbs.Trading.Portfolios
+namespace Mbs.Trading.Portfolios.Enumerations
 {
     /// <summary>
     /// An algorithm used to group order executions into round trips.
@@ -21,6 +21,6 @@ namespace Mbs.Trading.Portfolios
         /// A round trip is defined by a sequence of order executions, from a flat position to a non-zero
         /// position and an offsetting execution that reduces the position size.
         /// </summary>
-        FlatToReduced
+        FlatToReduced,
     }
 }

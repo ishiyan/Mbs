@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
-using Mbs;
 using Mbs.Trading.Data.Historical;
+using Mbs.Utilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -9,13 +9,17 @@ using Microsoft.Extensions.Logging;
 namespace EuronextHistoricalInstrumentData
 {
     // ReSharper disable once ClassNeverInstantiated.Global
-    internal class Program
+    // ReSharper disable once ConvertToStaticClass
+    internal sealed class Program
     {
+        private Program()
+        {
+        }
+
         internal static void Main()
         {
             var serviceProvider = BuildServiceProvider();
 
-            // Log.SetLogger(serviceProvider.GetService<ILogger<Log>>());
             Log.SetLogger(serviceProvider.GetService<ILoggerFactory>().CreateLogger("Mbs"));
             var logger = serviceProvider.GetService<ILogger<Program>>();
 

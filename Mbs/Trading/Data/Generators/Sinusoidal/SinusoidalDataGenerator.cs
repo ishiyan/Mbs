@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Globalization;
 using Mbs.Numerics;
-using Mbs.Numerics.Random;
+using Mbs.Numerics.RandomGenerators;
 using Mbs.Trading.Time;
+using Mbs.Trading.Time.Conventions;
 
 namespace Mbs.Trading.Data.Generators.Sinusoidal
 {
@@ -15,26 +16,6 @@ namespace Mbs.Trading.Data.Generators.Sinusoidal
     public abstract class SinusoidalDataGenerator<T> : WaveformDataGenerator<T>
         where T : TemporalEntity, new()
     {
-        /// <summary>
-        /// Gets the amplitude of the sinusoid in sample units, should be positive.
-        /// </summary>
-        public double SampleAmplitude { get; }
-
-        /// <summary>
-        /// Gets the sample value corresponding to the minimum of the sinusoid, should be positive.
-        /// </summary>
-        public double SampleMinimum { get; }
-
-        /// <summary>
-        /// Gets the period of the sinusoid in samples, should be ≥ 2.
-        /// </summary>
-        public double Period { get; }
-
-        /// <summary>
-        /// Gets the phase, φ, of the sinusoid in ratios of π; if φ∈[-1, 1], then the phase ∈[-π, π].
-        /// </summary>
-        public double PhaseInPi { get; }
-
         private readonly double frequency;
         private readonly double summand;
         private readonly double phase;
@@ -116,6 +97,52 @@ namespace Mbs.Trading.Data.Generators.Sinusoidal
             Initialize();
         }
 
+        /// <summary>
+        /// Gets the amplitude of the sinusoid in sample units, should be positive.
+        /// </summary>
+        public double SampleAmplitude { get; }
+
+        /// <summary>
+        /// Gets the sample value corresponding to the minimum of the sinusoid, should be positive.
+        /// </summary>
+        public double SampleMinimum { get; }
+
+        /// <summary>
+        /// Gets the period of the sinusoid in samples, should be ≥ 2.
+        /// </summary>
+        public double Period { get; }
+
+        /// <summary>
+        /// Gets the phase, φ, of the sinusoid in ratios of π; if φ∈[-1, 1], then the phase ∈[-π, π].
+        /// </summary>
+        public double PhaseInPi { get; }
+
+        /// <inheritdoc />
+        public override void Reset()
+        {
+            base.Reset();
+            angle = 0;
+        }
+
+        /// <inheritdoc />
+        protected override double OutOfWaveformSample()
+        {
+            return SampleMinimum;
+        }
+
+        /// <inheritdoc />
+        protected override double NextSample()
+        {
+            double sample = summand + SampleAmplitude * Math.Cos(angle + phase);
+            angle += frequency;
+            if (angle > Constants.TwoPi)
+            {
+                angle -= Constants.TwoPi;
+            }
+
+            return sample;
+        }
+
         private void Initialize()
         {
             const double delta = 0.00005;
@@ -135,36 +162,19 @@ namespace Mbs.Trading.Data.Generators.Sinusoidal
                     SampleMinimum);
 
             if (HasNoise && NoiseAmplitudeFraction > delta)
+            {
                 Moniker = string.Format(CultureInfo.InvariantCulture, "{0} + noise(ρn={1:0.####})", Moniker, NoiseAmplitudeFraction);
+            }
 
             if (OffsetSamples > 0)
+            {
                 Moniker = string.Format(CultureInfo.InvariantCulture, "{0}, off={1}", Moniker, OffsetSamples);
+            }
 
             if (!IsRepetitionsInfinite)
+            {
                 Moniker = string.Format(CultureInfo.InvariantCulture, "{0}, rep={1}", Moniker, RepetitionsCount);
-        }
-
-        /// <inheritdoc />
-        protected override double OutOfWaveformSample()
-        {
-            return SampleMinimum;
-        }
-
-        /// <inheritdoc />
-        protected override double NextSample()
-        {
-            double sample = summand + SampleAmplitude * Math.Cos(angle + phase);
-            angle += frequency;
-            if (angle > Constants.TwoPi)
-                angle -= Constants.TwoPi;
-            return sample;
-        }
-
-        /// <inheritdoc />
-        public override void Reset()
-        {
-            base.Reset();
-            angle = 0;
+            }
         }
     }
 }

@@ -4,8 +4,9 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using Mbs.Trading.Currencies;
+using Mbs.Trading.Instruments.Groups;
 using Mbs.Trading.Markets;
-using Mbs.Trading.Time;
+using Mbs.Trading.Time.Conventions;
 
 namespace Mbs.Trading.Instruments
 {
@@ -14,10 +15,8 @@ namespace Mbs.Trading.Instruments
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Modelled after FIX instrument component block.
-    /// </para>
-    /// <para>
-    /// See http://fiximate.fixtrading.org/latestEP/
+    /// Modeled after FIX instrument component block.
+    /// See http://fiximate.fixtrading.org/latestEP/.
     /// </para>
     /// </remarks>
     public class Instrument : IValidatableObject
@@ -25,14 +24,57 @@ namespace Mbs.Trading.Instruments
         private const string FieldIsRequired = "The field {0} is required.";
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="Instrument"/> class.
+        /// </summary>
+        public Instrument()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Instrument"/> class.
+        /// </summary>
+        /// <param name="symbol">The symbol (ticker).</param>
+        public Instrument(string symbol)
+        {
+            Symbol = symbol;
+            SetSecurityAlternateIdAs(InstrumentSecurityIdSource.ExchangeSymbol, symbol);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Instrument"/> class.
+        /// </summary>
+        /// <param name="symbol">The symbol (ticker).</param>
+        /// <param name="mic">The ISO 10383 Market Identifier Code (<see cref="ExchangeMic">MIC</see>).</param>
+        /// <param name="isin">The International Securities Identifying Number (ISIN).</param>
+        public Instrument(string symbol, ExchangeMic mic, string isin)
+            : this(symbol)
+        {
+            Exchange = new Exchange(mic);
+            SetSecurityIdAs(InstrumentSecurityIdSource.Isin, isin);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Instrument"/> class.
+        /// Use this constructor for Euronext instruments.
+        /// </summary>
+        /// <param name="symbol">The symbol (ticker).</param>
+        /// <param name="euronextMic">The Euronext <see cref="ExchangeMic">MIC</see>.</param>
+        /// <param name="isin">The International Securities Identifying Number (ISIN).</param>
+        /// <param name="type">The type of the instrument.</param>
+        public Instrument(string symbol, EuronextMic euronextMic, string isin, InstrumentType type)
+            : this(symbol)
+        {
+            Exchange = new Exchange(euronextMic);
+            SetSecurityIdAs(InstrumentSecurityIdSource.Isin, isin);
+            Type = type;
+        }
+
+        /// <summary>
         /// Gets or sets an optional security identifier value of the <see cref="SecurityIdSource"/> type.
         /// </summary>
         /// <remarks>
         /// <para>
-        /// Takes precedence in identifying security to counterparty over
-        /// <see cref="SecurityAlternateIdGroup"/> block.
-        /// </para>
-        /// <para>
+        /// Takes precedence in identifying security to counterparty over <see cref="SecurityAlternateIdGroup"/> block.
         /// Requires <see cref="SecurityIdSource"/> if specified.
         /// </para>
         /// </remarks>
@@ -57,51 +99,6 @@ namespace Mbs.Trading.Instruments
         public InstrumentSecurityAlternateIdGroup SecurityAlternateIdGroup { get; } = new InstrumentSecurityAlternateIdGroup();
 
         /// <summary>
-        /// Gets the <see cref="SecurityId"/> if it has a given <see cref="SecurityIdSource"/>.
-        /// </summary>
-        /// <param name="source">The security id source.</param>
-        /// <param name="checkAlternativeIdGroup">If true, check also the <see cref="SecurityAlternateIdGroup"/>.</param>
-        /// <returns>The security id or null if the source is different.</returns>
-        public string GetSecurityIdAs(InstrumentSecurityIdSource source, bool checkAlternativeIdGroup = true)
-        {
-            var id = source == SecurityIdSource
-                ? SecurityId
-                : null;
-
-            return id != null || !checkAlternativeIdGroup || SecurityAlternateIdGroup.Count <= 0
-                ? id
-                : SecurityAlternateIdGroup.Find(source)?.SecurityAlternateId;
-        }
-
-        /// <summary>
-        /// Sets the <see cref="SecurityId"/> of the given <see cref="SecurityIdSource"/>.
-        /// </summary>
-        /// <param name="source">The security id source.</param>
-        /// <param name="value">The security id value.</param>
-        public void SetSecurityIdAs(InstrumentSecurityIdSource source, string value)
-        {
-            if (string.IsNullOrEmpty(value))
-                throw new ArgumentNullException(nameof(value));
-            SecurityIdSource = source;
-            SecurityId = value;
-        }
-
-        /// <summary>
-        /// Sets the alternate <see cref="SecurityId"/> of the given <see cref="SecurityIdSource"/>
-        /// to the <see cref="SecurityAlternateIdGroup"/>.
-        /// </summary>
-        /// <param name="source">The security id source.</param>
-        /// <param name="value">The security id value.</param>
-        public void SetSecurityAlternateIdAs(InstrumentSecurityIdSource source, string value)
-        {
-            var alternateId = SecurityAlternateIdGroup.Find(source);
-            if (alternateId != null)
-                alternateId.SecurityAlternateId = value;
-            else
-                SecurityAlternateIdGroup.Add(value, source);
-        }
-
-        /// <summary>
         /// Gets or sets the instrument type.
         /// </summary>
         [DataMember(IsRequired = false)]
@@ -120,7 +117,7 @@ namespace Mbs.Trading.Instruments
         /// </para>
         /// <para>
         /// A subset of possible values applicable to FIX usage are identified in
-        /// "Appendix 6-D CFICode Usage - ISO 10962 Classification of Financial Instruments (CFI code)"
+        /// "Appendix 6-D CFICode Usage - ISO 10962 Classification of Financial Instruments (CFI code)".
         /// </para>
         /// <para>
         /// See http://www.onixs.biz/fixdictionary/4.4/app_6_d.html,
@@ -197,11 +194,11 @@ namespace Mbs.Trading.Instruments
         /// For Fixed Income:
         /// </para>
         /// <para>
-        /// Amorization factor for deriving Current face from Original face for ABS or MBS securities,
+        /// Amortization factor for deriving Current face from Original face for ABS or MBS securities,
         /// note the fraction may be greater than, equal to or less than.
         /// </para>
         /// <para>
-        /// <c>Qty * Factor * Price = Gross Trade Amount</c>
+        /// <c>Qty * Factor * Price = Gross Trade Amount</c>.
         /// </para>
         /// <para>
         /// For Derivatives:
@@ -211,7 +208,7 @@ namespace Mbs.Trading.Instruments
         /// of one futures/options contract.
         /// </para>
         /// <para>
-        /// <c>(Qty * Price) * Factor = Nominal Value</c>
+        /// <c>(Qty * Price) * Factor = Nominal Value</c>.
         /// </para>
         /// </remarks>
         [DataMember(IsRequired = false)]
@@ -242,49 +239,55 @@ namespace Mbs.Trading.Instruments
         public int? PricePrecision { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Instrument"/> class.
+        /// Gets the <see cref="SecurityId"/> if it has a given <see cref="SecurityIdSource"/>.
         /// </summary>
-        public Instrument()
+        /// <param name="source">The security id source.</param>
+        /// <param name="checkAlternativeIdGroup">If true, check also the <see cref="SecurityAlternateIdGroup"/>.</param>
+        /// <returns>The security id or null if the source is different.</returns>
+        public string GetSecurityIdAs(InstrumentSecurityIdSource source, bool checkAlternativeIdGroup = true)
         {
+            var id = source == SecurityIdSource
+                ? SecurityId
+                : null;
+
+            return id != null || !checkAlternativeIdGroup || SecurityAlternateIdGroup.Count <= 0
+                ? id
+                : SecurityAlternateIdGroup.Find(source)?.SecurityAlternateId;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Instrument"/> class.
+        /// Sets the <see cref="SecurityId"/> of the given <see cref="SecurityIdSource"/>.
         /// </summary>
-        /// <param name="symbol">The symbol (ticker).</param>
-        public Instrument(string symbol)
+        /// <param name="source">The security id source.</param>
+        /// <param name="value">The security id value.</param>
+        public void SetSecurityIdAs(InstrumentSecurityIdSource source, string value)
         {
-            Symbol = symbol;
-            SetSecurityAlternateIdAs(InstrumentSecurityIdSource.ExchangeSymbol, symbol);
+            if (string.IsNullOrEmpty(value))
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
+            SecurityIdSource = source;
+            SecurityId = value;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Instrument"/> class.
+        /// Sets the alternate <see cref="SecurityId"/> of the given <see cref="SecurityIdSource"/>
+        /// to the <see cref="SecurityAlternateIdGroup"/>.
         /// </summary>
-        /// <param name="symbol">The symbol (ticker).</param>
-        /// <param name="mic">The ISO 10383 Market Identifier Code (<see cref="ExchangeMic">MIC</see>).</param>
-        /// <param name="isin">The International Securities Identifying Number (ISIN).</param>
-        public Instrument(string symbol, ExchangeMic mic, string isin)
-            : this(symbol)
+        /// <param name="source">The security id source.</param>
+        /// <param name="value">The security id value.</param>
+        public void SetSecurityAlternateIdAs(InstrumentSecurityIdSource source, string value)
         {
-            Exchange = new Exchange(mic);
-            SetSecurityIdAs(InstrumentSecurityIdSource.Isin, isin);
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Instrument"/> class.
-        /// Use this constructor for Euronext instruments.
-        /// </summary>
-        /// <param name="symbol">The symbol (ticker).</param>
-        /// <param name="euronextMic">The Euronext <see cref="ExchangeMic">MIC</see>.</param>
-        /// <param name="isin">The International Securities Identifying Number (ISIN).</param>
-        /// <param name="type">The type of the instrument.</param>
-        public Instrument(string symbol, EuronextMic euronextMic, string isin, InstrumentType type)
-            : this(symbol)
-        {
-            Exchange = new Exchange(euronextMic);
-            SetSecurityIdAs(InstrumentSecurityIdSource.Isin, isin);
-            Type = type;
+            var alternateId = SecurityAlternateIdGroup.Find(source);
+            if (alternateId != null)
+            {
+                alternateId.SecurityAlternateId = value;
+            }
+            else
+            {
+                SecurityAlternateIdGroup.Add(value, source);
+            }
         }
 
         /// <inheritdoc />

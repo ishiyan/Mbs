@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
+using Mbs.Utilities;
 
 namespace Mbs.Trading.Data.Generators.MultiSinusoidal
 {
@@ -25,7 +26,7 @@ namespace Mbs.Trading.Data.Generators.MultiSinusoidal
         [Required(ErrorMessage = ErrorMessages.FieldIsRequired, AllowEmptyStrings = false)]
         public IEnumerable<MultiSinusoidalComponentParameters> MultiSinusoidalComponents { get; set; } = new[]
         {
-            new MultiSinusoidalComponentParameters { Amplitude = 10, Period = 16, PhaseInPi = 0 }
+            new MultiSinusoidalComponentParameters { Amplitude = 10, Period = 16, PhaseInPi = 0 },
         };
 
         /// <inheritdoc />
@@ -41,8 +42,7 @@ namespace Mbs.Trading.Data.Generators.MultiSinusoidal
 
             var results = new List<ValidationResult>();
 
-            // ReSharper disable once PossibleNullReferenceException
-            for (int i = 0; i < array.Length; ++i)
+            for (int i = 0; i < array?.Length; ++i)
             {
                 var component = array[i];
                 if (!Validator.TryValidateObject(component, new ValidationContext(component), results, true))
@@ -56,7 +56,10 @@ namespace Mbs.Trading.Data.Generators.MultiSinusoidal
                         new[] { $"{nameof(MultiSinusoidalComponents)}[{i}]" });
 
                     foreach (var result in results)
+                    {
                         compositeResults.AddResult(result);
+                    }
+
                     results.Clear();
                     yield return compositeResults;
                 }

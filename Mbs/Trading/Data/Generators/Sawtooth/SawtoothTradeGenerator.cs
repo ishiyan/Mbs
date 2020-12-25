@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Globalization;
-using Mbs.Numerics.Random;
+using Mbs.Numerics.RandomGenerators;
 using Mbs.Trading.Time;
+using Mbs.Trading.Time.Conventions;
 
 namespace Mbs.Trading.Data.Generators.Sawtooth
 {
@@ -14,11 +15,6 @@ namespace Mbs.Trading.Data.Generators.Sawtooth
     /// </summary>
     public sealed class SawtoothTradeGenerator : SawtoothDataGenerator<Trade>
     {
-        /// <summary>
-        /// Gets the value of the volume, which is the same for all trades; should be positive.
-        /// </summary>
-        public double Volume { get; }
-
         internal const string WaveformName = "Sawtooth trade waveform";
 
         /// <summary>
@@ -86,14 +82,10 @@ namespace Mbs.Trading.Data.Generators.Sawtooth
             Initialize();
         }
 
-        private void Initialize()
-        {
-            const double delta = 0.00005;
-            if (Math.Abs(Volume) > delta)
-                Moniker = string.Format(CultureInfo.InvariantCulture, "{0}, v={1:0.####}", Moniker, Volume);
-
-            Name = WaveformName;
-        }
+        /// <summary>
+        /// Gets the value of the volume, which is the same for all trades; should be positive.
+        /// </summary>
+        public double Volume { get; }
 
         /// <inheritdoc />
         public override Trade GenerateNext()
@@ -102,6 +94,17 @@ namespace Mbs.Trading.Data.Generators.Sawtooth
             trade.Price = CurrentSampleValue;
             trade.Volume = Volume;
             return trade;
+        }
+
+        private void Initialize()
+        {
+            const double delta = 0.00005;
+            if (Math.Abs(Volume) > delta)
+            {
+                Moniker = string.Format(CultureInfo.InvariantCulture, "{0}, v={1:0.####}", Moniker, Volume);
+            }
+
+            Name = WaveformName;
         }
     }
 }

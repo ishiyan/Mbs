@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Mbs.Trading.Data.Generators;
 using Mbs.Trading.Time;
+using Mbs.Trading.Time.Conventions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 
@@ -12,8 +13,6 @@ namespace Mbs.UnitTests.Trading.Data.Generators
     [TestClass]
     public class TimeParametersTests
     {
-        // ReSharper disable InconsistentNaming
-
         [TestMethod]
         [ExpectedException(typeof(ValidationException))]
         public void TimeParameters_Validate_SessionEndTimeLessThanBeginTime_Exception()
@@ -21,7 +20,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
             var parameters = new TimeParameters
             {
                 SessionStartTime = DefaultParameterValues.SessionEndTime,
-                SessionEndTime = DefaultParameterValues.SessionStartTime
+                SessionEndTime = DefaultParameterValues.SessionStartTime,
             };
 
             var context = new ValidationContext(parameters);
@@ -34,7 +33,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
             var parameters = new TimeParameters
             {
                 SessionStartTime = DefaultParameterValues.SessionEndTime,
-                SessionEndTime = DefaultParameterValues.SessionStartTime
+                SessionEndTime = DefaultParameterValues.SessionStartTime,
             };
 
             var expectedMessage =
@@ -91,7 +90,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
                 SessionEndTime = sessionEndTime,
                 StartDate = startDate,
                 TimeGranularity = timeGranularity,
-                BusinessDayCalendar = businessDayCalendar
+                BusinessDayCalendar = businessDayCalendar,
             };
 
             Assert.AreEqual(sessionBeginTime, parameters.SessionStartTime, "session begin time");
@@ -104,7 +103,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
         [TestMethod]
         public void TimeParameters_DeserializeFromJson_ValidInput_CorrectValidationResults()
         {
-            var json = @"{
+            const string json = @"{
 sessionBeginTime: ""09:00:00"",
 sessionEndTime: ""18:00:00"",
 startDate: ""2000-01-03"",

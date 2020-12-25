@@ -199,11 +199,12 @@ namespace Mbs.Trading.Holidays
         {
             DayOfWeek dow = dateTime.DayOfWeek;
             if (dow == DayOfWeek.Saturday || dow == DayOfWeek.Sunday)
+            {
                 return true;
+            }
 
             int day = dateTime.Day;
             int month = dateTime.Month;
-#pragma warning disable IDE0066 // Convert switch statement to expression
             switch (dateTime.Year)
             {
                 case 2020:
@@ -505,17 +506,22 @@ namespace Mbs.Trading.Holidays
                             return false;
                     }
             }
-#pragma warning restore IDE0066 // Convert switch statement to expression
 
             switch (month)
             {
                 case 1:
-                    if (day == 1) // New Year's Day
-                        return true;
+                    if (day == 1)
+                    {
+                        return true; // New Year's Day
+                    }
+
                     break;
                 case 12:
-                    if (day == 25 || day == 26) // Christmas Day, Boxing Day
-                        return true;
+                    if (day == 25 || day == 26)
+                    {
+                        return true; // Christmas Day, Boxing Day
+                    }
+
                     break;
             }
 

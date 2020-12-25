@@ -1,4 +1,4 @@
-﻿namespace Mbs.Trading.Orders
+﻿namespace Mbs.Trading.Orders.Enumerations
 {
     /// <summary>
     /// Identifies an order type.
@@ -144,6 +144,6 @@
         /// This order will fill at the closing price if that price is at or better than the submitted limit price.
         /// Otherwise, the order will be canceled.
         /// </remarks>
-        LimitOnClose
+        LimitOnClose,
     }
 }

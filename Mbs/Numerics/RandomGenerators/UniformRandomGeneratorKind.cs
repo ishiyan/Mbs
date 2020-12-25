@@ -1,4 +1,4 @@
-﻿namespace Mbs.Numerics.Random
+﻿namespace Mbs.Numerics.RandomGenerators
 {
     /// <summary>
     /// Enumerates the different kinds of the uniform random generators.
@@ -111,7 +111,7 @@
         MarsagliaMultiplyWithCarry,
 
         /// <summary>
-        /// George Marsaglia's XORshift random generator has a period of 2^128 − 1 and passes the Diehard tests.
+        /// George Marsaglia's XOR shift random generator has a period of 2^128 − 1 and passes the Diehard tests.
         /// </summary>
         MarsagliaXorShift,
 
@@ -123,6 +123,6 @@
         /// <summary>
         /// The standard random number generator of the .NET framework.
         /// </summary>
-        DotNet
+        DotNet,
     }
 }

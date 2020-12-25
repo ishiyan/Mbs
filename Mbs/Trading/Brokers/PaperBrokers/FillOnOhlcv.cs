@@ -48,6 +48,6 @@
         /// <summary>
         /// Fill an order with the next available ohlcv weighted close price (the average of twice the closing price plus the high and low prices).
         /// </summary>
-        NextWeighted
+        NextWeighted,
     }
 }

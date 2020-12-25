@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using Mbs.Numerics.RandomGenerators.MersenneTwister;
 
-namespace Mbs.Numerics.Random
+namespace Mbs.Numerics.RandomGenerators.Other
 {
     /// <summary>
     /// An additive lagged Fibonacci uniform pseudo-random number generator.
@@ -12,16 +13,6 @@ namespace Mbs.Numerics.Random
     /// </summary>
     public sealed class AdditiveLaggedFibonacciUniformRandom : RandomGenerator
     {
-        /// <summary>
-        /// Gets the short lag of the lagged Fibonacci pseudo-random number generator.
-        /// </summary>
-        public int ShortLag { get; private set; } = 418;
-
-        /// <summary>
-        /// Gets the long lag of the lagged Fibonacci pseudo-random number generator.
-        /// </summary>
-        public int LongLag { get; private set; } = 1279;
-
         /// <summary>
         /// Stores the used seed value.
         /// </summary>
@@ -38,7 +29,8 @@ namespace Mbs.Numerics.Random
         private int arrayNextIndex;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AdditiveLaggedFibonacciUniformRandom"/> class, using the current system tick count as a seed value.
+        /// Initializes a new instance of the <see cref="AdditiveLaggedFibonacciUniformRandom"/> class,
+        /// using the current system tick count as a seed value.
         /// </summary>
         public AdditiveLaggedFibonacciUniformRandom()
             : this(Environment.TickCount)
@@ -56,6 +48,31 @@ namespace Mbs.Numerics.Random
         }
 
         /// <summary>
+        /// Gets a value indicating whether the <see cref="AdditiveLaggedFibonacciUniformRandom"/> can be reset,
+        /// so that it produces the same pseudo-random number sequence again.
+        /// </summary>
+        public override bool CanReset => true;
+
+        /// <summary>
+        /// Gets or sets the short lag of the lagged Fibonacci pseudo-random number generator.
+        /// </summary>
+        private int ShortLag { get; set; } = 418;
+
+        /// <summary>
+        /// Gets or sets the long lag of the lagged Fibonacci pseudo-random number generator.
+        /// </summary>
+        private int LongLag { get; set; } = 1279;
+
+        /// <summary>
+        /// Resets the <see cref="AdditiveLaggedFibonacciUniformRandom"/>,
+        /// so that it produces the same pseudo-random number sequence again.
+        /// </summary>
+        public override void Reset()
+        {
+            Init();
+        }
+
+        /// <summary>
         /// Sets the lag values. The smaller numbers have short periods.
         /// <para />
         /// It is required that at least one of the values chosen to initialise the generator be odd.
@@ -64,10 +81,8 @@ namespace Mbs.Numerics.Random
         /// <para />
         /// The popular pairs are:
         /// <para />
-        /// (7,10), (5,17), (24,55), (65,71), (128,159)
-        /// <para />
-        /// (6,31), (31,63), (97,127), (353,521), (168,521), (334,607), (273,607), (418,1279), (1252,2281), (2098,4423), (5502,9689), (9842,19937), (13470,23209), (21034,44497)
-        /// <para />
+        /// (7,10), (5,17), (24,55), (65,71), (128,159),
+        /// (6,31), (31,63), (97,127), (353,521), (168,521), (334,607), (273,607), (418,1279), (1252,2281), (2098,4423), (5502,9689), (9842,19937), (13470,23209), (21034,44497),
         /// (24,55), (38,89), (37,100), (30,127), (83,258), (107,378), (273,607), (1029,2281), (576,3217), (4187,9689), (7083,19937), (9739,23209).
         /// </summary>
         /// <param name="shortLagValue">The short lag value, must be positive.</param>
@@ -86,33 +101,6 @@ namespace Mbs.Numerics.Random
             return false;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void Init()
-        {
-            var mt = new MersenneTwister19937UniformRandom((int)seedValue);
-            array = new uint[LongLag];
-            for (uint j = 0; j < LongLag; ++j)
-                array[j] = mt.NextUInt();
-            arrayNextIndex = LongLag;
-
-            // Reset helper variables used for generation of random bools.
-            BitBuffer = 0;
-            BitCount = 0;
-        }
-
-        /// <summary>
-        /// Resets the <see cref="AdditiveLaggedFibonacciUniformRandom"/>, so that it produces the same pseudo-random number sequence again.
-        /// </summary>
-        public override void Reset()
-        {
-            Init();
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether the <see cref="AdditiveLaggedFibonacciUniformRandom"/> can be reset, so that it produces the same pseudo-random number sequence again.
-        /// </summary>
-        public override bool CanReset => true;
-
         /// <summary>
         /// A next random 32-bit unsigned integer ∊[<see cref="uint.MinValue"/>, <see cref="uint.MaxValue"/>].
         /// </summary>
@@ -125,19 +113,23 @@ namespace Mbs.Numerics.Random
                 int i = LongLag - ShortLag;
                 for (int j = 0; j < ShortLag; ++j)
                 {
-                    // array[j] = array[j] + array[j + i];
                     double d = array[j] + array[j + i];
                     if (d >= 1d)
+                    {
                         --d;
+                    }
+
                     array[j] = (uint)d;
                 }
 
                 for (int j = ShortLag; j < LongLag; ++j)
                 {
-                    // array[j] = array[j] + array[j - shortLag];
                     double d = array[j] + array[j - ShortLag];
                     if (d >= 1d)
+                    {
                         --d;
+                    }
+
                     array[j] = (uint)d;
                 }
 
@@ -145,6 +137,23 @@ namespace Mbs.Numerics.Random
             }
 
             return array[arrayNextIndex++];
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void Init()
+        {
+            var mt = new MersenneTwister19937UniformRandom((int)seedValue);
+            array = new uint[LongLag];
+            for (uint j = 0; j < LongLag; ++j)
+            {
+                array[j] = mt.NextUInt();
+            }
+
+            arrayNextIndex = LongLag;
+
+            // Reset helper variables used for generation of random booleans.
+            BitBuffer = 0;
+            BitCount = 0;
         }
     }
 }

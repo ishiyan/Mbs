@@ -10,7 +10,7 @@ namespace Mbs.Api.Host.Ng.Extensions
         /// <summary>
         /// Adds the NWebSec middlewares to the <see cref="IApplicationBuilder"/> request execution pipeline.
         /// Should be registered before static files to always set header.
-        /// See https://docs.nwebsec.com/en/latest/index.html
+        /// See https://docs.nwebsec.com/en/latest/index.html.
         /// </summary>
         /// <param name="app">The application builder interface.</param>
         /// <returns>An updated application builder instance.</returns>

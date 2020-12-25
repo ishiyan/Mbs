@@ -18,6 +18,6 @@
         /// <summary>
         /// Logarithmic sawtooth shape.
         /// </summary>
-        Logarithmic
+        Logarithmic,
     }
 }

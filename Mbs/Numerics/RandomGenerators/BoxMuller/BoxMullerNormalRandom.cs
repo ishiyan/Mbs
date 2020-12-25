@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace Mbs.Numerics.Random
+namespace Mbs.Numerics.RandomGenerators.BoxMuller
 {
     /// <summary>
     /// A source of random values sample from a Gaussian distribution.
@@ -51,12 +51,14 @@ namespace Mbs.Numerics.Random
         }
 
         /// <summary>
-        /// Gets a value indicating whether the <see cref="BoxMullerNormalRandom"/> can be reset, so that it produces the same pseudo-random number sequence again.
+        /// Gets a value indicating whether the <see cref="BoxMullerNormalRandom"/> can be reset,
+        /// so that it produces the same pseudo-random number sequence again.
         /// </summary>
         public bool CanReset => rng.CanReset;
 
         /// <summary>
-        /// Resets the random number generator, so that it produces the same random number sequence again.
+        /// Resets the <see cref="BoxMullerNormalRandom"/>,
+        /// so that it produces the same random number sequence again.
         /// </summary>
         public void Reset()
         {

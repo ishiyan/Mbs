@@ -1,5 +1,6 @@
 ﻿using System;
 using Mbs.Trading.Currencies;
+using Mbs.Trading.Portfolios.Enumerations;
 
 namespace Mbs.Trading.Portfolios
 {
@@ -8,31 +9,6 @@ namespace Mbs.Trading.Portfolios
     /// </summary>
     public class AccountTransaction
     {
-        /// <summary>
-        /// Gets the date and time.
-        /// </summary>
-        public DateTime DateTime { get; }
-
-        /// <summary>
-        /// Gets the currency.
-        /// </summary>
-        public CurrencyCode Currency { get; }
-
-        /// <summary>
-        /// Gets the value.
-        /// </summary>
-        public double Value { get; }
-
-        /// <summary>
-        /// Gets the textual dexcription.
-        /// </summary>
-        public string Description { get; }
-
-        /// <summary>
-        /// Gets if this is a deposit or a withdrawal.
-        /// </summary>
-        public AccountAction Action => Value > 0d ? AccountAction.Deposit : AccountAction.Withdraw;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="AccountTransaction"/> class.
         /// </summary>
@@ -62,8 +38,10 @@ namespace Mbs.Trading.Portfolios
             Currency = currency;
             if (string.IsNullOrEmpty(portfolioExecution.Comment))
             {
-                if (null != commentToAppend)
+                if (commentToAppend != null)
+                {
                     Description = commentToAppend;
+                }
             }
             else
             {
@@ -72,5 +50,30 @@ namespace Mbs.Trading.Portfolios
                     : $"{portfolioExecution.Comment} ({commentToAppend})";
             }
         }
+
+        /// <summary>
+        /// Gets if this is a deposit or a withdrawal.
+        /// </summary>
+        public AccountAction Action => Value > 0d ? AccountAction.Deposit : AccountAction.Withdraw;
+
+        /// <summary>
+        /// Gets the date and time.
+        /// </summary>
+        public DateTime DateTime { get; }
+
+        /// <summary>
+        /// Gets the currency.
+        /// </summary>
+        public CurrencyCode Currency { get; }
+
+        /// <summary>
+        /// Gets the value.
+        /// </summary>
+        public double Value { get; }
+
+        /// <summary>
+        /// Gets the textual description.
+        /// </summary>
+        public string Description { get; }
     }
 }

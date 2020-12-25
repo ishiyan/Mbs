@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Mbs.Numerics;
-using Mbs.Numerics.Random;
+using Mbs.Numerics.RandomGenerators.FractionalBrownianMotion;
+using Mbs.Utilities;
 
 namespace Mbs.Trading.Data.Generators.FractionalBrownianMotion
 {
@@ -50,7 +51,9 @@ namespace Mbs.Trading.Data.Generators.FractionalBrownianMotion
         {
             if (FbmParameters == null || FbmParameters.Algorithm == FractionalBrownianMotionAlgorithm.Hosking ||
                 WaveformParameters == null || ElementaryFunctions.IsPowerOfTwo(WaveformParameters.WaveformSamples))
+            {
                 yield break;
+            }
 
             yield return new ValidationResult(
                 ErrorMessages.WaveformParametersWaveformSamplesPowerOfTwo,

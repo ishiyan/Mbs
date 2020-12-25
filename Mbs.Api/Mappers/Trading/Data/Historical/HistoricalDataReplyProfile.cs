@@ -34,7 +34,7 @@ namespace Mbs.Api.Mappers.Trading.Data.Historical
         }
 
         /// <summary>
-        /// A generic mapper for the <see cref="HistoricalDataReply{T}"/>
+        /// A generic mapper for the <see cref="HistoricalDataReply{T}"/>.
         /// </summary>
         /// <typeparam name="T">A <see cref="TemporalEntity"/> type.</typeparam>
         /// <param name="autoMapper">The auto-mapper instance.</param>

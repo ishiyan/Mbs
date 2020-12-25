@@ -1,9 +1,9 @@
 ﻿using System.Linq;
-using Mbs.Numerics.Random;
+using Mbs.Numerics.RandomGenerators.MersenneTwister;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static System.FormattableString;
 
-namespace Mbs.UnitTests.Numerics.RandomGenerators
+namespace Mbs.UnitTests.Numerics.RandomGenerators.MersenneTwister
 {
     [TestClass]
     public class MersenneTwister11213BUniformRandomTests
@@ -27,7 +27,9 @@ namespace Mbs.UnitTests.Numerics.RandomGenerators
 
             uint expected = 3809585648U;
             uint actual = gen.NextUInt();
-            Assert.AreEqual(expected, actual,
+            Assert.AreEqual(
+                expected,
+                actual,
                 Invariant($"Boost (validate): actual={actual} expected={expected}"));
 
             gen.Reset();
@@ -37,11 +39,14 @@ namespace Mbs.UnitTests.Numerics.RandomGenerators
             {
                 expected = expectedArray[i];
                 actual = gen.NextUInt();
-                Assert.AreEqual(expected, actual,
+                Assert.AreEqual(
+                    expected,
+                    actual,
                     Invariant($"Boost (generate): index={i}, actual={actual} expected={expected}"));
             }
         }
 
+#pragma warning disable S2699 // Tests should include assertions
         [TestMethod]
         public void MersenneTwister11213BUniformRandom_NextDouble_GeneratedMany_MeanHasCorrectValue()
         {
@@ -55,7 +60,10 @@ namespace Mbs.UnitTests.Numerics.RandomGenerators
             }
 
             actual /= Count;
-            Doubles.AreEqual(expected / actual, 1, 1e-1,
+            Doubles.AreEqual(
+                1,
+                expected / actual,
+                1e-1,
                 Invariant($"Mean value 1: actual={actual}, expected={expected}"));
 
             expected = 4;
@@ -66,7 +74,10 @@ namespace Mbs.UnitTests.Numerics.RandomGenerators
             }
 
             actual /= Count;
-            Doubles.AreEqual(expected / actual, 1, 1e-2,
+            Doubles.AreEqual(
+                1,
+                expected / actual,
+                1e-2,
                 Invariant($"Mean value 2: actual={actual}, expected={expected}"));
 
             expected = 6;
@@ -77,7 +88,10 @@ namespace Mbs.UnitTests.Numerics.RandomGenerators
             }
 
             actual /= Count;
-            Doubles.AreEqual(expected / actual, 1, 1e-2,
+            Doubles.AreEqual(
+                1,
+                expected / actual,
+                1e-2,
                 Invariant($"Mean value 3: actual={actual}, expected={expected}"));
         }
 
@@ -94,7 +108,10 @@ namespace Mbs.UnitTests.Numerics.RandomGenerators
             }
 
             actual /= Count;
-            Doubles.AreEqual(expected / actual, 1, 1e-1,
+            Doubles.AreEqual(
+                1,
+                expected / actual,
+                1e-1,
                 Invariant($"Mean value 1: actual={actual}, expected={expected}"));
 
             expected = 400d;
@@ -105,7 +122,10 @@ namespace Mbs.UnitTests.Numerics.RandomGenerators
             }
 
             actual /= Count;
-            Doubles.AreEqual(expected / actual, 1, 1e-2,
+            Doubles.AreEqual(
+                1,
+                expected / actual,
+                1e-2,
                 Invariant($"Mean value 2: actual={actual}, expected={expected}"));
 
             expected = 600d;
@@ -116,7 +136,10 @@ namespace Mbs.UnitTests.Numerics.RandomGenerators
             }
 
             actual /= Count;
-            Doubles.AreEqual(expected / actual, 1, 1e-2,
+            Doubles.AreEqual(
+                1,
+                expected / actual,
+                1e-2,
                 Invariant($"Mean value 3: actual={actual}, expected={expected}"));
         }
 
@@ -125,14 +148,17 @@ namespace Mbs.UnitTests.Numerics.RandomGenerators
         {
             var gen = new MersenneTwister11213BUniformRandom(Seed);
 
-            double expected = Count / 2d;
+            const double expected = Count / 2d;
             double actual = 0;
             for (int i = 0; i < Count; ++i)
             {
                 actual += gen.NextBoolean() ? 1 : 0;
             }
 
-            Doubles.AreEqual(expected / actual, 1, 1e-1,
+            Doubles.AreEqual(
+                1,
+                expected / actual,
+                1e-1,
                 Invariant($"Mean value: actual={actual}, expected={expected}"));
         }
 
@@ -141,7 +167,7 @@ namespace Mbs.UnitTests.Numerics.RandomGenerators
         {
             var gen = new MersenneTwister11213BUniformRandom(Seed);
 
-            double expected = 128;
+            const double expected = 128;
             double actual = 0;
             var array = new byte[32];
 
@@ -152,9 +178,13 @@ namespace Mbs.UnitTests.Numerics.RandomGenerators
             }
 
             actual /= Count * 32;
-            Doubles.AreEqual(expected / actual, 1, 1e-2,
+            Doubles.AreEqual(
+                1,
+                expected / actual,
+                1e-2,
                 Invariant($"Mean value: actual={actual}, expected={expected}"));
         }
+#pragma warning restore S2699 // Tests should include assertions
 
         [TestMethod]
         public void MersenneTwister11213BUniformRandom_Seed_SameSeed_SameValue()

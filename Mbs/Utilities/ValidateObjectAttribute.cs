@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 
-namespace Mbs
+namespace Mbs.Utilities
 {
     /// <summary>
     /// Validates an object.
@@ -17,7 +17,9 @@ namespace Mbs
 
             Validator.TryValidateObject(value, context, results, true);
             if (results.Count <= 0)
+            {
                 return ValidationResult.Success;
+            }
 
             var compositeResults = new CompositeValidationResult(
                 string.Format(
@@ -27,7 +29,9 @@ namespace Mbs
                 new[] { validationContext.DisplayName });
 
             foreach (var result in results)
+            {
                 compositeResults.AddResult(result);
+            }
 
             return compositeResults;
         }

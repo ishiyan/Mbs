@@ -1,5 +1,4 @@
 ﻿using Mbs.Api.ExampleProviders.Trading.Data.Generators.GeometricBrownianMotion;
-using Mbs.Trading.Data;
 using Mbs.Trading.Data.Generators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -8,11 +7,10 @@ namespace Mbs.Api.UnitTests.ExampleProviders.Trading.Data.Generators.GeometricBr
     [TestClass]
     public class GeometricBrownianMotionOhlcvGeneratorOutputExampleProviderTests
     {
-        // ReSharper disable InconsistentNaming
         [TestMethod]
         public void GeometricBrownianMotionOhlcvGeneratorOutputExampleProvider_GetExamples_CorrectValues()
         {
-            var example = (SyntheticDataGeneratorOutput<Ohlcv>) new GeometricBrownianMotionOhlcvGeneratorOutputExampleProvider().GetExamples();
+            var example = new GeometricBrownianMotionOhlcvGeneratorOutputExampleProvider().GetExamples();
 
             Assert.AreEqual(GeometricBrownianMotionOhlcvGeneratorOutputExampleProvider.Name, example.Name, "name");
             Assert.AreEqual(GeometricBrownianMotionOhlcvGeneratorOutputExampleProvider.Moniker, example.Moniker, "moniker");

@@ -18,6 +18,6 @@
         /// <summary>
         /// Fill an order with the next available trade price.
         /// </summary>
-        Next
+        Next,
     }
 }

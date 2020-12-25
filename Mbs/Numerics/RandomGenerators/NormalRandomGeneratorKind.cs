@@ -1,4 +1,4 @@
-﻿namespace Mbs.Numerics.Random
+﻿namespace Mbs.Numerics.RandomGenerators
 {
     /// <summary>
     /// Enumerates the different kinds of the normal random generators.
@@ -23,6 +23,6 @@
         /// <summary>
         /// The Gaussian random number generator which uses the polar form of the Box-Muller method.
         /// </summary>
-        BoxMuller
+        BoxMuller,
     }
 }

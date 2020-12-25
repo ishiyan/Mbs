@@ -8,6 +8,7 @@ using System.Threading;
 using System.Xml;
 using Mbs.Trading.Instruments;
 using Mbs.Trading.Time;
+using Mbs.Utilities;
 
 // ReSharper disable once CheckNamespace
 namespace Mbs.Trading.Data.Historical
@@ -45,11 +46,8 @@ namespace Mbs.Trading.Data.Historical
         private static readonly Dictionary<string, List<Trade>> TradeCacheDictionary = new Dictionary<string, List<Trade>>();
         private static readonly Dictionary<string, List<Quote>> QuoteCacheDictionary = new Dictionary<string, List<Quote>>();
 
-        // ReSharper disable ImpureMethodCallOnReadonlyValueField
         private static readonly string DirectorySeparator = Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture);
         private static readonly string AltDirectorySeparator = Path.AltDirectorySeparatorChar.ToString(CultureInfo.InvariantCulture);
-
-        // ReSharper restore ImpureMethodCallOnReadonlyValueField
 
         /// <summary>
         /// An instance of the xml reader settings suitable to read repository index files.
@@ -59,20 +57,6 @@ namespace Mbs.Trading.Data.Historical
         private static string repositoryPath;
         private static string repositoryIndexFile;
         private static long cacheInstruments;
-
-        private static XmlReaderSettings CreateXmlReaderSettings()
-        {
-            return new XmlReaderSettings
-            {
-                CheckCharacters = false,
-                CloseInput = true,
-                ConformanceLevel = ConformanceLevel.Auto,
-                IgnoreComments = true,
-                IgnoreProcessingInstructions = true,
-                IgnoreWhitespace = true,
-                ValidationType = ValidationType.None
-            };
-        }
 
         /// <summary>
         /// Gets or sets a path to the repository directory. Ends with the directory separator character.
@@ -93,10 +77,15 @@ namespace Mbs.Trading.Data.Historical
                 {
                     repositoryPath = value;
                     if (string.IsNullOrWhiteSpace(value))
+                    {
                         return;
+                    }
+
                     if (!value.EndsWith(DirectorySeparator, StringComparison.Ordinal) &&
                         !value.EndsWith(AltDirectorySeparator, StringComparison.Ordinal))
+                    {
                         repositoryPath = string.Concat(value, DirectorySeparator);
+                    }
                 }
             }
         }
@@ -124,6 +113,16 @@ namespace Mbs.Trading.Data.Historical
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether CSV data will be cached.
+        /// </summary>
+        public static bool IsDataCache
+        {
+            get => Interlocked.Read(ref cacheInstruments) != 0L;
+
+            set => Interlocked.Exchange(ref cacheInstruments, value ? 1L : 0L);
+        }
+
+        /// <summary>
         /// Clears the data cache.
         /// </summary>
         public static void ClearDataCache()
@@ -139,13 +138,273 @@ namespace Mbs.Trading.Data.Historical
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether CSV data will be cached.
+        /// Adds an instrument with an associated csv info to the repository.
         /// </summary>
-        public static bool IsDataCache
+        /// <param name="instrument">The instrument to add.</param>
+        /// <param name="csvInfo">The csv info to add.</param>
+        public static void Add(Instrument instrument, CsvInfo csvInfo)
         {
-            get => 0L != Interlocked.Read(ref cacheInstruments);
+            string file = csvInfo.FilePath;
+            if (string.IsNullOrWhiteSpace(file))
+            {
+                return;
+            }
 
-            set => Interlocked.Exchange(ref cacheInstruments, value ? 1L : 0L);
+            if (!File.Exists(file))
+            {
+                if (!Path.IsPathRooted(file))
+                {
+                    lock (RepositoryPathLock)
+                    {
+                        if (!string.IsNullOrWhiteSpace(repositoryPath))
+                        {
+                            file = Path.Combine(repositoryPath, file);
+                        }
+                    }
+
+                    file = Path.GetFullPath(file);
+                }
+
+                if (!File.Exists(file))
+                {
+                    Log.Error(FileDoesNotExist(file));
+                    return;
+                }
+            }
+
+            csvInfo.FilePath = file;
+            string key = Key(instrument);
+            lock (CacheDictionaryLock)
+            {
+                if (!InfoCacheDictionary.TryGetValue(key, out InstrumentCsvInfo instrumentCsvInfo))
+                {
+                    instrumentCsvInfo = new InstrumentCsvInfo();
+                    InfoCacheDictionary.Add(key, instrumentCsvInfo);
+                }
+
+                instrumentCsvInfo.Add(csvInfo);
+            }
+        }
+
+        /// <summary>
+        /// Gets the instrument CSV info or <c>null</c> if not found.
+        /// </summary>
+        /// <param name="instrument">The instrument to find.</param>
+        /// <returns>The CSV info or null if not found.</returns>
+        internal static InstrumentCsvInfo InstrumentInfo(Instrument instrument)
+        {
+            InstrumentCsvInfo instrumentInfo = FindInstrument(instrument);
+            if (instrumentInfo == null)
+            {
+                Log.Error(MissingInstrument(instrument));
+            }
+
+            return instrumentInfo;
+        }
+
+        /// <summary>
+        /// Given a <see cref="CsvInfo"/>, enumerates <see cref="Ohlcv"/> elements asynchronously.
+        /// </summary>
+        /// <param name="csvInfo">The csv info.</param>
+        /// <param name="csvRequest">The csv request.</param>
+        /// <param name="cancellationToken">An optional cancellation token.</param>
+        /// <returns>An asynchronous enumerable interface.</returns>
+        internal static IEnumerable<Ohlcv> EnumerateOhlcvAsync(CsvInfo csvInfo, CsvRequest csvRequest, CancellationToken cancellationToken = default)
+        {
+            IEnumerable<Ohlcv> enumerable;
+            try
+            {
+                enumerable = EnumerateOhlcvFileAsync(csvInfo, csvRequest, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ErrorReadingFile(csvInfo.FilePath), ex);
+                yield break;
+            }
+
+            using IEnumerator<Ohlcv> enumerator = enumerable.GetEnumerator();
+            while (true)
+            {
+                try
+                {
+                    if (!enumerator.MoveNext())
+                    {
+                        break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ErrorReadingFile(csvInfo.FilePath), ex);
+                    break;
+                }
+
+                yield return enumerator.Current;
+            }
+        }
+
+        /// <summary>
+        /// Given a <see cref="CsvInfo"/>, enumerates <see cref="Scalar"/> elements asynchronously.
+        /// </summary>
+        /// <param name="csvInfo">The csv info.</param>
+        /// <param name="csvRequest">The csv request.</param>
+        /// <param name="cancellationToken">An optional cancellation token.</param>
+        /// <returns>An asynchronous enumerable interface.</returns>
+        internal static IEnumerable<Scalar> EnumerateScalarAsync(CsvInfo csvInfo, CsvRequest csvRequest, CancellationToken cancellationToken = default)
+        {
+            IEnumerable<Scalar> enumerable;
+            try
+            {
+                enumerable = EnumerateScalarFileAsync(csvInfo, csvRequest, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ErrorReadingFile(csvInfo.FilePath), ex);
+                yield break;
+            }
+
+            using IEnumerator<Scalar> enumerator = enumerable.GetEnumerator();
+            while (true)
+            {
+                try
+                {
+                    if (!enumerator.MoveNext())
+                    {
+                        break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ErrorReadingFile(csvInfo.FilePath), ex);
+                    break;
+                }
+
+                yield return enumerator.Current;
+            }
+        }
+
+        /// <summary>
+        /// Given a <see cref="CsvInfo"/>, enumerates <see cref="Trade"/> elements asynchronously.
+        /// </summary>
+        /// <param name="csvInfo">The csv info.</param>
+        /// <param name="csvRequest">The csv request.</param>
+        /// <param name="cancellationToken">An optional cancellation token.</param>
+        /// <returns>An asynchronous enumerable interface.</returns>
+        internal static IEnumerable<Trade> EnumerateTradeAsync(CsvInfo csvInfo, CsvRequest csvRequest, CancellationToken cancellationToken = default)
+        {
+            IEnumerable<Trade> enumerable;
+            try
+            {
+                enumerable = EnumerateTradeFileAsync(csvInfo, csvRequest, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ErrorReadingFile(csvInfo.FilePath), ex);
+                yield break;
+            }
+
+            using IEnumerator<Trade> enumerator = enumerable.GetEnumerator();
+            while (true)
+            {
+                try
+                {
+                    if (!enumerator.MoveNext())
+                    {
+                        break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ErrorReadingFile(csvInfo.FilePath), ex);
+                    break;
+                }
+
+                yield return enumerator.Current;
+            }
+        }
+
+        /// <summary>
+        /// Given a <see cref="CsvInfo"/>, enumerates <see cref="Quote"/> elements asynchronously.
+        /// </summary>
+        /// <param name="csvInfo">The csv info.</param>
+        /// <param name="csvRequest">The csv request.</param>
+        /// <param name="cancellationToken">An optional cancellation token.</param>
+        /// <returns>An asynchronous enumerable interface.</returns>
+        internal static IEnumerable<Quote> EnumerateQuoteAsync(CsvInfo csvInfo, CsvRequest csvRequest, CancellationToken cancellationToken = default)
+        {
+            IEnumerable<Quote> enumerable;
+            try
+            {
+                enumerable = EnumerateQuoteFileAsync(csvInfo, csvRequest, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ErrorReadingFile(csvInfo.FilePath), ex);
+                yield break;
+            }
+
+            using IEnumerator<Quote> enumerator = enumerable.GetEnumerator();
+            while (true)
+            {
+                try
+                {
+                    if (!enumerator.MoveNext())
+                    {
+                        break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ErrorReadingFile(csvInfo.FilePath), ex);
+                    break;
+                }
+
+                yield return enumerator.Current;
+            }
+        }
+
+        /// <summary>
+        /// Gets an error message.
+        /// </summary>
+        /// <param name="timeGranularity">The time granularity.</param>
+        /// <returns>The error message.</returns>
+        internal static string CannotComposeGranularity(TimeGranularity timeGranularity)
+        {
+            return $"{Prefix}: cannot compose the requested time granularity {timeGranularity}.";
+        }
+
+        /// <summary>
+        /// Gets an error message.
+        /// </summary>
+        /// <param name="timeGranularity">The time granularity.</param>
+        /// <param name="name">The name of an entity.</param>
+        /// <returns>The error message.</returns>
+        internal static string TimeGranularityNotSupported(TimeGranularity timeGranularity, string name)
+        {
+            return $"{Prefix}: time granularity {timeGranularity} is not supported for {name} entities";
+        }
+
+        /// <summary>
+        /// Gets an error message.
+        /// </summary>
+        /// <param name="name">The name of an entity.</param>
+        /// <returns>The error message.</returns>
+        internal static string InstrumentHasNoData(string name)
+        {
+            return $"{Prefix}: the specified instrument has no {name} data";
+        }
+
+        private static XmlReaderSettings CreateXmlReaderSettings()
+        {
+            return new XmlReaderSettings
+            {
+                CheckCharacters = false,
+                CloseInput = true,
+                ConformanceLevel = ConformanceLevel.Auto,
+                IgnoreComments = true,
+                IgnoreProcessingInstructions = true,
+                IgnoreWhitespace = true,
+                ValidationType = ValidationType.None,
+            };
         }
 
         private static CsvInfo FindInRepository(string key)
@@ -157,7 +416,10 @@ namespace Mbs.Trading.Data.Historical
             }
 
             if (string.IsNullOrWhiteSpace(indexFile))
+            {
                 return null;
+            }
+
             CsvInfo csvInfo = null;
             try
             {
@@ -179,7 +441,10 @@ namespace Mbs.Trading.Data.Historical
                         string mic = xmlReader.GetAttribute(MicAttribute);
                         string key2 = Key(mic, symbol, isin);
                         if (key != key2)
+                        {
                             continue;
+                        }
+
                         string file = xmlReader.GetAttribute(FileAttribute);
                         if (string.IsNullOrEmpty(file))
                         {
@@ -192,7 +457,9 @@ namespace Mbs.Trading.Data.Historical
                             lock (RepositoryPathLock)
                             {
                                 if (!string.IsNullOrWhiteSpace(repositoryPath))
+                                {
                                     file = Path.Combine(repositoryPath, file);
+                                }
                             }
                         }
 
@@ -281,124 +548,33 @@ namespace Mbs.Trading.Data.Historical
                 instrument.GetSecurityIdAs(InstrumentSecurityIdSource.Isin));
         }
 
-        /// <summary>
-        /// Adds an instrument with an associated csv info to the repository.
-        /// </summary>
-        /// <param name="instrument">The instrument to add.</param>
-        /// <param name="csvInfo">The csv info to add.</param>
-        public static void Add(Instrument instrument, CsvInfo csvInfo)
-        {
-            string file = csvInfo.FilePath;
-            if (string.IsNullOrWhiteSpace(file))
-                return;
-            if (!File.Exists(file))
-            {
-                if (!Path.IsPathRooted(file))
-                {
-                    lock (RepositoryPathLock)
-                    {
-                        if (!string.IsNullOrWhiteSpace(repositoryPath))
-                            file = Path.Combine(repositoryPath, file);
-                    }
-
-                    file = Path.GetFullPath(file);
-                }
-
-                if (!File.Exists(file))
-                {
-                    Log.Error(FileDoesNotExist(file));
-                    return;
-                }
-            }
-
-            csvInfo.FilePath = file;
-            string key = Key(instrument);
-            lock (CacheDictionaryLock)
-            {
-                if (!InfoCacheDictionary.TryGetValue(key, out InstrumentCsvInfo instrumentCsvInfo))
-                {
-                    instrumentCsvInfo = new InstrumentCsvInfo();
-                    InfoCacheDictionary.Add(key, instrumentCsvInfo);
-                }
-
-                instrumentCsvInfo.Add(csvInfo);
-            }
-        }
-
-        /// <summary>
-        /// Gets the instrument CSV info or <c>null</c> if not found.
-        /// </summary>
-        /// <param name="instrument">The instrument to find.</param>
-        /// <returns>The CSV info or null if not found.</returns>
-        internal static InstrumentCsvInfo InstrumentInfo(Instrument instrument)
-        {
-            InstrumentCsvInfo instrumentInfo = FindInstrument(instrument);
-            if (instrumentInfo == null)
-                Log.Error(MissingInstrument(instrument));
-            return instrumentInfo;
-        }
-
         private static InstrumentCsvInfo FindInstrument(Instrument instrument)
         {
             string key = Key(instrument);
             lock (CacheDictionaryLock)
             {
                 if (InfoCacheDictionary.TryGetValue(key, out InstrumentCsvInfo instrumentCsvInfo))
+                {
                     return instrumentCsvInfo;
+                }
             }
 
             CsvInfo csvInfo = FindInRepository(key);
             if (csvInfo == null)
+            {
                 return null;
+            }
+
             Add(instrument, csvInfo);
             lock (CacheDictionaryLock)
             {
                 if (InfoCacheDictionary.TryGetValue(key, out InstrumentCsvInfo instrumentCsvInfo))
+                {
                     return instrumentCsvInfo;
+                }
             }
 
             return null;
-        }
-
-        /// <summary>
-        /// Given a <see cref="CsvInfo"/>, enumerates <see cref="Ohlcv"/> elements asynchronously.
-        /// </summary>
-        /// <param name="csvInfo">The csv info.</param>
-        /// <param name="csvRequest">The csv request.</param>
-        /// <param name="cancellationToken">An optional cancellation token.</param>
-        /// <returns>An asynchronous enumerable interface.</returns>
-        internal static IEnumerable<Ohlcv> EnumerateOhlcvAsync(CsvInfo csvInfo, CsvRequest csvRequest, CancellationToken cancellationToken = default)
-        {
-#pragma warning disable CA1031 // Do not catch general exception types
-            IEnumerable<Ohlcv> enumerable;
-            try
-            {
-                enumerable = EnumerateOhlcvFileAsync(csvInfo, csvRequest, cancellationToken);
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ErrorReadingFile(csvInfo.FilePath), ex);
-                yield break;
-            }
-
-            using IEnumerator<Ohlcv> enumerator = enumerable.GetEnumerator();
-            while (true)
-            {
-                try
-                {
-                    if (!enumerator.MoveNext())
-                        break;
-                }
-                catch (Exception ex)
-                {
-                    Log.Error(ErrorReadingFile(csvInfo.FilePath), ex);
-                    break;
-                }
-
-                yield return enumerator.Current;
-            }
-
-#pragma warning restore CA1031 // Do not catch general exception types
         }
 
         private static IEnumerable<Ohlcv> EnumerateOhlcvFileAsync(CsvInfo csvInfo, CsvRequest csvRequest, CancellationToken cancellationToken)
@@ -413,7 +589,7 @@ namespace Mbs.Trading.Data.Historical
             using var bufferedStream = new BufferedStream(fileStream);
             using var streamReader = new StreamReader(bufferedStream, Encoding.UTF8);
             string line;
-            while (null != (line = streamReader.ReadLine()))
+            while ((line = streamReader.ReadLine()) != null)
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
@@ -423,15 +599,22 @@ namespace Mbs.Trading.Data.Historical
 
                 ++lineNumber;
                 if (line.Length == 0 || line[0] == commentChar)
+                {
                     continue;
+                }
 
                 var error = ParseOhlcvSpan(csvInfo, csvRequest, line, delimiter, hasVolume, hasHighLow, out Ohlcv ohlcv, out CsvEnumerationAction action);
                 if (error == null)
                 {
                     if (action == CsvEnumerationAction.Continue)
+                    {
                         yield return ohlcv;
+                    }
                     else if (action == CsvEnumerationAction.Break)
+                    {
                         break;
+                    }
+
                     continue;
                 }
 
@@ -449,13 +632,20 @@ namespace Mbs.Trading.Data.Historical
             var delimiterSpan = delimiter.AsSpan();
             int i = lineSpan.IndexOf(delimiterSpan, StringComparison.Ordinal);
             if (i < 0)
+            {
                 return CannotFindDelimiter(delimiter);
+            }
+
             var span = lineSpan.Slice(0, i);
             if (!DateTime.TryParseExact(span, dateTimeFormatSpan, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateTime))
+            {
                 return InvalidDateTimePart(span);
+            }
 
             if (csvRequest.EndofdayClosingTime.HasValue)
+            {
                 dateTime = dateTime.Date.Add(csvRequest.EndofdayClosingTime.Value);
+            }
 
             if (dateTime < csvRequest.StartDate)
             {
@@ -472,10 +662,15 @@ namespace Mbs.Trading.Data.Historical
             var currentSpan = lineSpan.Slice(++i);
             i = currentSpan.IndexOf(delimiterSpan, StringComparison.Ordinal);
             if (i < 0)
+            {
                 return CannotFindDelimiter(delimiter, currentSpan);
+            }
+
             span = currentSpan.Slice(0, i);
             if (!Utf8Parser.TryParse(Encoding.UTF8.GetBytes(span.ToArray()), out double open, out _))
+            {
                 return InvalidPart("opening price", span, currentSpan);
+            }
 
             double high = double.NaN, low = double.NaN;
             if (hasHighLow)
@@ -483,18 +678,28 @@ namespace Mbs.Trading.Data.Historical
                 currentSpan = currentSpan.Slice(++i);
                 i = currentSpan.IndexOf(delimiterSpan, StringComparison.Ordinal);
                 if (i < 0)
+                {
                     return CannotFindDelimiter(delimiter, currentSpan);
+                }
+
                 span = currentSpan.Slice(0, i);
                 if (!Utf8Parser.TryParse(Encoding.UTF8.GetBytes(span.ToArray()), out high, out _))
+                {
                     return InvalidPart("highest price", span, currentSpan);
+                }
 
                 currentSpan = currentSpan.Slice(++i);
                 i = currentSpan.IndexOf(delimiterSpan, StringComparison.Ordinal);
                 if (i < 0)
+                {
                     return CannotFindDelimiter(delimiter, currentSpan);
+                }
+
                 span = currentSpan.Slice(0, i);
                 if (!Utf8Parser.TryParse(Encoding.UTF8.GetBytes(span.ToArray()), out low, out _))
+                {
                     return InvalidPart("lowest price", span, currentSpan);
+                }
             }
 
             currentSpan = currentSpan.Slice(++i);
@@ -502,7 +707,10 @@ namespace Mbs.Trading.Data.Historical
             if (hasVolume)
             {
                 if (i < 0)
+                {
                     return CannotFindDelimiter(delimiter, currentSpan);
+                }
+
                 span = currentSpan.Slice(0, i);
             }
             else
@@ -511,7 +719,9 @@ namespace Mbs.Trading.Data.Historical
             }
 
             if (!Utf8Parser.TryParse(Encoding.UTF8.GetBytes(span.ToArray()), out double close, out _))
+            {
                 return InvalidPart("closing price", span, currentSpan);
+            }
 
             if (!hasHighLow)
             {
@@ -526,52 +736,13 @@ namespace Mbs.Trading.Data.Historical
                 i = currentSpan.IndexOf(delimiterSpan, StringComparison.Ordinal);
                 span = i < 0 ? currentSpan : currentSpan.Slice(0, i);
                 if (!Utf8Parser.TryParse(Encoding.UTF8.GetBytes(span.ToArray()), out volume, out _))
+                {
                     return InvalidPart("volume", span, currentSpan);
+                }
             }
 
             ohlcv = new Ohlcv(dateTime, open, high, low, close, volume);
             return null;
-        }
-
-        /// <summary>
-        /// Given a <see cref="CsvInfo"/>, enumerates <see cref="Scalar"/> elements asynchronously.
-        /// </summary>
-        /// <param name="csvInfo">The csv info.</param>
-        /// <param name="csvRequest">The csv request.</param>
-        /// <param name="cancellationToken">An optional cancellation token.</param>
-        /// <returns>An asynchronous enumerable interface.</returns>
-        internal static IEnumerable<Scalar> EnumerateScalarAsync(CsvInfo csvInfo, CsvRequest csvRequest, CancellationToken cancellationToken = default)
-        {
-#pragma warning disable CA1031 // Do not catch general exception types
-            IEnumerable<Scalar> enumerable;
-            try
-            {
-                enumerable = EnumerateScalarFileAsync(csvInfo, csvRequest, cancellationToken);
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ErrorReadingFile(csvInfo.FilePath), ex);
-                yield break;
-            }
-
-            using IEnumerator<Scalar> enumerator = enumerable.GetEnumerator();
-            while (true)
-            {
-                try
-                {
-                    if (!enumerator.MoveNext())
-                        break;
-                }
-                catch (Exception ex)
-                {
-                    Log.Error(ErrorReadingFile(csvInfo.FilePath), ex);
-                    break;
-                }
-
-                yield return enumerator.Current;
-            }
-
-#pragma warning restore CA1031 // Do not catch general exception types
         }
 
         private static IEnumerable<Scalar> EnumerateScalarFileAsync(CsvInfo csvInfo, CsvRequest csvRequest, CancellationToken cancellationToken)
@@ -584,7 +755,7 @@ namespace Mbs.Trading.Data.Historical
             using var bufferedStream = new BufferedStream(fileStream);
             using var streamReader = new StreamReader(bufferedStream, Encoding.UTF8);
             string line;
-            while (null != (line = streamReader.ReadLine()))
+            while ((line = streamReader.ReadLine()) != null)
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
@@ -594,15 +765,22 @@ namespace Mbs.Trading.Data.Historical
 
                 ++lineNumber;
                 if (line.Length == 0 || line[0] == commentChar)
+                {
                     continue;
+                }
 
                 var error = ParseScalarSpan(csvInfo, csvRequest, line, delimiter, out Scalar scalar, out CsvEnumerationAction action);
                 if (error == null)
                 {
                     if (action == CsvEnumerationAction.Continue)
+                    {
                         yield return scalar;
+                    }
                     else if (action == CsvEnumerationAction.Break)
+                    {
                         break;
+                    }
+
                     continue;
                 }
 
@@ -620,13 +798,20 @@ namespace Mbs.Trading.Data.Historical
             var delimiterSpan = delimiter.AsSpan();
             int i = lineSpan.IndexOf(delimiterSpan, StringComparison.Ordinal);
             if (i < 0)
+            {
                 return CannotFindDelimiter(delimiter);
+            }
+
             var span = lineSpan.Slice(0, i);
             if (!DateTime.TryParseExact(span, dateTimeFormatSpan, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateTime))
+            {
                 return InvalidDateTimePart(span);
+            }
 
             if (csvRequest.EndofdayClosingTime.HasValue)
+            {
                 dateTime = dateTime.Date.Add(csvRequest.EndofdayClosingTime.Value);
+            }
 
             if (dateTime < csvRequest.StartDate)
             {
@@ -644,51 +829,12 @@ namespace Mbs.Trading.Data.Historical
             i = currentSpan.IndexOf(delimiterSpan, StringComparison.Ordinal);
             span = i < 0 ? currentSpan : currentSpan.Slice(0, i);
             if (!Utf8Parser.TryParse(Encoding.UTF8.GetBytes(span.ToArray()), out double value, out _))
+            {
                 return InvalidPart("value", span, currentSpan);
+            }
 
             scalar = new Scalar(dateTime, value);
             return null;
-        }
-
-        /// <summary>
-        /// Given a <see cref="CsvInfo"/>, enumerates <see cref="Trade"/> elements asynchronously.
-        /// </summary>
-        /// <param name="csvInfo">The csv info.</param>
-        /// <param name="csvRequest">The csv request.</param>
-        /// <param name="cancellationToken">An optional cancellation token.</param>
-        /// <returns>An asynchronous enumerable interface.</returns>
-        internal static IEnumerable<Trade> EnumerateTradeAsync(CsvInfo csvInfo, CsvRequest csvRequest, CancellationToken cancellationToken = default)
-        {
-#pragma warning disable CA1031 // Do not catch general exception types
-            IEnumerable<Trade> enumerable;
-            try
-            {
-                enumerable = EnumerateTradeFileAsync(csvInfo, csvRequest, cancellationToken);
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ErrorReadingFile(csvInfo.FilePath), ex);
-                yield break;
-            }
-
-            using IEnumerator<Trade> enumerator = enumerable.GetEnumerator();
-            while (true)
-            {
-                try
-                {
-                    if (!enumerator.MoveNext())
-                        break;
-                }
-                catch (Exception ex)
-                {
-                    Log.Error(ErrorReadingFile(csvInfo.FilePath), ex);
-                    break;
-                }
-
-                yield return enumerator.Current;
-            }
-
-#pragma warning restore CA1031 // Do not catch general exception types
         }
 
         private static IEnumerable<Trade> EnumerateTradeFileAsync(CsvInfo csvInfo, CsvRequest csvRequest, CancellationToken cancellationToken)
@@ -702,7 +848,7 @@ namespace Mbs.Trading.Data.Historical
             using var bufferedStream = new BufferedStream(fileStream);
             using var streamReader = new StreamReader(bufferedStream, Encoding.UTF8);
             string line;
-            while (null != (line = streamReader.ReadLine()))
+            while ((line = streamReader.ReadLine()) != null)
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
@@ -712,15 +858,22 @@ namespace Mbs.Trading.Data.Historical
 
                 ++lineNumber;
                 if (line.Length == 0 || line[0] == commentChar)
+                {
                     continue;
+                }
 
                 var error = ParseTradeSpan(csvInfo, csvRequest, line, delimiter, hasVolume, out Trade trade, out CsvEnumerationAction action);
                 if (error == null)
                 {
                     if (action == CsvEnumerationAction.Continue)
+                    {
                         yield return trade;
+                    }
                     else if (action == CsvEnumerationAction.Break)
+                    {
                         break;
+                    }
+
                     continue;
                 }
 
@@ -738,10 +891,15 @@ namespace Mbs.Trading.Data.Historical
             var delimiterSpan = delimiter.AsSpan();
             int i = lineSpan.IndexOf(delimiterSpan, StringComparison.Ordinal);
             if (i < 0)
+            {
                 return CannotFindDelimiter(delimiter);
+            }
+
             var span = lineSpan.Slice(0, i);
             if (!DateTime.TryParseExact(span, dateTimeFormatSpan, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateTime))
+            {
                 return InvalidDateTimePart(span);
+            }
 
             if (dateTime < csvRequest.StartDate)
             {
@@ -760,7 +918,10 @@ namespace Mbs.Trading.Data.Historical
             if (hasVolume)
             {
                 if (i < 0)
+                {
                     return CannotFindDelimiter(delimiter, currentSpan);
+                }
+
                 span = currentSpan.Slice(0, i);
             }
             else
@@ -769,7 +930,9 @@ namespace Mbs.Trading.Data.Historical
             }
 
             if (!Utf8Parser.TryParse(Encoding.UTF8.GetBytes(span.ToArray()), out double price, out _))
+            {
                 return InvalidPart("price", span, currentSpan);
+            }
 
             double volume;
             if (hasVolume)
@@ -778,7 +941,9 @@ namespace Mbs.Trading.Data.Historical
                 i = currentSpan.IndexOf(delimiterSpan, StringComparison.Ordinal);
                 span = i < 0 ? currentSpan : currentSpan.Slice(0, i);
                 if (!Utf8Parser.TryParse(Encoding.UTF8.GetBytes(span.ToArray()), out volume, out _))
+                {
                     return InvalidPart("volume", span, currentSpan);
+                }
             }
             else
             {
@@ -787,47 +952,6 @@ namespace Mbs.Trading.Data.Historical
 
             trade = new Trade(dateTime, price, volume);
             return null;
-        }
-
-        /// <summary>
-        /// Given a <see cref="CsvInfo"/>, enumerates <see cref="Quote"/> elements asynchronously.
-        /// </summary>
-        /// <param name="csvInfo">The csv info.</param>
-        /// <param name="csvRequest">The csv request.</param>
-        /// <param name="cancellationToken">An optional cancellation token.</param>
-        /// <returns>An asynchronous enumerable interface.</returns>
-        internal static IEnumerable<Quote> EnumerateQuoteAsync(CsvInfo csvInfo, CsvRequest csvRequest, CancellationToken cancellationToken = default)
-        {
-#pragma warning disable CA1031 // Do not catch general exception types
-            IEnumerable<Quote> enumerable;
-            try
-            {
-                enumerable = EnumerateQuoteFileAsync(csvInfo, csvRequest, cancellationToken);
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ErrorReadingFile(csvInfo.FilePath), ex);
-                yield break;
-            }
-
-            using IEnumerator<Quote> enumerator = enumerable.GetEnumerator();
-            while (true)
-            {
-                try
-                {
-                    if (!enumerator.MoveNext())
-                        break;
-                }
-                catch (Exception ex)
-                {
-                    Log.Error(ErrorReadingFile(csvInfo.FilePath), ex);
-                    break;
-                }
-
-                yield return enumerator.Current;
-            }
-
-#pragma warning restore CA1031 // Do not catch general exception types
         }
 
         private static IEnumerable<Quote> EnumerateQuoteFileAsync(CsvInfo csvInfo, CsvRequest csvRequest, CancellationToken cancellationToken)
@@ -841,7 +965,7 @@ namespace Mbs.Trading.Data.Historical
             using var bufferedStream = new BufferedStream(fileStream);
             using var streamReader = new StreamReader(bufferedStream, Encoding.UTF8);
             string line;
-            while (null != (line = streamReader.ReadLine()))
+            while ((line = streamReader.ReadLine()) != null)
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
@@ -851,15 +975,22 @@ namespace Mbs.Trading.Data.Historical
 
                 ++lineNumber;
                 if (line.Length == 0 || line[0] == commentChar)
+                {
                     continue;
+                }
 
                 var error = ParseQuoteSpan(csvInfo, csvRequest, line, delimiter, hasVolume, out Quote quote, out CsvEnumerationAction action);
                 if (error == null)
                 {
                     if (action == CsvEnumerationAction.Continue)
+                    {
                         yield return quote;
+                    }
                     else if (action == CsvEnumerationAction.Break)
+                    {
                         break;
+                    }
+
                     continue;
                 }
 
@@ -877,13 +1008,20 @@ namespace Mbs.Trading.Data.Historical
             var delimiterSpan = delimiter.AsSpan();
             int i = lineSpan.IndexOf(delimiterSpan, StringComparison.Ordinal);
             if (i < 0)
+            {
                 return CannotFindDelimiter(delimiter);
+            }
+
             var span = lineSpan.Slice(0, i);
             if (!DateTime.TryParseExact(span, dateTimeFormatSpan, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateTime))
+            {
                 return InvalidDateTimePart(span);
+            }
 
             if (csvRequest.EndofdayClosingTime.HasValue)
+            {
                 dateTime = dateTime.Date.Add(csvRequest.EndofdayClosingTime.Value);
+            }
 
             if (dateTime < csvRequest.StartDate)
             {
@@ -900,17 +1038,25 @@ namespace Mbs.Trading.Data.Historical
             var currentSpan = lineSpan.Slice(++i);
             i = currentSpan.IndexOf(delimiterSpan, StringComparison.Ordinal);
             if (i < 0)
+            {
                 return CannotFindDelimiter(delimiter, currentSpan);
+            }
+
             span = currentSpan.Slice(0, i);
             if (!Utf8Parser.TryParse(Encoding.UTF8.GetBytes(span.ToArray()), out double askPrice, out _))
+            {
                 return InvalidPart("ask price", span, currentSpan);
+            }
 
             currentSpan = currentSpan.Slice(++i);
             i = currentSpan.IndexOf(delimiterSpan, StringComparison.Ordinal);
             if (hasVolume)
             {
                 if (i < 0)
+                {
                     return CannotFindDelimiter(delimiter, currentSpan);
+                }
+
                 span = currentSpan.Slice(0, i);
             }
             else
@@ -919,7 +1065,9 @@ namespace Mbs.Trading.Data.Historical
             }
 
             if (!Utf8Parser.TryParse(Encoding.UTF8.GetBytes(span.ToArray()), out double bidPrice, out _))
+            {
                 return InvalidPart("bid price", span, currentSpan);
+            }
 
             double askSize = double.NaN, bidSize = double.NaN;
             if (hasVolume)
@@ -927,16 +1075,23 @@ namespace Mbs.Trading.Data.Historical
                 currentSpan = currentSpan.Slice(++i);
                 i = currentSpan.IndexOf(delimiterSpan, StringComparison.Ordinal);
                 if (i < 0)
+                {
                     return CannotFindDelimiter(delimiter, currentSpan);
+                }
+
                 span = currentSpan.Slice(0, i);
                 if (!Utf8Parser.TryParse(Encoding.UTF8.GetBytes(span.ToArray()), out askSize, out _))
+                {
                     return InvalidPart("ask size", span, currentSpan);
+                }
 
                 currentSpan = currentSpan.Slice(++i);
                 i = currentSpan.IndexOf(delimiterSpan, StringComparison.Ordinal);
                 span = i < 0 ? currentSpan : currentSpan.Slice(0, i);
                 if (!Utf8Parser.TryParse(Encoding.UTF8.GetBytes(span.ToArray()), out bidSize, out _))
+                {
                     return InvalidPart("bid size", span, currentSpan);
+                }
             }
 
             quote = new Quote(dateTime, bidPrice, bidSize, askPrice, askSize);
@@ -966,37 +1121,6 @@ namespace Mbs.Trading.Data.Historical
         private static string ErrorReadingFile(string file)
         {
             return $"{Prefix}: exception while reading file {file}";
-        }
-
-        /// <summary>
-        /// Gets an error message.
-        /// </summary>
-        /// <param name="timeGranularity">The time granularity.</param>
-        /// <returns>The error message.</returns>
-        internal static string CannotComposeGranularity(TimeGranularity timeGranularity)
-        {
-            return $"{Prefix}: cannot compose the requested time granularity {timeGranularity}.";
-        }
-
-        /// <summary>
-        /// Gets an error message.
-        /// </summary>
-        /// <param name="timeGranularity">The time granularity.</param>
-        /// <param name="name">The name of an entity.</param>
-        /// <returns>The error message.</returns>
-        internal static string TimeGranularityNotSupported(TimeGranularity timeGranularity, string name)
-        {
-            return $"{Prefix}: time granularity {timeGranularity} is not supported for {name} entities";
-        }
-
-        /// <summary>
-        /// Gets an error message.
-        /// </summary>
-        /// <param name="name">The name of an entity.</param>
-        /// <returns>The error message.</returns>
-        internal static string InstrumentHasNoData(string name)
-        {
-            return $"{Prefix}: the specified instrument has no {name} data";
         }
 
         private static string CannotFindDelimiter(string delimiter)

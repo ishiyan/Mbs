@@ -1,7 +1,7 @@
-﻿using Mbs.Trading.Instruments;
+﻿using Mbs.Trading.Instruments.Symbology;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Mbs.UnitTests.Trading.Instruments
+namespace Mbs.UnitTests.Trading.Instruments.Symbology
 {
     [TestClass]
     public class SedolTests
@@ -24,6 +24,8 @@ namespace Mbs.UnitTests.Trading.Instruments
         /// Verified on https://www.isincheck.com/.
         /// </summary>
         [DataTestMethod]
+
+        // ReSharper disable StringLiteralTypo
         [DataRow("0709954", SedolValidationError.None, true, OldStyle)]
         [DataRow("7108899", SedolValidationError.None, true, OldStyle)]
         [DataRow("4065663", SedolValidationError.None, true, OldStyle)]
@@ -54,14 +56,20 @@ namespace Mbs.UnitTests.Trading.Instruments
         [DataRow("1234566", SedolValidationError.InvalidCheckDigit, false, OldStyleIncorrectCheckDigit)]
         [DataRow("B0WNLY8", SedolValidationError.InvalidCheckDigit, false, NewStyleIncorrectCheckDigit)]
         [DataRow("B1XH2C1", SedolValidationError.InvalidCheckDigit, false, NewStyleIncorrectCheckDigit)]
+
+        // ReSharper restore StringLiteralTypo
         public void Sedol_ConformanceTest_ValidationCorrect(string input, SedolValidationError error, bool isValid, string description)
         {
             var e = input.SedolValidate();
-            Assert.AreEqual(error, e,
+            Assert.AreEqual(
+                error,
+                e,
                 $"input {input} ({description}) is expected to have validation error {error} but has {e}.");
 
             var status = isValid ? "valid" : "not valid";
-            Assert.AreEqual(isValid, input.SedolIsValid(),
+            Assert.AreEqual(
+                isValid,
+                input.SedolIsValid(),
                 $"input {input} ({description}) is expected to be {status}.");
         }
 
@@ -69,6 +77,8 @@ namespace Mbs.UnitTests.Trading.Instruments
         /// Data taken from http://rosettacode.org/wiki/SEDOLs.
         /// </summary>
         [DataTestMethod]
+
+        // ReSharper disable StringLiteralTypo
         [DataRow("070995", '4', OldStyle)]
         [DataRow("710889", '9', OldStyle)]
         [DataRow("406566", '3', OldStyle)]
@@ -85,10 +95,14 @@ namespace Mbs.UnitTests.Trading.Instruments
         [DataRow("B1XH2C", '0', NewStyle)]
         [DataRow("912345", '8', UserDefined)]
         [DataRow("9aBcDe", '1', UserDefined)]
+
+        // ReSharper restore StringLiteralTypo
         public void Sedol_ConformanceTest_CalculatedCheckDigitCorrect(string input, char expectedDigit, string description)
         {
             var actualDigit = input.SedolCalculateCheckDigit();
-            Assert.AreEqual(expectedDigit, actualDigit,
+            Assert.AreEqual(
+                expectedDigit,
+                actualDigit,
                 $"input {input} ({description}) is expected to have a check digit {expectedDigit} but has {actualDigit}.");
         }
     }

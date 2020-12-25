@@ -7,8 +7,8 @@ namespace Mbs.Benchmarks
     {
         public static void Main()
         {
-            // EuronextEndofdayJsonParsingBenchmark.Run();
-            // IndicatorFactoryCreationBenchmarks.Run();
+            EuronextEndofdayJsonParsingBenchmark.Run();
+            IndicatorFactoryCreationBenchmarks.Run();
             ArrayCopyVersusForLoopBenchmarks.Run();
         }
     }

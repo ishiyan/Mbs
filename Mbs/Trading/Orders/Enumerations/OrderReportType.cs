@@ -1,43 +1,42 @@
-﻿namespace Mbs.Trading.Orders
+﻿namespace Mbs.Trading.Orders.Enumerations
 {
-#pragma warning disable 1584,1711,1572,1581,1580
     /// <summary>
     /// Identifies an order report event.
     /// </summary>
     public enum OrderReportType
     {
         /// <summary>
-        /// An <see cref="OrderStatus.PendingNew"/> report.
+        /// An <c>OrderStatus.PendingNew</c> report.
         /// </summary>
         PendingNew,
 
         /// <summary>
-        /// An <see cref="OrderStatus.New"/> report.
+        /// An <c>OrderStatus.New</c> report.
         /// </summary>
         New,
 
         /// <summary>
-        /// An <see cref="OrderStatus.Rejected"/> report.
+        /// An <c>OrderStatus.Rejected</c> report.
         /// </summary>
         Rejected,
 
         /// <summary>
-        /// An <see cref="OrderStatus.PartiallyFilled"/> report.
+        /// An <c>OrderStatus.PartiallyFilled</c> report.
         /// </summary>
         PartiallyFilled,
 
         /// <summary>
-        /// An <see cref="OrderStatus.Filled"/> report.
+        /// An <c>OrderStatus.Filled</c> report.
         /// </summary>
         Filled,
 
         /// <summary>
-        /// An <see cref="OrderStatus.Expired"/> report.
+        /// An <c>OrderStatus.Expired</c> report.
         /// </summary>
         Expired,
 
         /// <summary>
-        /// An <see cref="OrderStatus.PendingReplace"/> report.
+        /// An <c>OrderStatus.PendingReplace</c> report.
         /// </summary>
         PendingReplace,
 
@@ -52,12 +51,12 @@
         ReplaceRejected,
 
         /// <summary>
-        /// An <see cref="OrderStatus.PendingCancel"/> report.
+        /// An <c>OrderStatus.PendingCancel</c> report.
         /// </summary>
         PendingCancel,
 
         /// <summary>
-        /// An <see cref="OrderStatus.Canceled"/> report.
+        /// An <c>OrderStatus.Canceled</c> report.
         /// </summary>
         Canceled,
 
@@ -69,7 +68,6 @@
         /// <summary>
         /// An order status report.
         /// </summary>
-        OrderStatus
+        OrderStatus,
     }
-#pragma warning restore 1584,1711,1572,1581,1580
 }

@@ -7,8 +7,6 @@ namespace Mbs.UnitTests.Trading.Data.Generators.Square
     [TestClass]
     public class SquareDataGeneratorExtensionsTests
     {
-        // ReSharper disable InconsistentNaming
-
         [TestMethod]
         public async Task SquareDataGeneratorExtensions_GenerateAsync_Ohlcv_CorrectLength()
         {

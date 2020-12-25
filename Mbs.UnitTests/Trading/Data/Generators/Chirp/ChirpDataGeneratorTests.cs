@@ -7,8 +7,6 @@ namespace Mbs.UnitTests.Trading.Data.Generators.Chirp
     [TestClass]
     public class ChirpDataGeneratorTests
     {
-        // ReSharper disable InconsistentNaming
-
         [TestMethod]
         public void ChirpDataGenerator_Construction_DefaultConstructor_PropertyValuesCorrect()
         {

@@ -23,6 +23,6 @@
         /// <summary>
         /// Advancing one step.
         /// </summary>
-        Step
+        Step,
     }
 }

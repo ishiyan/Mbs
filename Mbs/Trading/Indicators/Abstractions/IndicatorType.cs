@@ -11,6 +11,7 @@ namespace Mbs.Trading.Indicators.Abstractions
         /// </summary>
         MovingAverageConvergenceDivergence,
 */
+
         /// <summary>
         /// Simple Moving Average (SMA).
         /// </summary>
@@ -101,6 +102,7 @@ namespace Mbs.Trading.Indicators.Abstractions
         /// </summary>
         BalanceOfPower,
 */
+
         /// <summary>
         /// Bollinger Bands (BB).
         /// </summary>
@@ -116,6 +118,7 @@ namespace Mbs.Trading.Indicators.Abstractions
         /// </summary>
         ChandeMomentumOscillator,
 */
+
         /// <summary>
         /// Variance (VAR).
         /// </summary>

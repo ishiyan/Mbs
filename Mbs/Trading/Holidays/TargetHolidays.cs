@@ -1,5 +1,5 @@
 ﻿using System;
-using Mbs.Trading.Time;
+using Mbs.Trading.Time.Conventions;
 
 namespace Mbs.Trading.Holidays
 {
@@ -10,10 +10,12 @@ namespace Mbs.Trading.Holidays
     {
         /// <summary>
         /// Checks if the specified date is a TARGET
-        /// <para/>
         /// (Trans-european Automated Real-time Gross settlement Express Transfer system)
+        /// holiday.
         /// <para/>
-        /// holiday, see <c>http://www.ecb.int</c>. The holidays (apart from weekends) are:
+        /// See <c>http://www.ecb.int</c>.
+        /// <para/>
+        /// The holidays (apart from weekends) are:
         /// <para/>
         /// New Year's Day, Good Friday, Easter Monday, Labour Day, Christmas Day, Boxing Day.
         /// </summary>
@@ -45,10 +47,12 @@ namespace Mbs.Trading.Holidays
 
         /// <summary>
         /// Checks if the specified date is an TARGET
-        /// <para/>
         /// (Trans-european Automated Real-time Gross settlement Express Transfer system)
+        /// working day.
         /// <para/>
-        /// working day, see <c>http://www.ecb.int</c>. The holidays (apart from weekends) are:
+        /// See <c>http://www.ecb.int</c>.
+        /// <para/>
+        /// The holidays (apart from weekends) are:
         /// <para/>
         /// New Year's Day, Good Friday, Easter Monday, Labour Day, Christmas Day, Boxing Day.
         /// </summary>

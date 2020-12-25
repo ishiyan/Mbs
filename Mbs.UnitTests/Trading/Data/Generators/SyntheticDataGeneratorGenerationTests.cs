@@ -10,39 +10,6 @@ namespace Mbs.UnitTests.Trading.Data.Generators
     [TestClass]
     public class SyntheticDataGeneratorGenerationTests
     {
-        private class MockSyntheticDataGenerator : ISyntheticDataGenerator<Scalar>
-        {
-            internal const double StartValue = 1.1;
-            internal static readonly DateTime StartDateTime = new DateTime(2000, 1, 1);
-
-            private DateTime dateTime = StartDateTime;
-            private double value = StartValue;
-
-            public string Name => "Mock name";
-
-            public string Moniker => "Mock moniker";
-
-            public Scalar GenerateNext()
-            {
-                dateTime = dateTime.AddDays(1);
-                return new Scalar(dateTime, ++value);
-            }
-
-            public IEnumerable<Scalar> GenerateNext(int count)
-            {
-                while (count-- > 0)
-                    yield return GenerateNext();
-            }
-
-            public void Reset()
-            {
-                dateTime = StartDateTime;
-                value = StartValue;
-            }
-        }
-
-        // ReSharper disable InconsistentNaming
-
         [TestMethod]
         public async Task SyntheticDataGeneratorGeneration_GenerateOutputAsync_ValidInput_CorrectOutput()
         {
@@ -79,6 +46,39 @@ namespace Mbs.UnitTests.Trading.Data.Generators
         public async Task SyntheticDataGeneratorGeneration_GenerateOutputAsync_CountIsNegative_Exception()
         {
             await SyntheticDataGeneratorGeneration<Scalar>.GenerateOutputAsync(new MockSyntheticDataGenerator(), -1);
+        }
+
+        private class MockSyntheticDataGenerator : ISyntheticDataGenerator<Scalar>
+        {
+            internal const double StartValue = 1.1;
+            internal static readonly DateTime StartDateTime = new DateTime(2000, 1, 1);
+
+            private DateTime dateTime = StartDateTime;
+            private double value = StartValue;
+
+            public string Name => "Mock name";
+
+            public string Moniker => "Mock moniker";
+
+            public Scalar GenerateNext()
+            {
+                dateTime = dateTime.AddDays(1);
+                return new Scalar(dateTime, ++value);
+            }
+
+            public IEnumerable<Scalar> GenerateNext(int count)
+            {
+                while (count-- > 0)
+                {
+                    yield return GenerateNext();
+                }
+            }
+
+            public void Reset()
+            {
+                dateTime = StartDateTime;
+                value = StartValue;
+            }
         }
     }
 }

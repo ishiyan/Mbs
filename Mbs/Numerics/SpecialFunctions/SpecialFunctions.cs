@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
+// ReSharper disable once CheckNamespace
 namespace Mbs.Numerics
 {
     /// <summary>
@@ -8,14 +9,122 @@ namespace Mbs.Numerics
     /// </summary>
     public static partial class SpecialFunctions
     {
-        private const int IterationLimit = 250000;
-        private static readonly double Dmax = Convert.ToDouble(decimal.MaxValue);
-
         /// <summary>
         /// Double dedicates 52 bits to the magnitude of the mantissa, so 2⁻⁵² is the smallest fraction difference
         /// it can detect; in order to avoid any funny effects at the margin, we only try for 2⁻⁵⁰.
         /// </summary>
         public static readonly double Accuracy = Math.Pow(2.0, -50);
+
+        private const int IterationLimit = 250000;
+        private static readonly double Dmax = Convert.ToDouble(decimal.MaxValue);
+
+        /// <summary>
+        /// The Taylor coefficient of the specified degree for a given argument.
+        /// </summary>
+        /// <param name="degree">The degree of the coefficient.</param>
+        /// <param name="x">A real number.</param>
+        /// <returns>The Taylor coefficient of the specified degree.</returns>
+        public static double TaylorCoefficient(int degree, double x)
+        {
+            if (x < 0d || degree < 0)
+            {
+                return double.NaN;
+            }
+
+            if (degree == 0)
+            {
+                return 1d;
+            }
+
+            if (degree == 1)
+            {
+                return x;
+            }
+
+            if (degree < 170)
+            {
+                return ElementaryFunctions.Pow(x, degree) / Factorial(degree);
+            }
+
+            double q = Math.Exp(degree * Math.Log(Math.Abs(x)) - LogFactorial(degree));
+            return x < 0d && degree % 2 != 0 ? -q : q;
+        }
+
+        /// <summary>
+        /// The Taylor coefficient of the specified degree for a given argument.
+        /// </summary>
+        /// <param name="degree">The degree of the coefficient.</param>
+        /// <param name="x">A real number.</param>
+        /// <returns>The Taylor coefficient of the specified degree.</returns>
+        public static double TaylorCoefficientGsl(int degree, double x)
+        {
+            if (x < 0d || degree < 0)
+            {
+                return double.NaN;
+            }
+
+            if (degree == 0)
+            {
+                return 1d;
+            }
+
+            if (degree == 1)
+            {
+                return x;
+            }
+
+            if (Math.Abs(x) < double.Epsilon)
+            {
+                return 0d;
+            }
+
+            const double log2Pi = Constants.LnPi + Constants.Ln2;
+            double lnTest = degree * (Math.Log(x) + 1d) + 1d - (degree + 0.5) * Math.Log(degree + 1d) + 0.5 * log2Pi;
+            if (lnTest < Constants.LogDoubleMin + 1d)
+            {
+                return 0d;
+            }
+
+            if (lnTest > Constants.LogDoubleMax - 1d)
+            {
+                return double.PositiveInfinity;
+            }
+
+            double product = 1d;
+            for (int i = 1; i <= degree; i++)
+            {
+                product *= x / i;
+            }
+
+            return product;
+        }
+
+        /// <summary>
+        /// Evaluates the Chebyshev series for a real argument.
+        /// </summary>
+        /// <param name="x">A real number.</param>
+        /// <param name="coefficients">Chebyshev series coefficients.</param>
+        /// <returns>The value of the Chebyshev series for the specified argument.</returns>
+        internal static double EvaluateChebyshevSeries(double x, double[] coefficients)
+        {
+            int degree = coefficients.Length - 1;
+            if (degree == 0)
+            {
+                return 0.5 * coefficients[0];
+            }
+
+            double xx = x + x;
+            double c = coefficients[degree];
+            double q = 0d;
+            for (int i = degree - 1; i > 0; --i)
+            {
+                double temp = c;
+                c = xx * c - q + coefficients[i];
+                q = temp;
+            }
+
+            return x * c - q + 0.5 * coefficients[0];
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static double Sin(double x, double y)
@@ -32,15 +141,31 @@ namespace Mbs.Numerics
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static double EvaluateChebyshevSeries(double x, double[] coefficients, int order, double a, double b)
+        {
+            double d = 0d, dd = 0d;
+            double y = (2d * x - a - b) / (b - a);
+            double y2 = 2 * y;
+            for (int j = order; j >= 1; --j)
+            {
+                double temp = d;
+                d = y2 * d - dd + coefficients[j];
+                dd = temp;
+            }
+
+            return y * d - dd + 0.5 * coefficients[0];
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static double Reduce(double x, double y)
         {
             // Reduces an argument to its corresponding argument in <c>[-2π, 2π]</c>.
             double t = x + Constants.TwoPi * y;
             if (Math.Abs(t) < 64d || Math.Abs(t) > Dmax)
             {
-                // If the argument is small we don't need the high accurary reduction.
+                // If the argument is small we don't need the high accuracy reduction.
                 // If the argument is too big, we can't do the high accuracy reduction
-                // because it would overflow a decimal vairable.
+                // because it would overflow a decimal variable.
                 return t;
             }
 
@@ -60,66 +185,6 @@ namespace Mbs.Numerics
             // Form the argument.
             decimal dt = dx + dy * decimalTwoPi;
             return Convert.ToDouble(dt);
-        }
-
-        /// <summary>
-        /// Evaluates the Chebyshev series for a real argument.
-        /// </summary>
-        /// <param name="x">A real number.</param>
-        /// <param name="coefficients">Chebyshev series coefficients.</param>
-        /// <returns>The value of the Chebyshev series for the specified argument.</returns>
-        internal static double EvaluateChebyshevSeries(double x, double[] coefficients)
-        {
-            int degree = coefficients.Length - 1;
-            if (degree == 0)
-                return 0.5 * coefficients[0];
-            double xx = x + x;
-            double c = coefficients[degree];
-            double q = 0d;
-            for (int i = degree - 1; i > 0; --i)
-            {
-                double temp = c;
-                c = xx * c - q + coefficients[i];
-                q = temp;
-            }
-
-            return x * c - q + 0.5 * coefficients[0];
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static double EvaluateChebyshevSeries(double x, double[] coefficients, int order, double a, double b)
-        {
-            double d = 0d, dd = 0d;
-            double y = (2d * x - a - b) / (b - a);
-            double y2 = 2 * y;
-            for (int j = order; j >= 1; --j)
-            {
-                double temp = d;
-                d = y2 * d - dd + coefficients[j];
-                dd = temp;
-            }
-
-            return y * d - dd + 0.5 * coefficients[0];
-        }
-
-        /// <summary>
-        /// The Taylor coefficient of the specified degree for a given argument.
-        /// </summary>
-        /// <param name="degree">The degree of the coefficient.</param>
-        /// <param name="x">A real number.</param>
-        /// <returns>The Taylor coefficient of the specified degree.</returns>
-        public static double TaylorCoefficient(int degree, double x)
-        {
-            if (x < 0.0 || degree < 0)
-                return double.NaN;
-            if (degree == 0)
-                return 1d;
-            if (degree == 1)
-                return x;
-            if (degree < 170)
-                return ElementaryFunctions.Pow(x, degree) / Factorial(degree);
-            double q = Math.Exp(degree * Math.Log(Math.Abs(x)) - LnFactorial(degree));
-            return x < 0d && degree % 2 != 0 ? -q : q;
         }
     }
 }

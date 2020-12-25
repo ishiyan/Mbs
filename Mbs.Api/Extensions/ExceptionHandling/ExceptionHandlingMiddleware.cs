@@ -44,12 +44,29 @@ namespace Mbs.Api.Extensions.ExceptionHandling
             {
                 await next(context).ConfigureAwait(false);
             }
-#pragma warning disable CA1031 // Do not catch general exception types
             catch (Exception ex)
             {
                 await HandleExceptionAsync(context, ex);
             }
-#pragma warning restore CA1031 // Do not catch general exception types
+        }
+
+        private static bool IsTimeOut(Exception exception)
+        {
+            if (exception is WebException webException)
+            {
+                return webException.Status == WebExceptionStatus.Timeout;
+            }
+
+            return exception is TimeoutException;
+        }
+
+        private static InnerError InnerException(Exception ex)
+        {
+            return ex.InnerException == null ? null : new InnerError
+            {
+                Message = ex.InnerException.Message,
+                Details = InnerException(ex.InnerException),
+            };
         }
 
         private async Task HandleExceptionAsync(HttpContext context, Exception ex)
@@ -77,25 +94,6 @@ namespace Mbs.Api.Extensions.ExceptionHandling
 
             var result = JsonConvert.SerializeObject(error);
             await context.Response.WriteAsync(result);
-        }
-
-        private static bool IsTimeOut(Exception exception)
-        {
-            if (exception is WebException webException)
-            {
-                return webException.Status == WebExceptionStatus.Timeout;
-            }
-
-            return exception is TimeoutException;
-        }
-
-        private static InnerError InnerException(Exception ex)
-        {
-            return ex.InnerException == null ? null : new InnerError
-            {
-                Message = ex.InnerException.Message,
-                Details = InnerException(ex.InnerException)
-            };
         }
     }
 }

@@ -12,6 +12,16 @@ namespace Mbs.Trading.Data
         private int count;
 
         /// <summary>
+        /// Gets a value indicating whether the aggregation bin is empty.
+        /// </summary>
+        internal bool IsEmpty => count == 0;
+
+        /// <summary>
+        /// Gets a value indicating whether the aggregation bin is not empty.
+        /// </summary>
+        internal bool IsNotEmpty => count > 0;
+
+        /// <summary>
         /// Accumulates the scalar by updating the average value and the date and time of the aggregation.
         /// </summary>
         /// <param name="scalar">The scalar to aggregate.</param>
@@ -21,16 +31,6 @@ namespace Mbs.Trading.Data
             dateTime = scalar.Time;
             ++count;
         }
-
-        /// <summary>
-        /// Gets a value indicating whether the aggregation bin is empty.
-        /// </summary>
-        internal bool IsEmpty => 0 == count;
-
-        /// <summary>
-        /// Gets a value indicating whether the aggregation bin is not empty.
-        /// </summary>
-        internal bool IsNotEmpty => 0 < count;
 
         /// <summary>
         /// Emits a scalar object from the aggregation bin with the date and time of the last aggregated scalar, emptying the aggregation bin.

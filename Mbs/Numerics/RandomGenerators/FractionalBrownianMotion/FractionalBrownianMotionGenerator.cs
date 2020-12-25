@@ -1,21 +1,50 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace Mbs.Numerics.Random
+namespace Mbs.Numerics.RandomGenerators.FractionalBrownianMotion
 {
     /// <summary>
     /// Generates fractional Brownian motion samples.
-    /// <para/>Converted from http://www.columbia.edu/~ad3217/fbm.html
+    /// <para/>Converted from http://www.columbia.edu/~ad3217/fbm.html.
     /// <para/>Ton Dieker, Centre of Mathematics and Computer Science (CWI) Amsterdam, 2002.
     /// </summary>
     public static class FractionalBrownianMotionGenerator
     {
         /// <summary>
+        /// Generates a fractional Brownian motion or a fractional Gaussian noise using the specified algorithm.
+        /// </summary>
+        /// <param name="algorithm">The fractional Brownian motion algorithm.</param>
+        /// <param name="nrg">The normal random generator interface.</param>
+        /// <param name="outputLength">The number of samples N to generate, N = 2ⁿ.</param>
+        /// <param name="output">The output array of size N, N = 2ⁿ.</param>
+        /// <param name="maxValue">The sample is generated on [0, maxValue].</param>
+        /// <param name="hurstExponent">The Hurst parameter.</param>
+        /// <param name="isCumulative">If true, generates fractional Brownian motion, otherwise generates fractional Gaussian noise.</param>
+        public static void Generate(FractionalBrownianMotionAlgorithm algorithm, INormalRandomGenerator nrg, int outputLength, double[] output, double maxValue, double hurstExponent, bool isCumulative)
+        {
+            switch (algorithm)
+            {
+                case FractionalBrownianMotionAlgorithm.Hosking:
+                    GenerateHosking(nrg, outputLength, output, maxValue, hurstExponent, isCumulative);
+                    break;
+                case FractionalBrownianMotionAlgorithm.Paxson:
+                    GeneratePaxson(nrg, outputLength, output, maxValue, hurstExponent, isCumulative);
+                    break;
+                case FractionalBrownianMotionAlgorithm.ApproximateCirculant:
+                    GenerateApproximateCirculant(nrg, outputLength, output, maxValue, hurstExponent, isCumulative);
+                    break;
+                case FractionalBrownianMotionAlgorithm.Circulant:
+                    GenerateCirculant(nrg, outputLength, output, maxValue, hurstExponent, isCumulative);
+                    break;
+            }
+        }
+
+        /// <summary>
         /// Generates a fractional Brownian motion or a fractional Gaussian noise using the Hosking method.
         /// <para/>Reference:
         /// <para/>J.R.M. Hosking (1984),
-        /// <para/>Modeling persistence in hydrological time series using fractional brownian differencing,
-        /// <para/>Water Resources Research, Vol. 20, pp. 1898--1908.
+        /// Modeling persistence in hydrological time series using fractional brownian differencing,
+        /// Water Resources Research, Vol. 20, pp. 1898--1908.
         /// </summary>
         /// <param name="nrg">The normal random generator interface.</param>
         /// <param name="outputLength">The number of samples N to generate, N = 2ⁿ.</param>
@@ -36,7 +65,9 @@ namespace Mbs.Numerics.Random
             cov[0] = 1;
             double twoH = 2 * hurstExponent;
             for (int i = 1; i < outputLength; ++i)
+            {
                 cov[i] = Covariance(i, twoH);
+            }
 
             // Simulation.
             for (int i = 1; i < outputLength; ++i)
@@ -83,18 +114,6 @@ namespace Mbs.Numerics.Random
                     output[i] *= scaling;
                 }
             }
-        }
-
-        /// <summary>
-        /// The auto-covariance function of a fractional Gaussian noise.
-        /// </summary>
-        /// <param name="i">The index number, i > 0. For i == 1 the return value is 1.</param>
-        /// <param name="twoH">The value of the Hurst exponent times two.</param>
-        /// <returns>The value of the calculated covariance.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static double Covariance(int i, double twoH)
-        {
-            return (Math.Pow(i - 1, twoH) - 2 * Math.Pow(i, twoH) + Math.Pow(i + 1, twoH)) / 2;
         }
 
         /// <summary>
@@ -151,6 +170,132 @@ namespace Mbs.Numerics.Random
                     output[i] = scaling * a[i].Real;
                 }
             }
+        }
+
+        /// <summary>
+        /// Generates a fractional Brownian motion or a fractional Gaussian noise using the Wood and Chan algorithm.
+        /// <para/>
+        /// <para/>References:
+        /// <para/>➊ R.B. Davies and D.S. Harte (1987),
+        /// Tests for Hurst effect, Biometrika,
+        /// Vol. 74, pp. 95--102.
+        /// <para/>➋ C.R. Dietrich and G.N. Newsam (1997),
+        /// Fast and exact simulation of stationary Gaussian processes through circulant embedding of the covariance matrix,
+        /// SIAM Journal Sci. Comput., Vol. 18, pp. 1088--1107.
+        /// <para/>➌ A. Wood and G. Chan (1994),
+        /// Simulation of Stationary Gaussian Processes in [0,1]ᵈ,
+        /// Journal of Comp. and Graphical Statistics, Vol. 3, pp. 409--432.
+        /// <para/>http://amstat.tandfonline.com/doi/abs/10.1080/10618600.1994.10474655#.Wi7kDUqnGTF.
+        /// </summary>
+        /// <param name="nrg">The normal random generator interface.</param>
+        /// <param name="outputLength">The number of samples N to generate, N = 2ⁿ.</param>
+        /// <param name="output">The output array of size N, N = 2ⁿ.</param>
+        /// <param name="maxValue">The sample is generated on [0, maxValue].</param>
+        /// <param name="hurstExponent">The Hurst parameter.</param>
+        /// <param name="isCumulative">If true, generates fractional Brownian motion, otherwise generates fractional Gaussian noise.</param>
+        public static void GenerateCirculant(INormalRandomGenerator nrg, int outputLength, double[] output, double maxValue, double hurstExponent, bool isCumulative)
+        {
+            // Compute the eigenvalues of the circulant matrix.
+            int outputLengthTwice = 2 * outputLength;
+            Complex[] eigenvalues = new Complex[outputLengthTwice];
+            ComputeEigenvalues(outputLength, outputLengthTwice, eigenvalues, hurstExponent);
+
+            // Compute the input vectors for the FFT algorithm.
+            Complex[] sAndT = new Complex[outputLengthTwice];
+            ComputeSandt(nrg, outputLength, outputLengthTwice, eigenvalues, sAndT);
+
+            // Real part of Fourier transform of S + iT gives sample path.
+            ForwardFft(outputLengthTwice, sAndT);
+
+            // Rescale to obtain a sample of size 2ⁿ on [0, maxValue].
+            double scaling = Math.Pow(maxValue / outputLength, hurstExponent);
+            output[0] = scaling * sAndT[0].Real;
+            if (isCumulative)
+            {
+                for (int i = 1; i < outputLength; ++i)
+                {
+                    output[i] = scaling * sAndT[i].Real;
+                    output[i] += output[i - 1];
+                }
+            }
+            else
+            {
+                for (int i = 1; i < outputLength; ++i)
+                {
+                    output[i] = scaling * sAndT[i].Real;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Generates a fractional Brownian motion or a fractional Gaussian noise using the approximate circulant (Wood and Chan) algorithm.
+        /// </summary>
+        /// <param name="nrg">The normal random generator interface.</param>
+        /// <param name="outputLength">The number of samples N to generate, N = 2ⁿ.</param>
+        /// <param name="output">The output array of size N, N = 2ⁿ.</param>
+        /// <param name="maxValue">The sample is generated on [0, maxValue].</param>
+        /// <param name="hurstExponent">The Hurst parameter.</param>
+        /// <param name="isCumulative">If true, generates fractional Brownian motion, otherwise generates fractional Gaussian noise.</param>
+        public static void GenerateApproximateCirculant(INormalRandomGenerator nrg, int outputLength, double[] output, double maxValue, double hurstExponent, bool isCumulative)
+        {
+            int outputLengthTwice = 2 * outputLength;
+            double[] powerSpectrum = new double[outputLength + 1];
+
+            // Approximate spectral density.
+            FractionalGaussianNoiseSpectrum(powerSpectrum, outputLength, hurstExponent);
+
+            double hurstTwice = 2 * hurstExponent;
+            Complex[] a = new Complex[outputLengthTwice];
+            a[0].Real = Math.Sqrt(2 * (Math.Pow(outputLengthTwice, hurstTwice) - Math.Pow(outputLengthTwice - 1, hurstTwice))) * nrg.NextDoubleStandard();
+            a[0].Imag = 0;
+            a[outputLength].Real = Math.Sqrt(2 * powerSpectrum[outputLength]) * nrg.NextDoubleStandard();
+            a[outputLength].Imag = 0;
+            for (int i = 1; i < outputLength; ++i)
+            {
+                double aux = Math.Sqrt(powerSpectrum[i]);
+                a[i].Real = aux * nrg.NextDoubleStandard();
+                a[i].Imag = aux * nrg.NextDoubleStandard();
+            }
+
+            for (int i = outputLength + 1; i < outputLengthTwice; ++i)
+            {
+                a[i].Real = a[outputLengthTwice - i].Real;
+                a[i].Imag = -a[outputLengthTwice - i].Imag;
+            }
+
+            // Real part of Fourier transform of a.Real + i a.Imag gives sample path.
+            ForwardFft(outputLengthTwice, a);
+
+            // Rescale to obtain a sample of size 2ⁿ on [0, maxValue].
+            double scaling = Math.Pow(maxValue / outputLength, hurstExponent) / Math.Sqrt(2 * outputLengthTwice);
+            output[0] = scaling * a[0].Real;
+            if (isCumulative)
+            {
+                for (int i = 1; i < outputLength; ++i)
+                {
+                    output[i] = scaling * a[i].Real;
+                    output[i] += output[i - 1];
+                }
+            }
+            else
+            {
+                for (int i = 1; i < outputLength; ++i)
+                {
+                    output[i] = scaling * a[i].Real;
+                }
+            }
+        }
+
+        /// <summary>
+        /// The auto-covariance function of a fractional Gaussian noise.
+        /// </summary>
+        /// <param name="i">The index number, i > 0. For i == 1 the return value is 1.</param>
+        /// <param name="twoH">The value of the Hurst exponent times two.</param>
+        /// <returns>The value of the calculated covariance.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static double Covariance(int i, double twoH)
+        {
+            return (Math.Pow(i - 1, twoH) - 2 * Math.Pow(i, twoH) + Math.Pow(i + 1, twoH)) / 2;
         }
 
         /// <summary>
@@ -256,14 +401,14 @@ namespace Mbs.Numerics.Random
                     j -= m;
                     m /= 2;
                     if (m < 1)
+                    {
                         break;
+                    }
                 }
 
                 j += m;
             }
 
-            // for (int i = 0; i < 8; ++i)
-            //     System.Diagnostics.Trace.WriteLine($"step 1: {i}, re={array[i].Real}, im={array[i].Imag}");
             int k = 1;
             do
             {
@@ -289,77 +434,6 @@ namespace Mbs.Numerics.Random
             while (k < length);
         }
 
-        /// <summary>
-        /// Generates a fractional Brownian motion or a fractional Gaussian noise using the Wood and Chan algorithm.
-        /// <para/>
-        /// <para/>References:
-        /// <para/>➊ R.B. Davies and D.S. Harte (1987),
-        /// <para/>Tests for Hurst effect, Biometrika,
-        /// <para/>Vol. 74, pp. 95--102.
-        /// <para/>➋ C.R. Dietrich and G.N. Newsam (1997),
-        /// <para/>Fast and exact simulation of stationary Gaussian processes through circulant embedding of the covariance matrix,
-        /// <para/>SIAM Journal Sci. Comput., Vol. 18, pp. 1088--1107.
-        /// <para/>➌ A. Wood and G. Chan (1994),
-        /// <para/>Simulation of Stationary Gaussian Processes in [0,1]ᵈ,
-        /// <para/>Journal of Comp. and Graphical Statistics, Vol. 3, pp. 409--432.
-        /// <para/>http://amstat.tandfonline.com/doi/abs/10.1080/10618600.1994.10474655#.Wi7kDUqnGTF.
-        /// </summary>
-        /// <param name="nrg">The normal random generator interface.</param>
-        /// <param name="outputLength">The number of samples N to generate, N = 2ⁿ.</param>
-        /// <param name="output">The output array of size N, N = 2ⁿ.</param>
-        /// <param name="maxValue">The sample is generated on [0, maxValue].</param>
-        /// <param name="hurstExponent">The Hurst parameter.</param>
-        /// <param name="isCumulative">If true, generates fractional Brownian motion, otherwise generates fractional Gaussian noise.</param>
-        public static void GenerateCirculant(INormalRandomGenerator nrg, int outputLength, double[] output, double maxValue, double hurstExponent, bool isCumulative)
-        {
-            // Complex[] test = new Complex[512];
-            // for (int i = 0; i < test.Length; ++i)
-            // {
-            //     test[i].Real = i + 1;
-            //     test[i].Imag = i + 2;
-            // }
-
-            // for (int i = 0; i < test.Length; ++i)
-            //     System.Diagnostics.Trace.WriteLine($"{i}, re={test[i].Real}, im={test[i].Imag}");
-            // ForwardFft(test.Length, test);
-            // for (int i = 0; i < test.Length; ++i)
-            //     System.Diagnostics.Trace.WriteLine($"{i}, re={test[i].Real}, im={test[i].Imag}");
-
-            // Compute the eigenvalues of the circulant matrix.
-            int outputLengthTwice = 2 * outputLength;
-            Complex[] eigenvalues = new Complex[outputLengthTwice];
-            ComputeEigenvalues(outputLength, outputLengthTwice, eigenvalues, hurstExponent);
-
-            // Compute the input vectors for the FFT algorithm.
-            Complex[] sAndT = new Complex[outputLengthTwice];
-            ComputeSandt(nrg, outputLength, outputLengthTwice, eigenvalues, sAndT);
-
-            // Real part of Fourier transform of S + iT gives sample path.
-            ForwardFft(outputLengthTwice, sAndT);
-
-            // Rescale to obtain a sample of size 2ⁿ on [0, maxValue].
-            double scaling = Math.Pow(maxValue / outputLength, hurstExponent);
-            output[0] = scaling * sAndT[0].Real;
-            if (isCumulative)
-            {
-                for (int i = 1; i < outputLength; ++i)
-                {
-                    output[i] = scaling * sAndT[i].Real;
-                    output[i] += output[i - 1];
-                }
-            }
-            else
-            {
-                for (int i = 1; i < outputLength; ++i)
-                {
-                    output[i] = scaling * sAndT[i].Real;
-                }
-            }
-
-            // for (int i = 0; i < outputLength; ++i)
-            //     System.Diagnostics.Trace.WriteLine($"{i}, {output[i]}");
-        }
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void ComputeEigenvalues(int length, int lengthTwice, Complex[] eigenvalues, double hurstExponent)
         {
@@ -375,12 +449,8 @@ namespace Mbs.Numerics.Random
                 eigenvalues[i].Real = i <= length ? Covariance(i, hurstExponentTwice) : eigenvalues[lengthTwice - i].Real;
             }
 
-            // for (int i = 0; i < lengthTwice; ++i)
-            //     System.Diagnostics.Trace.WriteLine($"{i}, re={eigenvalues[i].Real}, im={eigenvalues[i].Imag}");
             ForwardFft(lengthTwice, eigenvalues);
 
-            // for (int i = 0; i < lengthTwice; ++i)
-            //    System.Diagnostics.Trace.WriteLine($"{i}, re={eigenvalues[i].Real}, im={eigenvalues[i].Imag}");
             for (int i = 0; i < lengthTwice; ++i)
             {
                 if (eigenvalues[i].Real <= 0)
@@ -413,100 +483,18 @@ namespace Mbs.Numerics.Random
             {
                 sandt[i].Real = Math.Sqrt(eigenvalues[i].Real) * nrg.NextDoubleStandard() / sqrt;
                 if (double.IsNaN(sandt[i].Real))
+                {
                     sandt[i].Real = double.Epsilon;
+                }
+
                 sandt[i].Imag = Math.Sqrt(eigenvalues[i].Imag) * nrg.NextDoubleStandard() / sqrt;
                 if (double.IsNaN(sandt[i].Imag))
+                {
                     sandt[i].Imag = double.Epsilon;
+                }
+
                 sandt[lengthTwice - i].Real = sandt[i].Real;
                 sandt[lengthTwice - i].Imag = -sandt[i].Imag;
-            }
-        }
-
-        /// <summary>
-        /// Generates a fractional Brownian motion or a fractional Gaussian noise using the approximate circulant (Wood and Chan) algorithm.
-        /// </summary>
-        /// <param name="nrg">The normal random generator interface.</param>
-        /// <param name="outputLength">The number of samples N to generate, N = 2ⁿ.</param>
-        /// <param name="output">The output array of size N, N = 2ⁿ.</param>
-        /// <param name="maxValue">The sample is generated on [0, maxValue].</param>
-        /// <param name="hurstExponent">The Hurst parameter.</param>
-        /// <param name="isCumulative">If true, generates fractional Brownian motion, otherwise generates fractional Gaussian noise.</param>
-        public static void GenerateApproximateCirculant(INormalRandomGenerator nrg, int outputLength, double[] output, double maxValue, double hurstExponent, bool isCumulative)
-        {
-            int outputLengthTwice = 2 * outputLength;
-            double[] powerSpectrum = new double[outputLength + 1];
-
-            // Approximate spectral density.
-            FractionalGaussianNoiseSpectrum(powerSpectrum, outputLength, hurstExponent);
-
-            double hurstTwice = 2 * hurstExponent;
-            Complex[] a = new Complex[outputLengthTwice];
-            a[0].Real = Math.Sqrt(2 * (Math.Pow(outputLengthTwice, hurstTwice) - Math.Pow(outputLengthTwice - 1, hurstTwice))) * nrg.NextDoubleStandard();
-            a[0].Imag = 0;
-            a[outputLength].Real = Math.Sqrt(2 * powerSpectrum[outputLength]) * nrg.NextDoubleStandard();
-            a[outputLength].Imag = 0;
-            for (int i = 1; i < outputLength; ++i)
-            {
-                double aux = Math.Sqrt(powerSpectrum[i]);
-                a[i].Real = aux * nrg.NextDoubleStandard();
-                a[i].Imag = aux * nrg.NextDoubleStandard();
-            }
-
-            for (int i = outputLength + 1; i < outputLengthTwice; ++i)
-            {
-                a[i].Real = a[outputLengthTwice - i].Real;
-                a[i].Imag = -a[outputLengthTwice - i].Imag;
-            }
-
-            // Real part of Fourier transform of a.Real + i a.Imag gives sample path.
-            ForwardFft(outputLengthTwice, a);
-
-            // Rescale to obtain a sample of size 2ⁿ on [0, maxValue].
-            double scaling = Math.Pow(maxValue / outputLength, hurstExponent) / Math.Sqrt(2 * outputLengthTwice);
-            output[0] = scaling * a[0].Real;
-            if (isCumulative)
-            {
-                for (int i = 1; i < outputLength; ++i)
-                {
-                    output[i] = scaling * a[i].Real;
-                    output[i] += output[i - 1];
-                }
-            }
-            else
-            {
-                for (int i = 1; i < outputLength; ++i)
-                {
-                    output[i] = scaling * a[i].Real;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Generates a fractional Brownian motion or a fractional Gaussian noise using the specified algorithm.
-        /// </summary>
-        /// <param name="algorithm">The fractional Brownian motion algorithm.</param>
-        /// <param name="nrg">The normal random generator interface.</param>
-        /// <param name="outputLength">The number of samples N to generate, N = 2ⁿ.</param>
-        /// <param name="output">The output array of size N, N = 2ⁿ.</param>
-        /// <param name="maxValue">The sample is generated on [0, maxValue].</param>
-        /// <param name="hurstExponent">The Hurst parameter.</param>
-        /// <param name="isCumulative">If true, generates fractional Brownian motion, otherwise generates fractional Gaussian noise.</param>
-        public static void Generate(FractionalBrownianMotionAlgorithm algorithm, INormalRandomGenerator nrg, int outputLength, double[] output, double maxValue, double hurstExponent, bool isCumulative)
-        {
-            switch (algorithm)
-            {
-                case FractionalBrownianMotionAlgorithm.Hosking:
-                    GenerateHosking(nrg, outputLength, output, maxValue, hurstExponent, isCumulative);
-                    break;
-                case FractionalBrownianMotionAlgorithm.Paxson:
-                    GeneratePaxson(nrg, outputLength, output, maxValue, hurstExponent, isCumulative);
-                    break;
-                case FractionalBrownianMotionAlgorithm.ApproximateCirculant:
-                    GenerateApproximateCirculant(nrg, outputLength, output, maxValue, hurstExponent, isCumulative);
-                    break;
-                case FractionalBrownianMotionAlgorithm.Circulant:
-                    GenerateCirculant(nrg, outputLength, output, maxValue, hurstExponent, isCumulative);
-                    break;
             }
         }
     }

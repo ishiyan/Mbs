@@ -1,6 +1,6 @@
 ﻿using System;
 using Mbs.Trading.Holidays;
-using Mbs.Trading.Time;
+using Mbs.Trading.Time.Conventions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Mbs.UnitTests.Trading.Holidays

@@ -1,4 +1,4 @@
-﻿namespace Mbs.Trading.Instruments
+﻿namespace Mbs.Trading.Instruments.Symbology
 {
     /// <summary>
     /// Enumerates SEDOL validation errors.
@@ -33,6 +33,6 @@
         /// <summary>
         /// Trailing check digit is invalid.
         /// </summary>
-        InvalidCheckDigit
+        InvalidCheckDigit,
     }
 }

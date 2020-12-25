@@ -1,9 +1,9 @@
 ﻿using System;
-using Mbs.Numerics.Random;
+using Mbs.Numerics.RandomGenerators.Ziggurat;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static System.FormattableString;
 
-namespace Mbs.UnitTests.Numerics.RandomGenerators
+namespace Mbs.UnitTests.Numerics.RandomGenerators.Ziggurat
 {
     [TestClass]
     public class ZigguratMarsagliaTsangNormalRandomTests
@@ -16,9 +16,10 @@ namespace Mbs.UnitTests.Numerics.RandomGenerators
 
         private static readonly double[] Expected =
         {
-            0.0188738179215, -0.6381595677902, -2.4014380546905,  0.4090516442993, 0.3330368951602,
-            0.6023299279460,  0.6449064649155, -0.2741292982499,  0.6804153809252,  0.7170403875774
+            0.0188738179215, -0.6381595677902, -2.4014380546905, 0.4090516442993, 0.3330368951602,
+            0.6023299279460, 0.6449064649155, -0.2741292982499, 0.6804153809252, 0.7170403875774,
         };
+#pragma warning disable S2699 // Tests should include assertions
 
         /// <summary>
         /// Taken from http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/SFMT/index.html.
@@ -33,7 +34,10 @@ namespace Mbs.UnitTests.Numerics.RandomGenerators
             {
                 double expected = Expected[i];
                 double actual = gen.NextDouble();
-                Doubles.AreEqual(expected, actual, 1e-13,
+                Doubles.AreEqual(
+                    expected,
+                    actual,
+                    1e-13,
                     Invariant($"Reference implementation: index={i}, actual={actual} expected={expected}"));
             }
         }
@@ -51,7 +55,10 @@ namespace Mbs.UnitTests.Numerics.RandomGenerators
             {
                 double expected = Expected[i];
                 double actual = gen.NextDoubleStandard();
-                Doubles.AreEqual(expected, actual, 1e-13,
+                Doubles.AreEqual(
+                    expected,
+                    actual,
+                    1e-13,
                     Invariant($"Reference implementation: index={i}, actual={actual} expected={expected}"));
             }
         }
@@ -67,7 +74,10 @@ namespace Mbs.UnitTests.Numerics.RandomGenerators
             }
 
             double mean = sum / Count;
-            Doubles.AreEqual(mean / Mean, 1, 1e-3,
+            Doubles.AreEqual(
+                1,
+                mean / Mean,
+                1e-3,
                 Invariant($"Mean value: actual={mean}, expected={Mean}"));
         }
 
@@ -83,9 +93,13 @@ namespace Mbs.UnitTests.Numerics.RandomGenerators
             }
 
             double standardDeviation = Math.Sqrt(sqrSum / (Count - 1));
-            Doubles.AreEqual(standardDeviation / StandardDeviation, 1, 1e-1,
+            Doubles.AreEqual(
+                1,
+                standardDeviation / StandardDeviation,
+                1e-1,
                 Invariant($"Standard deviation value: actual={standardDeviation}, expected={StandardDeviation}"));
         }
+#pragma warning restore S2699 // Tests should include assertions
 
         [TestMethod]
         public void ZigguratMarsagliaTsangNormalRandom_Seed_SameSeed_SameValue()

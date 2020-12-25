@@ -20,15 +20,21 @@ namespace Mbs.Trading.Data.Historical
             List<Ohlcv> list = await EuronextHistoricalData.FetchAsync(historicalDataRequest);
             int count = list.Count;
             if (count < 2)
+            {
                 return list;
+            }
 
             DateTime startDate = list[0].Time;
             if (startDate < historicalDataRequest.StartDate)
+            {
                 startDate = historicalDataRequest.StartDate;
+            }
 
             DateTime endDate = list[--count].Time;
             if (endDate > historicalDataRequest.EndDate)
+            {
                 endDate = historicalDataRequest.EndDate;
+            }
 
             return historicalDataRequest.TimeGranularity switch
             {

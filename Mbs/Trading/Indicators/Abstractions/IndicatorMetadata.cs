@@ -6,12 +6,12 @@
     public class IndicatorMetadata
     {
         /// <summary>
-        /// Identifies the indicator.
+        /// Gets or sets the identification of an indicator.
         /// </summary>
         public IndicatorType IndicatorType { get; set; }
 
         /// <summary>
-        /// A metadata object per indicator output.
+        /// Gets or sets a metadata object per indicator output.
         /// </summary>
         public Metadata[] Outputs { get; set; }
     }

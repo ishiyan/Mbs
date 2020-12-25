@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using Mbs.Trading.Time;
+using Mbs.Trading.Time.Conventions;
 
 namespace Mbs.Trading.Data.Generators.RepetitiveSample
 {
@@ -65,39 +66,31 @@ namespace Mbs.Trading.Data.Generators.RepetitiveSample
             volumeRatio = isOneDay ? 1 : (double)ticks / RepetitiveSampleData.OneDayTicks;
 
             if (offsetSamples < 0)
+            {
                 offsetSamples = 0;
+            }
+
             this.offsetSamples = offsetSamples;
             sampleIndex = -offsetSamples;
 
             if (repetitionsCount < 0)
+            {
                 repetitionsCount = 0;
+            }
+
             this.repetitionsCount = repetitionsCount;
             isRepetitionsInfinite = repetitionsCount < 1;
 
             Initialize();
         }
 
-        private void Initialize()
-        {
-            Moniker = string.Concat("repetitive trade sample (len=", RepetitiveSampleData.SampleCount, ")");
-
-            if (offsetSamples > 0)
-                Moniker = string.Format(CultureInfo.InvariantCulture, "{0}, off={1}", Moniker, offsetSamples);
-
-            if (!isRepetitionsInfinite)
-                Moniker = string.Format(CultureInfo.InvariantCulture, "{0}, rep={1}", Moniker, repetitionsCount);
-
-            Name = WaveformName;
-        }
-
         /// <inheritdoc />
         public override Trade GenerateNext()
         {
             DateTime dateTime = NextTime();
-            if (sampleIndex < 0)
+            if (sampleIndex < 0 && ++sampleIndex <= 0)
             {
-                if (0 >= ++sampleIndex)
-                    return TradeByIndex(0, dateTime);
+                return TradeByIndex(0, dateTime);
             }
 
             Trade trade;
@@ -105,12 +98,17 @@ namespace Mbs.Trading.Data.Generators.RepetitiveSample
             {
                 trade = TradeByIndex(sampleIndex, dateTime);
                 if (++sampleIndex == RepetitiveSampleData.SampleCount)
+                {
                     sampleIndex = 0;
+                }
             }
             else
             {
                 if (repetitionsCount <= currentRepetition)
+                {
                     return TradeByIndex(0, dateTime);
+                }
+
                 trade = TradeByIndex(sampleIndex, dateTime);
                 if (++sampleIndex == RepetitiveSampleData.SampleCount)
                 {
@@ -130,6 +128,23 @@ namespace Mbs.Trading.Data.Generators.RepetitiveSample
             currentRepetition = 0;
         }
 
+        private void Initialize()
+        {
+            Moniker = string.Concat("repetitive trade sample (len=", RepetitiveSampleData.SampleCount, ")");
+
+            if (offsetSamples > 0)
+            {
+                Moniker = string.Format(CultureInfo.InvariantCulture, "{0}, off={1}", Moniker, offsetSamples);
+            }
+
+            if (!isRepetitionsInfinite)
+            {
+                Moniker = string.Format(CultureInfo.InvariantCulture, "{0}, rep={1}", Moniker, repetitionsCount);
+            }
+
+            Name = WaveformName;
+        }
+
         private Trade TradeByIndex(int index, DateTime dateTime)
         {
             double vol = RepetitiveSampleData.Volume[index];
@@ -137,7 +152,9 @@ namespace Mbs.Trading.Data.Generators.RepetitiveSample
             {
                 vol *= volumeRatio;
                 if (vol < 1)
+                {
                     vol = 1;
+                }
             }
 
             return new Trade(dateTime, RepetitiveSampleData.Close[index], vol);

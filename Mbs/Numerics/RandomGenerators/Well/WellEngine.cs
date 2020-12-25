@@ -1,61 +1,24 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace Mbs.Numerics.Random
+namespace Mbs.Numerics.RandomGenerators.Well
 {
     /// <summary>
-    /// The WELL class of pseudo-random number generators engine as described in a paper by François Panneton, Pierre L'Ecuyer and Makoto Matsumoto.
+    /// The WELL class of pseudo-random number generators engine as described in a paper by François Panneton, Pierre L'Ecuyer and Makoto Matsumoto:
     /// <para />
-    /// http://www.iro.umontreal.ca/~lecuyer/myftp/papers/wellrng.pdf
+    /// http://www.iro.umontreal.ca/~lecuyer/myftp/papers/wellrng.pdf.
     /// <para />
     /// Improved Long-Period Generators Based on Linear Recurrences Modulo 2, ACM Transactions on Mathematical Software, 32, 1 (2006).
     /// <para />
-    /// The errata for the paper are in
+    /// The errata for the paper are in:
     /// <para />
-    /// http://www.iro.umontreal.ca/~lecuyer/myftp/papers/wellrng-errata.txt
+    /// http://www.iro.umontreal.ca/~lecuyer/myftp/papers/wellrng-errata.txt.
     /// <para />
     /// See also http://www.iro.umontreal.ca/~panneton/WELLRNG.html.
     /// </summary>
     public abstract class WellEngine : RandomGenerator
     {
-#pragma warning disable CA1819 // Properties should not return arrays
-        /// <summary>
-        /// Gets the bytes pool.
-        /// </summary>
-        protected uint[] V { get; }
-
-        /// <summary>
-        /// Gets index indirection table giving for each index its predecessor taking table size into account.
-        /// </summary>
-        protected int[] Irm1 { get; }
-
-        /// <summary>
-        /// Gets index indirection table giving for each index its second predecessor taking table size into account.
-        /// </summary>
-        protected int[] Irm2 { get; }
-
-        /// <summary>
-        /// Gets index indirection table giving for each index the value index + m1 taking table size into account.
-        /// </summary>
-        protected int[] I1 { get; }
-
-        /// <summary>
-        /// Gets index indirection table giving for each index the value index + m2 taking table size into account.
-        /// </summary>
-        protected int[] I2 { get; }
-
-        /// <summary>
-        /// Gets index indirection table giving for each index the value index + m3 taking table size into account.
-        /// </summary>
-        protected int[] I3 { get; }
-
         private readonly uint[] seedArray;
-
-        /// <summary>
-        /// Gets or sets current index in the bytes pool.
-        /// </summary>
-        protected int Index { get; set; }
-#pragma warning restore CA1819 // Properties should not return arrays
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WellEngine"/> class.
@@ -116,7 +79,7 @@ namespace Mbs.Numerics.Random
                 I3[j] = (j + m3) % r;
             }
 
-            if (null == seedArray)
+            if (seedArray == null)
             {
                 this.seedArray = new[] { (uint)Environment.TickCount };
             }
@@ -125,18 +88,74 @@ namespace Mbs.Numerics.Random
                 int l = seedArray.Length;
                 this.seedArray = new uint[l];
 
-                // Array.Copy(seedArray, this.seedArray, seedArray.Length);
                 for (int j = 0; j != l; ++j)
+                {
                     this.seedArray[j] = (uint)seedArray[j];
+                }
             }
 
+            Init();
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="WellEngine"/> can be reset,
+        /// so that it produces the same pseudo-random number sequence again.
+        /// </summary>
+        public override bool CanReset => true;
+
+#pragma warning disable CA1819 // Properties should not return arrays
+        /// <summary>
+        /// Gets the bytes pool.
+        /// </summary>
+        protected uint[] V { get; }
+
+        /// <summary>
+        /// Gets index indirection table giving for each index its predecessor taking table size into account.
+        /// </summary>
+        protected int[] Irm1 { get; }
+
+        /// <summary>
+        /// Gets index indirection table giving for each index its second predecessor taking table size into account.
+        /// </summary>
+        protected int[] Irm2 { get; }
+
+        /// <summary>
+        /// Gets index indirection table giving for each index the value index + m1 taking table size into account.
+        /// </summary>
+        protected int[] I1 { get; }
+
+        /// <summary>
+        /// Gets index indirection table giving for each index the value index + m2 taking table size into account.
+        /// </summary>
+        protected int[] I2 { get; }
+
+        /// <summary>
+        /// Gets index indirection table giving for each index the value index + m3 taking table size into account.
+        /// </summary>
+        protected int[] I3 { get; }
+
+        /// <summary>
+        /// Gets or sets current index in the bytes pool.
+        /// </summary>
+        protected int Index { get; set; }
+#pragma warning restore CA1819
+
+        /// <summary>
+        /// Resets the <see cref="WellEngine"/>,
+        /// so that it produces the same pseudo-random number sequence again.
+        /// </summary>
+        public override void Reset()
+        {
             Init();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void Init()
         {
+            // ReSharper disable IdentifierTypo
             uint slen = (uint)seedArray.Length, vlen = (uint)V.Length;
+
+            // ReSharper restore IdentifierTypo
             Array.Copy(seedArray, 0, V, 0, Math.Min(slen, vlen));
             if (slen < vlen)
             {
@@ -149,22 +168,9 @@ namespace Mbs.Numerics.Random
 
             Index = 0;
 
-            // Reset helper variables used for generation of random bools.
+            // Reset helper variables used for generation of random booleans.
             BitBuffer = 0;
             BitCount = 0;
         }
-
-        /// <summary>
-        /// Resets the <see cref="WellEngine"/>, so that it produces the same pseudo-random number sequence again.
-        /// </summary>
-        public override void Reset()
-        {
-            Init();
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether the <see cref="WellEngine"/> can be reset, so that it produces the same pseudo-random number sequence again.
-        /// </summary>
-        public override bool CanReset => true;
     }
 }

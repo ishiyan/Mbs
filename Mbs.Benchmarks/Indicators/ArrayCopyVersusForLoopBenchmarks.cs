@@ -1,6 +1,7 @@
 ﻿using System;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
+#pragma warning disable CA1822 // Mark members as static
 
 namespace Mbs.Benchmarks.Indicators
 {
@@ -16,7 +17,7 @@ namespace Mbs.Benchmarks.Indicators
         {
             private static readonly double[] Input = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
-            /*[Benchmark]
+            [Benchmark]
             public void Copy2()
             {
                 Tester.ShiftUsingArrayCopy(Input, 2);
@@ -464,7 +465,7 @@ namespace Mbs.Benchmarks.Indicators
             public void Optimal26()
             {
                 Tester.ShiftOptimal(Input, 26);
-            }*/
+            }
 
             [Benchmark]
             public void Copy27()
@@ -682,7 +683,7 @@ namespace Mbs.Benchmarks.Indicators
                 Tester.ShiftOptimal(Input, 38);
             }
 
-            /*[Benchmark]
+            [Benchmark]
             public void Copy39()
             {
                 Tester.ShiftUsingArrayCopy(Input, 39);
@@ -1202,11 +1203,11 @@ namespace Mbs.Benchmarks.Indicators
             public void Optimal512()
             {
                 Tester.ShiftOptimal(Input, 512);
-            }*/
+            }
         }
 
         [MemoryDiagnoser]
-        public static class Tester
+        private static class Tester
         {
             public static void ShiftUsingArrayCopy(double[] array, int length)
             {
@@ -1219,7 +1220,10 @@ namespace Mbs.Benchmarks.Indicators
             {
                 int lastIndex = length - 1;
                 for (int i = 0; i < lastIndex;)
+                {
                     array[i] = array[++i];
+                }
+
                 array[lastIndex] = 1;
             }
 
@@ -1230,7 +1234,9 @@ namespace Mbs.Benchmarks.Indicators
                 if (length < 33)
                 {
                     for (int i = 0; i < lastIndex;)
+                    {
                         array[i] = array[++i];
+                    }
                 }
                 else
                 {

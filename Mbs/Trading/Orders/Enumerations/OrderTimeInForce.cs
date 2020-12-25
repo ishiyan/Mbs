@@ -1,4 +1,4 @@
-﻿namespace Mbs.Trading.Orders
+﻿namespace Mbs.Trading.Orders.Enumerations
 {
     /// <summary>
     /// The time an order is to be traded.
@@ -63,6 +63,6 @@
         /// Indicated price is to be around the closing price, however, not held to the closing price.
         /// </para>
         /// </remarks>
-        AtClose
+        AtClose,
     }
 }

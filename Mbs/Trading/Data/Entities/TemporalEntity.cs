@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
+// ReSharper disable once CheckNamespace
 namespace Mbs.Trading.Data
 {
     /// <summary>
@@ -13,12 +14,6 @@ namespace Mbs.Trading.Data
     [DataContract]
     public abstract class TemporalEntity
     {
-        /// <summary>
-        /// Gets or sets the date and time. For <see cref="Ohlcv"/> bar entities it corresponds to the <see cref="Ohlcv.Close"/> time, so that an <see cref="Ohlcv"/> bar accumulates lower-level entities up to the closing date and time.
-        /// </summary>
-        [DataMember(Name = "time", IsRequired = true)]
-        public DateTime Time { get; set; }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="TemporalEntity"/> class.
         /// </summary>
@@ -35,6 +30,12 @@ namespace Mbs.Trading.Data
         {
             Time = dateTime;
         }
+
+        /// <summary>
+        /// Gets or sets the date and time. For <see cref="Ohlcv"/> bar entities it corresponds to the <see cref="Ohlcv.Close"/> time, so that an <see cref="Ohlcv"/> bar accumulates lower-level entities up to the closing date and time.
+        /// </summary>
+        [DataMember(Name = "time", IsRequired = true)]
+        public DateTime Time { get; set; }
 
         /// <summary>
         /// Gets a deep copy of this object.

@@ -59,7 +59,7 @@ namespace Mbs.Api.Controllers.Trading.Data.Historical
         /// 6. **timeGranularity**:       *week1*
         /// 7. **endofdayClosingTime**:   *17:30:00*
         /// 8. **startDate**:             *2009-01-01*
-        /// 9. **endDate**:               *2010-12-31*
+        /// 9. **endDate**:               *2010-12-31*.
         ///
         /// <![CDATA[api/v1/data/historical/online/euronext/ohlcvs?instrument.SecurityId=FR0010533075&instrument.SecurityIdSource=isin&instrument.Type=stock&instrument.Exchange.Mic=xpar&adjustedDataIfPresent=false&timeGranularity=week1&endofdayClosingTime=17:30:00&startDate=2009-01-01&endDate=2010-12-31]]>
         /// </remarks>
@@ -68,7 +68,7 @@ namespace Mbs.Api.Controllers.Trading.Data.Historical
         /// <response code="200">Returns a fetched <see cref="Ohlcv"/> time series.</response>
         /// <response code="400">If the request is invalid.</response>
         /// <response code="404">If data specified in the request does not exist or is empty.</response>
-        /// <response code="500">If an internal server error occured.</response>
+        /// <response code="500">If an internal server error occurred.</response>
         [HttpGet(Constants.OhlcvSegment)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(HistoricalDataReply<Ohlcv>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(InternalError))]
@@ -78,11 +78,15 @@ namespace Mbs.Api.Controllers.Trading.Data.Historical
         public async Task<IActionResult> GetOhlcvAsync([FromQuery]HistoricalDataRequest historicalDataRequest)
         {
             if (!ModelState.IsValid)
+            {
                 return BadRequest(new InternalError(ModelState));
+            }
 
             var fetched = (await euronextHistoricalData.FetchOhlcvAsync(historicalDataRequest).ConfigureAwait(false)).ToList();
             if (!fetched.Any())
+            {
                 return NotFound(new InternalError { StatusCode = StatusCodes.Status404NotFound, Message = "Data does not exist or is empty." });
+            }
 
             return Ok(HistoricalDataReplyProfile.Map(mapper, historicalDataRequest, fetched));
         }

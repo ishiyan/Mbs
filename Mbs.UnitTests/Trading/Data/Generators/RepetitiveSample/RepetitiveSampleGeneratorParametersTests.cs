@@ -12,15 +12,13 @@ namespace Mbs.UnitTests.Trading.Data.Generators.RepetitiveSample
     [TestClass]
     public class RepetitiveSampleGeneratorParametersTests
     {
-        // ReSharper disable InconsistentNaming
-
         [TestMethod]
         [ExpectedException(typeof(ValidationException))]
         public void RepetitiveSampleGeneratorParameters_Validate_TimeParametersIsNull_Exception()
         {
             var parameters = new RepetitiveSampleGeneratorParameters
             {
-                TimeParameters = null
+                TimeParameters = null,
             };
 
             var context = new ValidationContext(parameters);
@@ -33,7 +31,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.RepetitiveSample
         {
             var parameters = new RepetitiveSampleGeneratorParameters
             {
-                OffsetSamples = -1
+                OffsetSamples = -1,
             };
 
             var context = new ValidationContext(parameters);
@@ -45,7 +43,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.RepetitiveSample
         {
             var parameters = new RepetitiveSampleGeneratorParameters
             {
-                OffsetSamples = -1
+                OffsetSamples = -1,
             };
 
             var expectedMessage = string.Format(
@@ -68,7 +66,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.RepetitiveSample
         {
             var parameters = new RepetitiveSampleGeneratorParameters
             {
-                RepetitionsCount = -1
+                RepetitionsCount = -1,
             };
 
             var context = new ValidationContext(parameters);
@@ -80,7 +78,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.RepetitiveSample
         {
             var parameters = new RepetitiveSampleGeneratorParameters
             {
-                RepetitionsCount = -1
+                RepetitionsCount = -1,
             };
 
             var expectedMessage = string.Format(
@@ -103,7 +101,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.RepetitiveSample
             var parameters = new RepetitiveSampleGeneratorParameters
             {
                 OffsetSamples = -1,
-                RepetitionsCount = -1
+                RepetitionsCount = -1,
             };
 
             var results = new List<ValidationResult>();
@@ -150,7 +148,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.RepetitiveSample
             var parameters = new RepetitiveSampleGeneratorParameters()
             {
                 OffsetSamples = offsetSamples,
-                RepetitionsCount = repetitionsCount
+                RepetitionsCount = repetitionsCount,
             };
 
             Assert.IsNotNull(parameters.TimeParameters, "time parameters");
@@ -161,7 +159,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.RepetitiveSample
         [TestMethod]
         public void RepetitiveSampleGeneratorParameters_DeserializeFromJson_ValidInput_CorrectValidationResults()
         {
-            var json = @"{
+            const string json = @"{
 sampleCount: 128,
 offsetSamples: 0,
 repetitionsCount: 0,

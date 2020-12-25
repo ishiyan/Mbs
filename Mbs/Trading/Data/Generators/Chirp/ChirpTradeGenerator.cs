@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Globalization;
-using Mbs.Numerics.Random;
+using Mbs.Numerics.RandomGenerators;
 using Mbs.Trading.Time;
+using Mbs.Trading.Time.Conventions;
 
 namespace Mbs.Trading.Data.Generators.Chirp
 {
@@ -14,11 +15,6 @@ namespace Mbs.Trading.Data.Generators.Chirp
     /// </summary>
     public sealed class ChirpTradeGenerator : ChirpDataGenerator<Trade>
     {
-        /// <summary>
-        /// Gets the value of the volume, which is the same for all trades; should be positive.
-        /// </summary>
-        public double Volume { get; }
-
         internal const string WaveformName = "Chirp trade waveform";
 
         /// <summary>
@@ -95,14 +91,10 @@ namespace Mbs.Trading.Data.Generators.Chirp
             Initialize();
         }
 
-        private void Initialize()
-        {
-            const double delta = 0.00005;
-            if (Math.Abs(Volume) > delta)
-                Moniker = string.Format(CultureInfo.InvariantCulture, "{0}, v={1:0.####}", Moniker, Volume);
-
-            Name = WaveformName;
-        }
+        /// <summary>
+        /// Gets the value of the volume, which is the same for all trades; should be positive.
+        /// </summary>
+        public double Volume { get; }
 
         /// <inheritdoc />
         public override Trade GenerateNext()
@@ -111,6 +103,17 @@ namespace Mbs.Trading.Data.Generators.Chirp
             trade.Price = CurrentSampleValue;
             trade.Volume = Volume;
             return trade;
+        }
+
+        private void Initialize()
+        {
+            const double delta = 0.00005;
+            if (Math.Abs(Volume) > delta)
+            {
+                Moniker = string.Format(CultureInfo.InvariantCulture, "{0}, v={1:0.####}", Moniker, Volume);
+            }
+
+            Name = WaveformName;
         }
     }
 }

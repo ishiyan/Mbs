@@ -5,8 +5,8 @@ using Mbs.Trading.Orders;
 namespace Mbs.Trading.Brokers.Commissions
 {
     /// <summary>
-    /// Models a mock commission as
-    /// <para/><code>
+    /// Models a mock commission as:
+    /// <para/> <code>
     /// max(MinimumPerOrder, min(MaximumPerOrder, AbsolutePerOrder + PercentPerOrder/100 * qty * price + AbsolutePerShare * qty))
     /// </code>
     /// </summary>
@@ -50,24 +50,37 @@ namespace Mbs.Trading.Brokers.Commissions
             double averagePrice,
             double cumulativeCommission)
         {
-            if (0d >= MaximumPerOrder || MaximumPerOrder <= cumulativeCommission)
-                return 0d;
-            double commission = (0d < AbsolutePerOrder && Math.Abs(cumulativeCommission) < double.Epsilon) ?
-                AbsolutePerOrder : cumulativeCommission;
+            if (MaximumPerOrder <= 0 || MaximumPerOrder <= cumulativeCommission)
+            {
+                return 0;
+            }
 
-            if (0d < PercentPerOrder)
+            double commission = (AbsolutePerOrder > 0 && Math.Abs(cumulativeCommission) < double.Epsilon)
+                ? AbsolutePerOrder
+                : cumulativeCommission;
+
+            if (PercentPerOrder > 0)
+            {
                 commission += lastQuantity * lastPrice * PercentPerOrder;
+            }
 
-            if (0d < AbsolutePerShare)
+            if (AbsolutePerShare > 0)
+            {
                 commission += lastQuantity * AbsolutePerShare;
+            }
 
-            if (Math.Abs(leavesQuantity) < double.Epsilon && 0d < MinimumPerOrder && commission < MinimumPerOrder)
+            if (Math.Abs(leavesQuantity) < double.Epsilon && MinimumPerOrder > 0 && commission < MinimumPerOrder)
+            {
                 commission = MinimumPerOrder;
+            }
 
             if (MaximumPerOrder < commission)
+            {
                 commission -= MaximumPerOrder;
+            }
+
             commission -= cumulativeCommission;
-            return 0d > commission ? 0d : commission;
+            return commission < 0 ? 0 : commission;
         }
     }
 }

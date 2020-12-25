@@ -45,19 +45,20 @@ namespace Mbs.UnitTests.Trading.Markets
             var target = new Exchange();
             Assert.IsTrue(target.Mic == ExchangeMic.Xams);
         }
-/*
+
         [TestMethod]
         public void Exchange_Compare_CorrectResult()
         {
             var target = new Exchange(ExchangeMic.Xpar);
+            Assert.IsFalse(target == null);
+
             var other = new Exchange(ExchangeMic.Xpar);
-            Assert.AreEqual(0, target.CompareTo(other));
+            Assert.IsTrue(target == other);
 
             other = new Exchange(ExchangeMic.Xams);
-            Assert.AreNotEqual(0, target.CompareTo(other));
-            Assert.AreNotEqual(0, target.CompareTo(null));
+            Assert.IsFalse(target == other);
         }
-*/
+
         [TestMethod]
         public void Exchange_Country_CorrectResult()
         {

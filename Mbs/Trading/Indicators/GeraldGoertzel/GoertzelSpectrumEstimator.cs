@@ -7,99 +7,13 @@ namespace Mbs.Trading.Indicators.GeraldGoertzel
     /// </summary>
     internal sealed class GoertzelSpectrumEstimator
     {
-        /// <summary>
-        /// The length of the input series window.
-        /// </summary>
-        public readonly int Length;
-
-        /// <summary>
-        /// The period resolution (positive number).
-        /// A value of 10 means that spectrum is evaluated at every 0.1 of a period range.
-        /// </summary>
-        public readonly double PeriodResolution;
-
-        /// <summary>
-        /// The length of the spectrum, <c>(MaxPeriod - MinPeriod) * SpectrumResolution</c>.
-        /// </summary>
-        public readonly int LengthSpectrum;
-
-        /// <summary>
-        /// The minimal period. The lowest value, 2, corresponds to the Nyquist (the maximum representable) frequency
-        /// </summary>
-        public readonly double MinPeriod;
-
-        /// <summary>
-        /// The maximal period. The highest value is equal to the observed time lapse (Length samples).
-        /// </summary>
-        public readonly double MaxPeriod;
-
-        /// <summary>
-        /// An array of length <c>Length</c> containing input series window.
-        /// </summary>
-        public readonly double[] InputSeries;
-
-        /// <summary>
-        /// An array of length <c>Length</c> containing input series window samples with the mean value subtracted.
-        /// </summary>
-        public readonly double[] InputSeriesMinusMean;
-
-        /// <summary>
-        /// The mean value over the input series window.
-        /// </summary>
-        public double Mean;
-
-        /// <summary>
-        /// An automatic gain control decay factor.
-        /// </summary>
-        public readonly double AutomaticGainControlDecayFactor;
-
-        /// <summary>
-        /// If the <c>fast attack − slow decay</c> automatic gain control is used.
-        /// </summary>
-        public readonly bool IsAutomaticGainControl;
-
-        /// <summary>
-        /// If the spectral dilation compensation is used.
-        /// </summary>
-        public readonly bool IsSpectralDilationCompensation;
-
-        /// <summary>
-        /// If the first or the second order algorithm is used.
-        /// </summary>
-        public readonly bool IsFirstOrder; 
-
-        /// <summary>
-        /// An array of length <c>LengthSpectrum</c> containing the estimated spectrum.
-        /// </summary>
-        public readonly double[] Spectrum;
-
-        /// <summary>
-        /// A minimum value of the estimated spectrum.
-        /// </summary>
-        public double SpectrumMin;
-
-        /// <summary>
-        /// A maximum value of the estimated spectrum.
-        /// </summary>
-        public double SpectrumMax;
-
-        /// <summary>
-        /// An array of length <c>LengthSpectrum</c> containing the frequencies corresponding to the estimated spectrum.
-        /// </summary>
-        public readonly double[] Frequency;
-
-        /// <summary>
-        /// An array of length <c>LengthSpectrum</c> containing the periods corresponding to the estimated spectrum.
-        /// </summary>
-        public readonly double[] Period;
-
-        private double previousSpectrumMax;
         private readonly double[] frequencySin;
         private readonly double[] frequencyCos;
         private readonly double[] frequencyCos2;
+        private double previousSpectrumMax;
 
         /// <summary>
-        /// Constructs a new instance of the <see cref="GoertzelSpectrumEstimator"/> class.
+        /// Initializes a new instance of the <see cref="GoertzelSpectrumEstimator"/> class.
         /// </summary>
         /// <param name="length">The length of the input series window.</param>
         /// <param name="minPeriod">The minimum period to calculate, must be less than the <c>maxPeriod</c>.</param>
@@ -109,12 +23,19 @@ namespace Mbs.Trading.Indicators.GeraldGoertzel
         /// <param name="isSpectralDilationCompensation">Specifies if the spectral dilation should be compensated.</param>
         /// <param name="isAutomaticGainControl">Specifies if the <c>fast attack − slow decay</c> automatic gain control should be used.</param>
         /// <param name="automaticGainControlDecayFactor">Specifies the decay factor for the <c>fast attack − slow decay</c> automatic gain control.</param>
-        public GoertzelSpectrumEstimator(int length, double minPeriod, double maxPeriod, double periodResolution,
-            bool isFirstOrder = false, bool isSpectralDilationCompensation = true, bool isAutomaticGainControl = true, double automaticGainControlDecayFactor = 0.995)
+        public GoertzelSpectrumEstimator(
+            int length,
+            double minPeriod,
+            double maxPeriod,
+            double periodResolution,
+            bool isFirstOrder = false,
+            bool isSpectralDilationCompensation = true,
+            bool isAutomaticGainControl = true,
+            double automaticGainControlDecayFactor = 0.995)
         {
             Length = length;
-            MinPeriod = 2 > minPeriod ? 2 : minPeriod;
-            MaxPeriod = 2 > maxPeriod ? (MinPeriod + 1) : maxPeriod;
+            MinPeriod = minPeriod < 2 ? 2 : minPeriod;
+            MaxPeriod = maxPeriod < 2 ? (MinPeriod + 1) : maxPeriod;
             PeriodResolution = periodResolution;
             LengthSpectrum = (int)((MaxPeriod - MinPeriod) * periodResolution) + 1;
             InputSeries = new double[length];
@@ -159,6 +80,92 @@ namespace Mbs.Trading.Indicators.GeraldGoertzel
         }
 
         /// <summary>
+        /// Gets the length of the input series window.
+        /// </summary>
+        public int Length { get; }
+
+        /// <summary>
+        /// Gets the period resolution (positive number).
+        /// A value of 10 means that spectrum is evaluated at every 0.1 of a period range.
+        /// </summary>
+        public double PeriodResolution { get; }
+
+        /// <summary>
+        /// Gets the length of the spectrum, <c>(MaxPeriod - MinPeriod) * SpectrumResolution</c>.
+        /// </summary>
+        public int LengthSpectrum { get; }
+
+        /// <summary>
+        /// Gets the minimal period. The lowest value, 2, corresponds to the Nyquist (the maximum representable) frequency.
+        /// </summary>
+        public double MinPeriod { get; }
+
+        /// <summary>
+        /// Gets the maximal period. The highest value is equal to the observed time lapse (Length samples).
+        /// </summary>
+        public double MaxPeriod { get; }
+
+        /// <summary>
+        /// Gets an array of length <c>Length</c> containing input series window.
+        /// </summary>
+        public double[] InputSeries { get; }
+
+        /// <summary>
+        /// Gets an array of length <c>Length</c> containing input series window samples with the mean value subtracted.
+        /// </summary>
+        public double[] InputSeriesMinusMean { get; }
+
+        /// <summary>
+        /// Gets or sets the mean value over the input series window.
+        /// </summary>
+        public double Mean { get; set; }
+
+        /// <summary>
+        /// Gets an automatic gain control decay factor.
+        /// </summary>
+        public double AutomaticGainControlDecayFactor { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the <c>fast attack − slow decay</c> automatic gain control is used.
+        /// </summary>
+        public bool IsAutomaticGainControl { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the spectral dilation compensation is used.
+        /// </summary>
+        public bool IsSpectralDilationCompensation { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the first or the second order algorithm is used.
+        /// </summary>
+        public bool IsFirstOrder { get; }
+
+        /// <summary>
+        /// Gets an array of length <c>LengthSpectrum</c> containing the estimated spectrum.
+        /// </summary>
+        public double[] Spectrum { get; }
+
+        /// <summary>
+        /// Gets or sets a minimum value of the estimated spectrum.
+        /// </summary>
+        public double SpectrumMin { get; set; }
+
+        /// <summary>
+        /// Gets or sets a maximum value of the estimated spectrum.
+        /// </summary>
+        public double SpectrumMax { get; set; }
+
+        /// <summary>
+        /// Gets an array of length <c>LengthSpectrum</c> containing the frequencies corresponding to the estimated spectrum.
+        /// </summary>
+        public double[] Frequency { get; }
+
+        /// <summary>
+        /// Gets an array of length <c>LengthSpectrum</c> containing the periods corresponding to the estimated spectrum.
+        /// </summary>
+        public double[] Period { get; }
+
+        /// <summary>
         /// Resets the estimator.
         /// </summary>
         public void Reset()
@@ -175,10 +182,16 @@ namespace Mbs.Trading.Indicators.GeraldGoertzel
             // Determine and subtract the mean from the input series.
             double mean = 0.0;
             for (int i = 0; i != Length; ++i)
+            {
                 mean += InputSeries[i];
+            }
+
             mean /= Length;
             for (int i = 0; i != Length; ++i)
+            {
                 InputSeriesMinusMean[i] = InputSeries[i] - mean;
+            }
+
             Mean = mean;
 
             // Create an array with the spectrum values.
@@ -186,7 +199,10 @@ namespace Mbs.Trading.Indicators.GeraldGoertzel
             SpectrumMax = IsAutomaticGainControl ? AutomaticGainControlDecayFactor * previousSpectrumMax : double.MinValue;
             double spectrum = IsFirstOrder ? GoertzelFirstOrderEstimate(0) : GoertzelSecondOrderEstimate(0);
             if (IsSpectralDilationCompensation)
+            {
                 spectrum /= Period[0];
+            }
+
             Spectrum[0] = spectrum;
             SpectrumMin = spectrum;
             SpectrumMax = IsAutomaticGainControl ? AutomaticGainControlDecayFactor * previousSpectrumMax : spectrum;
@@ -196,12 +212,20 @@ namespace Mbs.Trading.Indicators.GeraldGoertzel
                 {
                     spectrum = GoertzelFirstOrderEstimate(i);
                     if (IsSpectralDilationCompensation)
+                    {
                         spectrum /= Period[i];
+                    }
+
                     Spectrum[i] = spectrum;
                     if (SpectrumMax < spectrum)
+                    {
                         SpectrumMax = spectrum;
+                    }
+
                     if (SpectrumMin > spectrum)
+                    {
                         SpectrumMin = spectrum;
+                    }
                 }
             }
             else
@@ -210,14 +234,23 @@ namespace Mbs.Trading.Indicators.GeraldGoertzel
                 {
                     spectrum = GoertzelSecondOrderEstimate(i);
                     if (IsSpectralDilationCompensation)
+                    {
                         spectrum /= Period[i];
+                    }
+
                     Spectrum[i] = spectrum;
                     if (SpectrumMax < spectrum)
+                    {
                         SpectrumMax = spectrum;
+                    }
+
                     if (SpectrumMin > spectrum)
+                    {
                         SpectrumMin = spectrum;
+                    }
                 }
             }
+
             previousSpectrumMax = SpectrumMax;
         }
 
@@ -231,6 +264,7 @@ namespace Mbs.Trading.Indicators.GeraldGoertzel
                 s2 = s1;
                 s1 = s0;
             }
+
             double spectrum = s1 * s1 + s2 * s2 - cos2 * s1 * s2;
             return spectrum < 0 ? 0 : spectrum;
         }
@@ -246,6 +280,7 @@ namespace Mbs.Trading.Indicators.GeraldGoertzel
                 yre = re;
                 yim = im;
             }
+
             return yre * yre + yim * yim;
         }
     }

@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Globalization;
-using Mbs.Numerics.Random;
+using Mbs.Numerics.RandomGenerators;
 using Mbs.Trading.Time;
+using Mbs.Trading.Time.Conventions;
 
 namespace Mbs.Trading.Data.Generators.Sawtooth
 {
@@ -14,26 +15,6 @@ namespace Mbs.Trading.Data.Generators.Sawtooth
     public abstract class SawtoothDataGenerator<T> : WaveformDataGenerator<T>
         where T : TemporalEntity, new()
     {
-        /// <summary>
-        /// Gets the amplitude of the sawtooth impulse in sample units, should be positive.
-        /// </summary>
-        public double SampleAmplitude { get; }
-
-        /// <summary>
-        /// Gets the sample value corresponding to the minimum of the sawtooth impulse, should be positive.
-        /// </summary>
-        public double SampleMinimum { get; }
-
-        /// <summary>
-        /// Gets a value indicating whether the sawtooth is reflected horizontally to form a triangle shape.
-        /// </summary>
-        public bool IsBiDirectional { get; }
-
-        /// <summary>
-        /// Gets the sawtooth shape.
-        /// </summary>
-        public SawtoothShape Shape { get; }
-
         private readonly double lengthMinusOne;
         private readonly double ratio;
         private readonly double sampleMaximum;
@@ -116,15 +97,57 @@ namespace Mbs.Trading.Data.Generators.Sawtooth
             Initialize();
         }
 
-        private double CalculateRatio(SawtoothShape sawtoothShape)
+        /// <summary>
+        /// Gets the amplitude of the sawtooth impulse in sample units, should be positive.
+        /// </summary>
+        public double SampleAmplitude { get; }
+
+        /// <summary>
+        /// Gets the sample value corresponding to the minimum of the sawtooth impulse, should be positive.
+        /// </summary>
+        public double SampleMinimum { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the sawtooth is reflected horizontally to form a triangle shape.
+        /// </summary>
+        public bool IsBiDirectional { get; }
+
+        /// <summary>
+        /// Gets the sawtooth shape.
+        /// </summary>
+        public SawtoothShape Shape { get; }
+
+        /// <inheritdoc />
+        public override void Reset()
         {
-            return Shape switch
+            base.Reset();
+            directionUp = true;
+            currentValue = SampleMinimum;
+        }
+
+        /// <inheritdoc />
+        protected override double OutOfWaveformSample()
+        {
+            return SampleMinimum;
+        }
+
+        /// <inheritdoc />
+        protected override double NextSample()
+        {
+            if (IsBiDirectional)
             {
-                SawtoothShape.Linear => (SampleAmplitude / lengthMinusOne),
-                SawtoothShape.Quadratic => (SampleAmplitude / (lengthMinusOne * lengthMinusOne)),
-                SawtoothShape.Logarithmic => (sampleMaximum / SampleMinimum),
-                _ => throw new ArgumentException($"Unknown sawtooth shape ${sawtoothShape}", nameof(sawtoothShape))
-            };
+                currentValue = directionUp ? NextUp() : NextDown();
+                if (CurrentSampleIndex == WaveformSamples)
+                {
+                    directionUp = !directionUp;
+                }
+            }
+            else
+            {
+                currentValue = NextUp();
+            }
+
+            return currentValue;
         }
 
         private static string ShapeName(SawtoothShape sawtoothShape)
@@ -134,6 +157,17 @@ namespace Mbs.Trading.Data.Generators.Sawtooth
                 SawtoothShape.Linear => "linear",
                 SawtoothShape.Quadratic => "quadratic",
                 SawtoothShape.Logarithmic => "logarithmic",
+                _ => throw new ArgumentException($"Unknown sawtooth shape ${sawtoothShape}", nameof(sawtoothShape))
+            };
+        }
+
+        private double CalculateRatio(SawtoothShape sawtoothShape)
+        {
+            return Shape switch
+            {
+                SawtoothShape.Linear => SampleAmplitude / lengthMinusOne,
+                SawtoothShape.Quadratic => SampleAmplitude / (lengthMinusOne * lengthMinusOne),
+                SawtoothShape.Logarithmic => sampleMaximum / SampleMinimum,
                 _ => throw new ArgumentException($"Unknown sawtooth shape ${sawtoothShape}", nameof(sawtoothShape))
             };
         }
@@ -152,42 +186,28 @@ namespace Mbs.Trading.Data.Generators.Sawtooth
 
             const double delta = 0.00005;
             if (HasNoise && NoiseAmplitudeFraction > delta)
+            {
                 Moniker = string.Format(CultureInfo.InvariantCulture, "{0} + noise(ρn={1:0.####})", Moniker, NoiseAmplitudeFraction);
+            }
 
             if (OffsetSamples > 0)
+            {
                 Moniker = string.Format(CultureInfo.InvariantCulture, "{0}, off={1}", Moniker, OffsetSamples);
+            }
 
             if (!IsRepetitionsInfinite)
+            {
                 Moniker = string.Format(CultureInfo.InvariantCulture, "{0}, rep={1}", Moniker, RepetitionsCount);
-        }
-
-        /// <inheritdoc />
-        protected override double OutOfWaveformSample()
-        {
-            return SampleMinimum;
-        }
-
-        /// <inheritdoc />
-        protected override double NextSample()
-        {
-            if (IsBiDirectional)
-            {
-                currentValue = directionUp ? NextUp() : NextDown();
-                if (CurrentSampleIndex == WaveformSamples)
-                    directionUp = !directionUp;
             }
-            else
-            {
-                currentValue = NextUp();
-            }
-
-            return currentValue;
         }
 
         private double NextUp()
         {
             if (CurrentSampleIndex == 1)
+            {
                 return SampleMinimum;
+            }
+
             switch (Shape)
             {
                 case SawtoothShape.Linear:
@@ -205,7 +225,10 @@ namespace Mbs.Trading.Data.Generators.Sawtooth
         private double NextDown()
         {
             if (CurrentSampleIndex == 1)
+            {
                 return sampleMaximum;
+            }
+
             switch (Shape)
             {
                 case SawtoothShape.Linear:
@@ -218,14 +241,6 @@ namespace Mbs.Trading.Data.Generators.Sawtooth
             }
 
             return sampleMaximum;
-        }
-
-        /// <inheritdoc />
-        public override void Reset()
-        {
-            base.Reset();
-            directionUp = true;
-            currentValue = SampleMinimum;
         }
     }
 }

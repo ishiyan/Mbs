@@ -1,5 +1,6 @@
 ﻿using System;
 using Mbs.Trading.Instruments;
+using Mbs.Trading.Orders.Enumerations;
 using Mbs.Trading.Portfolios;
 
 namespace Mbs.Trading.Orders

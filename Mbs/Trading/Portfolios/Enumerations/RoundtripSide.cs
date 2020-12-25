@@ -1,6 +1,5 @@
-namespace Mbs.Trading.Portfolios
+namespace Mbs.Trading.Portfolios.Enumerations
 {
-#pragma warning disable CA1720 // Identifier contains type name
     /// <summary>
     /// The side of a round trip.
     /// </summary>
@@ -14,6 +13,6 @@ namespace Mbs.Trading.Portfolios
         /// <summary>
         /// The short round trip.
         /// </summary>
-        Short
+        Short,
     }
 }

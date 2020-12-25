@@ -1,5 +1,6 @@
 ﻿using System;
 using Mbs.Trading.Markets;
+#pragma warning disable SA1108 // Block statements should not contain embedded comments
 
 namespace Mbs.Trading.Holidays
 {
@@ -42,7 +43,9 @@ namespace Mbs.Trading.Holidays
         {
             DayOfWeek dow = dateTime.DayOfWeek;
             if (dow == DayOfWeek.Saturday || dow == DayOfWeek.Sunday)
+            {
                 return true;
+            }
 
             int year = dateTime.Year;
             int dayOfYear = dateTime.DayOfYear;
@@ -52,7 +55,9 @@ namespace Mbs.Trading.Holidays
                 dayOfYear == easterSunday + 26 || // General Prayer Day, 26 days after Easter.
                 dayOfYear == easterSunday + 39 || // Ascension Day, 39 days after Easter.
                 dayOfYear == easterSunday + 50) // Whit (Pentecost) Monday, 50 days after Easter.
+            {
                 return true;
+            }
 
             int day = dateTime.Day;
             int month = dateTime.Month;
@@ -61,36 +66,63 @@ namespace Mbs.Trading.Holidays
                 case 1:
                     // New Year's Day, Berchtoldstag.
                     if (day == 1 || day == 2)
+                    {
                         return true;
+                    }
+
                     break;
                 case 5:
                     // Labour Day.
                     if (day == 1)
+                    {
                         return true;
+                    }
+
                     break;
                 case 8:
                     // National Day.
                     if (day == 1)
+                    {
                         return true;
+                    }
+
                     break;
                 case 12:
                     // Christmas Eve, Christmas Day, St. Stephen's Day, New Year's Eve.
                     if (day == 24 || day == 25 || day == 26 || day == 31)
+                    {
                         return true;
+                    }
+
                     break;
             }
 
             // Added manually.
             if (year == 1994 && ((month == 4 && day == 18) || (month == 9 && day == 12) || (month == 12 && day == 30)))
+            {
                 return true;
+            }
+
             if (year == 1995 && month == 12 && day == 29)
+            {
                 return true;
+            }
+
             if (year == 1996 && month == 4 && day == 15)
+            {
                 return true;
+            }
+
             if (year == 1999 && month == 11 && day == 12)
+            {
                 return true;
+            }
+
             if (year == 2000 && month == 1 && day == 3)
+            {
                 return true;
+            }
+
             return false;
         }
 

@@ -8,48 +8,11 @@ namespace Mbs.UnitTests.Trading.Data.Generators
     [TestClass]
     public class WaveformDataGeneratorTests
     {
-        private class MockWaveformDataGenerator : WaveformDataGenerator<Scalar>
-        {
-            internal const string MockName = "name";
-            internal const string MockMoniker = "moniker";
-            internal const double WaveformStartValue = 1.1;
-            internal const double OutOfWaveformValue = 0.1;
-
-            private double value = WaveformStartValue;
-
-            internal int GetWaveformSamples() => WaveformSamples;
-
-            public MockWaveformDataGenerator(TimeParameters timeParameters, WaveformParameters waveformParameters)
-                : base(timeParameters, waveformParameters)
-            {
-                Name = MockName;
-                Moniker = MockMoniker;
-            }
-
-            protected override double NextSample() => value++;
-
-            protected override double OutOfWaveformSample() => OutOfWaveformValue;
-
-            public override Scalar GenerateNext()
-            {
-                Scalar scalar = base.GenerateNext();
-                scalar.Value = CurrentSampleValue;
-                return scalar;
-            }
-            public override void Reset()
-            {
-                base.Reset();
-                value = WaveformStartValue;
-            }
-        }
-
         private readonly TimeParameters defaultTimeParameters = new TimeParameters();
         private readonly WaveformParameters defaultWaveformParameters = new WaveformParameters
         {
-            NoiseAmplitudeFraction = 0
+            NoiseAmplitudeFraction = 0,
         };
-
-        // ReSharper disable InconsistentNaming
 
         [TestMethod]
         public void WaveformDataGenerator_Construction_DefaultArgumentValues_CorrectProperties()
@@ -80,7 +43,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
             var waveformParameters = new WaveformParameters
             {
                 RepetitionsCount = 1,
-                NoiseAmplitudeFraction = 0
+                NoiseAmplitudeFraction = 0,
             };
             var generator = new MockWaveformDataGenerator(defaultTimeParameters, waveformParameters);
 
@@ -105,7 +68,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
             const int count = 3;
             var waveformParameters = new WaveformParameters
             {
-                NoiseAmplitudeFraction = 0
+                NoiseAmplitudeFraction = 0,
             };
             var generator = new MockWaveformDataGenerator(defaultTimeParameters, waveformParameters);
 
@@ -131,7 +94,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
             var waveformParameters = new WaveformParameters
             {
                 OffsetSamples = 1,
-                NoiseAmplitudeFraction = 0
+                NoiseAmplitudeFraction = 0,
             };
 
             var generator = new MockWaveformDataGenerator(defaultTimeParameters, waveformParameters);
@@ -158,7 +121,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
             const int count2 = 3;
             var waveformParameters = new WaveformParameters
             {
-                NoiseAmplitudeFraction = 0
+                NoiseAmplitudeFraction = 0,
             };
             var generator = new MockWaveformDataGenerator(defaultTimeParameters, waveformParameters);
 
@@ -199,7 +162,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
             var waveformParameters = new WaveformParameters
             {
                 OffsetSamples = 1,
-                NoiseAmplitudeFraction = 0
+                NoiseAmplitudeFraction = 0,
             };
             var generator = new MockWaveformDataGenerator(defaultTimeParameters, waveformParameters);
 
@@ -230,6 +193,42 @@ namespace Mbs.UnitTests.Trading.Data.Generators
 
             Assert.AreEqual(defaultTimeParameters.StartDate.AddDays(2).Add(DefaultParameterValues.SessionEndTime), enumerable2[2].Time, "enumerable2[2] time is correct");
             Assert.AreEqual(MockWaveformDataGenerator.WaveformStartValue + 1, enumerable2[2].Value, "enumerable2[2] value is correct");
+        }
+
+        private class MockWaveformDataGenerator : WaveformDataGenerator<Scalar>
+        {
+            internal const string MockName = "name";
+            internal const string MockMoniker = "moniker";
+            internal const double WaveformStartValue = 1.1;
+            internal const double OutOfWaveformValue = 0.1;
+
+            private double value = WaveformStartValue;
+
+            public MockWaveformDataGenerator(TimeParameters timeParameters, WaveformParameters waveformParameters)
+                : base(timeParameters, waveformParameters)
+            {
+                Name = MockName;
+                Moniker = MockMoniker;
+            }
+
+            public override Scalar GenerateNext()
+            {
+                Scalar scalar = base.GenerateNext();
+                scalar.Value = CurrentSampleValue;
+                return scalar;
+            }
+
+            public override void Reset()
+            {
+                base.Reset();
+                value = WaveformStartValue;
+            }
+
+            internal int GetWaveformSamples() => WaveformSamples;
+
+            protected override double NextSample() => value++;
+
+            protected override double OutOfWaveformSample() => OutOfWaveformValue;
         }
     }
 }

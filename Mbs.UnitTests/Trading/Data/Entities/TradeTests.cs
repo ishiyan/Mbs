@@ -2,7 +2,7 @@
 using Mbs.Trading.Data;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Mbs.UnitTests.Trading.Data
+namespace Mbs.UnitTests.Trading.Data.Entities
 {
     [TestClass]
     public class TradeTests
@@ -16,12 +16,6 @@ namespace Mbs.UnitTests.Trading.Data
         private static readonly DateTime DefaultDateTime = DateTime.Now;
         private static readonly DateTime GreaterDateTime = new DateTime(2099, 5, 5, 12, 4, 6);
 
-        private static Trade CreateDefaultInstance()
-        {
-            return new Trade(DefaultDateTime, DefaultPrice, DefaultVolume);
-        }
-
-        // ReSharper disable InconsistentNaming
         [TestMethod]
         public void Trade_Time_CorrectValue()
         {
@@ -127,6 +121,11 @@ namespace Mbs.UnitTests.Trading.Data
             Assert.AreEqual(DefaultDateTime, target.Time);
             Assert.IsTrue(double.IsNaN(target.Price));
             Assert.IsTrue(double.IsNaN(target.Volume));
+        }
+
+        private static Trade CreateDefaultInstance()
+        {
+            return new Trade(DefaultDateTime, DefaultPrice, DefaultVolume);
         }
     }
 }

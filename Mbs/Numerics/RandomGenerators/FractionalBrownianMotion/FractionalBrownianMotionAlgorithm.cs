@@ -1,4 +1,4 @@
-﻿namespace Mbs.Numerics.Random
+﻿namespace Mbs.Numerics.RandomGenerators.FractionalBrownianMotion
 {
     /// <summary>
     /// Enumerates fractional Brownian motion algorithms.
@@ -23,6 +23,6 @@
         /// <summary>
         /// Generates a fractional Brownian motion or a fractional Gaussian noise using the approximate circulant method.
         /// </summary>
-        ApproximateCirculant
+        ApproximateCirculant,
     }
 }

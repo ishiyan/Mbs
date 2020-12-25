@@ -1,9 +1,9 @@
 ﻿using System.Linq;
-using Mbs.Numerics.Random;
+using Mbs.Numerics.RandomGenerators.Marsaglia;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static System.FormattableString;
 
-namespace Mbs.UnitTests.Numerics.RandomGenerators
+namespace Mbs.UnitTests.Numerics.RandomGenerators.Marsaglia
 {
     [TestClass]
     public class XorShiftUniformRandomTests
@@ -11,6 +11,7 @@ namespace Mbs.UnitTests.Numerics.RandomGenerators
         private const int Seed = 12345;
         private const int Count = 5000;
 
+#pragma warning disable S2699 // Tests should include assertions
         [TestMethod]
         public void XorShiftUniformRandom_NextDouble_GeneratedMany_MeanHasCorrectValue()
         {
@@ -24,7 +25,10 @@ namespace Mbs.UnitTests.Numerics.RandomGenerators
             }
 
             actual /= Count;
-            Doubles.AreEqual(expected / actual, 1, 1e-1,
+            Doubles.AreEqual(
+                1,
+                expected / actual,
+                1e-1,
                 Invariant($"Mean value 1: actual={actual}, expected={expected}"));
 
             expected = 4;
@@ -35,7 +39,10 @@ namespace Mbs.UnitTests.Numerics.RandomGenerators
             }
 
             actual /= Count;
-            Doubles.AreEqual(expected / actual, 1, 1e-1,
+            Doubles.AreEqual(
+                1,
+                expected / actual,
+                1e-1,
                 Invariant($"Mean value 2: actual={actual}, expected={expected}"));
 
             expected = 6;
@@ -46,7 +53,10 @@ namespace Mbs.UnitTests.Numerics.RandomGenerators
             }
 
             actual /= Count;
-            Doubles.AreEqual(expected / actual, 1, 1e-2,
+            Doubles.AreEqual(
+                1,
+                expected / actual,
+                1e-2,
                 Invariant($"Mean value 3: actual={actual}, expected={expected}"));
         }
 
@@ -63,7 +73,10 @@ namespace Mbs.UnitTests.Numerics.RandomGenerators
             }
 
             actual /= Count;
-            Doubles.AreEqual(expected / actual, 1, 1e-1,
+            Doubles.AreEqual(
+                1,
+                expected / actual,
+                1e-1,
                 Invariant($"Mean value 1: actual={actual}, expected={expected}"));
 
             expected = 400d;
@@ -74,7 +87,10 @@ namespace Mbs.UnitTests.Numerics.RandomGenerators
             }
 
             actual /= Count;
-            Doubles.AreEqual(expected / actual, 1, 1e-1,
+            Doubles.AreEqual(
+                1,
+                expected / actual,
+                1e-1,
                 Invariant($"Mean value 2: actual={actual}, expected={expected}"));
 
             expected = 600d;
@@ -85,7 +101,10 @@ namespace Mbs.UnitTests.Numerics.RandomGenerators
             }
 
             actual /= Count;
-            Doubles.AreEqual(expected / actual, 1, 1e-2,
+            Doubles.AreEqual(
+                1,
+                expected / actual,
+                1e-2,
                 Invariant($"Mean value 3: actual={actual}, expected={expected}"));
         }
 
@@ -94,14 +113,17 @@ namespace Mbs.UnitTests.Numerics.RandomGenerators
         {
             var gen = new XorShiftUniformRandom(Seed);
 
-            double expected = Count / 2d;
+            const double expected = Count / 2d;
             double actual = 0;
             for (int i = 0; i < Count; ++i)
             {
                 actual += gen.NextBoolean() ? 1 : 0;
             }
 
-            Doubles.AreEqual(expected / actual, 1, 1e-1,
+            Doubles.AreEqual(
+                1,
+                expected / actual,
+                1e-1,
                 Invariant($"Mean value: actual={actual}, expected={expected}"));
         }
 
@@ -110,7 +132,7 @@ namespace Mbs.UnitTests.Numerics.RandomGenerators
         {
             var gen = new XorShiftUniformRandom(Seed);
 
-            double expected = 128;
+            const double expected = 128;
             double actual = 0;
             var array = new byte[32];
 
@@ -121,9 +143,13 @@ namespace Mbs.UnitTests.Numerics.RandomGenerators
             }
 
             actual /= Count * 32;
-            Doubles.AreEqual(expected / actual, 1, 1e-2,
+            Doubles.AreEqual(
+                1,
+                expected / actual,
+                1e-2,
                 Invariant($"Mean value: actual={actual}, expected={expected}"));
         }
+#pragma warning restore S2699 // Tests should include assertions
 
         [TestMethod]
         public void XorShiftUniformRandom_Seed_SameSeed_SameValue()

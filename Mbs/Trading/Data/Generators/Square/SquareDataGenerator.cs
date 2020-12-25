@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Globalization;
-using Mbs.Numerics.Random;
+using Mbs.Numerics.RandomGenerators;
 using Mbs.Trading.Time;
+using Mbs.Trading.Time.Conventions;
 
 namespace Mbs.Trading.Data.Generators.Square
 {
@@ -14,16 +15,6 @@ namespace Mbs.Trading.Data.Generators.Square
     public abstract class SquareDataGenerator<T> : WaveformDataGenerator<T>
         where T : TemporalEntity, new()
     {
-        /// <summary>
-        /// Gets the amplitude of the square impulse in sample units, should be positive.
-        /// </summary>
-        public double SampleAmplitude { get; }
-
-        /// <summary>
-        /// Gets the sample value corresponding to the minimum of the square impulse, should be positive.
-        /// </summary>
-        public double SampleMinimum { get; }
-
         private readonly double sampleMaximum;
         private bool directionUp = true;
 
@@ -91,24 +82,21 @@ namespace Mbs.Trading.Data.Generators.Square
             Initialize();
         }
 
-        private void Initialize()
+        /// <summary>
+        /// Gets the amplitude of the square impulse in sample units, should be positive.
+        /// </summary>
+        public double SampleAmplitude { get; }
+
+        /// <summary>
+        /// Gets the sample value corresponding to the minimum of the square impulse, should be positive.
+        /// </summary>
+        public double SampleMinimum { get; }
+
+        /// <inheritdoc />
+        public override void Reset()
         {
-            Moniker = string.Format(
-                CultureInfo.InvariantCulture,
-                "{0:0.####}∙square({1}) + {2:0.####}",
-                SampleAmplitude,
-                WaveformSamples,
-                SampleMinimum);
-
-            const double delta = 0.00005;
-            if (HasNoise && NoiseAmplitudeFraction > delta)
-                Moniker = string.Format(CultureInfo.InvariantCulture, "{0} + noise(ρn={1:0.####})", Moniker, NoiseAmplitudeFraction);
-
-            if (OffsetSamples > 0)
-                Moniker = string.Format(CultureInfo.InvariantCulture, "{0}, off={1}", Moniker, OffsetSamples);
-
-            if (!IsRepetitionsInfinite)
-                Moniker = string.Format(CultureInfo.InvariantCulture, "{0}, rep={1}", Moniker, RepetitionsCount);
+            base.Reset();
+            directionUp = true;
         }
 
         /// <inheritdoc />
@@ -122,15 +110,37 @@ namespace Mbs.Trading.Data.Generators.Square
         {
             double sample = directionUp ? sampleMaximum : SampleMinimum;
             if (CurrentSampleIndex == WaveformSamples)
+            {
                 directionUp = !directionUp;
+            }
+
             return sample;
         }
 
-        /// <inheritdoc />
-        public override void Reset()
+        private void Initialize()
         {
-            base.Reset();
-            directionUp = true;
+            Moniker = string.Format(
+                CultureInfo.InvariantCulture,
+                "{0:0.####}∙square({1}) + {2:0.####}",
+                SampleAmplitude,
+                WaveformSamples,
+                SampleMinimum);
+
+            const double delta = 0.00005;
+            if (HasNoise && NoiseAmplitudeFraction > delta)
+            {
+                Moniker = string.Format(CultureInfo.InvariantCulture, "{0} + noise(ρn={1:0.####})", Moniker, NoiseAmplitudeFraction);
+            }
+
+            if (OffsetSamples > 0)
+            {
+                Moniker = string.Format(CultureInfo.InvariantCulture, "{0}, off={1}", Moniker, OffsetSamples);
+            }
+
+            if (!IsRepetitionsInfinite)
+            {
+                Moniker = string.Format(CultureInfo.InvariantCulture, "{0}, rep={1}", Moniker, RepetitionsCount);
+            }
         }
     }
 }

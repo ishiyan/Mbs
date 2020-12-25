@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Mbs.Trading.Portfolios
+namespace Mbs.Trading.Portfolios.Enumerations
 {
     /// <summary>
     /// The portfolio position sell price monitor mode.
@@ -26,6 +26,6 @@ namespace Mbs.Trading.Portfolios
         /// <summary>
         /// Monitor on ohlcv.
         /// </summary>
-        Ohlcv = 4
+        Ohlcv = 4,
     }
 }

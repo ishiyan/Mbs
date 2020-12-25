@@ -173,7 +173,7 @@ namespace Mbs.Trading.Time
         /// <returns>A compact string in the invariant culture that represents this date and time.</returns>
         public static string ToCompactString(this DateTime dateTime)
         {
-            return dateTime.ToString(0 == dateTime.Millisecond ? "yyyyMMdd:HHmmss" : "yyyyMMdd:HHmmss.fff", InvariantInfo);
+            return dateTime.ToString(dateTime.Millisecond == 0 ? "yyyyMMdd:HHmmss" : "yyyyMMdd:HHmmss.fff", InvariantInfo);
         }
 
         /// <summary>
@@ -193,7 +193,7 @@ namespace Mbs.Trading.Time
         /// <returns>A compact time string in the invariant culture that represents this time.</returns>
         public static string ToCompactTimeString(this DateTime dateTime)
         {
-            return dateTime.ToString(0 == dateTime.Millisecond ? "HHmmss" : "HHmmss.fff", InvariantInfo);
+            return dateTime.ToString(dateTime.Millisecond == 0 ? "HHmmss" : "HHmmss.fff", InvariantInfo);
         }
 
         /// <summary>
@@ -228,13 +228,13 @@ namespace Mbs.Trading.Time
         {
             text = text.Trim();
             int length = text.Length;
-            if (length == 0)
-                return DateTime.MinValue;
-            if (length == 8)
-                return DateTime.ParseExact(text, "yyyyMMdd", InvariantInfo);
-            if (length == 6)
-                return DateTime.ParseExact(text, "HHmmss", InvariantInfo);
-            return DateTime.ParseExact(text, "yyyyMMdd:HHmmss", InvariantInfo);
+            return length switch
+            {
+                0 => DateTime.MinValue,
+                8 => DateTime.ParseExact(text, "yyyyMMdd", InvariantInfo),
+                6 => DateTime.ParseExact(text, "HHmmss", InvariantInfo),
+                _ => DateTime.ParseExact(text, "yyyyMMdd:HHmmss", InvariantInfo)
+            };
         }
 
         /// <summary>

@@ -24,6 +24,31 @@ namespace Mbs.Trading.Markets
     public sealed class Exchange
     {
         /// <summary>
+        /// Initializes a new instance of the <see cref="Exchange" /> class.
+        /// </summary>
+        public Exchange()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Exchange" /> class.
+        /// </summary>
+        /// <param name="mic">The MIC.</param>
+        public Exchange(ExchangeMic mic)
+        {
+            Mic = mic;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Exchange" /> class.
+        /// </summary>
+        /// <param name="euronextMic">The Euronext MIC.</param>
+        public Exchange(EuronextMic euronextMic)
+            : this(EuronextToMic(euronextMic))
+        {
+        }
+
+        /// <summary>
         /// Gets or sets an ISO 10383 Market Identifier Code (MIC).
         /// </summary>
         [DataMember(IsRequired = true)]
@@ -1854,31 +1879,6 @@ namespace Mbs.Trading.Markets
                         return ExchangeCountry.NoCountry;
                 }
             }
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Exchange" /> class.
-        /// </summary>
-        public Exchange()
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Exchange" /> class.
-        /// </summary>
-        /// <param name="mic">The MIC.</param>
-        public Exchange(ExchangeMic mic)
-        {
-            Mic = mic;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Exchange" /> class.
-        /// </summary>
-        /// <param name="euronextMic">The Euronext MIC.</param>
-        public Exchange(EuronextMic euronextMic)
-            : this(EuronextToMic(euronextMic))
-        {
         }
 
         private static ExchangeMic EuronextToMic(EuronextMic euronextMic)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Mbs.Trading.Time;
+using Mbs.Trading.Time.Conventions;
 
 namespace Mbs.Trading.Data.Generators
 {
@@ -11,39 +12,6 @@ namespace Mbs.Trading.Data.Generators
     public abstract class TemporalDataGenerator<T> : ISyntheticDataGenerator<T>
         where T : TemporalEntity
     {
-        /// <inheritdoc />
-        public string Name { get; protected set; }
-
-        /// <inheritdoc />
-        public string Moniker { get; protected set; }
-
-        /// <summary>
-        /// Gets the time of the beginning of the trading session.
-        /// </summary>
-        public TimeSpan SessionBeginTime { get; }
-
-        /// <summary>
-        /// Gets the end time of the trading session.
-        /// </summary>
-        public TimeSpan SessionEndTime { get; }
-
-        /// <summary>
-        /// Gets the date of the first data sample.
-        /// </summary>
-        public DateTime StartDate { get; }
-
-        /// <summary>
-        /// Gets the time granularity of data samples.
-        /// </summary>
-        public TimeGranularity TimeGranularity { get; }
-
-        /// <summary>
-        /// Gets a value specifying an exchange holiday schedule or a general country holiday schedule.
-        /// Business days do not form a continuous sequence (weekends, holidays etc.),
-        /// so there is a need in differentiating between the business time and the physical time.
-        /// </summary>
-        public BusinessDayCalendar BusinessDayCalendar { get; }
-
         private readonly bool isIntraday;
         private readonly TimeSpan timeSpan;
         private DateTime dateTimePrevious;
@@ -88,6 +56,57 @@ namespace Mbs.Trading.Data.Generators
         {
         }
 
+        /// <inheritdoc />
+        public string Name { get; protected set; }
+
+        /// <inheritdoc />
+        public string Moniker { get; protected set; }
+
+        /// <summary>
+        /// Gets the time of the beginning of the trading session.
+        /// </summary>
+        public TimeSpan SessionBeginTime { get; }
+
+        /// <summary>
+        /// Gets the end time of the trading session.
+        /// </summary>
+        public TimeSpan SessionEndTime { get; }
+
+        /// <summary>
+        /// Gets the date of the first data sample.
+        /// </summary>
+        public DateTime StartDate { get; }
+
+        /// <summary>
+        /// Gets the time granularity of data samples.
+        /// </summary>
+        public TimeGranularity TimeGranularity { get; }
+
+        /// <summary>
+        /// Gets a value specifying an exchange holiday schedule or a general country holiday schedule.
+        /// Business days do not form a continuous sequence (weekends, holidays etc.),
+        /// so there is a need in differentiating between the business time and the physical time.
+        /// </summary>
+        public BusinessDayCalendar BusinessDayCalendar { get; }
+
+        /// <inheritdoc />
+        public abstract T GenerateNext();
+
+        /// <inheritdoc />
+        public IEnumerable<T> GenerateNext(int count)
+        {
+            while (--count >= 0)
+            {
+                yield return GenerateNext();
+            }
+        }
+
+        /// <inheritdoc />
+        public virtual void Reset()
+        {
+            dateTimePrevious = DateTime.MinValue;
+        }
+
         /// <summary>
         /// Generates the date and time for the next data sample.
         /// </summary>
@@ -105,27 +124,13 @@ namespace Mbs.Trading.Data.Generators
             {
                 t = new DateTime(t.Year, t.Month, t.Day).Add(SessionBeginTime);
                 while (t.IsBusinessHoliday(BusinessDayCalendar))
+                {
                     t = t.AddDays(1);
+                }
             }
 
             dateTimePrevious = t;
             return t;
-        }
-
-        /// <inheritdoc />
-        public abstract T GenerateNext();
-
-        /// <inheritdoc />
-        public IEnumerable<T> GenerateNext(int count)
-        {
-            while (--count >= 0)
-                yield return GenerateNext();
-        }
-
-        /// <inheritdoc />
-        public virtual void Reset()
-        {
-            dateTimePrevious = DateTime.MinValue;
         }
     }
 }

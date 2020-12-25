@@ -1,15 +1,12 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-#pragma warning disable 1591
 
-namespace Mbs
+namespace Mbs.Utilities
 {
     /// <inheritdoc />
     public class CompositeValidationResult : ValidationResult
     {
         private readonly List<ValidationResult> results = new List<ValidationResult>();
-
-        public IEnumerable<ValidationResult> Results => results;
 
         public CompositeValidationResult(string errorMessage)
             : base(errorMessage)
@@ -25,6 +22,8 @@ namespace Mbs
             : base(validationResult)
         {
         }
+
+        public IEnumerable<ValidationResult> Results => results;
 
         public void AddResult(ValidationResult validationResult)
         {

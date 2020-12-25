@@ -8,30 +8,30 @@ namespace Mbs.Trading.Indicators.Abstractions
     /// </summary>
     public abstract class ScalarIndicator : IIndicator
     {
-        /// <summary>
-        /// Lock object to update an indicator.
-        /// </summary>
-        protected readonly object UpdateLock = new object();
         private readonly OhlcvComponent ohlcvComponent;
 
         /// <summary>
-        /// Constructs a new instance of the <see cref="ScalarIndicator"/> class.
+        /// Initializes a new instance of the <see cref="ScalarIndicator"/> class.
         /// </summary>
         /// <param name="ohlcvComponent">The <see cref="Ohlcv"/> component to use when calculating indicator from an <see cref="Ohlcv"/> data.</param>
-        internal ScalarIndicator(OhlcvComponent ohlcvComponent)
+        protected ScalarIndicator(OhlcvComponent ohlcvComponent)
         {
             this.ohlcvComponent = ohlcvComponent;
         }
-
-        #region IIndicator implementation
-        /// <inheritdoc />
-        public abstract void Reset();
 
         /// <inheritdoc />
         public abstract bool IsPrimed { get; }
 
         /// <inheritdoc />
         public abstract IndicatorMetadata Metadata { get; }
+
+        /// <summary>
+        /// Gets lock object to update an indicator.
+        /// </summary>
+        protected object UpdateLock { get; } = new object();
+
+        /// <inheritdoc />
+        public abstract void Reset();
 
         /// <inheritdoc />
         public IndicatorOutput Update(Scalar sample)
@@ -94,7 +94,6 @@ namespace Mbs.Trading.Indicators.Abstractions
 
             return list;
         }
-        #endregion
 
         /// <summary>
         /// Updates the value of the indicator.

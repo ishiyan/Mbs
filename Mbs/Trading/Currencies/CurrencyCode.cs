@@ -79,7 +79,7 @@
         /// <summary>Norwegian krone.</summary>
         Nok,
 
-        /// <summary>New Zealand dollar.</summary>
+        /// <summary>New Zeeland dollar.</summary>
         Nzd,
 
         /// <summary>Poland zloty.</summary>
@@ -149,6 +149,6 @@
         Vtc,
 
         /// <summary>Zcash (cryptocurrency).</summary>
-        Zec
+        Zec,
     }
 }

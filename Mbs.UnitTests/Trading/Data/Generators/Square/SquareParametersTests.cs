@@ -12,15 +12,13 @@ namespace Mbs.UnitTests.Trading.Data.Generators.Square
     [TestClass]
     public class SquareParametersTests
     {
-        // ReSharper disable InconsistentNaming
-
         [TestMethod]
         [ExpectedException(typeof(ValidationException))]
         public void SquareParameters_Validate_AmplitudeOutOfRange_Exception()
         {
             var parameters = new SquareParameters
             {
-                Amplitude = -1
+                Amplitude = -1,
             };
 
             var context = new ValidationContext(parameters);
@@ -32,7 +30,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.Square
         {
             var parameters = new SquareParameters
             {
-                Amplitude = -1
+                Amplitude = -1,
             };
 
             var expectedMessage = string.Format(
@@ -55,7 +53,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.Square
             var parameters = new SquareParameters
             {
                 Amplitude = -1,
-                MinimalValue = -1
+                MinimalValue = -1,
             };
 
             var results = new List<ValidationResult>();
@@ -101,7 +99,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.Square
             var parameters = new SquareParameters
             {
                 Amplitude = amplitude,
-                MinimalValue = minimalValue
+                MinimalValue = minimalValue,
             };
 
             Assert.AreEqual(amplitude, parameters.Amplitude, "amplitude");
@@ -111,7 +109,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.Square
         [TestMethod]
         public void SquareParameters_DeserializeFromJson_ValidInput_CorrectValidationResults()
         {
-            var json = @"{
+            const string json = @"{
 amplitude: 100,
 minimalValue: 10
 }";

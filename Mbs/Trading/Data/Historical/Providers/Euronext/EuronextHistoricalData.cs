@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Mbs.Trading.Instruments;
 using Mbs.Trading.Time;
+using Mbs.Utilities;
 
 // ReSharper disable once CheckNamespace
 namespace Mbs.Trading.Data.Historical
@@ -18,10 +19,16 @@ namespace Mbs.Trading.Data.Historical
     /// </summary>
     public static class EuronextHistoricalData
     {
+        internal const string Prefix = "Euronext historical data:";
+
+        /// <summary>
+        /// Identifies a data provider.
+        /// </summary>
+        internal const string Provider = "Euronext";
+
         private const int DefaultEndofdayClosingHour = 19;
         private const int DefaultEndofdayClosingMinute = 0;
         private const int DefaultEndofdayClosingSecond = 0;
-        internal const string Prefix = "Euronext historical data:";
         private const string Skipping = "skipping.";
 
         private static readonly DateTime Year1970 = new DateTime(1970, 1, 1);
@@ -32,30 +39,24 @@ namespace Mbs.Trading.Data.Historical
         private static readonly TimeSpan DefaultEndofdayClosingTime =
             TimeSpan.FromSeconds(DefaultEndofdayClosingSecond + DefaultEndofdayClosingMinute * 60 + DefaultEndofdayClosingHour * 3600);
 
+        private static readonly EntryInfo[] Entries =
+        {
+            new EntryInfo("open", 7, 8, @"open"":"""),
+            new EntryInfo("high", 7, 8, @"high"":"""),
+            new EntryInfo("low", 6, 7, @"low"":"""),
+            new EntryInfo("close", 8, 9, @"close"":"""),
+        };
+
         private static long isDataCached = 1L;
         private static long retries = 3L;
         private static long perRequestTimeoutSeconds = 180L;
-
-        /// <summary>
-        /// Identifies a data provider.
-        /// </summary>
-        internal const string Provider = "Euronext";
-
-        /// <summary>
-        /// Clears the data cache.
-        /// </summary>
-        public static void ClearDataCache()
-        {
-            lock (CacheDictionaryLock)
-                CacheDictionary.Clear();
-        }
 
         /// <summary>
         /// Gets or sets a value indicating whether downloaded data will be cached.
         /// </summary>
         public static bool IsDataCached
         {
-            get => 0L != Interlocked.Read(ref isDataCached);
+            get => Interlocked.Read(ref isDataCached) != 0L;
 
             set => Interlocked.Exchange(ref isDataCached, value ? 1L : 0L);
         }
@@ -81,10 +82,21 @@ namespace Mbs.Trading.Data.Historical
         }
 
         /// <summary>
+        /// Clears the data cache.
+        /// </summary>
+        public static void ClearDataCache()
+        {
+            lock (CacheDictionaryLock)
+            {
+                CacheDictionary.Clear();
+            }
+        }
+
+        /// <summary>
         /// An enumerable interface to enumerate a series of historical data events in the temporal order.
         /// </summary>
         /// <param name="historicalDataRequest">A historical data series specification.</param>
-        /// <param name="httpClient">An optional http client./></param>
+        /// <param name="httpClient">An optional http client.</param>
         /// <returns>An enumerable of parsed daily <see cref="Ohlcv"/> elements.</returns>
         public static async Task<List<Ohlcv>> FetchAsync(HistoricalDataRequest historicalDataRequest, HttpClient httpClient = null)
         {
@@ -109,7 +121,10 @@ namespace Mbs.Trading.Data.Historical
             if (isCached)
             {
                 lock (CacheDictionaryLock)
+                {
                     CacheDictionary.TryGetValue(url, out list);
+                }
+
                 if (list != null)
                 {
                     historicalDataRequest.IsDataAdjusted = historicalDataRequest.AdjustedDataIfPresent;
@@ -119,14 +134,19 @@ namespace Mbs.Trading.Data.Historical
 
             string json = await DownloadUrlAsync(url, referer, httpClient);
             if (json == null)
+            {
                 return new List<Ohlcv>();
+            }
+
             list = Parse(json, isin, historicalDataRequest.EndofdayClosingTime);
             Log.DailyOhlcvBarsDownloaded(nameof(EuronextHistoricalData), list.Count, url);
             if (isCached && list.Count > 0)
             {
                 lock (CacheDictionaryLock)
                     if (!CacheDictionary.ContainsKey(url))
+                    {
                         CacheDictionary.Add(url, list);
+                    }
             }
 
             historicalDataRequest.IsDataAdjusted = historicalDataRequest.AdjustedDataIfPresent;
@@ -158,13 +178,19 @@ namespace Mbs.Trading.Data.Historical
             while ((i = span.IndexOf(arrayDelimiterSpan, StringComparison.Ordinal)) >= 0)
             {
                 if ((ohlcv = ParseJsonSpan(span.Slice(0, i), endofdayClosingTime, isin)) != null)
+                {
                     list.Add(ohlcv);
+                }
+
                 span = span.Slice(i + 3);
             }
 
             i = span.IndexOf(arrayTrailerSpan, StringComparison.Ordinal);
             if ((ohlcv = ParseJsonSpan(span.Slice(0, i), endofdayClosingTime, isin)) != null)
+            {
                 list.Add(ohlcv);
+            }
+
             return list;
         }
 
@@ -172,26 +198,24 @@ namespace Mbs.Trading.Data.Historical
         {
             var handler = new HttpClientHandler { UseDefaultCredentials = true };
             if (handler.SupportsAutomaticDecompression)
+            {
                 handler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+            }
+
             var retryingHandler = new RetryingHandler(handler)
             {
                 LogPrefix = () => Prefix,
                 Retries = () => Retries,
-                TimeoutSeconds = () => TimeoutSeconds
+                TimeoutSeconds = () => TimeoutSeconds,
             };
 
-            // var httpClient = HttpClientFactory.Create(retryingHandler);
-            // httpClient.MaxResponseContentBufferSize = 100 * 1024 * 1024;
             var httpClient = new HttpClient(retryingHandler)
             {
-                MaxResponseContentBufferSize = 100 * 1024 * 1024
+                MaxResponseContentBufferSize = 100 * 1024 * 1024,
             };
 
-            // ReSharper disable StringLiteralTypo
-            httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(
-                "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; WOW64; Trident / 6.0)");
+            httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; WOW64; Trident / 6.0)");
 
-            // ReSharper restore StringLiteralTypo
             httpClient.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
             httpClient.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("deflate"));
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -202,9 +226,7 @@ namespace Mbs.Trading.Data.Historical
 
         private static async Task<string> DownloadUrlAsync(string url, string referer, HttpClient httpClient = null)
         {
-#pragma warning disable CA1031 // Do not catch general exception types
-            if (httpClient == null)
-                httpClient = HttpClient;
+            httpClient ??= HttpClient;
 
             Log.Downloading(nameof(EuronextHistoricalData), url);
             try
@@ -212,8 +234,7 @@ namespace Mbs.Trading.Data.Historical
                 using var request = new HttpRequestMessage(HttpMethod.Get, url);
                 using var cancelSource = new CancellationTokenSource();
                 request.Headers.Referrer = new Uri(referer);
-                using HttpResponseMessage response =
-                    await httpClient.SendAsync(request, cancelSource.Token);
+                using HttpResponseMessage response = await httpClient.SendAsync(request, cancelSource.Token);
                 await using Stream responseStream = await GetResponseStreamAsync(response);
                 return await ReadResponseStreamAsync(responseStream);
             }
@@ -223,7 +244,6 @@ namespace Mbs.Trading.Data.Historical
             }
 
             return null;
-#pragma warning restore CA1031 // Do not catch general exception types
         }
 
         private static void Validate(string mic, string isin, InstrumentType instrumentType, TimeGranularity timeGranularity = TimeGranularity.Day1)
@@ -268,9 +288,14 @@ namespace Mbs.Trading.Data.Historical
         {
             mic = mic.ToUpperInvariant();
             if (beginDate == DateTime.MinValue)
+            {
                 beginDate = Year1999;
+            }
+
             if (endDate == DateTime.MaxValue)
+            {
                 endDate = DateTime.Today;
+            }
 
             // The number of milliseconds since 1 january 1970.
             var millisecondsFrom = (long)(beginDate - Year1970).TotalMilliseconds;
@@ -279,6 +304,7 @@ namespace Mbs.Trading.Data.Historical
             string adjusted = isAdjusted ? "1" : "0"; // "1" = adjusted data, "0" = not adjusted data.
             string url;
 
+#pragma warning disable S1075 // URIs should not be hardcoded
             if (instrumentType == InstrumentType.Index)
             {
                 // https://www.euronext.com/sites/euronext.com/modules/common/common_listings/custom/nyx_eu_listings/nyx_eu_listings_price_chart/pricechart/pricechart.php?q=historical_data&adjusted=1&from=1346198400000&to=1346803200000&isin=NL0000000107&mic=XAMS&dateFormat=d/m/Y&locale=null
@@ -321,6 +347,7 @@ namespace Mbs.Trading.Data.Historical
                 Log.ExceptionHasBeenThrown(nameof(EuronextHistoricalData), exception);
                 throw exception;
             }
+#pragma warning restore S1075 // URIs should not be hardcoded
 
             return url;
         }
@@ -342,9 +369,11 @@ namespace Mbs.Trading.Data.Historical
         {
             string json;
             using (var streamReader = new StreamReader(stream))
+            {
                 json = await streamReader.ReadToEndAsync();
+            }
 
-            if (json == null || json == "[]" || json == "null")
+            if (json == "[]" || json == "null")
             {
                 Log.NoDataDownloadedSkipping(nameof(EuronextHistoricalData));
                 return null;
@@ -352,47 +381,6 @@ namespace Mbs.Trading.Data.Historical
 
             return json;
         }
-
-        private class EntryInfo
-        {
-            public static readonly char[] DelimiterArray = @",""".ToCharArray();
-
-            public static readonly char[] NullArray = "null".ToCharArray();
-
-            public static readonly char[] IsinPatternArray = @"""ISIN"":""".ToCharArray();
-
-            public static readonly char[] DatePatternArray = @"date"":""".ToCharArray();
-
-            // ReSharper disable once StringLiteralTypo
-            public static readonly char[] VolumePatternArray1 = @"nymberofshares"":""".ToCharArray();
-
-            // ReSharper disable once StringLiteralTypo
-            public static readonly char[] VolumePatternArray2 = @"numberofshares"":""".ToCharArray();
-
-            public string Name { get; }
-
-            public int Offset { get; }
-
-            public int LengthSubtractor { get; }
-
-            public char[] PatternArray { get; }
-
-            public EntryInfo(string name, int offset, int lengthSubtractor, string array)
-            {
-                Name = name;
-                Offset = offset;
-                LengthSubtractor = lengthSubtractor;
-                PatternArray = array.ToCharArray();
-            }
-        }
-
-        private static readonly EntryInfo[] Entries =
-        {
-            new EntryInfo("open", 7, 8, @"open"":"""),
-            new EntryInfo("high", 7, 8, @"high"":"""),
-            new EntryInfo("low", 6, 7, @"low"":"""),
-            new EntryInfo("close", 8, 9, @"close"":""")
-        };
 
         private static bool TryParseDoubleSpan(ReadOnlySpan<char> span, ReadOnlySpan<char> entry, ReadOnlySpan<char> number, string invalidItem, out double value, string name)
         {
@@ -423,7 +411,7 @@ namespace Mbs.Trading.Data.Historical
 
             var entry = span.Slice(0, i);
             if (!entry.StartsWith(entryInfo.PatternArray, StringComparison.Ordinal) ||
-                '\"' != entry[^1] || entry.Contains(EntryInfo.NullArray, StringComparison.Ordinal))
+                entry[^1] != '\"' || entry.Contains(EntryInfo.NullArray, StringComparison.Ordinal))
             {
                 Log.Error($"{Prefix} invalid [{entryInfo.Name}] splitted item [{entry.ToString()}] in [{span.ToString()}], {Skipping}");
                 value = double.NaN;
@@ -454,7 +442,7 @@ namespace Mbs.Trading.Data.Historical
             // ReSharper restore CommentTypo
             var entry = span.Slice(0, i);
             if (!(entry.StartsWith(EntryInfo.VolumePatternArray1, StringComparison.Ordinal) || entry.StartsWith(EntryInfo.VolumePatternArray2, StringComparison.Ordinal))
-                || '\"' != entry[^1]
+                || entry[^1] != '\"'
                 || entry.Contains(EntryInfo.NullArray, StringComparison.Ordinal))
             {
                 Log.Error($"{Prefix} {invalidItem} [{entry.ToString()}] in [{span.ToString()}], {Skipping}");
@@ -482,12 +470,12 @@ namespace Mbs.Trading.Data.Historical
             //           1111111111
             // 01234567890123456789
             if (!span.StartsWith(EntryInfo.DatePatternArray, StringComparison.Ordinal)
-                || 22 > span.Length
-                || '\\' != span[9]
-                || '/' != span[10]
-                || '\\' != span[13]
-                || '/' != span[14]
-                || '"' != span[19])
+                || span.Length < 22
+                || span[9] != '\\'
+                || span[10] != '/'
+                || span[13] != '\\'
+                || span[14] != '/'
+                || span[19] != '"')
             {
                 Log.Error($"{Prefix} {invalidItem} in [{span.ToString()}], {Skipping}");
                 value = DateTime.MinValue;
@@ -516,7 +504,7 @@ namespace Mbs.Trading.Data.Historical
             //           11111111112
             // 012345678901234567890
             var entry = span.Slice(0, i);
-            if (!entry.StartsWith(EntryInfo.IsinPatternArray, StringComparison.Ordinal) || '\"' != entry[^1])
+            if (!entry.StartsWith(EntryInfo.IsinPatternArray, StringComparison.Ordinal) || entry[^1] != '\"')
             {
                 Log.Error($"{Prefix} {invalidItem} [{entry.ToString()}] in [{span.ToString()}], {Skipping}");
                 return false;
@@ -541,7 +529,9 @@ namespace Mbs.Trading.Data.Historical
             // 012345678901234567890
             // ReSharper restore CommentTypo
             if (!TryParseIsinSpan(span, isin, out int i))
+            {
                 return null;
+            }
 
             // MIC":"Euronext Paris, London"
             //           1111111111222222222
@@ -559,35 +549,45 @@ namespace Mbs.Trading.Data.Historical
             // 01234567890123456789
             span = span.Slice(i + EntryInfo.DelimiterArray.Length);
             if (!TryParseDateSpan(span, endofdayClosingTime, out DateTime dateTime, out i))
+            {
                 return null;
+            }
 
             // open":"1,329.39"
             //           111111
             // 0123456789012345
-            span = span.Slice(i + EntryInfo.DelimiterArray.Length);
-            if (!TryParsePriceSpan(span, Entries[0], out double open, out i)) // 1,329.39
+            span = span.Slice(i + EntryInfo.DelimiterArray.Length); // 1,329.39
+            if (!TryParsePriceSpan(span, Entries[0], out double open, out i))
+            {
                 return null;
+            }
 
             // high":"1,329.39"
             //           11111
             // 012345678901234
             span = span.Slice(i + EntryInfo.DelimiterArray.Length);
             if (!TryParsePriceSpan(span, Entries[1], out double high, out i))
+            {
                 return null;
+            }
 
             // low":"1,329.39"
             //           11111
             // 012345678902345
             span = span.Slice(i + EntryInfo.DelimiterArray.Length);
             if (!TryParsePriceSpan(span, Entries[2], out double low, out i))
+            {
                 return null;
+            }
 
             // close":"1,329.39"
             //           1111111
             // 01234567890123456
             span = span.Slice(i + EntryInfo.DelimiterArray.Length);
             if (!TryParsePriceSpan(span, Entries[3], out double close, out i))
+            {
                 return null;
+            }
 
             // ReSharper disable CommentTypo
             // nymberofshares":"1,118.00"
@@ -597,9 +597,44 @@ namespace Mbs.Trading.Data.Historical
             // ReSharper restore CommentTypo
             span = span.Slice(i + EntryInfo.DelimiterArray.Length);
             if (!TryParseVolumeSpan(span, out double volume, out _))
+            {
                 return null;
+            }
 
             return new Ohlcv(dateTime, open, high, low, close, volume);
+        }
+
+        private class EntryInfo
+        {
+            public static readonly char[] DelimiterArray = @",""".ToCharArray();
+
+            public static readonly char[] NullArray = "null".ToCharArray();
+
+            public static readonly char[] IsinPatternArray = @"""ISIN"":""".ToCharArray();
+
+            public static readonly char[] DatePatternArray = @"date"":""".ToCharArray();
+
+            // ReSharper disable once StringLiteralTypo
+            public static readonly char[] VolumePatternArray1 = @"nymberofshares"":""".ToCharArray();
+
+            // ReSharper disable once StringLiteralTypo
+            public static readonly char[] VolumePatternArray2 = @"numberofshares"":""".ToCharArray();
+
+            public EntryInfo(string name, int offset, int lengthSubtractor, string array)
+            {
+                Name = name;
+                Offset = offset;
+                LengthSubtractor = lengthSubtractor;
+                PatternArray = array.ToCharArray();
+            }
+
+            public string Name { get; }
+
+            public int Offset { get; }
+
+            public int LengthSubtractor { get; }
+
+            public char[] PatternArray { get; }
         }
     }
 }

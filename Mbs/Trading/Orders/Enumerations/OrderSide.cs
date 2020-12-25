@@ -1,4 +1,5 @@
-﻿namespace Mbs.Trading.Orders
+﻿// ReSharper disable once CheckNamespace
+namespace Mbs.Trading.Orders
 {
     /// <summary>
     /// Identifies an order side.
@@ -10,7 +11,7 @@
     public enum OrderSide
     {
         /// <summary>
-        /// Refers to the buyng of a security.
+        /// Refers to the buying of a security.
         /// </summary>
         Buy,
 
@@ -154,6 +155,6 @@
         /// or a zero plus tick, not on a downtick or a zero minus tick. This rule was lifted in 2007.
         /// </para>
         /// </remarks>
-        SellShortExempt
+        SellShortExempt,
     }
 }

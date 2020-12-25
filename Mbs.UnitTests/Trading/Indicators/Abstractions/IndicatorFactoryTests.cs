@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 using Mbs.Trading.Indicators;
 using Mbs.Trading.Indicators.Abstractions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Mbs.UnitTests.Trading.Indicators.Abstractions
 {
@@ -28,7 +27,7 @@ namespace Mbs.UnitTests.Trading.Indicators.Abstractions
             {
                 IndicatorType = IndicatorType.SimpleMovingAverage,
                 Parameters = new SimpleMovingAverage.Parameters { Length = 7 },
-                OutputKinds = new[] { (int)SimpleMovingAverage.OutputKind.Value }
+                OutputKinds = new[] { (int)SimpleMovingAverage.OutputKind.Value },
             };
 
             var target = IndicatorFactory.Create(new[] { input, input, input });
@@ -48,7 +47,7 @@ namespace Mbs.UnitTests.Trading.Indicators.Abstractions
             {
                 IndicatorType = IndicatorType.SimpleMovingAverage,
                 Parameters = new SimpleMovingAverage.Parameters { Length = 7 },
-                OutputKinds = new []{ (int)SimpleMovingAverage.OutputKind.Value }
+                OutputKinds = new[] { (int)SimpleMovingAverage.OutputKind.Value },
             };
 
             var target = IndicatorFactory.Create(input);
@@ -64,7 +63,7 @@ namespace Mbs.UnitTests.Trading.Indicators.Abstractions
             {
                 IndicatorType = IndicatorType.SimpleMovingAverage,
                 Parameters = new ExponentialMovingAverage.ParametersLength { Length = 7 },
-                OutputKinds = new[] { (int)SimpleMovingAverage.OutputKind.Value }
+                OutputKinds = new[] { (int)SimpleMovingAverage.OutputKind.Value },
             };
 
             var target = IndicatorFactory.Create(input);
@@ -78,14 +77,14 @@ namespace Mbs.UnitTests.Trading.Indicators.Abstractions
             var inputLength = new IndicatorInput
             {
                 IndicatorType = IndicatorType.ExponentialMovingAverage,
-                Parameters = new ExponentialMovingAverage.ParametersLength{ Length = 7 },
-                OutputKinds = new[] { (int)ExponentialMovingAverage.OutputKind.Value }
+                Parameters = new ExponentialMovingAverage.ParametersLength { Length = 7 },
+                OutputKinds = new[] { (int)ExponentialMovingAverage.OutputKind.Value },
             };
             var inputSmoothingFactor = new IndicatorInput
             {
                 IndicatorType = IndicatorType.ExponentialMovingAverage,
                 Parameters = new ExponentialMovingAverage.ParametersSmoothingFactor { SmoothingFactor = 0.123 },
-                OutputKinds = new[] { (int)ExponentialMovingAverage.OutputKind.Value }
+                OutputKinds = new[] { (int)ExponentialMovingAverage.OutputKind.Value },
             };
 
             var targetLength = IndicatorFactory.Create(inputLength);
@@ -103,7 +102,7 @@ namespace Mbs.UnitTests.Trading.Indicators.Abstractions
             {
                 IndicatorType = IndicatorType.ExponentialMovingAverage,
                 Parameters = new SimpleMovingAverage.Parameters { Length = 7 },
-                OutputKinds = new[] { (int)ExponentialMovingAverage.OutputKind.Value }
+                OutputKinds = new[] { (int)ExponentialMovingAverage.OutputKind.Value },
             };
 
             var target = IndicatorFactory.Create(input);

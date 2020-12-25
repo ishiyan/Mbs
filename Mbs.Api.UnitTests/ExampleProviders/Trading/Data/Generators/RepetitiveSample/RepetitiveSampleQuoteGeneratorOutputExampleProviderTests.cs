@@ -1,5 +1,4 @@
 ﻿using Mbs.Api.ExampleProviders.Trading.Data.Generators.RepetitiveSample;
-using Mbs.Trading.Data;
 using Mbs.Trading.Data.Generators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -8,11 +7,10 @@ namespace Mbs.Api.UnitTests.ExampleProviders.Trading.Data.Generators.RepetitiveS
     [TestClass]
     public class RepetitiveSampleQuoteGeneratorOutputExampleProviderTests
     {
-        // ReSharper disable InconsistentNaming
         [TestMethod]
         public void RepetitiveSampleQuoteGeneratorOutputExampleProvider_GetExamples_CorrectValues()
         {
-            var example = (SyntheticDataGeneratorOutput<Quote>) new RepetitiveSampleQuoteGeneratorOutputExampleProvider().GetExamples();
+            var example = new RepetitiveSampleQuoteGeneratorOutputExampleProvider().GetExamples();
 
             Assert.AreEqual(RepetitiveSampleQuoteGeneratorOutputExampleProvider.Name, example.Name, "name");
             Assert.AreEqual(RepetitiveSampleQuoteGeneratorOutputExampleProvider.Moniker, example.Moniker, "moniker");

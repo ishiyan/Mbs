@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
 using Mbs.Trading.Data.Generators;
 using Mbs.Trading.Data.Generators.MultiSinusoidal;
+using Mbs.Utilities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 
@@ -12,15 +14,13 @@ namespace Mbs.UnitTests.Trading.Data.Generators.MultiSinusoidal
     [TestClass]
     public class MultiSinusoidalParametersTests
     {
-        // ReSharper disable InconsistentNaming
-
         [TestMethod]
         [ExpectedException(typeof(ValidationException))]
         public void MultiSinusoidalParameters_Validate_MinimalValueOutOfRange_Exception()
         {
             var parameters = new MultiSinusoidalParameters
             {
-                MinimalValue = -1
+                MinimalValue = -1,
             };
 
             var context = new ValidationContext(parameters);
@@ -32,7 +32,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.MultiSinusoidal
         {
             var parameters = new MultiSinusoidalParameters
             {
-                MinimalValue = -1
+                MinimalValue = -1,
             };
 
             var expectedMessage = string.Format(
@@ -55,7 +55,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.MultiSinusoidal
         {
             var parameters = new MultiSinusoidalParameters
             {
-                MultiSinusoidalComponents = null
+                MultiSinusoidalComponents = null,
             };
 
             var context = new ValidationContext(parameters);
@@ -67,7 +67,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.MultiSinusoidal
         {
             var parameters = new MultiSinusoidalParameters
             {
-                MultiSinusoidalComponents = null
+                MultiSinusoidalComponents = null,
             };
 
             var expectedMessage = string.Format(
@@ -89,7 +89,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.MultiSinusoidal
         {
             var parameters = new MultiSinusoidalParameters
             {
-                MultiSinusoidalComponents = new MultiSinusoidalComponentParameters[0]
+                MultiSinusoidalComponents = Array.Empty<MultiSinusoidalComponentParameters>(),
             };
 
             var expectedMessage = ErrorMessages.FieldMultiSinusoidalComponentsMustNotBeEmpty;
@@ -111,7 +111,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.MultiSinusoidal
         {
             var parameters = new MultiSinusoidalParameters
             {
-                MultiSinusoidalComponents = new[]{ new MultiSinusoidalComponentParameters { Amplitude = -1, Period = 16, PhaseInPi = 0 } }
+                MultiSinusoidalComponents = new[] { new MultiSinusoidalComponentParameters { Amplitude = -1, Period = 16, PhaseInPi = 0 } },
             };
 
             var context = new ValidationContext(parameters);
@@ -123,7 +123,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.MultiSinusoidal
         {
             var parameters = new MultiSinusoidalParameters
             {
-                MultiSinusoidalComponents = new[] { new MultiSinusoidalComponentParameters { Amplitude = -1, Period = 1, PhaseInPi = -2 } }
+                MultiSinusoidalComponents = new[] { new MultiSinusoidalComponentParameters { Amplitude = -1, Period = 1, PhaseInPi = -2 } },
             };
 
             var expectedMessage = string.Format(
@@ -149,7 +149,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.MultiSinusoidal
             var parameters = new MultiSinusoidalParameters
             {
                 MinimalValue = -1,
-                MultiSinusoidalComponents = null
+                MultiSinusoidalComponents = null,
             };
 
             var results = new List<ValidationResult>();
@@ -191,12 +191,12 @@ namespace Mbs.UnitTests.Trading.Data.Generators.MultiSinusoidal
         public void MultiSinusoidalParameters_Construction_Constructor_CorrectValues()
         {
             const double minimalValue = 7;
-            MultiSinusoidalComponentParameters[] multiSinusoidalComponents = { new MultiSinusoidalComponentParameters{ Amplitude = 10, Period = 16, PhaseInPi = 0 }};
+            MultiSinusoidalComponentParameters[] multiSinusoidalComponents = { new MultiSinusoidalComponentParameters { Amplitude = 10, Period = 16, PhaseInPi = 0 } };
 
             var parameters = new MultiSinusoidalParameters
             {
                 MinimalValue = minimalValue,
-                MultiSinusoidalComponents = multiSinusoidalComponents
+                MultiSinusoidalComponents = multiSinusoidalComponents,
             };
 
             Assert.AreEqual(minimalValue, parameters.MinimalValue, "minimal value");
@@ -208,7 +208,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.MultiSinusoidal
         [TestMethod]
         public void MultiSinusoidalParameters_DeserializeFromJson_ValidInput_CorrectValidationResults()
         {
-            var json = @"{
+            const string json = @"{
 minimalValue: 10,
 multiSinusoidalComponentParameters: [
 {

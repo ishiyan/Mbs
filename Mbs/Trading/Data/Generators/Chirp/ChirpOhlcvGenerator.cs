@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Globalization;
-using Mbs.Numerics.Random;
+using Mbs.Numerics.RandomGenerators;
 using Mbs.Trading.Time;
+using Mbs.Trading.Time.Conventions;
 
 namespace Mbs.Trading.Data.Generators.Chirp
 {
@@ -22,23 +23,6 @@ namespace Mbs.Trading.Data.Generators.Chirp
     /// </summary>
     public sealed class ChirpOhlcvGenerator : ChirpDataGenerator<Ohlcv>
     {
-        /// <summary>
-        /// Gets the shadow fraction, ρs, which determines the length of the candlestick shadows as a fraction of the mid price; ρs∈[0, 1].
-        /// The value should be greater or equal to the candlestick body fraction.
-        /// </summary>
-        public double CandlestickShadowFraction { get; }
-
-        /// <summary>
-        /// Gets the body fraction, ρb, which determines the half-length of the candlestick body as a fraction of the mid price; ρb∈[0, 1].
-        /// The value should be less or equal to the candlestick shadow fraction.
-        /// </summary>
-        public double CandlestickBodyFraction { get; }
-
-        /// <summary>
-        /// Gets the value of the volume, which is the same for all candlesticks; should be positive.
-        /// </summary>
-        public double Volume { get; }
-
         internal const string WaveformName = "Chirp ohlcv waveform";
 
         private double midPricePrevious = double.NaN;
@@ -125,20 +109,22 @@ namespace Mbs.Trading.Data.Generators.Chirp
             Initialize();
         }
 
-        private void Initialize()
-        {
-            const double delta = 0.00005;
-            if (Math.Abs(Volume) > delta)
-                Moniker = string.Format(CultureInfo.InvariantCulture, "{0}, v={1:0.####}", Moniker, Volume);
+        /// <summary>
+        /// Gets the shadow fraction, ρs, which determines the length of the candlestick shadows as a fraction of the mid price; ρs∈[0, 1].
+        /// The value should be greater or equal to the candlestick body fraction.
+        /// </summary>
+        public double CandlestickShadowFraction { get; }
 
-            if (Math.Abs(CandlestickBodyFraction) > delta)
-                Moniker = string.Format(CultureInfo.InvariantCulture, "{0}, ρb={1:0.####}", Moniker, CandlestickBodyFraction);
+        /// <summary>
+        /// Gets the body fraction, ρb, which determines the half-length of the candlestick body as a fraction of the mid price; ρb∈[0, 1].
+        /// The value should be less or equal to the candlestick shadow fraction.
+        /// </summary>
+        public double CandlestickBodyFraction { get; }
 
-            if (Math.Abs(CandlestickShadowFraction) > delta)
-                Moniker = string.Format(CultureInfo.InvariantCulture, "{0}, ρs={1:0.####}", Moniker, CandlestickShadowFraction);
-
-            Name = WaveformName;
-        }
+        /// <summary>
+        /// Gets the value of the volume, which is the same for all candlesticks; should be positive.
+        /// </summary>
+        public double Volume { get; }
 
         /// <inheritdoc />
         public override Ohlcv GenerateNext()
@@ -148,9 +134,14 @@ namespace Mbs.Trading.Data.Generators.Chirp
             double deltaShadow = midPrice * CandlestickShadowFraction;
             double deltaBody = midPrice * CandlestickBodyFraction;
             if (double.IsNaN(midPricePrevious))
+            {
                 midPricePrevious = midPrice;
+            }
             else if (midPricePrevious > midPrice)
+            {
                 deltaBody *= -1;
+            }
+
             midPricePrevious = midPrice;
             ohlcv.Open = midPrice - deltaBody;
             ohlcv.High = midPrice + deltaShadow;
@@ -165,6 +156,27 @@ namespace Mbs.Trading.Data.Generators.Chirp
         {
             base.Reset();
             midPricePrevious = double.NaN;
+        }
+
+        private void Initialize()
+        {
+            const double delta = 0.00005;
+            if (Math.Abs(Volume) > delta)
+            {
+                Moniker = string.Format(CultureInfo.InvariantCulture, "{0}, v={1:0.####}", Moniker, Volume);
+            }
+
+            if (Math.Abs(CandlestickBodyFraction) > delta)
+            {
+                Moniker = string.Format(CultureInfo.InvariantCulture, "{0}, ρb={1:0.####}", Moniker, CandlestickBodyFraction);
+            }
+
+            if (Math.Abs(CandlestickShadowFraction) > delta)
+            {
+                Moniker = string.Format(CultureInfo.InvariantCulture, "{0}, ρs={1:0.####}", Moniker, CandlestickShadowFraction);
+            }
+
+            Name = WaveformName;
         }
     }
 }

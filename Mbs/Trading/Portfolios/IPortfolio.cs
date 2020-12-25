@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using Mbs.Trading;
-using Mbs.Trading.Currencies;
 using Mbs.Trading.Data;
 using Mbs.Trading.Instruments;
+using Mbs.Trading.Portfolios.Enumerations;
 
 namespace Mbs.Trading.Portfolios
 {
@@ -14,6 +12,26 @@ namespace Mbs.Trading.Portfolios
     /// </summary>
     public interface IPortfolio
     {
+        /// <summary>
+        /// Notifies when a portfolio position has been changed.
+        /// </summary>
+        event Action<Portfolio, PortfolioPosition> PositionChanged;
+
+        /// <summary>
+        /// Notifies when a portfolio position has been opened.
+        /// </summary>
+        event Action<Portfolio, PortfolioPosition> PositionOpened;
+
+        /// <summary>
+        /// Notifies when a portfolio position has been closed.
+        /// </summary>
+        event Action<Portfolio, PortfolioPosition> PositionClosed;
+
+        /// <summary>
+        /// Notifies when a portfolio position has been executed.
+        /// </summary>
+        event Action<Portfolio, PortfolioExecution> PositionExecuted;
+
         /// <summary>
         /// Gets the collection of the portfolio positions.
         /// </summary>
@@ -38,33 +56,6 @@ namespace Mbs.Trading.Portfolios
         /// Gets or sets the monitoring status of the portfolio.
         /// </summary>
         PortfolioMonitors Monitors { get; set; }
-
-        /// <summary>
-        /// Notifies when a portfolio position has been changed.
-        /// </summary>
-        event Action<Portfolio, PortfolioPosition> PositionChanged;
-
-        /// <summary>
-        /// Notifies when a portfolio position has been opened.
-        /// </summary>
-        event Action<Portfolio, PortfolioPosition> PositionOpened;
-
-        /// <summary>
-        /// Notifies when a portfolio position has been closed.
-        /// </summary>
-        event Action<Portfolio, PortfolioPosition> PositionClosed;
-
-        /// <summary>
-        /// Notifies when a portfolio position has been executed.
-        /// </summary>
-        event Action<Portfolio, PortfolioExecution> PositionExecuted;
-
-        /// <summary>
-        /// The portfolio position of the instrument.
-        /// </summary>
-        /// <param name="instrument">The instrument.</param>
-        /// <returns>The portfolio position if the portfolio has the specified instrument.</returns>
-        PortfolioPosition GetPosition(Instrument instrument);
 
         /// <summary>
         /// Gets the cash flow in home currency.
@@ -191,5 +182,12 @@ namespace Mbs.Trading.Portfolios
         /// Gets the read-only collection of the maximal drawdown percentage [0, -1] per date-time.
         /// </summary>
         ReadOnlyCollection<Scalar> DrawdownMaxHistory { get; }
+
+        /// <summary>
+        /// The portfolio position of the instrument.
+        /// </summary>
+        /// <param name="instrument">The instrument.</param>
+        /// <returns>The portfolio position if the portfolio has the specified instrument.</returns>
+        PortfolioPosition GetPosition(Instrument instrument);
     }
 }

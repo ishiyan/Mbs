@@ -18,6 +18,6 @@ namespace Mbs.Trading.Indicators.Abstractions
         /// <summary>
         /// Holds a time stamp and an array of values representing a heat-map column.
         /// </summary>
-        HeatMap
+        HeatMap,
     }
 }

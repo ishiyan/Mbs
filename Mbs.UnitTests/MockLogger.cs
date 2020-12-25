@@ -7,13 +7,6 @@ namespace Mbs.UnitTests
 {
     internal class MockLogger : ILogger
     {
-        public class Info
-        {
-            public LogLevel LogLevel { get; set; }
-            public Exception Exception { get; set; }
-            public string Message { get; set; }
-        }
-
         public List<Info> LogInfoList { get; } = new List<Info>();
 
         public void Errors(out int errorCount, out string lastErrorText)
@@ -27,7 +20,7 @@ namespace Mbs.UnitTests
         {
             LogInfoList.Add(new Info
             {
-                LogLevel = logLevel, Exception = exception, Message = formatter(state, exception)
+                LogLevel = logLevel, Exception = exception, Message = formatter(state, exception),
             });
         }
 
@@ -39,6 +32,15 @@ namespace Mbs.UnitTests
         public IDisposable BeginScope<TState>(TState state)
         {
             return null;
+        }
+
+        public class Info
+        {
+            public LogLevel LogLevel { get; set; }
+
+            public Exception Exception { get; set; }
+
+            public string Message { get; set; }
         }
     }
 }

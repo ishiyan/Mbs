@@ -12,15 +12,13 @@ namespace Mbs.UnitTests.Trading.Data.Generators.Chirp
     [TestClass]
     public class ChirpParametersTests
     {
-        // ReSharper disable InconsistentNaming
-
         [TestMethod]
         [ExpectedException(typeof(ValidationException))]
         public void ChirpParameters_Validate_AmplitudeOutOfRange_Exception()
         {
             var parameters = new ChirpParameters
             {
-                Amplitude = -1
+                Amplitude = -1,
             };
 
             var context = new ValidationContext(parameters);
@@ -32,7 +30,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.Chirp
         {
             var parameters = new ChirpParameters
             {
-                Amplitude = -1
+                Amplitude = -1,
             };
 
             var expectedMessage = string.Format(
@@ -55,7 +53,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.Chirp
         {
             var parameters = new ChirpParameters
             {
-                MinimalValue = -1
+                MinimalValue = -1,
             };
 
             var context = new ValidationContext(parameters);
@@ -67,7 +65,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.Chirp
         {
             var parameters = new ChirpParameters
             {
-                MinimalValue = -1
+                MinimalValue = -1,
             };
 
             var expectedMessage = string.Format(
@@ -90,7 +88,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.Chirp
         {
             var parameters = new ChirpParameters
             {
-                InitialPeriod = 1
+                InitialPeriod = 1,
             };
 
             var context = new ValidationContext(parameters);
@@ -102,7 +100,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.Chirp
         {
             var parameters = new ChirpParameters
             {
-                InitialPeriod = 0
+                InitialPeriod = 0,
             };
 
             var expectedMessage = string.Format(
@@ -125,7 +123,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.Chirp
         {
             var parameters = new ChirpParameters
             {
-                FinalPeriod = 1
+                FinalPeriod = 1,
             };
 
             var context = new ValidationContext(parameters);
@@ -137,7 +135,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.Chirp
         {
             var parameters = new ChirpParameters
             {
-                FinalPeriod = 0
+                FinalPeriod = 0,
             };
 
             var expectedMessage = string.Format(
@@ -160,7 +158,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.Chirp
         {
             var parameters = new ChirpParameters
             {
-                PhaseInPi = -2
+                PhaseInPi = -2,
             };
 
             var context = new ValidationContext(parameters);
@@ -172,7 +170,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.Chirp
         {
             var parameters = new ChirpParameters
             {
-                PhaseInPi = 2
+                PhaseInPi = 2,
             };
 
             string expectedMessage = string.Format(
@@ -198,7 +196,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.Chirp
                 MinimalValue = -1,
                 InitialPeriod = 1,
                 FinalPeriod = 0,
-                PhaseInPi = -2
+                PhaseInPi = -2,
             };
 
             var results = new List<ValidationResult>();
@@ -268,7 +266,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.Chirp
                 FinalPeriod = finalPeriod,
                 PhaseInPi = phaseInPi,
                 IsBiDirectional = isBiDirectional,
-                ChirpSweep = chirpSweep
+                ChirpSweep = chirpSweep,
             };
 
             Assert.AreEqual(amplitude, parameters.Amplitude, "amplitude");
@@ -283,7 +281,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.Chirp
         [TestMethod]
         public void ChirpParameters_DeserializeFromJson_ValidInput_CorrectValidationResults()
         {
-            var json = @"{
+            const string json = @"{
 amplitude: 100,
 minimalValue: 10,
 initialPeriod: 16,

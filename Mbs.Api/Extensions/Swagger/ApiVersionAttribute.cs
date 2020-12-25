@@ -11,11 +11,6 @@ namespace Mbs.Api.Extensions.Swagger
     internal class ApiVersionAttribute : Attribute
     {
         /// <summary>
-        /// Gets the versions.
-        /// </summary>
-        public List<string> Versions { get; }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="ApiVersionAttribute"/> class.
         /// </summary>
         /// <param name="version">The version.</param>
@@ -32,5 +27,10 @@ namespace Mbs.Api.Extensions.Swagger
         {
             Versions = versions.ToList();
         }
+
+        /// <summary>
+        /// Gets the versions.
+        /// </summary>
+        public List<string> Versions { get; }
     }
 }

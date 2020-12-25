@@ -7,6 +7,7 @@
     <Platforms>x64</Platforms>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <LangVersion>Latest</LangVersion>
+
     <AssemblyName>Mbs</AssemblyName>
     <Description>Mbs library</Description>
     <Authors>Mbrane</Authors>
@@ -16,14 +17,28 @@
     <FileVersion>1.0.1.1</FileVersion>
     <NuspecFile>Mbs.nuspec</NuspecFile>
     <PackageIcon>icon.png</PackageIcon>
+
+    <NoWarn>1591</NoWarn>
+    <SonarQubeExclude>false</SonarQubeExclude>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.1" />
+    <Compile Include="..\Shared\GlobalSuppressions.cs" Link="GlobalSuppressions.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="..\Shared\GlobalSuppressions.cs" Link="GlobalSuppressions.cs" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.1" />
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="8.15.0.24505">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
 </Project>

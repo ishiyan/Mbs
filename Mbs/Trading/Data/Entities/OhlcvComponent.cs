@@ -1,4 +1,5 @@
-﻿namespace Mbs.Trading.Data
+﻿// ReSharper disable once CheckNamespace
+namespace Mbs.Trading.Data
 {
     /// <summary>
     /// An ohlcv component.
@@ -43,6 +44,6 @@
         /// <summary>
         /// The volume.
         /// </summary>
-        Volume
+        Volume,
     }
 }

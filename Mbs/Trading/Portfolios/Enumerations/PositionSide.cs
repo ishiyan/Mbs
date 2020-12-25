@@ -1,4 +1,4 @@
-﻿namespace Mbs.Trading.Portfolios
+﻿namespace Mbs.Trading.Portfolios.Enumerations
 {
 #pragma warning disable CA1720 // Identifier contains type name
     /// <summary>
@@ -14,6 +14,6 @@
         /// <summary>
         /// Short.
         /// </summary>
-        Short
+        Short,
     }
 }

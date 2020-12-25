@@ -16,7 +16,7 @@ namespace Mbs.Api.ExampleProviders.Trading.Data.Generators
 
             return new InternalError(dic)
             {
-                StatusCode = StatusCodes.Status400BadRequest
+                StatusCode = StatusCodes.Status400BadRequest,
             };
         }
     }

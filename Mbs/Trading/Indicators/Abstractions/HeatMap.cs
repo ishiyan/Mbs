@@ -8,50 +8,7 @@ namespace Mbs.Trading.Indicators.Abstractions
     public sealed class HeatMap
     {
         /// <summary>
-        /// A time stamp (x).
-        /// </summary>
-        public DateTime Time { get; }
-
-        /// <summary>
-        /// The first parameter (y) value of the <see cref="HeatMap"/>. This value is the same for all columns.
-        /// A parameter corresponding to the i-th value can be calculated as <c>min(ParameterFirst,ParameterLast) + i / ParameterResolution</c>.
-        /// </summary>
-        public double ParameterFirst { get; }
-
-        /// <summary>
-        /// The last parameter (y) of the <see cref="HeatMap"/>. This value is the same for all columns.
-        /// A parameter corresponding to the i-th value can be calculated as <c>min(ParameterFirst,ParameterLast) + i / ParameterResolution</c>.
-        /// </summary>
-        public double ParameterLast { get; }
-
-        /// <summary>
-        /// A parameter resolution value (positive number). A value of 10 means that <see cref="HeatMap"/> values are evaluated at every 0.1 of parameter range.
-        /// A parameter corresponding to the i-th value can be calculated as <c>min(ParameterFirst,ParameterLast) + i / ParameterResolution</c>.
-        /// </summary>
-        public double ParameterResolution { get; }
-
-        /// <summary>
-        /// A minimal value (z) of the <see cref="HeatMap"/> column.
-        /// </summary>
-        public double ValueMin { get; }
-
-        /// <summary>
-        /// A maximal value (z) of the <see cref="HeatMap"/> column.
-        /// </summary>
-        public double ValueMax { get; }
-
-        /// <summary>
-        /// The values (z) of the <see cref="HeatMap"/> column.
-        /// </summary>
-        public double[] Values { get; }
-
-        /// <summary>
-        /// Indicates if this <see cref="HeatMap"/> is not initialized.
-        /// </summary>
-        public bool IsEmpty => null == Values;
-
-        /// <summary>
-        /// Constructs a new instance of the <see cref="HeatMap"/> class.
+        /// Initializes a new instance of the <see cref="HeatMap"/> class.
         /// </summary>
         /// <param name="time">The time stamp (x) of the <see cref="HeatMap"/>.</param>
         /// <param name="parameterFirst">The first parameter (y) value of the <see cref="HeatMap"/>. This value is the same for all columns.</param>
@@ -70,5 +27,48 @@ namespace Mbs.Trading.Indicators.Abstractions
             ValueMax = valueMax;
             Values = values;
         }
+
+        /// <summary>
+        /// Gets a time stamp (x).
+        /// </summary>
+        public DateTime Time { get; }
+
+        /// <summary>
+        /// Gets the first parameter (y) value of the <see cref="HeatMap"/>. This value is the same for all columns.
+        /// A parameter corresponding to the i-th value can be calculated as <c>min(ParameterFirst,ParameterLast) + i / ParameterResolution</c>.
+        /// </summary>
+        public double ParameterFirst { get; }
+
+        /// <summary>
+        /// Gets the last parameter (y) of the <see cref="HeatMap"/>. This value is the same for all columns.
+        /// A parameter corresponding to the i-th value can be calculated as <c>min(ParameterFirst,ParameterLast) + i / ParameterResolution</c>.
+        /// </summary>
+        public double ParameterLast { get; }
+
+        /// <summary>
+        /// Gets a parameter resolution value (positive number). A value of 10 means that <see cref="HeatMap"/> values are evaluated at every 0.1 of parameter range.
+        /// A parameter corresponding to the i-th value can be calculated as <c>min(ParameterFirst,ParameterLast) + i / ParameterResolution</c>.
+        /// </summary>
+        public double ParameterResolution { get; }
+
+        /// <summary>
+        /// Gets a minimal value (z) of the <see cref="HeatMap"/> column.
+        /// </summary>
+        public double ValueMin { get; }
+
+        /// <summary>
+        /// Gets a maximal value (z) of the <see cref="HeatMap"/> column.
+        /// </summary>
+        public double ValueMax { get; }
+
+        /// <summary>
+        /// Gets the values (z) of the <see cref="HeatMap"/> column.
+        /// </summary>
+        public double[] Values { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether this <see cref="HeatMap"/> is not initialized.
+        /// </summary>
+        public bool IsEmpty => Values == null;
     }
 }

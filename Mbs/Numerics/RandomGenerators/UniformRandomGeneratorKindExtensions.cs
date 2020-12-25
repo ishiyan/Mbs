@@ -1,7 +1,10 @@
 ﻿using System;
+using Mbs.Numerics.RandomGenerators.Marsaglia;
+using Mbs.Numerics.RandomGenerators.MersenneTwister;
+using Mbs.Numerics.RandomGenerators.Other;
+using Mbs.Numerics.RandomGenerators.Well;
 
-// ReSharper disable once CheckNamespace
-namespace Mbs.Numerics.Random
+namespace Mbs.Numerics.RandomGenerators
 {
     /// <summary>
     /// The <see cref="UniformRandomGeneratorKind"/> extensions.
@@ -18,7 +21,7 @@ namespace Mbs.Numerics.Random
         {
             return kind switch
             {
-                UniformRandomGeneratorKind.Well44497A => (IRandomGenerator) new Well44497AUniformRandom(seed),
+                UniformRandomGeneratorKind.Well44497A => new Well44497AUniformRandom(seed),
                 UniformRandomGeneratorKind.Well44497B => new Well44497BUniformRandom(seed),
                 UniformRandomGeneratorKind.Well19937A => new Well19937AUniformRandom(seed),
                 UniformRandomGeneratorKind.Well19937C => new Well19937CUniformRandom(seed),

@@ -7,8 +7,6 @@ namespace Mbs.UnitTests.Trading.Data.Generators.Sinusoidal
     [TestClass]
     public class SinusoidalQuoteGeneratorTests
     {
-        // ReSharper disable InconsistentNaming
-
         [TestMethod]
         public void SinusoidalQuoteGenerator_Construction_DefaultConstructor_PropertyValuesCorrect()
         {

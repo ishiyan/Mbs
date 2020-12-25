@@ -8,16 +8,6 @@ namespace Mbs.Trading.Portfolios
     public class AccountCurrencyPosition
     {
         /// <summary>
-        /// Gets the currency.
-        /// </summary>
-        public CurrencyCode Currency { get; internal set; }
-
-        /// <summary>
-        /// Gets the balance in the original currency.
-        /// </summary>
-        public double Balance { get; internal set; }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="AccountCurrencyPosition"/> class.
         /// </summary>
         /// <param name="currency">The currency.</param>
@@ -27,5 +17,15 @@ namespace Mbs.Trading.Portfolios
             Currency = currency;
             Balance = balance;
         }
+
+        /// <summary>
+        /// Gets the currency.
+        /// </summary>
+        public CurrencyCode Currency { get; }
+
+        /// <summary>
+        /// Gets the balance in the original currency.
+        /// </summary>
+        public double Balance { get; internal set; }
     }
 }

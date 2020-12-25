@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using Mbs.Trading.Currencies;
-using Mbs.Trading.Time;
+using Mbs.Trading.Time.Timepieces;
 
 namespace Mbs.Trading.Portfolios
 {
@@ -10,6 +10,16 @@ namespace Mbs.Trading.Portfolios
     /// </summary>
     public interface IAccount
     {
+        /// <summary>
+        /// Notifies when an account transaction has been added.
+        /// </summary>
+        event Action<Account, AccountTransaction> TransactionAdded;
+
+        /// <summary>
+        /// Notifies when an account has been changed.
+        /// </summary>
+        event Action<Account> Changed;
+
         /// <summary>
         /// Gets the account portfolio.
         /// </summary>
@@ -49,16 +59,6 @@ namespace Mbs.Trading.Portfolios
         /// Gets the collection of the account transactions.
         /// </summary>
         ReadOnlyCollection<AccountTransaction> TransactionHistory { get; }
-
-        /// <summary>
-        /// Notifies when an account transaction has been added.
-        /// </summary>
-        event Action<Account, AccountTransaction> TransactionAdded;
-
-        /// <summary>
-        /// Notifies when an account has been changed.
-        /// </summary>
-        event Action<Account> Changed;
 
         /// <summary>
         /// The current home currency balance.

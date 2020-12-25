@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Mbs.Trading.Time;
+using Mbs.Utilities;
 
+// ReSharper disable once CheckNamespace
 namespace Mbs.Trading.Data.Historical
 {
     /// <summary>
@@ -31,7 +33,10 @@ namespace Mbs.Trading.Data.Historical
             {
                 InstrumentCsvInfo instrumentCsvInfo = CsvRepository.InstrumentInfo(historicalDataRequest.Instrument);
                 if (instrumentCsvInfo == null)
+                {
                     return new List<Quote>();
+                }
+
                 CsvInfo csvInfo = instrumentCsvInfo.GetFirstData(CsvDataType.Quote);
                 if (csvInfo == null)
                 {

@@ -1,5 +1,4 @@
 ﻿using Mbs.Api.ExampleProviders.Trading.Data.Generators.GeometricBrownianMotion;
-using Mbs.Trading.Data;
 using Mbs.Trading.Data.Generators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -8,11 +7,10 @@ namespace Mbs.Api.UnitTests.ExampleProviders.Trading.Data.Generators.GeometricBr
     [TestClass]
     public class GeometricBrownianMotionScalarGeneratorOutputExampleProviderTests
     {
-        // ReSharper disable InconsistentNaming
         [TestMethod]
         public void GeometricBrownianMotionScalarGeneratorOutputExampleProvider_GetExamples_CorrectValues()
         {
-            var example = (SyntheticDataGeneratorOutput<Scalar>) new GeometricBrownianMotionScalarGeneratorOutputExampleProvider().GetExamples();
+            var example = new GeometricBrownianMotionScalarGeneratorOutputExampleProvider().GetExamples();
 
             Assert.AreEqual(GeometricBrownianMotionScalarGeneratorOutputExampleProvider.Name, example.Name, "name");
             Assert.AreEqual(GeometricBrownianMotionScalarGeneratorOutputExampleProvider.Moniker, example.Moniker, "moniker");

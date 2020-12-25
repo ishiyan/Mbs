@@ -1,5 +1,6 @@
 ﻿using System;
 using Mbs.Trading.Markets;
+#pragma warning disable SA1108 // Block statements should not contain embedded comments
 
 namespace Mbs.Trading.Holidays
 {
@@ -41,7 +42,9 @@ namespace Mbs.Trading.Holidays
         {
             DayOfWeek dow = dateTime.DayOfWeek;
             if (dow == DayOfWeek.Saturday || dow == DayOfWeek.Sunday)
+            {
                 return true;
+            }
 
             int year = dateTime.Year;
             int dayOfYear = dateTime.DayOfYear;
@@ -50,7 +53,9 @@ namespace Mbs.Trading.Holidays
                 dayOfYear == easterSunday + 1 || // Easter Monday.
                 dayOfYear == easterSunday + 39 || // Ascension Day, 39 days after Easter.
                 dayOfYear == easterSunday + 50) // Whit (Pentecost) Monday, 50 days after Easter.
+            {
                 return true;
+            }
 
             int day = dateTime.Day;
             int month = dateTime.Month;
@@ -59,32 +64,49 @@ namespace Mbs.Trading.Holidays
                 case 1:
                     // New Year's Day, Epiphany.
                     if (day == 1 || day == 6)
+                    {
                         return true;
+                    }
+
                     break;
                 case 5:
                     // Labour Day.
                     if (day == 1)
+                    {
                         return true;
+                    }
+
                     break;
                 case 6:
                     // National Day.
                     if (day == 6 && year > 2002)
+                    {
                         return true;
+                    }
 
                     // Midsummer Eve (Friday between June 19-25).
                     if (day >= 19 && day <= 25 && dow == DayOfWeek.Friday)
+                    {
                         return true;
+                    }
+
                     break;
                 case 12:
                     // Christmas Eve, Christmas Day, Boxing Day, New Year's Eve.
                     if (day == 24 || day == 25 || day == 26 || day == 31)
+                    {
                         return true;
+                    }
+
                     break;
             }
 
             // Added manually.
             if (year == 1995 && month == 4 && day == 13)
+            {
                 return true;
+            }
+
             return false;
         }
 

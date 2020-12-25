@@ -1,10 +1,22 @@
-﻿namespace Mbs.Numerics.Random
+﻿namespace Mbs.Numerics.RandomGenerators
 {
     /// <summary>
     /// A common functionality for all random number generators.
     /// </summary>
     public abstract class RandomGenerator : IRandomGenerator
     {
+        /// <summary>
+        /// Represents the multiplier that computes a double-precision floating point number greater than or equal to 0.0
+        /// and less than 1.0 when it gets applied to a nonnegative 32-bit signed integer.
+        /// </summary>
+        private const double IntToDoubleMultiplier = 1d / (int.MaxValue + 1d);
+
+        /// <summary>
+        /// Represents the multiplier that computes a double-precision floating point number greater than or equal to 0.0
+        /// and less than 1.0  when it gets applied to a 32-bit unsigned integer.
+        /// </summary>
+        private const double UIntToDoubleMultiplier = 1d / (uint.MaxValue + 1d);
+
         /// <summary>
         /// Gets a value indicating whether the random number generator can be reset, so that it produces the same random number sequence again.
         /// </summary>
@@ -21,18 +33,6 @@
         protected int BitCount { get; set; }
 
         /// <summary>
-        /// Represents the multiplier that computes a double-precision floating point number greater than or equal to 0.0
-        /// and less than 1.0 when it gets applied to a nonnegative 32-bit signed integer.
-        /// </summary>
-        private const double IntToDoubleMultiplier = 1d / (int.MaxValue + 1d);
-
-        /// <summary>
-        /// Represents the multiplier that computes a double-precision floating point number greater than or equal to 0.0
-        /// and less than 1.0  when it gets applied to a 32-bit unsigned integer.
-        /// </summary>
-        private const double UIntToDoubleMultiplier = 1d / (uint.MaxValue + 1d);
-
-        /// <summary>
         /// A 32-bit random signed integer ∊[0, <see cref="int.MaxValue"/>).
         /// </summary>
         /// <returns>A 32-bit random signed integer.</returns>
@@ -42,7 +42,10 @@
 
             // Exclude int.MaxValue from the range of return values.
             if (result == int.MaxValue)
+            {
                 return NextInt();
+            }
+
             return result;
         }
 
@@ -140,7 +143,9 @@
 
             // Increase the BitCount and use rightmost bit of shifted buffer to generate random bool.
             ++BitCount;
+#pragma warning disable S1121 // Assignments should not be made from within sub-expressions
             return ((BitBuffer >>= 1) & 0x1) == 1;
+#pragma warning restore S1121
         }
 
         /// <summary>

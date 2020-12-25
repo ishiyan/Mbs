@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Mbs.Trading.Instruments
+namespace Mbs.Trading.Instruments.Groups
 {
     /// <summary>
     /// Contains a collection of alternate security identifiers.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Modelled after FIX SecAltIDGrp component.
+    /// Modeled after FIX SecAltIDGrp component.
     /// </para>
     /// <para>
-    /// See http://fiximate.fixtrading.org/latestEP/
+    /// See http://fiximate.fixtrading.org/latestEP/.
     /// </para>
     /// </remarks>
     public sealed class InstrumentSecurityAlternateIdGroup
@@ -29,16 +29,18 @@ namespace Mbs.Trading.Instruments
         public IReadOnlyCollection<InstrumentSecurityAlternateId> Collection => list.AsReadOnly();
 
         /// <summary>
-        /// Finds the first occurence of the given <paramref name="source"/> id.
+        /// Finds the first occurrence of the given <paramref name="source"/> id.
         /// </summary>
         /// <param name="source">The source id to find.</param>
-        /// <returns>The first occurence or <c>null</c> if not found.</returns>
+        /// <returns>The first occurrence or <c>null</c> if not found.</returns>
         public InstrumentSecurityAlternateId Find(InstrumentSecurityIdSource source)
         {
             foreach (var alternativeId in list)
             {
                 if (alternativeId.SecurityAlternateIdSource == source)
+                {
                     return alternativeId;
+                }
             }
 
             return null;
@@ -52,12 +54,19 @@ namespace Mbs.Trading.Instruments
         public void Add(string value, InstrumentSecurityIdSource source)
         {
             if (string.IsNullOrEmpty(value))
+            {
                 throw new ArgumentNullException(nameof(value));
+            }
+
             var alternateId = Find(source);
             if (alternateId != null)
+            {
                 alternateId.SecurityAlternateId = value;
+            }
             else
+            {
                 list.Add(new InstrumentSecurityAlternateId(value, source));
+            }
         }
     }
 }

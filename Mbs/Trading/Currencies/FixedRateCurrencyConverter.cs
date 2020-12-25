@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Mbs.Trading.Currencies
 {
@@ -9,79 +8,17 @@ namespace Mbs.Trading.Currencies
     /// </summary>
     public class FixedRateCurrencyConverter : ICurrencyConverter
     {
-        private class Rate
-        {
-            private double value;
-
-            /// <summary>
-            /// Gets or sets the exchange rate value.
-            /// </summary>
-            internal double Value
-            {
-                get => value;
-                set
-                {
-                    if (Math.Abs(this.value - value) > double.Epsilon)
-                    {
-                        this.value = value;
-                        lock (changedLock)
-                        {
-                            if (null != changed)
-                            {
-                                Delegate[] handlers = changed.GetInvocationList();
-                                foreach (Delegate handler in handlers)
-                                {
-                                    var subscriber = handler as Action<double>;
-                                    subscriber?.Invoke(value);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            private readonly object changedLock = new object();
-            private Action<double> changed;
-
-            /// <summary>
-            /// Notifies when a rate has been changed.
-            /// </summary>
-            internal event Action<double> Changed
-            {
-                add
-                {
-                    lock (changedLock)
-                    {
-                        changed += value;
-                    }
-                }
-
-                remove
-                {
-                    lock (changedLock)
-                    {
-                        // ReSharper disable once DelegateSubtraction
-                        changed -= value;
-                    }
-                }
-            }
-
-            /// <summary>
-            /// Initializes a new instance of the <see cref="Rate"/> class.
-            /// </summary>
-            /// <param name="rate">The ininial rate.</param>
-            internal Rate(double rate)
-            {
-                value = rate;
-            }
-        }
-
         private readonly object rateDictionaryLock = new object();
 
         /// <summary>
         /// Dictionary(baseCurrency, Dictionary(termCurrency, Rate)).
         /// </summary>
         private readonly Dictionary<CurrencyCode, Dictionary<CurrencyCode, Rate>> rateDictionary = new Dictionary<CurrencyCode, Dictionary<CurrencyCode, Rate>>();
+
+        /// <summary>
+        /// Gets or sets the exchange rate value for non-existent currency pairs.
+        /// </summary>
+        public double NonExistentRate { get; set; }
 
         /// <summary>
         /// The list of all accessible base currencies for the specified term currency.
@@ -93,13 +30,14 @@ namespace Mbs.Trading.Currencies
             var baseList = new List<CurrencyCode>();
             lock (rateDictionaryLock)
             {
-                // foreach (var pair in rateDictionary)
-                // {
-                //     Dictionary<CurrencyCode, Rate> termDictionary = pair.Value;
-                //     if (termDictionary.ContainsKey(termCurrency))
-                //         baseList.Add(pair.Key);
-                // }
-                baseList.AddRange(from pair in rateDictionary let termDictionary = pair.Value where termDictionary.ContainsKey(termCurrency) select pair.Key);
+                foreach (var pair in rateDictionary)
+                {
+                    Dictionary<CurrencyCode, Rate> termDictionary = pair.Value;
+                    if (termDictionary.ContainsKey(termCurrency))
+                    {
+                        baseList.Add(pair.Key);
+                    }
+                }
             }
 
             return baseList;
@@ -116,16 +54,13 @@ namespace Mbs.Trading.Currencies
             lock (rateDictionaryLock)
             {
                 if (rateDictionary.ContainsKey(baseCurrency))
+                {
                     termList.AddRange(rateDictionary[baseCurrency].Keys);
+                }
             }
 
             return termList;
         }
-
-        /// <summary>
-        /// Gets or sets the exchange rate value for non-existent currency pairs.
-        /// </summary>
-        public double NonExistentRate { get; set; }
 
         /// <summary>
         /// The current direct currency exchange rate.
@@ -149,11 +84,45 @@ namespace Mbs.Trading.Currencies
                 {
                     Dictionary<CurrencyCode, Rate> termDictionary = rateDictionary[baseCurrency];
                     if (termDictionary.ContainsKey(termCurrency))
+                    {
                         return termDictionary[termCurrency].Value;
+                    }
                 }
             }
 
             return NonExistentRate;
+        }
+
+        /// <summary>
+        /// Adds or updates the direct currency exchange rate for a currency pair.
+        /// </summary>
+        /// <param name="baseCurrency">The base currency.</param>
+        /// <param name="termCurrency">The term currency.</param>
+        /// <param name="exchangeRate">The direct currency exchange rate.</param>
+        public void ExchangeRate(CurrencyCode baseCurrency, CurrencyCode termCurrency, double exchangeRate)
+        {
+            lock (rateDictionaryLock)
+            {
+                if (rateDictionary.ContainsKey(baseCurrency))
+                {
+                    Dictionary<CurrencyCode, Rate> termDictionary = rateDictionary[baseCurrency];
+                    if (termDictionary.ContainsKey(termCurrency))
+                    {
+                        termDictionary[termCurrency].Value = exchangeRate;
+                    }
+                    else
+                    {
+                        var rate = new Rate(exchangeRate);
+                        termDictionary.Add(termCurrency, rate);
+                    }
+                }
+                else
+                {
+                    var rate = new Rate(exchangeRate);
+                    var termDictionary = new Dictionary<CurrencyCode, Rate> { { termCurrency, rate } };
+                    rateDictionary.Add(baseCurrency, termDictionary);
+                }
+            }
         }
 
         /// <summary>
@@ -171,7 +140,9 @@ namespace Mbs.Trading.Currencies
                 {
                     Dictionary<CurrencyCode, Rate> termDictionary = rateDictionary[baseCurrency];
                     if (termDictionary.ContainsKey(termCurrency))
+                    {
                         return baseAmount * termDictionary[termCurrency].Value;
+                    }
                 }
             }
 
@@ -226,39 +197,76 @@ namespace Mbs.Trading.Currencies
                 {
                     Dictionary<CurrencyCode, Rate> termDictionary = rateDictionary[baseCurrency];
                     if (termDictionary.ContainsKey(termCurrency))
+                    {
                         termDictionary[termCurrency].Changed -= action;
+                    }
                 }
             }
         }
 
-        /// <summary>
-        /// Adds or updates the direct currency exchange rate for a currency pair.
-        /// </summary>
-        /// <param name="baseCurrency">The base currency.</param>
-        /// <param name="termCurrency">The term currency.</param>
-        /// <param name="exchangeRate">The direct currency exchange rate.</param>
-        public void ExchangeRate(CurrencyCode baseCurrency, CurrencyCode termCurrency, double exchangeRate)
+        private class Rate
         {
-            lock (rateDictionaryLock)
+            private readonly object changedLock = new object();
+
+            private double value;
+            private Action<double> changed;
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref="Rate"/> class.
+            /// </summary>
+            /// <param name="rate">The initial rate.</param>
+            internal Rate(double rate)
             {
-                if (rateDictionary.ContainsKey(baseCurrency))
+                value = rate;
+            }
+
+            /// <summary>
+            /// Notifies when a rate has been changed.
+            /// </summary>
+            internal event Action<double> Changed
+            {
+                add
                 {
-                    Dictionary<CurrencyCode, Rate> termDictionary = rateDictionary[baseCurrency];
-                    if (termDictionary.ContainsKey(termCurrency))
+                    lock (changedLock)
                     {
-                        termDictionary[termCurrency].Value = exchangeRate;
-                    }
-                    else
-                    {
-                        var rate = new Rate(exchangeRate);
-                        termDictionary.Add(termCurrency, rate);
+                        changed += value;
                     }
                 }
-                else
+
+                remove
                 {
-                    var rate = new Rate(exchangeRate);
-                    var termDictionary = new Dictionary<CurrencyCode, Rate> { { termCurrency, rate } };
-                    rateDictionary.Add(baseCurrency, termDictionary);
+                    lock (changedLock)
+                    {
+                        // ReSharper disable once DelegateSubtraction
+                        changed -= value;
+                    }
+                }
+            }
+
+            /// <summary>
+            /// Gets or sets the exchange rate value.
+            /// </summary>
+            internal double Value
+            {
+                get => value;
+                set
+                {
+                    if (Math.Abs(this.value - value) > double.Epsilon)
+                    {
+                        this.value = value;
+                        lock (changedLock)
+                        {
+                            if (changed != null)
+                            {
+                                Delegate[] handlers = changed.GetInvocationList();
+                                foreach (Delegate handler in handlers)
+                                {
+                                    var subscriber = handler as Action<double>;
+                                    subscriber?.Invoke(value);
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

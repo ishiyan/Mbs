@@ -1,6 +1,8 @@
 ﻿using System;
-using Mbs.Numerics.Random;
+using Mbs.Numerics.RandomGenerators;
+using Mbs.Numerics.RandomGenerators.FractionalBrownianMotion;
 using Mbs.Trading.Time;
+using Mbs.Trading.Time.Conventions;
 
 namespace Mbs.Trading.Data.Generators.FractionalBrownianMotion
 {
@@ -78,17 +80,17 @@ namespace Mbs.Trading.Data.Generators.FractionalBrownianMotion
             Initialize();
         }
 
-        private void Initialize()
-        {
-            Name = WaveformName;
-        }
-
         /// <inheritdoc />
         public override Scalar GenerateNext()
         {
             Scalar scalar = base.GenerateNext();
             scalar.Value = CurrentSampleValue;
             return scalar;
+        }
+
+        private void Initialize()
+        {
+            Name = WaveformName;
         }
     }
 }

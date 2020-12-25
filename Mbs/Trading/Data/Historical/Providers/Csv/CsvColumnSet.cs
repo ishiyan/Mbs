@@ -1,4 +1,5 @@
-﻿namespace Mbs.Trading.Data.Historical
+﻿// ReSharper disable once CheckNamespace
+namespace Mbs.Trading.Data.Historical
 {
     /// <summary>
     /// Identifies column sets in a CSV file.
@@ -48,6 +49,6 @@
         /// <summary>
         /// Time, scalar value. Data type is <see cref="CsvDataType.Scalar"/>.
         /// </summary>
-        Ts
+        Ts,
     }
 }

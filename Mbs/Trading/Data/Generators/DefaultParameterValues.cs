@@ -1,10 +1,10 @@
 ﻿using System;
-using Mbs.Numerics.Random;
+using Mbs.Numerics.RandomGenerators;
+using Mbs.Numerics.RandomGenerators.FractionalBrownianMotion;
 using Mbs.Trading.Data.Generators.Chirp;
 using Mbs.Trading.Data.Generators.Sawtooth;
 using Mbs.Trading.Time;
-#pragma warning disable SA1203 // Constants must appear before fields
-#pragma warning disable SA1124 // Do not use regions
+using Mbs.Trading.Time.Conventions;
 
 namespace Mbs.Trading.Data.Generators
 {
@@ -18,32 +18,15 @@ namespace Mbs.Trading.Data.Generators
         /// </summary>
         internal const int SamplesCount = 128;
 
-        #region Time parameters
-
-        /// <summary>
-        /// The default value of the time of the beginning of the trading session.
-        /// </summary>
-        internal static readonly TimeSpan SessionStartTime = new TimeSpan(9, 0, 0);
-
         /// <summary>
         /// The default value of the time of the beginning of the trading session as string.
         /// </summary>
         internal const string SessionStartTimeString = "09:00:00";
 
         /// <summary>
-        /// The default value of the end time of the trading session.
-        /// </summary>
-        internal static readonly TimeSpan SessionEndTime = new TimeSpan(18, 0, 0);
-
-        /// <summary>
         /// The default value of the end time of the trading session as string.
         /// </summary>
         internal const string SessionEndTimeString = "18:00:00";
-
-        /// <summary>
-        /// The default value of the date of the first data sample.
-        /// </summary>
-        internal static readonly DateTime StartDate = new DateTime(2000, 1, 3);
 
         /// <summary>
         /// The default value of the date of the first data sample as string.
@@ -58,11 +41,7 @@ namespace Mbs.Trading.Data.Generators
         /// <summary>
         /// The default value of an exchange holiday schedule or a general country holiday schedule.
         /// </summary>
-        internal const BusinessDayCalendar BusinessDayCalendar = Time.BusinessDayCalendar.WeekendsOnly;
-
-        #endregion
-
-        #region Waveform parameters
+        internal const BusinessDayCalendar BusinessDayCalendar = Time.Conventions.BusinessDayCalendar.WeekendsOnly;
 
         /// <summary>
         /// The default value of the number of samples in the waveform.
@@ -94,10 +73,6 @@ namespace Mbs.Trading.Data.Generators
         /// </summary>
         internal const int NoiseUniformRandomGeneratorSeed = 12345678;
 
-        #endregion
-
-        #region Ohlcv parameters
-
         /// <summary>
         /// The default value of the shadow fraction, ρs, which determines the length of the candlestick shadows as a fraction of the mid price; ρs∈[0, 1]. The value should be greater or equal to the  <see cref="CandlestickBodyFraction"/>.
         /// </summary>
@@ -112,10 +87,6 @@ namespace Mbs.Trading.Data.Generators
         /// The default value of the value of the volume, which is the same for all candlesticks; should be positive.
         /// </summary>
         internal const double CandlestickVolume = 100;
-
-        #endregion
-
-        #region Quote parameters
 
         /// <summary>
         /// The default value of the spread fraction, ρs, which determines the ask and bid prices as a fraction of the mid price.
@@ -132,18 +103,10 @@ namespace Mbs.Trading.Data.Generators
         /// </summary>
         internal const double BidSize = 10;
 
-        #endregion
-
-        #region Trade parameters
-
         /// <summary>
         /// The default value of the volume, which is the same for all trades; should be positive.
         /// </summary>
         internal const double TradeVolume = 100;
-
-        #endregion
-
-        #region Fractional Brownian motion parameters
 
         /// <summary>
         /// The default value of the amplitude of the fractional Brownian motion, should be positive.
@@ -180,10 +143,6 @@ namespace Mbs.Trading.Data.Generators
         /// </summary>
         internal const int FbmSeed = 123456789;
 
-        #endregion
-
-        #region Geometric Brownian motion parameters
-
         /// <summary>
         /// The default value of the amplitude of the geometric Brownian motion, should be positive.
         /// </summary>
@@ -219,10 +178,6 @@ namespace Mbs.Trading.Data.Generators
         /// </summary>
         internal const int GbmSeed = 123456789;
 
-        #endregion
-
-        #region Square parameters
-
         /// <summary>
         /// The default value of the amplitude of the square impulse, should be positive.
         /// </summary>
@@ -232,10 +187,6 @@ namespace Mbs.Trading.Data.Generators
         /// The default value of the minimum of the square impulse, should be positive.
         /// </summary>
         internal const double SquareMinimalValue = 10;
-
-        #endregion
-
-        #region Sawtooth parameters
 
         /// <summary>
         /// The default value of the amplitude of the sawtooth impulse, should be positive.
@@ -256,10 +207,6 @@ namespace Mbs.Trading.Data.Generators
         /// The default value of the sawtooth shape.
         /// </summary>
         internal const SawtoothShape SawtoothShape = Sawtooth.SawtoothShape.Linear;
-
-        #endregion
-
-        #region Chirp parameters
 
         /// <summary>
         /// The default value of the amplitude of the chirp, should be positive.
@@ -296,10 +243,6 @@ namespace Mbs.Trading.Data.Generators
         /// </summary>
         internal const ChirpSweep ChirpSweep = Chirp.ChirpSweep.LinearPeriod;
 
-        #endregion
-
-        #region Sinusoidal parameters
-
         /// <summary>
         /// The default value of the amplitude of the sinusoid, should be positive.
         /// </summary>
@@ -320,10 +263,6 @@ namespace Mbs.Trading.Data.Generators
         /// </summary>
         internal const double SinusoidalPhaseInPi = 0;
 
-        #endregion
-
-        #region Multi sinusoidal parameters
-
         /// <summary>
         /// The default value of the amplitude of the sinusoidal component, should be positive.
         /// </summary>
@@ -343,6 +282,20 @@ namespace Mbs.Trading.Data.Generators
         /// The default value of the phase, φ, of the sinusoidal component in ratios of π; if φ∈[-1, 1], then the phase ∈[-π, π].
         /// </summary>
         internal const double MultiSinusoidalPhaseInPi = 0;
-        #endregion
+
+        /// <summary>
+        /// The default value of the time of the beginning of the trading session.
+        /// </summary>
+        internal static readonly TimeSpan SessionStartTime = new TimeSpan(9, 0, 0);
+
+        /// <summary>
+        /// The default value of the end time of the trading session.
+        /// </summary>
+        internal static readonly TimeSpan SessionEndTime = new TimeSpan(18, 0, 0);
+
+        /// <summary>
+        /// The default value of the date of the first data sample.
+        /// </summary>
+        internal static readonly DateTime StartDate = new DateTime(2000, 1, 3);
     }
 }

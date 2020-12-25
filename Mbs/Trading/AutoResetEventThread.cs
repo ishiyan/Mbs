@@ -9,16 +9,6 @@ namespace Mbs.Trading
     internal class AutoResetEventThread : WaitHandle
     {
         /// <summary>
-        /// Gets the auto-reset event.
-        /// </summary>
-        internal AutoResetEvent AutoResetEvent { get; }
-
-        /// <summary>
-        /// Gets the thread.
-        /// </summary>
-        internal Thread Thread { get; }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="AutoResetEventThread"/> class.
         /// </summary>
         /// <param name="threadStart">The thread start delegate to execute.</param>
@@ -30,18 +20,28 @@ namespace Mbs.Trading
         }
 
         /// <summary>
+        /// Gets the auto-reset event.
+        /// </summary>
+        internal AutoResetEvent AutoResetEvent { get; }
+
+        /// <summary>
+        /// Gets the thread.
+        /// </summary>
+        internal Thread Thread { get; }
+
+        /// <summary>
         /// Implements <see cref="IDisposable"/>.
         /// </summary>
-        /// <param name="disposing">Disposing.</param>
-        protected override void Dispose(bool disposing)
+        /// <param name="explicitDisposing">Disposing.</param>
+        protected override void Dispose(bool explicitDisposing)
         {
-            if (disposing)
+            if (explicitDisposing)
             {
                 AutoResetEvent.Close();
-                SafeWaitHandle = null;
+                SafeWaitHandle = null!;
             }
 
-            base.Dispose(disposing);
+            base.Dispose(explicitDisposing);
         }
     }
 }

@@ -6,15 +6,15 @@ using Mbs.Trading.Data;
 namespace Mbs.Trading.Portfolios
 {
     /// <summary>
-    /// An updatable list of drawdown percentage scalars.
+    /// An updateable list of drawdown percentage scalars.
     /// </summary>
     internal class DrawdownScalarList
     {
         private readonly List<Scalar> drawdownList = new List<Scalar>();
         private readonly List<Scalar> drawdownMaxList = new List<Scalar>();
         private readonly object updateLock = new object();
-        private Scalar drawdown = new Scalar(new DateTime(0L), double.NaN);
-        private Scalar drawdownMax = new Scalar(new DateTime(0L), double.NaN);
+        private Scalar drawdown = new Scalar(new DateTime(0L));
+        private Scalar drawdownMax = new Scalar(new DateTime(0L));
         private double watermarkHigh = double.NaN;
 
         /// <summary>
@@ -81,8 +81,8 @@ namespace Mbs.Trading.Portfolios
             lock (updateLock)
             {
                 watermarkHigh = double.NaN;
-                drawdown = new Scalar(new DateTime(0L), double.NaN);
-                drawdownMax = new Scalar(new DateTime(0L), double.NaN);
+                drawdown = new Scalar(new DateTime(0L));
+                drawdownMax = new Scalar(new DateTime(0L));
                 drawdownList.Clear();
                 drawdownMaxList.Clear();
             }
@@ -104,7 +104,10 @@ namespace Mbs.Trading.Portfolios
                 }
 
                 if (watermarkHigh < value)
+                {
                     watermarkHigh = value;
+                }
+
                 double newDrawdown = Math.Abs(watermarkHigh) < double.Epsilon ? 0d : Math.Min(value - watermarkHigh, 0d) / watermarkHigh;
                 if (drawdownList.Count == 0)
                 {
@@ -126,7 +129,10 @@ namespace Mbs.Trading.Portfolios
                 else if (drawdown.Time == dateTime)
                 {
                     if (drawdown.Value > newDrawdown)
+                    {
                         drawdown.Value = newDrawdown;
+                    }
+
                     double newDrawdownMax = Math.Min(newDrawdown, drawdownMax.Value);
                     drawdownMax.Value = newDrawdownMax;
                 }

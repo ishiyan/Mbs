@@ -1,5 +1,4 @@
 ﻿using Mbs.Api.ExampleProviders.Trading.Data.Generators.MultiSinusoidal;
-using Mbs.Trading.Data;
 using Mbs.Trading.Data.Generators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -8,11 +7,10 @@ namespace Mbs.Api.UnitTests.ExampleProviders.Trading.Data.Generators.MultiSinuso
     [TestClass]
     public class MultiSinusoidalScalarGeneratorOutputExampleProviderTests
     {
-        // ReSharper disable InconsistentNaming
         [TestMethod]
         public void MultiSinusoidalScalarGeneratorOutputExampleProvider_GetExamples_CorrectValues()
         {
-            var example = (SyntheticDataGeneratorOutput<Scalar>) new MultiSinusoidalScalarGeneratorOutputExampleProvider().GetExamples();
+            var example = new MultiSinusoidalScalarGeneratorOutputExampleProvider().GetExamples();
 
             Assert.AreEqual(MultiSinusoidalScalarGeneratorOutputExampleProvider.Name, example.Name, "name");
             Assert.AreEqual(MultiSinusoidalScalarGeneratorOutputExampleProvider.Moniker, example.Moniker, "moniker");

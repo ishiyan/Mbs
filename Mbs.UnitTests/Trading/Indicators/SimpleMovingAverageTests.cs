@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 using Mbs.Trading.Data;
 using Mbs.Trading.Indicators;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Mbs.UnitTests.Trading.Indicators
 {
     [TestClass]
     public class SimpleMovingAverageTests
     {
-        #region Test data
         /// <summary>
         /// Perry Kaufman, Trading Systems an Methods, 3rd edition, page 72.
         /// </summary>
@@ -21,7 +19,7 @@ namespace Mbs.UnitTests.Trading.Indicators
             67.48, 67.19, 66.46, 67.20, 67.62, 67.66, 67.89, 69.19, 69.68, 69.31,
             69.11, 69.27, 68.97, 69.11, 69.50, 69.70, 69.94, 69.11, 67.64, 67.75,
             67.47, 67.50, 68.18, 67.35, 66.74, 67.00, 67.46, 67.36, 67.37, 67.78,
-            67.96
+            67.96,
         };
 
         /// <summary>
@@ -34,7 +32,7 @@ namespace Mbs.UnitTests.Trading.Indicators
             67.66, 67.62, 67.04, 66.95, 67.09, 67.49, 67.72, 68.25, 68.92, 69.39,
             69.37, 69.23, 69.12, 69.12, 69.19, 69.44, 69.71, 69.58, 68.90, 68.17,
             67.62, 67.57, 67.72, 67.68, 67.42, 67.03, 67.07, 67.27, 67.40, 67.50,
-            67.70
+            67.70,
         };
 
         /// <summary>
@@ -47,7 +45,7 @@ namespace Mbs.UnitTests.Trading.Indicators
             67.15, 67.36, 67.33, 67.30, 67.19, 67.23, 67.37, 67.91, 68.41, 68.75,
             69.04, 69.31, 69.27, 69.15, 69.19, 69.31, 69.44, 69.47, 69.18, 68.83,
             68.38, 67.89, 67.71, 67.65, 67.45, 67.35, 67.35, 67.18, 67.19, 67.39,
-            67.59
+            67.59,
         };
 
         /// <summary>
@@ -60,9 +58,8 @@ namespace Mbs.UnitTests.Trading.Indicators
             66.82, 66.93, 66.89, 66.95, 67.04, 67.19, 67.37, 67.62, 67.86, 67.97,
             68.13, 68.34, 68.59, 68.78, 68.97, 69.17, 69.38, 69.37, 69.17, 69.01,
             68.85, 68.67, 68.59, 68.41, 68.14, 67.87, 67.62, 67.45, 67.42, 67.42,
-            67.47
+            67.47,
         };
-        #endregion
 
         [TestMethod]
         public void SimpleMovingAverage_Name_HasCorrectValue()
@@ -71,14 +68,15 @@ namespace Mbs.UnitTests.Trading.Indicators
             var list = new List<Scalar>();
             foreach (var v in kaufmanInput)
             {
-                list.Add(new Scalar{ Time = time, Value = v });
+                list.Add(new Scalar { Time = time, Value = v });
                 time = time.AddDays(1);
             }
+
             var parameters = new SimpleMovingAverage.Parameters { Length = 5 };
             var target = new SimpleMovingAverage(parameters);
 
             var actual = target.Metadata;
-            var qqq = target.Update(list);
+            target.Update(list);
 
             Assert.AreEqual("sma5", actual.Outputs[0].Name);
         }

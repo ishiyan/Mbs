@@ -89,7 +89,7 @@ namespace Mbs.Api.Controllers.Trading.Data.Generators
         /// <returns>A generated ohlcv time series.</returns>
         /// <response code="200">If generation is successful.</response>
         /// <response code="400">If the request is invalid.</response>
-        /// <response code="500">If an internal server error occured.</response>
+        /// <response code="500">If an internal server error occurred.</response>
         [HttpPost(Constants.OhlcvSegment)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SyntheticDataGeneratorOutput<Ohlcv>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(InternalError))]
@@ -101,7 +101,9 @@ namespace Mbs.Api.Controllers.Trading.Data.Generators
         public async Task<IActionResult> GenerateOhlcvAsync([FromBody]ChirpOhlcvGeneratorParameters parameters)
         {
             if (!ModelState.IsValid)
+            {
                 return BadRequest(new InternalError(ModelState));
+            }
 
             return Ok(await parameters.GenerateAsync(parameters.SampleCount));
         }
@@ -164,7 +166,7 @@ namespace Mbs.Api.Controllers.Trading.Data.Generators
         /// <returns>A generated quote time series.</returns>
         /// <response code="200">If generation is successful.</response>
         /// <response code="400">If the request is invalid.</response>
-        /// <response code="500">If an internal server error occured.</response>
+        /// <response code="500">If an internal server error occurred.</response>
         [HttpPost(Constants.QuoteSegment)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SyntheticDataGeneratorOutput<Quote>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(InternalError))]
@@ -176,7 +178,9 @@ namespace Mbs.Api.Controllers.Trading.Data.Generators
         public async Task<IActionResult> GenerateQuoteAsync([FromBody]ChirpQuoteGeneratorParameters parameters)
         {
             if (!ModelState.IsValid)
+            {
                 return BadRequest(new InternalError(ModelState));
+            }
 
             return Ok(await parameters.GenerateAsync(parameters.SampleCount));
         }
@@ -232,7 +236,7 @@ namespace Mbs.Api.Controllers.Trading.Data.Generators
         /// <returns>A generated trade time series.</returns>
         /// <response code="200">If generation is successful.</response>
         /// <response code="400">If the request is invalid.</response>
-        /// <response code="500">If an internal server error occured.</response>
+        /// <response code="500">If an internal server error occurred.</response>
         [HttpPost(Constants.TradeSegment)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SyntheticDataGeneratorOutput<Trade>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(InternalError))]
@@ -244,7 +248,9 @@ namespace Mbs.Api.Controllers.Trading.Data.Generators
         public async Task<IActionResult> GenerateTradeAsync([FromBody]ChirpTradeGeneratorParameters parameters)
         {
             if (!ModelState.IsValid)
+            {
                 return BadRequest(new InternalError(ModelState));
+            }
 
             return Ok(await parameters.GenerateAsync(parameters.SampleCount));
         }
@@ -295,7 +301,7 @@ namespace Mbs.Api.Controllers.Trading.Data.Generators
         /// <returns>A generated scalar time series.</returns>
         /// <response code="200">If generation is successful.</response>
         /// <response code="400">If the request is invalid.</response>
-        /// <response code="500">If an internal server error occured.</response>
+        /// <response code="500">If an internal server error occurred.</response>
         [HttpPost(Constants.ScalarSegment)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SyntheticDataGeneratorOutput<Scalar>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(InternalError))]
@@ -307,7 +313,9 @@ namespace Mbs.Api.Controllers.Trading.Data.Generators
         public async Task<IActionResult> GenerateScalarAsync([FromBody]ChirpScalarGeneratorParameters parameters)
         {
             if (!ModelState.IsValid)
+            {
                 return BadRequest(new InternalError(ModelState));
+            }
 
             return Ok(await parameters.GenerateAsync(parameters.SampleCount));
         }

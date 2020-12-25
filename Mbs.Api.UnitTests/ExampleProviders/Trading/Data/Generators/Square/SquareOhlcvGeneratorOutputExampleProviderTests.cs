@@ -1,5 +1,4 @@
 ﻿using Mbs.Api.ExampleProviders.Trading.Data.Generators.Square;
-using Mbs.Trading.Data;
 using Mbs.Trading.Data.Generators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -8,11 +7,10 @@ namespace Mbs.Api.UnitTests.ExampleProviders.Trading.Data.Generators.Square
     [TestClass]
     public class SquareOhlcvGeneratorOutputExampleProviderTests
     {
-        // ReSharper disable InconsistentNaming
         [TestMethod]
         public void SquareOhlcvGeneratorOutputExampleProvider_GetExamples_CorrectValues()
         {
-            var example = (SyntheticDataGeneratorOutput<Ohlcv>) new SquareOhlcvGeneratorOutputExampleProvider().GetExamples();
+            var example = new SquareOhlcvGeneratorOutputExampleProvider().GetExamples();
 
             Assert.AreEqual(SquareOhlcvGeneratorOutputExampleProvider.Name, example.Name, "name");
             Assert.AreEqual(SquareOhlcvGeneratorOutputExampleProvider.Moniker, example.Moniker, "moniker");

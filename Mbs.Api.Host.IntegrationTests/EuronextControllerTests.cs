@@ -7,9 +7,6 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-#pragma warning disable SA1600 // Elements should be documented
-#pragma warning disable CA2234 // Pass system uri objects instead of strings
-
 namespace Mbs.Api.Host.IntegrationTests
 {
     [TestClass]
@@ -23,7 +20,6 @@ namespace Mbs.Api.Host.IntegrationTests
             factory.Dispose();
         }
 
-        // ReSharper disable InconsistentNaming
         [TestMethod]
         public async Task EuronextController_FetchOhlcvAsync_ValidParameters_ReturnsFetchedData()
         {
@@ -34,7 +30,7 @@ namespace Mbs.Api.Host.IntegrationTests
 
             var response = await fixture.Client.SendAsync(getRequest).ConfigureAwait(false);
 
-            // response.EnsureSuccessStatusCode();
+            // response.EnsureSuccessStatusCode()
             var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             Assert.IsNotNull(responseString);
             Assert.IsTrue(responseString.Contains("high", StringComparison.Ordinal));
@@ -45,13 +41,6 @@ namespace Mbs.Api.Host.IntegrationTests
         {
             var fixture = new TestFixture();
             using var server = new TestServer(fixture.WebHostBuilder);
-            // server.BaseAddress = new Uri("http://localhost:51327");
-            //using var client = server.CreateClient();
-            /*using var getRequest = new HttpRequestMessage(
-                HttpMethod.Get,
-                "/api/v1/data/historical/online/euronext/ohlcv?instrument.SecurityId=FR0010533075&instrument.SecurityIdSource=isin&instrument.Type=stock&instrument.Exchange.Mic=xpar");*/
-            /* var response = await client.SendAsync(getRequest);
-                    var responseString = await response.Content.ReadAsStringAsync(); */
 
             var response = await server
                 .CreateRequest("/api/v1/data/historical/online/euronext/ohlcv?instrument.SecurityId=FR0010533075&instrument.SecurityIdSource=isin&instrument.Type=stock&instrument.Exchange.Mic=xpar")

@@ -1,4 +1,4 @@
-namespace Mbs.Trading.Portfolios
+namespace Mbs.Trading.Portfolios.Enumerations
 {
     /// <summary>
     /// An algorithm used to match the offsetting order executions.
@@ -13,6 +13,6 @@ namespace Mbs.Trading.Portfolios
         /// <summary>
         /// Offsetting order executions will be matched in LIFO order.
         /// </summary>
-        LastInFirstOut
+        LastInFirstOut,
     }
 }

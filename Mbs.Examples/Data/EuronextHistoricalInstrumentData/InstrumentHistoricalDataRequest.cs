@@ -13,15 +13,23 @@ namespace EuronextHistoricalInstrumentData
     internal class InstrumentHistoricalDataRequest
     {
         public string Symbol { get; set; }
+
         public string Isin { get; set; }
+
         public EuronextMic Mic { get; set; }
+
         public TimeGranularity TimeGranularity { get; set; }
+
         public InstrumentType Type { get; set; }
+
         [DataType(DataType.Date)]
         public DateTime DateStart { get; set; }
+
         [DataType(DataType.Date)]
         public DateTime DateEnd { get; set; }
+
         public bool AdjustedDataIfPresent { get; set; }
+
         public TimeSpan EndofdayClosingTime { get; set; }
 
         public HistoricalDataRequest HistoricalDataRequest => new HistoricalDataRequest(
@@ -34,6 +42,5 @@ namespace EuronextHistoricalInstrumentData
 
         public string Moniker =>
             $"{Symbol} - {Isin}@{Mic}@{TimeGranularity} [{DateStart.ToShortDateString()} - {DateEnd.ToShortDateString()}]@{EndofdayClosingTime.ToString()}";
-
     }
 }

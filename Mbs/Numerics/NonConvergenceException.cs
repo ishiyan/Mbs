@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Globalization;
+using System.Runtime.Serialization;
 
 namespace Mbs.Numerics
 {
-#pragma warning disable CA1032 // Implement standard exception constructors
     /// <summary>
     /// The exception that is thrown when an algorithm fails to converge.
     /// </summary>
-    public sealed class NonConvergenceException : Exception
+    [Serializable]
+    public class NonConvergenceException : Exception
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="NonConvergenceException"/> class.
@@ -23,6 +24,11 @@ namespace Mbs.Numerics
         /// <param name="iterationCount">The number of iterations.</param>
         public NonConvergenceException(int iterationCount)
             : base($"Algorithm fails to converge after {iterationCount} iterations.".ToString(CultureInfo.InvariantCulture))
+        {
+        }
+
+        protected NonConvergenceException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
         {
         }
     }

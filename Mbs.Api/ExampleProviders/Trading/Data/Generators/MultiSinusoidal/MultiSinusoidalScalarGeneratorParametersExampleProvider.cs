@@ -19,7 +19,7 @@ namespace Mbs.Api.ExampleProviders.Trading.Data.Generators.MultiSinusoidal
                     SessionEndTime = DefaultParameterValues.SessionEndTime,
                     StartDate = DefaultParameterValues.StartDate,
                     TimeGranularity = DefaultParameterValues.TimeGranularity,
-                    BusinessDayCalendar = DefaultParameterValues.BusinessDayCalendar
+                    BusinessDayCalendar = DefaultParameterValues.BusinessDayCalendar,
                 },
                 WaveformParameters = new WaveformParameters
                 {
@@ -28,7 +28,7 @@ namespace Mbs.Api.ExampleProviders.Trading.Data.Generators.MultiSinusoidal
                     RepetitionsCount = DefaultParameterValues.RepetitionsCount,
                     NoiseAmplitudeFraction = DefaultParameterValues.NoiseAmplitudeFraction,
                     NoiseUniformRandomGeneratorKind = DefaultParameterValues.NoiseUniformRandomGeneratorKind,
-                    NoiseUniformRandomGeneratorSeed = DefaultParameterValues.NoiseUniformRandomGeneratorSeed
+                    NoiseUniformRandomGeneratorSeed = DefaultParameterValues.NoiseUniformRandomGeneratorSeed,
                 },
                 MultiSinusoidalParameters = new MultiSinusoidalParameters
                 {
@@ -39,10 +39,10 @@ namespace Mbs.Api.ExampleProviders.Trading.Data.Generators.MultiSinusoidal
                         {
                             Amplitude = DefaultParameterValues.MultiSinusoidalAmplitude,
                             Period = DefaultParameterValues.MultiSinusoidalPeriod,
-                            PhaseInPi = DefaultParameterValues.MultiSinusoidalPhaseInPi
-                        }
-                    }
-                }
+                            PhaseInPi = DefaultParameterValues.MultiSinusoidalPhaseInPi,
+                        },
+                    },
+                },
             };
         }
     }

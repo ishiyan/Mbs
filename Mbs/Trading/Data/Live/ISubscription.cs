@@ -12,6 +12,20 @@ namespace Mbs.Trading.Data.Live
         where T : TemporalEntity
     {
         /// <summary>
+        /// An action for the subscription-related events.
+        /// </summary>
+        event Action<T> SubscriptionAction;
+
+        /// <summary>
+        /// Gets a value indicating whether this subscription is active or not.
+        /// </summary>
+        /// <remarks>
+        /// Subscription is not connected before the first call to <see cref="Connect"/>,
+        /// and after the first call to <see cref="Disconnect"/>.
+        /// </remarks>
+        bool IsConnected { get; }
+
+        /// <summary>
         /// Gets the name of the data provider.
         /// </summary>
         string Provider { get; }
@@ -35,19 +49,5 @@ namespace Mbs.Trading.Data.Live
         /// Disconnects the subscription. This makes the subscription no longer usable.
         /// </summary>
         void Disconnect();
-
-        /// <summary>
-        /// Gets a value indicating whether this subscription is active or not.
-        /// </summary>
-        /// <remarks>
-        /// Subscription is not connected before the first call to <see cref="Connect"/>,
-        /// and after the first call to <see cref="Disconnect"/>.
-        /// </remarks>
-        bool IsConnected { get; }
-
-        /// <summary>
-        /// An action for the subscription-related events.
-        /// </summary>
-        event Action<T> SubscriptionAction;
     }
 }

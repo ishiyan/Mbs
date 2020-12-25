@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Mbs.Trading.Time;
+using Mbs.Utilities;
 
+// ReSharper disable once CheckNamespace
 namespace Mbs.Trading.Data.Historical
 {
     /// <summary>
@@ -29,7 +31,10 @@ namespace Mbs.Trading.Data.Historical
         {
             InstrumentCsvInfo instrumentCsvInfo = CsvRepository.InstrumentInfo(historicalDataRequest.Instrument);
             if (instrumentCsvInfo == null)
+            {
                 return new List<Scalar>();
+            }
+
             if (!instrumentCsvInfo.HasScalarData)
             {
                 Log.Error(CsvRepository.InstrumentHasNoData("scalar"));
@@ -44,7 +49,10 @@ namespace Mbs.Trading.Data.Historical
             {
                 historicalDataRequest.IsDataAdjusted = csvInfo.IsAdjustedData;
                 if (isEndofday && csvInfo.TimeGranularity.IsEndofday())
+                {
                     csvRequest.EndofdayClosingTime = historicalDataRequest.EndofdayClosingTime;
+                }
+
                 return CsvRepository.EnumerateScalarAsync(csvInfo, csvRequest);
             }
 
@@ -53,25 +61,44 @@ namespace Mbs.Trading.Data.Historical
             {
                 Func<TemporalEntity, int, DateTime> thresholdDateTime;
                 if (timeGranularity.IsDay())
+                {
                     thresholdDateTime = AggregatingConverter.DayBinThreshold;
+                }
                 else if (timeGranularity.IsHour())
+                {
                     thresholdDateTime = AggregatingConverter.HourBinThreshold;
+                }
                 else if (timeGranularity.IsMinute())
+                {
                     thresholdDateTime = AggregatingConverter.MinuteBinThreshold;
+                }
                 else if (timeGranularity.IsSecond())
+                {
                     thresholdDateTime = AggregatingConverter.SecondBinThreshold;
+                }
                 else if (timeGranularity.IsWeek())
+                {
                     thresholdDateTime = AggregatingConverter.WeekBinThreshold;
+                }
                 else if (timeGranularity.IsMonth())
+                {
                     thresholdDateTime = AggregatingConverter.MonthBinThreshold;
+                }
                 else if (timeGranularity.IsYear())
+                {
                     thresholdDateTime = AggregatingConverter.YearBinThreshold;
+                }
                 else
+                {
                     thresholdDateTime = null; // Time granularity is in trades.
+                }
 
                 historicalDataRequest.IsDataAdjusted = csvInfo.IsAdjustedData;
                 if (isEndofday && csvInfo.TimeGranularity.IsEndofday())
+                {
                     csvRequest.EndofdayClosingTime = historicalDataRequest.EndofdayClosingTime;
+                }
+
                 IEnumerable<Scalar> enumerable = CsvRepository.EnumerateScalarAsync(csvInfo, csvRequest);
                 return AggregatingConverter.Aggregate(enumerable, timeGranularity.NumberOfUnits(), thresholdDateTime);
             }

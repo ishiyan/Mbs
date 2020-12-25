@@ -1,5 +1,6 @@
 ﻿using System;
 using Mbs.Trading.Instruments;
+using Mbs.Trading.Portfolios.Enumerations;
 
 namespace Mbs.Trading.Portfolios
 {
@@ -66,17 +67,11 @@ namespace Mbs.Trading.Portfolios
         /// <summary>
         /// Gets the duration of the round trip. This is a calculated property.
         /// </summary>
-        public TimeSpan Duration
-        {
-            get { return ExitTime - EntryTime; }
-        }
+        public TimeSpan Duration => ExitTime - EntryTime;
 
         /// <summary>
         /// Gets the amount of profit given back before the position was closed.
         /// </summary>
-        public double EndTradeDrawdown
-        {
-            get { return ProfitAndLoss - MaximumFavorableExcursion; }
-        }
+        public double EndTradeDrawdown => ProfitAndLoss - MaximumFavorableExcursion;
     }
 }

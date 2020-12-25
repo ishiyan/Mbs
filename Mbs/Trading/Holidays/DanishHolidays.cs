@@ -1,5 +1,6 @@
 ﻿using System;
 using Mbs.Trading.Markets;
+#pragma warning disable SA1108 // Block statements should not contain embedded comments
 
 namespace Mbs.Trading.Holidays
 {
@@ -39,7 +40,9 @@ namespace Mbs.Trading.Holidays
         {
             DayOfWeek dow = dateTime.DayOfWeek;
             if (dow == DayOfWeek.Saturday || dow == DayOfWeek.Sunday)
+            {
                 return true;
+            }
 
             int year = dateTime.Year;
             int dayOfYear = dateTime.DayOfYear;
@@ -49,9 +52,11 @@ namespace Mbs.Trading.Holidays
                 dayOfYear == easterSunday + 1 || // Easter Monday.
                 dayOfYear == easterSunday + 26 || // General Prayer Day, 26 days after Easter.
                 dayOfYear == easterSunday + 39 || // Ascension Day, 39 days after Easter.
-                (dayOfYear == easterSunday + 40 && 2008 < year) || // Day after Ascension Day, 40 days after Easter.
+                (dayOfYear == easterSunday + 40 && year > 2008) || // Day after Ascension Day, 40 days after Easter.
                 dayOfYear == easterSunday + 50) // Whit (Pentecost) Monday, 50 days after Easter.
+            {
                 return true;
+            }
 
             int day = dateTime.Day;
             int month = dateTime.Month;
@@ -60,22 +65,34 @@ namespace Mbs.Trading.Holidays
                 case 1:
                     // New Year's Day.
                     if (day == 1)
+                    {
                         return true;
+                    }
+
                     break;
                 case 6:
                     // Constitution Day.
                     if (day == 5)
+                    {
                         return true;
+                    }
+
                     break;
                 case 12:
                     // Christmas Eve, Christmas Day, Boxing Day, New Year's Eve.
                     if (day == 24 || day == 25 || day == 26 || day == 31)
+                    {
                         return true;
+                    }
+
                     break;
             }
 
             if (year == 1998 && month == 2 && day == 16)
+            {
                 return true;
+            }
+
             return false;
         }
 

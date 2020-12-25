@@ -7,8 +7,6 @@ namespace Mbs.UnitTests.Trading.Data.Generators.FractionalBrownianMotion
     [TestClass]
     public class FractionalBrownianMotionTradeGeneratorTests
     {
-        // ReSharper disable InconsistentNaming
-
         [TestMethod]
         public void FractionalBrownianMotionTradeGenerator_Construction_DefaultConstructor_PropertyValuesCorrect()
         {

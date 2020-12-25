@@ -2,7 +2,7 @@
 using Mbs.Trading.Data;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Mbs.UnitTests.Trading.Data
+namespace Mbs.UnitTests.Trading.Data.Entities
 {
     [TestClass]
     public class ScalarTests
@@ -14,12 +14,6 @@ namespace Mbs.UnitTests.Trading.Data
         private static readonly DateTime DefaultDateTime = DateTime.Now;
         private static readonly DateTime GreaterDateTime = new DateTime(2099, 5, 5, 12, 4, 6);
 
-        private static Scalar CreateDefaultInstance()
-        {
-            return new Scalar(DefaultDateTime, DefaultValue);
-        }
-
-        // ReSharper disable InconsistentNaming
         [TestMethod]
         public void Scalar_Time_CorrectValue()
         {
@@ -87,6 +81,11 @@ namespace Mbs.UnitTests.Trading.Data
 
             Assert.AreEqual(DefaultDateTime, target.Time);
             Assert.IsTrue(double.IsNaN(target.Value));
+        }
+
+        private static Scalar CreateDefaultInstance()
+        {
+            return new Scalar(DefaultDateTime, DefaultValue);
         }
     }
 }

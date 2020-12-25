@@ -8,9 +8,13 @@ namespace EuronextLiveInstrumentMonitor
     internal class InstrumentContext
     {
         public string Symbol { get; set; }
+
         public string Isin { get; set; }
+
         public ExchangeMic Mic { get; set; }
+
         public TimeGranularity TimeGranularity { get; set; }
+
         public string Type { get; set; }
     }
 }

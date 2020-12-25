@@ -6,6 +6,7 @@ using Mbs.Trading.Data;
 using Mbs.Trading.Data.Live;
 using Mbs.Trading.Instruments;
 using Mbs.Trading.Orders;
+using Mbs.Trading.Portfolios.Enumerations;
 
 namespace Mbs.Trading.Portfolios
 {
@@ -48,6 +49,95 @@ namespace Mbs.Trading.Portfolios
         private ISubscription<Trade> tradeSubscription;
         private ISubscription<Ohlcv> ohlcvSubscription;
         private PortfolioMonitors monitors;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PortfolioPosition"/> class.
+        /// </summary>
+        /// <param name="execution">The portfolio execution.</param>
+        /// <param name="dataPublisher">The sell price data publisher.</param>
+        internal PortfolioPosition(PortfolioExecution execution, IDataPublisher dataPublisher)
+        {
+            this.dataPublisher = dataPublisher;
+            Instrument = execution.Instrument;
+            Currency = Instrument.Currency;
+            instrumentFactor = Instrument.Factor ?? 1d;
+            price = execution.Price;
+            DateTime executionDateTime = execution.DateTime;
+            double executionQuantity = execution.Quantity;
+            double executionValue = execution.Value;
+            EntryValue = executionValue;
+            UpdateAmount(execution, 0d);
+            profitAndLossQuantity = executionQuantity;
+            execution.ProfitAndLoss = -execution.Commission;
+            execution.RealizedProfitAndLoss = 0d;
+            value.Add(executionDateTime, executionValue);
+            double tempNetCashFlow = execution.NetCashFlow;
+            netCashFlow.Accumulate(executionDateTime, tempNetCashFlow);
+            double temp = execution.CashFlow;
+            cashFlow.Accumulate(executionDateTime, temp);
+            temp += executionValue;
+            profitAndLoss.Add(executionDateTime, temp);
+
+            // The execution value is always non-negative, so the absolute value is not needed.
+            bool isExecutionValueZero = executionValue < double.Epsilon;
+
+            profitAndLossPercent.Add(executionDateTime, isExecutionValueZero ? 0 : (temp / executionValue));
+            drawdownScalarList.Update(executionDateTime, temp);
+            temp = executionValue + tempNetCashFlow;
+            netProfitAndLoss.Add(executionDateTime, temp);
+            netProfitAndLossPercent.Add(executionDateTime, isExecutionValueZero ? 0 : (temp / executionValue));
+            unrealizedProfitAndLoss.Add(executionDateTime, executionValue);
+            margin = execution.Margin;
+            debt = execution.Debt;
+            executionList.Add(execution);
+            execution.SingleOrderTicket.Order.Account.Add(execution, tempNetCashFlow + debt, execution.SingleOrderReport.LastCommission);
+        }
+
+        /// <summary>
+        /// Notifies when this position has been executed.
+        /// </summary>
+        public event Action<PortfolioPosition, PortfolioExecution> Executed
+        {
+            add
+            {
+                lock (executedDelegateLock)
+                {
+                    executedDelegate += value;
+                }
+            }
+
+            remove
+            {
+                lock (executedDelegateLock)
+                {
+                    // ReSharper disable once DelegateSubtraction
+                    executedDelegate -= value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Notifies when this position has been changed.
+        /// </summary>
+        public event Action<PortfolioPosition, DateTime> Changed
+        {
+            add
+            {
+                lock (changedDelegateLock)
+                {
+                    changedDelegate += value;
+                }
+            }
+
+            remove
+            {
+                lock (changedDelegateLock)
+                {
+                    // ReSharper disable once DelegateSubtraction
+                    changedDelegate -= value;
+                }
+            }
+        }
 
         /// <summary>
         /// Gets the position instrument.
@@ -313,111 +403,6 @@ namespace Mbs.Trading.Portfolios
         /// </summary>
         public ReadOnlyCollection<Scalar> DrawdownMaxHistory => drawdownScalarList.DrawdownMaxCollection;
 
-        private void EmitExecuted(PortfolioExecution execution)
-        {
-            lock (executedDelegateLock)
-            {
-                if (executedDelegate != null)
-                {
-                    var handlers = executedDelegate.GetInvocationList();
-                    foreach (Delegate handler in handlers)
-                    {
-                        var theHandler = handler as Action<PortfolioPosition, PortfolioExecution>;
-                        theHandler?.Invoke(this, execution);
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Notifies when this position has been executed.
-        /// </summary>
-        public event Action<PortfolioPosition, PortfolioExecution> Executed
-        {
-            add
-            {
-                lock (executedDelegateLock)
-                {
-                    executedDelegate += value;
-                }
-            }
-
-            remove
-            {
-                lock (executedDelegateLock)
-                {
-                    // ReSharper disable once DelegateSubtraction
-                    executedDelegate -= value;
-                }
-            }
-        }
-
-        private void EmitChanged(DateTime dateTime)
-        {
-            lock (changedDelegateLock)
-            {
-                if (changedDelegate != null)
-                {
-                    var handlers = changedDelegate.GetInvocationList();
-                    foreach (Delegate handler in handlers)
-                    {
-                        var theHandler = handler as Action<PortfolioPosition, DateTime>;
-                        theHandler?.Invoke(this, dateTime);
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Notifies when this position has been changed.
-        /// </summary>
-        public event Action<PortfolioPosition, DateTime> Changed
-        {
-            add
-            {
-                lock (changedDelegateLock)
-                {
-                    changedDelegate += value;
-                }
-            }
-
-            remove
-            {
-                lock (changedDelegateLock)
-                {
-                    // ReSharper disable once DelegateSubtraction
-                    changedDelegate -= value;
-                }
-            }
-        }
-
-        private void OnChanged(double newPrice, DateTime dateTime)
-        {
-            lock (entryLock)
-            {
-                if (Math.Abs(price - newPrice) < double.Epsilon)
-                    return;
-                Update(newPrice, dateTime);
-            }
-
-            EmitChanged(dateTime);
-        }
-
-        private void OnQuote(Quote quote)
-        {
-            OnChanged(quote.AskPrice, quote.Time);
-        }
-
-        private void OnTrade(Trade trade)
-        {
-            OnChanged(trade.Price, trade.Time);
-        }
-
-        private void OnOhlcv(Ohlcv ohlcv)
-        {
-            OnChanged(ohlcv.Close, ohlcv.Time);
-        }
-
         /// <summary>
         /// Gets or sets the monitoring status of this position.
         /// </summary>
@@ -443,7 +428,9 @@ namespace Mbs.Trading.Portfolios
                             {
                                 quoteSubscription = dataPublisher.Monitor<Quote>(Instrument);
                                 if (quoteSubscription != null)
+                                {
                                     quoteSubscription.SubscriptionAction += OnQuote;
+                                }
                             }
                         }
                         else
@@ -461,7 +448,9 @@ namespace Mbs.Trading.Portfolios
                             {
                                 tradeSubscription = dataPublisher.Monitor<Trade>(Instrument);
                                 if (tradeSubscription != null)
+                                {
                                     tradeSubscription.SubscriptionAction += OnTrade;
+                                }
                             }
                         }
                         else
@@ -502,56 +491,16 @@ namespace Mbs.Trading.Portfolios
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PortfolioPosition"/> class.
-        /// </summary>
-        /// <param name="execution">The portfolio execution.</param>
-        /// <param name="dataPublisher">The sell price data publisher.</param>
-        internal PortfolioPosition(PortfolioExecution execution, IDataPublisher dataPublisher)
-        {
-            this.dataPublisher = dataPublisher;
-            Instrument = execution.Instrument;
-            Currency = Instrument.Currency;
-            instrumentFactor = Instrument.Factor ?? 1d;
-            price = execution.Price;
-            DateTime executionDateTime = execution.DateTime;
-            double executionQuantity = execution.Quantity;
-            double executionValue = execution.Value;
-            EntryValue = executionValue;
-            UpdateAmount(execution, 0d);
-            profitAndLossQuantity = executionQuantity;
-            execution.ProfitAndLoss = -execution.Commission;
-            execution.RealizedProfitAndLoss = 0d;
-            value.Add(executionDateTime, executionValue);
-            double tempNetCashFlow = execution.NetCashFlow;
-            netCashFlow.Accumulate(executionDateTime, tempNetCashFlow);
-            double temp = execution.CashFlow;
-            cashFlow.Accumulate(executionDateTime, temp);
-            temp += executionValue;
-            profitAndLoss.Add(executionDateTime, temp);
-
-            // The execution value is always non-negative, so the absolute value is not needed.
-            bool isExecutionValueZero = executionValue < double.Epsilon;
-
-            profitAndLossPercent.Add(executionDateTime, isExecutionValueZero ? 0 : (temp / executionValue));
-            drawdownScalarList.Update(executionDateTime, temp);
-            temp = executionValue + tempNetCashFlow;
-            netProfitAndLoss.Add(executionDateTime, temp);
-            netProfitAndLossPercent.Add(executionDateTime, isExecutionValueZero ? 0 : (temp / executionValue));
-            unrealizedProfitAndLoss.Add(executionDateTime, executionValue);
-            margin = execution.Margin;
-            debt = execution.Debt;
-            executionList.Add(execution);
-            execution.SingleOrderTicket.Order.Account.Add(execution, tempNetCashFlow + debt, execution.SingleOrderReport.LastCommission);
-        }
-
-        /// <summary>
         /// Adds a new portfolio execution to this portfolio position.
         /// </summary>
         /// <param name="execution">The portfolio execution.</param>
         internal void Add(PortfolioExecution execution)
         {
             if (!Instrument.Equals(execution.Instrument))
+            {
                 throw new ArgumentException("The position instrument differs from the execution instrument");
+            }
+
             DateTime dateTime = execution.DateTime;
             double debtAmount;
             lock (entryLock)
@@ -569,6 +518,68 @@ namespace Mbs.Trading.Portfolios
             execution.SingleOrderTicket.Order.Account.Add(execution, execution.NetCashFlow + debtAmount, execution.SingleOrderReport.LastCommission);
             EmitExecuted(execution);
             EmitChanged(dateTime);
+        }
+
+        private void EmitExecuted(PortfolioExecution execution)
+        {
+            lock (executedDelegateLock)
+            {
+                if (executedDelegate != null)
+                {
+                    var handlers = executedDelegate.GetInvocationList();
+                    foreach (Delegate handler in handlers)
+                    {
+                        var theHandler = handler as Action<PortfolioPosition, PortfolioExecution>;
+                        theHandler?.Invoke(this, execution);
+                    }
+                }
+            }
+        }
+
+        private void EmitChanged(DateTime dateTime)
+        {
+            lock (changedDelegateLock)
+            {
+                if (changedDelegate != null)
+                {
+                    var handlers = changedDelegate.GetInvocationList();
+                    foreach (Delegate handler in handlers)
+                    {
+                        var theHandler = handler as Action<PortfolioPosition, DateTime>;
+                        theHandler?.Invoke(this, dateTime);
+                    }
+                }
+            }
+        }
+
+        private void OnChanged(double newPrice, DateTime dateTime)
+        {
+            lock (entryLock)
+            {
+                if (Math.Abs(price - newPrice) < double.Epsilon)
+                {
+                    return;
+                }
+
+                Update(newPrice, dateTime);
+            }
+
+            EmitChanged(dateTime);
+        }
+
+        private void OnQuote(Quote quote)
+        {
+            OnChanged(quote.AskPrice, quote.Time);
+        }
+
+        private void OnTrade(Trade trade)
+        {
+            OnChanged(trade.Price, trade.Time);
+        }
+
+        private void OnOhlcv(Ohlcv ohlcv)
+        {
+            OnChanged(ohlcv.Close, ohlcv.Time);
         }
 
         private void UpdateAmount(PortfolioExecution execution, double currentAmount)
@@ -607,7 +618,7 @@ namespace Mbs.Trading.Portfolios
             double executionQuantity = execution.Quantity;
             double commission = 0, delta = currentAmount;
 
-            // PositionSide.Long && sell order or PositionSide.Short && buy order
+            // PositionSide.Long and sell order or PositionSide.Short and buy order.
             if ((delta >= 0 && inverseAmountSign > 0) || (delta < 0 && inverseAmountSign < 0))
             {
                 int executionCount = executionList.Count;
@@ -642,9 +653,13 @@ namespace Mbs.Trading.Portfolios
 
                 profitAndLossQuantity = Math.Abs(executionQuantity - pnlQuantity);
                 if (Math.Abs(executionQuantity - pnlQuantity) < double.Epsilon && pnlIndex == executionCount)
+                {
                     profitAndLossIndex = executionCount;
+                }
                 else
+                {
                     profitAndLossIndex = executionQuantity > pnlQuantity ? executionCount : (pnlIndex - 1);
+                }
             }
 
             delta *= instrumentFactor;
@@ -702,7 +717,6 @@ namespace Mbs.Trading.Portfolios
                     }
                     else
                     {
-                        // if (Math.Abs(quantity - executionQuantity) < double.Epsilon)
                         margin = 0d;
                         debtAmount = -execution.Debt;
                         debt = 0d;

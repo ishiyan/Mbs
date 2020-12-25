@@ -1,5 +1,4 @@
-﻿#define USE_GSL_VALUES
-namespace Mbs.Numerics
+﻿namespace Mbs.Numerics
 {
     /// <summary>
     /// Various constants.
@@ -249,7 +248,6 @@ namespace Mbs.Numerics
         // DATE: Fri Nov 20 17:53:26 MST 1998
         */
 
-#if USE_GSL_VALUES
         /// <summary>
         /// The machine precision for double-precision floating-point numbers,
         /// 2.2204460492503131e-16.
@@ -257,183 +255,78 @@ namespace Mbs.Numerics
         /// The machine precision is the smallest number that can be added to the number 1 to yield a result different from 1.
         /// </summary>
         public const double DoubleEpsilon = 2.2204460492503131e-16;
-#else
-        /// <summary>
-        /// The machine precision for double-precision floating-point numbers,
-        /// 2.2204460492503131e-16.
-        /// <para/>
-        /// The machine precision is the smallest number that can be added to the number 1 to yield a result different from 1.
-        /// </summary>
-        public const double DoubleEpsilon = 2.2204460492503131e-16;
-#endif
 
-#if USE_GSL_VALUES
         /// <summary>
         /// The absolute value of the logarithm of the <see cref="DoubleEpsilon"/>,
         /// 3.6043653389117154e+01.
         /// </summary>
         public const double LogDoubleEpsilon = 3.6043653389117154e+01;
-#else
-        /// <summary>
-        /// The absolute value of the logarithm of the <see cref="DoubleEpsilon"/>,
-        /// 3.6043653389117154e1.
-        /// </summary>
-        public const double LogDoubleEpsilon = 3.6043653389117154e1;
-#endif
 
-#if USE_GSL_VALUES
-        /// <summary>
-        /// The square root of the <see cref="DoubleEpsilon"/>,
-        /// 1.4901161193847656e-08.
-        /// </summary>
-        public const double SqrtDoubleEpsilon = 1.4901161193847656e-08;
-#else
         /// <summary>
         /// The square root of the <see cref="DoubleEpsilon"/>,
         /// 1.490116119384765625e-8.
         /// </summary>
         public const double SqrtDoubleEpsilon = 1.490116119384765625e-8;
-#endif
 
-#if USE_GSL_VALUES
         /// <summary>
         /// The cube root of the <see cref="DoubleEpsilon"/>,
         /// 6.0554544523933429e-06.
         /// </summary>
         public const double CubeRootDoubleEpsilon = 6.0554544523933429e-06;
-#else
-        /// <summary>
-        /// The cube root of the <see cref="DoubleEpsilon"/>,
-        /// 6.055454452393339061e-6.
-        /// </summary>
-        public const double CubeRootDoubleEpsilon = 6.055454452393339061e-6;
-#endif
 
-#if USE_GSL_VALUES
         /// <summary>
         /// The fourth root of the <see cref="DoubleEpsilon"/>,
         /// 1.2207031250000000e-04.
         /// </summary>
         public const double FourthRootDoubleEpsilon = 1.2207031250000000e-04;
-#else
-        /// <summary>
-        /// The fourth root of the <see cref="DoubleEpsilon"/>,
-        /// 1.2207031250000000e-4.
-        /// </summary>
-        public const double FourthRootDoubleEpsilon = 1.2207031250000000e-4;
-#endif
 
-#if USE_GSL_VALUES
         /// <summary>
         /// The fifth root of the <see cref="DoubleEpsilon"/>,
         /// 77.4009597974140505e-04.
         /// </summary>
         public const double FifthRootDoubleEpsilon = 7.4009597974140505e-04;
-#else
-        /// <summary>
-        /// The fifth root of the <see cref="DoubleEpsilon"/>,
-        /// 7.4009597974140505e-4.
-        /// </summary>
-        public const double FifthRootDoubleEpsilon = 7.4009597974140505e-4;
-#endif
 
-#if USE_GSL_VALUES
         /// <summary>
-        /// The fisixthfth root of the <see cref="DoubleEpsilon"/>,
+        /// The sixth root of the <see cref="DoubleEpsilon"/>,
         /// 2.4607833005759251e-03.
         /// </summary>
         public const double SixthRootDoubleEpsilon = 2.4607833005759251e-03;
-#else
-        /// <summary>
-        /// The fisixthfth root of the <see cref="DoubleEpsilon"/>,
-        /// 2.4607833005759251e-3.
-        /// </summary>
-        public const double SixthRootDoubleEpsilon = 2.4607833005759251e-3;
-#endif
 
-#if USE_GSL_VALUES
         /// <summary>
         /// The largest possible value of a double-precision floating-point number,
         /// 1.7976931348623157e+308.
         /// </summary>
         public const double DoubleMax = 1.7976931348623157e+308;
-#else
-        /// <summary>
-        /// The largest possible value of a double-precision floating-point number,
-        /// double.MaxValue = 1.7976931348623157e+308.
-        /// </summary>
-        public const double DoubleMax = double.MaxValue;
-#endif
 
-#if USE_GSL_VALUES
         /// <summary>
         /// Represents the smallest positive double-precision floating-point number that is greater than zero,
         /// 2.2250738585072014e-308.
         /// </summary>
         public const double DoubleMin = 2.2250738585072014e-308;
-#else
-        /// <summary>
-        /// Represents the smallest positive double-precision floating-point number that is greater than zero,
-        /// double.Epsilon = 4.94065645841247e-324.
-        /// </summary>
-        public const double DoubleMin = double.Epsilon;
-#endif
 
-#if USE_GSL_VALUES
         /// <summary>
         /// The natural logarithm of the <see cref="DoubleMax"/>,
         /// 7.0978271289338397e+02.
         /// </summary>
         public const double LogDoubleMax = 7.0978271289338397e+02;
-#else
-        /// <summary>
-        /// The natural logarithm of the <see cref="DoubleMax"/>,
-        /// 709.782712893383999.
-        /// </summary>
-        public const double LogDoubleMax = 709.782712893383999;
-#endif
 
-#if USE_GSL_VALUES
         /// <summary>
         /// The natural logarithm of the <see cref="DoubleMin"/>,
         /// -7.0839641853226408e+02.
         /// </summary>
         public const double LogDoubleMin = -7.0839641853226408e+02;
-#else
-        /// <summary>
-        /// The natural logarithm of the <see cref="DoubleMin"/>,
-        /// -744.44007192138126.
-        /// </summary>
-        public const double LogDoubleMin = -744.44007192138126;
-#endif
 
-#if USE_GSL_VALUES
         /// <summary>
         /// The square root of the <see cref="DoubleMax"/>,
         /// 1.3407807929942596e+154.
         /// </summary>
         public const double SqrtDoubleMax = 1.3407807929942596e+154;
-#else
-        /// <summary>
-        /// The square root of the <see cref="DoubleMax"/>,
-        /// 1.34078079299426124e+154.
-        /// </summary>
-        public const double SqrtDoubleMax = 1.34078079299426124e+154;
-#endif
 
-#if USE_GSL_VALUES
         /// <summary>
         /// The square root of the <see cref="DoubleMin"/>,
         /// 2.2250738585072014e-162.
         /// </summary>
         public const double SqrtDoubleMin = 1.4916681462400413e-154;
-#else
-        /// <summary>
-        /// The square root of the <see cref="DoubleMin"/>,
-        /// 2.2250738585072014e-162.
-        /// </summary>
-        public const double SqrtDoubleMin = 2.2250738585072014e-162;
-#endif
 
         /// <summary>
         /// The smallest normalized double-precision floating-point number that is greater than zero, 2.2250738585072010e-308.

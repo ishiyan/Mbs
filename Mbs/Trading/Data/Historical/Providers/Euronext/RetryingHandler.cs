@@ -2,7 +2,9 @@
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Mbs.Utilities;
 
+// ReSharper disable once CheckNamespace
 namespace Mbs.Trading.Data.Historical
 {
     /// <summary>
@@ -10,6 +12,15 @@ namespace Mbs.Trading.Data.Historical
     /// </summary>
     public class RetryingHandler : DelegatingHandler
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RetryingHandler"/> class.
+        /// </summary>
+        /// <param name="innerHandler">An inner handler.</param>
+        public RetryingHandler(HttpMessageHandler innerHandler)
+            : base(innerHandler)
+        {
+        }
+
         /// <summary>
         /// Gets or sets the prefix to log information.
         /// </summary>
@@ -25,15 +36,6 @@ namespace Mbs.Trading.Data.Historical
         /// </summary>
         public Func<int> Retries { get; set; }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RetryingHandler"/> class.
-        /// </summary>
-        /// <param name="innerHandler">An inner handler.</param>
-        public RetryingHandler(HttpMessageHandler innerHandler)
-            : base(innerHandler)
-        {
-        }
-
         /// <inheritdoc />
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
@@ -46,7 +48,10 @@ namespace Mbs.Trading.Data.Historical
             for (int i = 0; i <= retries; ++i)
             {
                 if (i > 0)
+                {
                     Log.Error($"{prefix} retrying {i} of {retries} [{request.RequestUri}] ...");
+                }
+
                 HttpResponseMessage response;
                 try
                 {
@@ -54,15 +59,15 @@ namespace Mbs.Trading.Data.Historical
                     cts.CancelAfter(timeoutMilliseconds);
                     response = await base.SendAsync(request, cts.Token);
                     if (response.IsSuccessStatusCode)
+                    {
                         return response;
+                    }
                 }
-#pragma warning disable CA1031 // Do not catch general exception types
                 catch (Exception e)
                 {
                     Log.Error($"{prefix} {failedToGetHttpResponse}", e);
                     continue;
                 }
-#pragma warning restore CA1031 // Do not catch general exception types
 
                 Log.Error($"{prefix} {failedToGetHttpResponse}, status code: {response.StatusCode}, reason: {response.ReasonPhrase}");
             }

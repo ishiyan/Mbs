@@ -1,8 +1,7 @@
 ﻿using System;
-using static System.FormattableString;
-
 using Mbs.Trading.Data;
 using Mbs.Trading.Indicators.Abstractions;
+using static System.FormattableString;
 
 namespace Mbs.Trading.Indicators
 {
@@ -16,33 +15,6 @@ namespace Mbs.Trading.Indicators
     /// </summary>
     public sealed class SimpleMovingAverage : ScalarIndicator
     {
-        /// <summary>
-        /// The parameters to create the indicator.
-        /// </summary>
-        public class Parameters
-        {
-            /// <summary>
-            /// The length (the number of time periods) of the simple moving average, should be greater than 1.
-            /// </summary>
-            public int Length;
-
-            /// <summary>
-            /// The <see cref="Ohlcv"/> component to use when calculating indicator from an <see cref="Ohlcv"/> data.
-            /// </summary>
-            public OhlcvComponent OhlcvComponent = OhlcvComponent.ClosingPrice;
-        }
-
-        /// <summary>
-        /// Identifies possible outputs of the indicator.
-        /// </summary>
-        public enum OutputKind
-        {
-            /// <summary>
-            /// The scalar value of the the simple moving average.
-            /// </summary>
-            Value
-        }
-
         private readonly string name;
         private readonly string description;
         private readonly int length;
@@ -56,14 +28,17 @@ namespace Mbs.Trading.Indicators
         private bool primed;
 
         /// <summary>
-        /// Constructs a new instance of the <see cref="SimpleMovingAverage"/> class.
+        /// Initializes a new instance of the <see cref="SimpleMovingAverage"/> class.
         /// </summary>
         /// <param name="parameters">Parameters to create the indicator.</param>
         public SimpleMovingAverage(Parameters parameters)
             : base(parameters.OhlcvComponent)
         {
-            if (2 > parameters.Length)
-                throw new ArgumentOutOfRangeException(nameof(parameters.Length), "Should be greater than 1.");
+            if (parameters.Length < 2)
+            {
+                throw new ArgumentOutOfRangeException(nameof(parameters), "Length should be greater than 1.");
+            }
+
             length = parameters.Length;
             lastIndex = length - 1;
             window = new double[length];
@@ -72,7 +47,51 @@ namespace Mbs.Trading.Indicators
             description = string.Concat("Simple moving average ", name);
         }
 
-        #region IIndicator implementation
+        /// <summary>
+        /// Identifies possible outputs of the indicator.
+        /// </summary>
+        public enum OutputKind
+        {
+            /// <summary>
+            /// The scalar value of the the simple moving average.
+            /// </summary>
+            Value,
+        }
+
+        /// <inheritdoc />
+        public override bool IsPrimed
+        {
+            get
+            {
+                lock (UpdateLock)
+                {
+                    return primed;
+                }
+            }
+        }
+
+        /// <inheritdoc />
+        public override IndicatorMetadata Metadata
+        {
+            get
+            {
+                return new IndicatorMetadata
+                {
+                    IndicatorType = IndicatorType.SimpleMovingAverage,
+                    Outputs = new[]
+                    {
+                        new Metadata
+                        {
+                            Kind = (int)OutputKind.Value,
+                            Type = IndicatorOutputType.Scalar,
+                            Name = name,
+                            Description = description,
+                        },
+                    },
+                };
+            }
+        }
+
         /// <inheritdoc />
         public override void Reset()
         {
@@ -85,32 +104,6 @@ namespace Mbs.Trading.Indicators
             }
         }
 
-        /// <inheritdoc />
-        public override bool IsPrimed { get { lock (UpdateLock) { return primed; } } }
-
-        /// <inheritdoc />
-        public override IndicatorMetadata Metadata
-        {
-            get
-            {
-                return new IndicatorMetadata
-                {
-                    IndicatorType = IndicatorType.SimpleMovingAverage,
-                    Outputs = new []
-                    {
-                        new Metadata
-                        {
-                            Kind = (int)OutputKind.Value,
-                            Type = IndicatorOutputType.Scalar,
-                            Name = name,
-                            Description = description
-                        }
-                    }
-                };
-            }
-        }
-        #endregion
-
         /// <summary>
         /// Updates the value of the simple moving average using the formula:
         /// <para><c>SMAᵢ = SMAᵢ₋₁ + (Pᵢ - Pᵢ₋ℓ) / ℓ</c>, where <c>ℓ</c> is the length.</para>
@@ -121,7 +114,10 @@ namespace Mbs.Trading.Indicators
         protected override double Update(double sample)
         {
             if (double.IsNaN(sample))
+            {
                 return sample;
+            }
+
             if (primed)
             {
                 windowSum += sample - window[0];
@@ -131,14 +127,16 @@ namespace Mbs.Trading.Indicators
                 }
                 else
                 {
-                    for (int i = 0; i < lastIndex; )
+                    for (int i = 0; i < lastIndex;)
+                    {
                         window[i] = window[++i];
+                    }
                 }
 
                 window[lastIndex] = sample;
                 value = windowSum / length;
             }
-            else // Not primed.
+            else
             {
                 windowSum += sample;
                 window[windowCount] = sample;
@@ -148,7 +146,24 @@ namespace Mbs.Trading.Indicators
                     value = windowSum / windowCount;
                 }
             }
+
             return value;
+        }
+
+        /// <summary>
+        /// The parameters to create the indicator.
+        /// </summary>
+        public class Parameters
+        {
+            /// <summary>
+            /// Gets or sets the length (the number of time periods) of the simple moving average, should be greater than 1.
+            /// </summary>
+            public int Length { get; set; }
+
+            /// <summary>
+            /// Gets or sets the <see cref="Ohlcv"/> component to use when calculating indicator from an <see cref="Ohlcv"/> data.
+            /// </summary>
+            public OhlcvComponent OhlcvComponent { get; set; } = OhlcvComponent.ClosingPrice;
         }
     }
 }

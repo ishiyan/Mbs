@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
+// ReSharper disable once CheckNamespace
 namespace Mbs.Trading.Data
 {
     /// <summary>
@@ -9,6 +10,30 @@ namespace Mbs.Trading.Data
     [DataContract]
     public sealed class Quote : TemporalEntity
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Quote"/> class.
+        /// </summary>
+        /// <param name="dateTime">The date and time.</param>
+        /// <param name="bidPrice">The bid price.</param>
+        /// <param name="bidSize">The bid size.</param>
+        /// <param name="askPrice">The ask price.</param>
+        /// <param name="askSize">The ask size.</param>
+        public Quote(DateTime dateTime, double bidPrice = double.NaN, double bidSize = double.NaN, double askPrice = double.NaN, double askSize = double.NaN)
+            : base(dateTime)
+        {
+            BidPrice = bidPrice;
+            BidSize = bidSize;
+            AskPrice = askPrice;
+            AskSize = askSize;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Quote"/> class.
+        /// </summary>
+        public Quote()
+        {
+        }
+
         /// <summary>
         /// Gets or sets the bid price.
         /// </summary>
@@ -54,7 +79,17 @@ namespace Mbs.Trading.Data
         public bool IsAskSizeEmpty => double.IsNaN(AskSize);
 
         /// <summary>
-        /// Uninitializes the quote data; the date and time remain unchanged.
+        /// Gets a value indicating whether at least one of the components is not initialized.
+        /// </summary>
+        public bool IsEmpty => double.IsNaN(BidPrice) || double.IsNaN(BidSize) || double.IsNaN(AskPrice) || double.IsNaN(AskSize);
+
+        /// <summary>
+        /// Gets a deep copy of this object.
+        /// </summary>
+        public override TemporalEntity Clone => new Quote(Time, BidPrice, BidSize, AskPrice, AskSize);
+
+        /// <summary>
+        /// Un-initialize the quote data; the date and time remain unchanged.
         /// </summary>
         public void Empty()
         {
@@ -63,39 +98,5 @@ namespace Mbs.Trading.Data
             AskPrice = double.NaN;
             AskSize = double.NaN;
         }
-
-        /// <summary>
-        /// Gets a value indicating whether at least one of the components is not initialized.
-        /// </summary>
-        public bool IsEmpty => double.IsNaN(BidPrice) || double.IsNaN(BidSize) || double.IsNaN(AskPrice) || double.IsNaN(AskSize);
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Quote"/> class.
-        /// </summary>
-        /// <param name="dateTime">The date and time.</param>
-        /// <param name="bidPrice">The bid price.</param>
-        /// <param name="bidSize">The bid size.</param>
-        /// <param name="askPrice">The ask price.</param>
-        /// <param name="askSize">The ask size.</param>
-        public Quote(DateTime dateTime, double bidPrice = double.NaN, double bidSize = double.NaN, double askPrice = double.NaN, double askSize = double.NaN)
-            : base(dateTime)
-        {
-            BidPrice = bidPrice;
-            BidSize = bidSize;
-            AskPrice = askPrice;
-            AskSize = askSize;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Quote"/> class.
-        /// </summary>
-        public Quote()
-        {
-        }
-
-        /// <summary>
-        /// Gets a deep copy of this object.
-        /// </summary>
-        public override TemporalEntity Clone => new Quote(Time, BidPrice, BidSize, AskPrice, AskSize);
     }
 }

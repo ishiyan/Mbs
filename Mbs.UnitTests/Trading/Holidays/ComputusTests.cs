@@ -203,7 +203,7 @@ namespace Mbs.UnitTests.Trading.Holidays
             new DateTime(4081, 4, 13), new DateTime(4082, 3, 29), new DateTime(4083, 4, 18), new DateTime(4084, 4, 9), new DateTime(4085, 3, 25),
             new DateTime(4086, 4, 14), new DateTime(4087, 4, 6), new DateTime(4088, 4, 25), new DateTime(4089, 4, 10), new DateTime(4090, 4, 2),
             new DateTime(4091, 4, 22), new DateTime(4092, 4, 6), new DateTime(4093, 3, 29), new DateTime(4094, 4, 18), new DateTime(4095, 4, 3),
-            new DateTime(4096, 3, 25), new DateTime(4097, 4, 14), new DateTime(4098, 4, 6), new DateTime(4099, 4, 19)
+            new DateTime(4096, 3, 25), new DateTime(4097, 4, 14), new DateTime(4098, 4, 6), new DateTime(4099, 4, 19),
         };
 
         private static readonly DateTime[] OrthodoxEasterSunday =
@@ -391,7 +391,7 @@ namespace Mbs.UnitTests.Trading.Holidays
             new DateTime(2483, 5, 2), new DateTime(2484, 4, 23), new DateTime(2485, 4, 8), new DateTime(2486, 4, 28), new DateTime(2487, 4, 20),
             new DateTime(2488, 5, 9), new DateTime(2489, 4, 24), new DateTime(2490, 4, 16), new DateTime(2491, 5, 6), new DateTime(2492, 4, 20),
             new DateTime(2493, 4, 12), new DateTime(2494, 5, 2), new DateTime(2495, 4, 17), new DateTime(2496, 5, 6), new DateTime(2497, 4, 28),
-            new DateTime(2498, 4, 13), new DateTime(2499, 5, 3), new DateTime(2500, 4, 25)
+            new DateTime(2498, 4, 13), new DateTime(2499, 5, 3), new DateTime(2500, 4, 25),
         };
 
         /// <summary>
@@ -405,7 +405,7 @@ namespace Mbs.UnitTests.Trading.Holidays
             new DateTime(2031, 2, 25), new DateTime(2032, 2, 10), new DateTime(2033, 3, 1), new DateTime(2034, 2, 21), new DateTime(2035, 2, 6),
             new DateTime(2036, 2, 26), new DateTime(2037, 2, 17), new DateTime(2038, 3, 9), new DateTime(2039, 2, 22), new DateTime(2040, 2, 14),
             new DateTime(2041, 3, 5), new DateTime(2042, 2, 18), new DateTime(2043, 2, 10), new DateTime(2044, 3, 1), new DateTime(2045, 2, 21),
-            new DateTime(2046, 2, 6), new DateTime(2047, 2, 26), new DateTime(2048, 2, 18), new DateTime(2049, 3, 2), new DateTime(2050, 2, 22)
+            new DateTime(2046, 2, 6), new DateTime(2047, 2, 26), new DateTime(2048, 2, 18), new DateTime(2049, 3, 2), new DateTime(2050, 2, 22),
         };
 
         /// <summary>
@@ -415,7 +415,7 @@ namespace Mbs.UnitTests.Trading.Holidays
         {
             new DateTime(2016, 2, 10), new DateTime(2017, 3, 1), new DateTime(2018, 2, 14), new DateTime(2019, 3, 6), new DateTime(2020, 2, 26),
             new DateTime(2021, 2, 17), new DateTime(2022, 3, 2), new DateTime(2023, 2, 22), new DateTime(2024, 2, 14), new DateTime(2025, 3, 5),
-            new DateTime(2026, 2, 18)
+            new DateTime(2026, 2, 18),
         };
 
         /// <summary>
@@ -425,7 +425,7 @@ namespace Mbs.UnitTests.Trading.Holidays
         {
             new DateTime(2009, 4, 5), new DateTime(2010, 3, 28), new DateTime(2011, 4, 17), new DateTime(2012, 4, 1), new DateTime(2013, 3, 24),
             new DateTime(2014, 4, 13), new DateTime(2015, 3, 29), new DateTime(2016, 3, 20), new DateTime(2017, 4, 9), new DateTime(2018, 3, 25),
-            new DateTime(2019, 4, 14), new DateTime(2020, 4, 5), new DateTime(2021, 3, 28), new DateTime(2022, 4, 10), new DateTime(2023, 4, 2)
+            new DateTime(2019, 4, 14), new DateTime(2020, 4, 5), new DateTime(2021, 3, 28), new DateTime(2022, 4, 10), new DateTime(2023, 4, 2),
         };
 
         /// <summary>
@@ -433,7 +433,7 @@ namespace Mbs.UnitTests.Trading.Holidays
         /// </summary>
         private static readonly DateTime[] MaundyThursday =
         {
-            new DateTime(2015, 4, 2), new DateTime(2016, 3, 24), new DateTime(2017, 4, 13), new DateTime(2018, 3, 29)
+            new DateTime(2015, 4, 2), new DateTime(2016, 3, 24), new DateTime(2017, 4, 13), new DateTime(2018, 3, 29),
         };
 
         /// <summary>
@@ -441,7 +441,7 @@ namespace Mbs.UnitTests.Trading.Holidays
         /// </summary>
         private static readonly DateTime[] GoodFriday =
         {
-            new DateTime(2015, 4, 3), new DateTime(2016, 3, 25), new DateTime(2017, 4, 14)
+            new DateTime(2015, 4, 3), new DateTime(2016, 3, 25), new DateTime(2017, 4, 14),
         };
 
         /// <summary>
@@ -453,7 +453,7 @@ namespace Mbs.UnitTests.Trading.Holidays
             new DateTime(2005, 5, 5), new DateTime(2006, 5, 25), new DateTime(2007, 5, 17), new DateTime(2008, 5, 1), new DateTime(2009, 5, 21),
             new DateTime(2010, 5, 13), new DateTime(2011, 6, 2), new DateTime(2012, 5, 17), new DateTime(2013, 5, 9), new DateTime(2014, 5, 29),
             new DateTime(2015, 5, 14), new DateTime(2016, 5, 5), new DateTime(2017, 5, 25), new DateTime(2018, 5, 10), new DateTime(2019, 5, 30),
-            new DateTime(2020, 5, 21)
+            new DateTime(2020, 5, 21),
         };
 
         /// <summary>
@@ -461,7 +461,7 @@ namespace Mbs.UnitTests.Trading.Holidays
         /// </summary>
         private static readonly DateTime[] WhitSunday =
         {
-            new DateTime(2015, 5, 24), new DateTime(2016, 5, 15), new DateTime(2017, 6, 4)
+            new DateTime(2015, 5, 24), new DateTime(2016, 5, 15), new DateTime(2017, 6, 4),
         };
 
         /// <summary>
@@ -475,7 +475,7 @@ namespace Mbs.UnitTests.Trading.Holidays
             new DateTime(2009, 6, 1), new DateTime(2010, 5, 24), new DateTime(2011, 6, 13),
             new DateTime(2012, 5, 28), new DateTime(2013, 5, 20), new DateTime(2014, 6, 9),
             new DateTime(2015, 5, 25), new DateTime(2016, 5, 16), new DateTime(2017, 6, 5),
-            new DateTime(2018, 5, 21), new DateTime(2019, 6, 10), new DateTime(2020, 6, 1)
+            new DateTime(2018, 5, 21), new DateTime(2019, 6, 10), new DateTime(2020, 6, 1),
         };
 
         /// <summary>
@@ -484,7 +484,7 @@ namespace Mbs.UnitTests.Trading.Holidays
         private static readonly DateTime[] TrinitySunday =
         {
             new DateTime(2014, 6, 15), new DateTime(2015, 5, 31), new DateTime(2016, 5, 22), new DateTime(2017, 6, 11), new DateTime(2018, 5, 27),
-            new DateTime(2019, 6, 16), new DateTime(2020, 6, 7)
+            new DateTime(2019, 6, 16), new DateTime(2020, 6, 7),
         };
 
         /// <summary>
@@ -493,22 +493,22 @@ namespace Mbs.UnitTests.Trading.Holidays
         private static readonly DateTime[] CorpusChristi =
         {
             new DateTime(2013, 5, 30), new DateTime(2014, 6, 19), new DateTime(2015, 6, 4), new DateTime(2016, 5, 26), new DateTime(2017, 6, 15),
-            new DateTime(2018, 5, 31), new DateTime(2019, 6, 20), new DateTime(2020, 6, 11), new DateTime(2021, 6, 3), new DateTime(2022, 6, 16)
+            new DateTime(2018, 5, 31), new DateTime(2019, 6, 20), new DateTime(2020, 6, 11), new DateTime(2021, 6, 3), new DateTime(2022, 6, 16),
         };
 
         private static readonly DateTime[] ChristmasDay =
         {
-            new DateTime(1959, 12, 25), new DateTime(1963, 12, 25), new DateTime(1990, 12, 25)
+            new DateTime(1959, 12, 25), new DateTime(1963, 12, 25), new DateTime(1990, 12, 25),
         };
 
         private static readonly DateTime[] BoxingDay =
         {
-            new DateTime(1959, 12, 26), new DateTime(1963, 12, 26), new DateTime(1990, 12, 26)
+            new DateTime(1959, 12, 26), new DateTime(1963, 12, 26), new DateTime(1990, 12, 26),
         };
 
         private static readonly DateTime[] NewYearDay =
         {
-            new DateTime(1959, 1, 1), new DateTime(1963, 1, 1), new DateTime(1990, 1, 1)
+            new DateTime(1959, 1, 1), new DateTime(1963, 1, 1), new DateTime(1990, 1, 1),
         };
 
         // ReSharper disable InconsistentNaming

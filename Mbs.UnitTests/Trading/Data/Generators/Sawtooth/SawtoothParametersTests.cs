@@ -12,15 +12,13 @@ namespace Mbs.UnitTests.Trading.Data.Generators.Sawtooth
     [TestClass]
     public class SawtoothParametersTests
     {
-        // ReSharper disable InconsistentNaming
-
         [TestMethod]
         [ExpectedException(typeof(ValidationException))]
         public void SawtoothParameters_Validate_AmplitudeOutOfRange_Exception()
         {
             var parameters = new SawtoothParameters
             {
-                Amplitude = -1
+                Amplitude = -1,
             };
 
             var context = new ValidationContext(parameters);
@@ -32,7 +30,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.Sawtooth
         {
             var parameters = new SawtoothParameters
             {
-                Amplitude = -1
+                Amplitude = -1,
             };
 
             var expectedMessage = string.Format(
@@ -55,7 +53,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.Sawtooth
         {
             var parameters = new SawtoothParameters
             {
-                MinimalValue = -1
+                MinimalValue = -1,
             };
 
             var context = new ValidationContext(parameters);
@@ -67,7 +65,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.Sawtooth
         {
             var parameters = new SawtoothParameters
             {
-                MinimalValue = -1
+                MinimalValue = -1,
             };
 
             var expectedMessage = string.Format(
@@ -90,7 +88,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.Sawtooth
             var parameters = new SawtoothParameters
             {
                 Amplitude = -1,
-                MinimalValue = -1
+                MinimalValue = -1,
             };
 
             var results = new List<ValidationResult>();
@@ -142,7 +140,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.Sawtooth
                 Amplitude = amplitude,
                 MinimalValue = minimalValue,
                 IsBiDirectional = isBiDirectional,
-                Shape = shape
+                Shape = shape,
             };
 
             Assert.AreEqual(amplitude, parameters.Amplitude, "amplitude");
@@ -154,7 +152,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.Sawtooth
         [TestMethod]
         public void SawtoothParameters_DeserializeFromJson_ValidInput_CorrectValidationResults()
         {
-            var json = @"{
+            const string json = @"{
 amplitude: 100,
 minimalValue: 10,
 isBiDirectional: false,

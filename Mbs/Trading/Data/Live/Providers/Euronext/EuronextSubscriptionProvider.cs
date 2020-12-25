@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using Mbs.Trading.Instruments;
 using Mbs.Trading.Time;
+using Mbs.Utilities;
 
+// ReSharper disable once CheckNamespace
 namespace Mbs.Trading.Data.Live
 {
     /// <summary>
@@ -20,7 +21,9 @@ namespace Mbs.Trading.Data.Live
             : base("Euronext")
         {
             if (typeof(Ohlcv) != typeof(T) && typeof(Trade) == typeof(T) && typeof(Quote) == typeof(T))
+            {
                 throw new ArgumentException($"Unsupported TemporalEntity type parameter: {typeof(T)}.");
+            }
         }
 
         /// <inheritdoc />
@@ -35,12 +38,17 @@ namespace Mbs.Trading.Data.Live
             if (typeof(T) == Types.OhlcvType)
             {
                 if (!timeGranularity.IsIntraday() && !timeGranularity.IsAperiodic())
+                {
                     throw new ArgumentException($"Intraday or trade time granularity required, got {timeGranularity.ToString()}.", nameof(timeGranularity));
+                }
             }
             else
             {
-                if (!timeGranularity.IsAperiodic() || 1 != timeGranularity.NumberOfUnits())
+                if (!timeGranularity.IsAperiodic() || timeGranularity.NumberOfUnits() != 1)
+                {
                     throw new ArgumentException($"Aperiodic (one-trade) time granularity required, got {timeGranularity.ToString()}.", nameof(timeGranularity));
+                }
+
                 timeGranularity = TimeGranularity.Aperiodic;
             }
 
@@ -52,24 +60,21 @@ namespace Mbs.Trading.Data.Live
         {
             Type type = typeof(T);
             if (type == Types.OhlcvType)
+            {
                 return new OhlcvTopicProvider(topic, provider);
+            }
+
             if (type == Types.TradeType)
+            {
                 return new TradeTopicProvider(topic, provider);
+            }
+
             return new QuoteTopicProvider(topic, provider);
         }
 
         private sealed class QuoteTopicProvider : GenericProvider
         {
             private EuronextMonitor.InstrumentQuoteMonitor instrumentQuoteMonitor;
-
-            /// <inheritdoc />
-            protected override void Dispose(bool disposing)
-            {
-                if (disposing)
-                    instrumentQuoteMonitor.Dispose();
-
-                base.Dispose(disposing);
-            }
 
             /// <summary>
             /// Initializes a new instance of the <see cref="QuoteTopicProvider"/> class.
@@ -81,9 +86,15 @@ namespace Mbs.Trading.Data.Live
             {
             }
 
-            private void Receive(Quote quote)
+            /// <inheritdoc />
+            protected override void Dispose(bool disposing)
             {
-                OnEvent(quote as T);
+                if (disposing)
+                {
+                    instrumentQuoteMonitor.Dispose();
+                }
+
+                base.Dispose(disposing);
             }
 
             /// <inheritdoc />
@@ -97,6 +108,11 @@ namespace Mbs.Trading.Data.Live
             protected override void OnDisconnect()
             {
                 instrumentQuoteMonitor.Event -= Receive;
+            }
+
+            private void Receive(Quote quote)
+            {
+                OnEvent(quote as T);
             }
         }
 
@@ -122,11 +138,18 @@ namespace Mbs.Trading.Data.Live
                     int numberOfUnits = timeGranularity.NumberOfUnits();
                     Func<Trade, int, DateTime> thresholdDateTime = null;
                     if (timeGranularity.IsSecond())
+                    {
                         thresholdDateTime = AggregatingConverter.SecondBinThreshold;
+                    }
                     else if (timeGranularity.IsMinute())
+                    {
                         thresholdDateTime = AggregatingConverter.MinuteBinThreshold;
+                    }
                     else if (timeGranularity.IsHour())
+                    {
                         thresholdDateTime = AggregatingConverter.HourBinThreshold;
+                    }
+
                     IEnumerable<Trade> enumerable;
                     if (thresholdDateTime != null)
                     {
@@ -147,7 +170,7 @@ namespace Mbs.Trading.Data.Live
                                         {
                                             ohlcv.Time = dateTime;
 
-                                            // Log.Debug($"EuronextTopicProvider.Ohlcv: {ohlcv}");
+                                            Log.Debug($"EuronextTopicProvider.Ohlcv: {ohlcv}");
                                             OnEvent(ohlcv as T);
                                         }
 
@@ -162,11 +185,13 @@ namespace Mbs.Trading.Data.Live
                         {
                             ActionWithThreshold();
                             if (inputActive)
+                            {
                                 inputThread.AutoResetEvent.WaitOne(10000, false);
+                            }
                         }
 
                         // Process the trades left in the input queue.
-                        // action();
+                        // action()
                     }
                     else
                     {
@@ -182,15 +207,22 @@ namespace Mbs.Trading.Data.Live
                                     {
                                         count = 0;
                                         if (ohlcv != null)
+                                        {
                                             OnEvent(ohlcv as T);
+                                        }
+
                                         ohlcv = Ohlcv.CloneAggregation(trade);
                                     }
                                     else
                                     {
                                         if (ohlcv == null)
+                                        {
                                             ohlcv = Ohlcv.CloneAggregation(trade);
+                                        }
                                         else
+                                        {
                                             ohlcv.Aggregate(trade);
+                                        }
                                     }
                                 }
                             }
@@ -200,29 +232,23 @@ namespace Mbs.Trading.Data.Live
                         {
                             Action();
                             if (inputActive)
+                            {
                                 inputThread.AutoResetEvent.WaitOne(10000, false);
+                            }
                         }
 
                         // Process the ohlcv entities left in the input queue.
-                        // action();
+                        // action()
                     }
 
                     // Output the unfinished ohlcv.
                     if (ohlcv != null)
+                    {
                         OnEvent(ohlcv as T);
+                    }
 
                     Dispose();
                 }) { Thread = { IsBackground = true } };
-            }
-
-            private void Receive(IEnumerable<Trade> enumerable)
-            {
-                if (inputActive)
-                {
-                    inputQueue.Enqueue(enumerable);
-                    if (inputActive)
-                        inputThread.AutoResetEvent.Set();
-                }
             }
 
             /// <inheritdoc />
@@ -254,20 +280,23 @@ namespace Mbs.Trading.Data.Live
 
                 base.Dispose(disposing);
             }
+
+            private void Receive(IEnumerable<Trade> enumerable)
+            {
+                if (inputActive)
+                {
+                    inputQueue.Enqueue(enumerable);
+                    if (inputActive)
+                    {
+                        inputThread.AutoResetEvent.Set();
+                    }
+                }
+            }
         }
 
         private sealed class TradeTopicProvider : GenericProvider
         {
             private EuronextMonitor.InstrumentTradeMonitor instrumentTradeMonitor;
-
-            /// <inheritdoc />
-            protected override void Dispose(bool disposing)
-            {
-                if (disposing)
-                    instrumentTradeMonitor.Dispose();
-
-                base.Dispose(disposing);
-            }
 
             /// <summary>
             /// Initializes a new instance of the <see cref="TradeTopicProvider"/> class.
@@ -279,10 +308,15 @@ namespace Mbs.Trading.Data.Live
             {
             }
 
-            private void Receive(IEnumerable<Trade> enumerable)
+            /// <inheritdoc />
+            protected override void Dispose(bool disposing)
             {
-                foreach (Trade t in enumerable)
-                    OnEvent(t as T);
+                if (disposing)
+                {
+                    instrumentTradeMonitor.Dispose();
+                }
+
+                base.Dispose(disposing);
             }
 
             /// <inheritdoc />
@@ -298,6 +332,14 @@ namespace Mbs.Trading.Data.Live
             {
                 instrumentTradeMonitor.Event -= Receive;
                 instrumentTradeMonitor.RemoveGranularity(Topic.TimeGranularity);
+            }
+
+            private void Receive(IEnumerable<Trade> enumerable)
+            {
+                foreach (Trade t in enumerable)
+                {
+                    OnEvent(t as T);
+                }
             }
         }
     }

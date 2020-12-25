@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using Mbs.Numerics;
-using Mbs.Numerics.Random;
+using Mbs.Numerics.RandomGenerators;
 using Mbs.Trading.Time;
+using Mbs.Trading.Time.Conventions;
 
 namespace Mbs.Trading.Data.Generators.MultiSinusoidal
 {
@@ -17,31 +19,6 @@ namespace Mbs.Trading.Data.Generators.MultiSinusoidal
     public abstract class MultiSinusoidalDataGenerator<T> : WaveformDataGenerator<T>
         where T : TemporalEntity, new()
     {
-        /// <summary>
-        /// Gets the number of the component sinusoids.
-        /// </summary>
-        public int Count { get; }
-
-        /// <summary>
-        /// Gets the periods of the component sinusoids in samples, should be ≥ 2.
-        /// </summary>
-        public IReadOnlyCollection<double> Periods => Array.AsReadOnly(periods);
-
-        /// <summary>
-        /// Gets the amplitudes of the component sinusoids in price units, should be positive.
-        /// </summary>
-        public IReadOnlyCollection<double> Amplitudes => Array.AsReadOnly(amplitudes);
-
-        /// <summary>
-        /// Gets the phases, φ, of the component sinusoids in ratios of π; if φ∈[-1, 1], then the phase ∈[-π, π].
-        /// </summary>
-        public IReadOnlyCollection<double> PhasesInPi => Array.AsReadOnly(phasesInPi);
-
-        /// <summary>
-        /// Gets the sample value corresponding to the minimum of the sum of component sinusoids, should be positive.
-        /// </summary>
-        public double SampleMinimum { get; }
-
         private readonly double[] periods;
         private readonly double[] amplitudes;
         private readonly double[] phasesInPi;
@@ -63,7 +40,7 @@ namespace Mbs.Trading.Data.Generators.MultiSinusoidal
             : base(timeParameters, waveformParameters)
         {
             var array = multiSinusoidalParameters.MultiSinusoidalComponents.ToArray();
-            Count = /*multiSinusoidalParameters.MultiSinusoidalComponents*/array.Length;
+            Count = array.Length;
             if (Count < 1)
             {
                 throw new ArgumentException(
@@ -80,7 +57,7 @@ namespace Mbs.Trading.Data.Generators.MultiSinusoidal
 
             for (int i = 0; i < Count; ++i)
             {
-                var item = /*multiSinusoidalParameters.MultiSinusoidalComponents*/array[i];
+                var item = array[i];
                 periods[i] = item.Period;
                 amplitudes[i] = item.Amplitude;
                 phasesInPi[i] = item.PhaseInPi;
@@ -137,9 +114,15 @@ namespace Mbs.Trading.Data.Generators.MultiSinusoidal
         {
             Count = periods.Length;
             if (Count < 1)
+            {
                 throw new ArgumentException("The length of the input array must be positive.", nameof(periods));
+            }
+
             if (amplitudes.Length != Count || phasesInPi.Length != Count)
+            {
                 throw new ArgumentException("All input arrays must have the same length.");
+            }
+
             this.periods = periods;
             this.amplitudes = amplitudes;
             this.phasesInPi = phasesInPi;
@@ -151,51 +134,39 @@ namespace Mbs.Trading.Data.Generators.MultiSinusoidal
             Initialize();
         }
 
-        private static double MaximalAmplitude(IEnumerable<double> amplitudes)
-        {
-            return amplitudes.Concat(new double[] { 0 }).Max();
-        }
+        /// <summary>
+        /// Gets the number of the component sinusoids.
+        /// </summary>
+        public int Count { get; }
 
-        private void Initialize()
+        /// <summary>
+        /// Gets the periods of the component sinusoids in samples, should be ≥ 2.
+        /// </summary>
+        public IReadOnlyCollection<double> Periods => Array.AsReadOnly(periods);
+
+        /// <summary>
+        /// Gets the amplitudes of the component sinusoids in price units, should be positive.
+        /// </summary>
+        public IReadOnlyCollection<double> Amplitudes => Array.AsReadOnly(amplitudes);
+
+        /// <summary>
+        /// Gets the phases, φ, of the component sinusoids in ratios of π; if φ∈[-1, 1], then the phase ∈[-π, π].
+        /// </summary>
+        public IReadOnlyCollection<double> PhasesInPi => Array.AsReadOnly(phasesInPi);
+
+        /// <summary>
+        /// Gets the sample value corresponding to the minimum of the sum of component sinusoids, should be positive.
+        /// </summary>
+        public double SampleMinimum { get; }
+
+        /// <inheritdoc />
+        public override void Reset()
         {
-            const double delta = 0.00005;
-            Moniker = string.Empty;
+            base.Reset();
             for (int i = 0; i < Count; ++i)
             {
                 angles[i] = 0;
-                frequencies[i] = Constants.TwoPi / periods[i];
-                phases[i] = Constants.Pi * phasesInPi[i];
-                if (i > 0)
-                    Moniker += " + ";
-                if (Math.Abs(phasesInPi[i]) < delta)
-                {
-                    Moniker += string.Format(
-                        CultureInfo.InvariantCulture,
-                        "{0:0.####}∙cos(2π∙t/{1:0.####})",
-                        amplitudes[i],
-                        periods[i]);
-                }
-                else
-                {
-                    Moniker += string.Format(
-                        CultureInfo.InvariantCulture,
-                        "{0:0.####}∙cos(2π∙t/{1:0.####} + {2:0.####}∙π)",
-                        amplitudes[i],
-                        periods[i],
-                        phasesInPi[i]);
-                }
             }
-
-            Moniker += string.Format(CultureInfo.InvariantCulture, " + {0:0.####}", SampleMinimum);
-
-            if (HasNoise && NoiseAmplitudeFraction > delta)
-                Moniker = string.Format(CultureInfo.InvariantCulture, "{0} + noise(ρn={1:0.####})", Moniker, NoiseAmplitudeFraction);
-
-            if (OffsetSamples > 0)
-                Moniker = string.Format(CultureInfo.InvariantCulture, "{0}, off={1}", Moniker, OffsetSamples);
-
-            if (!IsRepetitionsInfinite)
-                Moniker = string.Format(CultureInfo.InvariantCulture, "{0}, rep={1}", Moniker, RepetitionsCount);
         }
 
         /// <inheritdoc />
@@ -214,19 +185,72 @@ namespace Mbs.Trading.Data.Generators.MultiSinusoidal
                 sample += amplitudes[i] * Math.Cos(angle + phases[i]);
                 angle += frequencies[i];
                 if (angle > Constants.TwoPi)
+                {
                     angle -= Constants.TwoPi;
+                }
+
                 angles[i] = angle;
             }
 
             return sample;
         }
 
-        /// <inheritdoc />
-        public override void Reset()
+        private static double MaximalAmplitude(IEnumerable<double> amplitudes)
         {
-            base.Reset();
+            return amplitudes.Concat(new double[] { 0 }).Max();
+        }
+
+        private void Initialize()
+        {
+            const double delta = 0.00005;
+            var sb = new StringBuilder();
             for (int i = 0; i < Count; ++i)
+            {
                 angles[i] = 0;
+                frequencies[i] = Constants.TwoPi / periods[i];
+                phases[i] = Constants.Pi * phasesInPi[i];
+                if (i > 0)
+                {
+                    sb.Append(" + ");
+                }
+
+                if (Math.Abs(phasesInPi[i]) < delta)
+                {
+                    sb.Append(string.Format(
+                        CultureInfo.InvariantCulture,
+                        "{0:0.####}∙cos(2π∙t/{1:0.####})",
+                        amplitudes[i],
+                        periods[i]));
+                }
+                else
+                {
+                    sb.Append(string.Format(
+                        CultureInfo.InvariantCulture,
+                        "{0:0.####}∙cos(2π∙t/{1:0.####} + {2:0.####}∙π)",
+                        amplitudes[i],
+                        periods[i],
+                        phasesInPi[i]));
+                }
+            }
+
+            sb.Append(string.Format(CultureInfo.InvariantCulture, " + {0:0.####}", SampleMinimum));
+
+            if (HasNoise && NoiseAmplitudeFraction > delta)
+            {
+                sb.Append(string.Format(CultureInfo.InvariantCulture, "{0} + noise(ρn={1:0.####})", Moniker, NoiseAmplitudeFraction));
+            }
+
+            if (OffsetSamples > 0)
+            {
+                sb.Append(string.Format(CultureInfo.InvariantCulture, "{0}, off={1}", Moniker, OffsetSamples));
+            }
+
+            if (!IsRepetitionsInfinite)
+            {
+                sb.Append(string.Format(CultureInfo.InvariantCulture, "{0}, rep={1}", Moniker, RepetitionsCount));
+            }
+
+            Moniker = sb.ToString();
         }
     }
 }

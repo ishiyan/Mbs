@@ -13,18 +13,21 @@ namespace Mbs.UnitTests.Trading.Data.Timelines
             var target = new MergingEnumerable<Ohlcv>();
             Assert.IsNotNull(target);
         }
+
         [TestMethod]
         public void MergingEnumerable_Trade_WhenConstructed_InstanceIsCreated()
         {
             var target = new MergingEnumerable<Trade>();
             Assert.IsNotNull(target);
         }
+
         [TestMethod]
         public void MergingEnumerable_Quote_WhenConstructed_InstanceIsCreated()
         {
             var target = new MergingEnumerable<Quote>();
             Assert.IsNotNull(target);
         }
+
         [TestMethod]
         public void MergingEnumerable_Scalar_WhenConstructed_InstanceIsCreated()
         {

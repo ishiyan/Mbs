@@ -1,5 +1,4 @@
 using System;
-using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Mbs.Trading.Time;
@@ -17,7 +16,7 @@ namespace Mbs.Api.Converters.Trading.Time
         /// <inheritdoc />
         public override TimeGranularity Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            var value=reader.GetString().ToLowerInvariant();
+            var value = reader.GetString().ToLowerInvariant();
             return value switch
             {
                 "aperiodic" => TimeGranularity.Aperiodic,

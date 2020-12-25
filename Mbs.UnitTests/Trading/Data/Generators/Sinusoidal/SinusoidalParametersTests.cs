@@ -12,15 +12,13 @@ namespace Mbs.UnitTests.Trading.Data.Generators.Sinusoidal
     [TestClass]
     public class SinusoidalParametersTests
     {
-        // ReSharper disable InconsistentNaming
-
         [TestMethod]
         [ExpectedException(typeof(ValidationException))]
         public void SinusoidalParameters_Validate_AmplitudeOutOfRange_Exception()
         {
             var parameters = new SinusoidalParameters
             {
-                Amplitude = -1
+                Amplitude = -1,
             };
 
             var context = new ValidationContext(parameters);
@@ -32,7 +30,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.Sinusoidal
         {
             var parameters = new SinusoidalParameters
             {
-                Amplitude = -1
+                Amplitude = -1,
             };
 
             var expectedMessage = string.Format(
@@ -55,7 +53,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.Sinusoidal
         {
             var parameters = new SinusoidalParameters
             {
-                MinimalValue = -1
+                MinimalValue = -1,
             };
 
             var context = new ValidationContext(parameters);
@@ -67,7 +65,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.Sinusoidal
         {
             var parameters = new SinusoidalParameters
             {
-                MinimalValue = -1
+                MinimalValue = -1,
             };
 
             var expectedMessage = string.Format(
@@ -90,7 +88,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.Sinusoidal
         {
             var parameters = new SinusoidalParameters
             {
-                Period = 1
+                Period = 1,
             };
 
             var context = new ValidationContext(parameters);
@@ -102,7 +100,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.Sinusoidal
         {
             var parameters = new SinusoidalParameters
             {
-                Period = 0
+                Period = 0,
             };
 
             var expectedMessage = string.Format(
@@ -125,7 +123,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.Sinusoidal
         {
             var parameters = new SinusoidalParameters
             {
-                PhaseInPi = -2
+                PhaseInPi = -2,
             };
 
             var context = new ValidationContext(parameters);
@@ -137,7 +135,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.Sinusoidal
         {
             var parameters = new SinusoidalParameters
             {
-                PhaseInPi = 2
+                PhaseInPi = 2,
             };
 
             string expectedMessage = string.Format(
@@ -162,7 +160,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.Sinusoidal
                 Amplitude = -1,
                 MinimalValue = -1,
                 Period = 1,
-                PhaseInPi = -2
+                PhaseInPi = -2,
             };
 
             var results = new List<ValidationResult>();
@@ -220,7 +218,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.Sinusoidal
                 Amplitude = amplitude,
                 MinimalValue = minimalValue,
                 Period = period,
-                PhaseInPi = phaseInPi
+                PhaseInPi = phaseInPi,
             };
 
             Assert.AreEqual(amplitude, parameters.Amplitude, "amplitude");
@@ -232,7 +230,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.Sinusoidal
         [TestMethod]
         public void SinusoidalParameters_DeserializeFromJson_ValidInput_CorrectValidationResults()
         {
-            var json = @"{
+            const string json = @"{
 amplitude: 100,
 minimalValue: 10,
 period: 16,

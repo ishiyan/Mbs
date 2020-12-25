@@ -47,7 +47,7 @@ namespace Mbs.Trading.Time
             new TimeSpan(90, 0, 0, 0), // Month3, 35
             new TimeSpan(120, 0, 0, 0), // Month4, 36
             new TimeSpan(160, 0, 0, 0), // Month6, 37
-            new TimeSpan(365, 0, 0, 0) // Year1, 38
+            new TimeSpan(365, 0, 0, 0), // Year1, 38
         };
 
         /// <summary>

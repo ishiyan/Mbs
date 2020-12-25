@@ -1,5 +1,4 @@
 ﻿using Mbs.Api.ExampleProviders.Trading.Data.Generators.MultiSinusoidal;
-using Mbs.Trading.Data;
 using Mbs.Trading.Data.Generators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -8,11 +7,10 @@ namespace Mbs.Api.UnitTests.ExampleProviders.Trading.Data.Generators.MultiSinuso
     [TestClass]
     public class MultiSinusoidalOhlcvGeneratorOutputExampleProviderTests
     {
-        // ReSharper disable InconsistentNaming
         [TestMethod]
         public void MultiSinusoidalOhlcvGeneratorOutputExampleProvider_GetExamples_CorrectValues()
         {
-            var example = (SyntheticDataGeneratorOutput<Ohlcv>) new MultiSinusoidalOhlcvGeneratorOutputExampleProvider().GetExamples();
+            var example = new MultiSinusoidalOhlcvGeneratorOutputExampleProvider().GetExamples();
 
             Assert.AreEqual(MultiSinusoidalOhlcvGeneratorOutputExampleProvider.Name, example.Name, "name");
             Assert.AreEqual(MultiSinusoidalOhlcvGeneratorOutputExampleProvider.Moniker, example.Moniker, "moniker");

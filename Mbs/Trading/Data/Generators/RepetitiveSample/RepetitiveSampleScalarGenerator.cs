@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using Mbs.Trading.Time;
+using Mbs.Trading.Time.Conventions;
 
 namespace Mbs.Trading.Data.Generators.RepetitiveSample
 {
@@ -59,39 +60,31 @@ namespace Mbs.Trading.Data.Generators.RepetitiveSample
                 businessDayCalendar)
         {
             if (offsetSamples < 0)
+            {
                 offsetSamples = 0;
+            }
+
             this.offsetSamples = offsetSamples;
             sampleIndex = -offsetSamples;
 
             if (repetitionsCount < 0)
+            {
                 repetitionsCount = 0;
+            }
+
             this.repetitionsCount = repetitionsCount;
             isRepetitionsInfinite = repetitionsCount < 1;
 
             Initialize();
         }
 
-        private void Initialize()
-        {
-            Moniker = string.Concat("repetitive scalar sample (len=", RepetitiveSampleData.SampleCount, ")");
-
-            if (offsetSamples > 0)
-                Moniker = string.Format(CultureInfo.InvariantCulture, "{0}, off={1}", Moniker, offsetSamples);
-
-            if (!isRepetitionsInfinite)
-                Moniker = string.Format(CultureInfo.InvariantCulture, "{0}, rep={1}", Moniker, repetitionsCount);
-
-            Name = WaveformName;
-        }
-
         /// <inheritdoc />
         public override Scalar GenerateNext()
         {
             DateTime dateTime = NextTime();
-            if (sampleIndex < 0)
+            if (sampleIndex < 0 && ++sampleIndex <= 0)
             {
-                if (0 >= ++sampleIndex)
-                    return ScalarByIndex(0, dateTime);
+                return ScalarByIndex(0, dateTime);
             }
 
             Scalar scalar;
@@ -99,12 +92,17 @@ namespace Mbs.Trading.Data.Generators.RepetitiveSample
             {
                 scalar = ScalarByIndex(sampleIndex, dateTime);
                 if (++sampleIndex == RepetitiveSampleData.SampleCount)
+                {
                     sampleIndex = 0;
+                }
             }
             else
             {
                 if (repetitionsCount <= currentRepetition)
+                {
                     return ScalarByIndex(0, dateTime);
+                }
+
                 scalar = ScalarByIndex(sampleIndex, dateTime);
                 if (++sampleIndex == RepetitiveSampleData.SampleCount)
                 {
@@ -127,6 +125,23 @@ namespace Mbs.Trading.Data.Generators.RepetitiveSample
         private static Scalar ScalarByIndex(int index, DateTime dateTime)
         {
             return new Scalar(dateTime, RepetitiveSampleData.Close[index]);
+        }
+
+        private void Initialize()
+        {
+            Moniker = string.Concat("repetitive scalar sample (len=", RepetitiveSampleData.SampleCount, ")");
+
+            if (offsetSamples > 0)
+            {
+                Moniker = string.Format(CultureInfo.InvariantCulture, "{0}, off={1}", Moniker, offsetSamples);
+            }
+
+            if (!isRepetitionsInfinite)
+            {
+                Moniker = string.Format(CultureInfo.InvariantCulture, "{0}, rep={1}", Moniker, repetitionsCount);
+            }
+
+            Name = WaveformName;
         }
     }
 }

@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Linq;
 using Mbs.Trading.Instruments;
+using Mbs.Trading.Instruments.Groups;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Mbs.UnitTests.Trading.Instruments
+namespace Mbs.UnitTests.Trading.Instruments.Groups
 {
     [TestClass]
     public class InstrumentSecurityAlternateIdGroupTests
@@ -25,7 +26,7 @@ namespace Mbs.UnitTests.Trading.Instruments
             var group = new InstrumentSecurityAlternateIdGroup();
 
             Assert.IsNull(group.Find(InstrumentSecurityIdSource.Isin), "cannot find Isin");
-            Assert.IsNull(group.Find(InstrumentSecurityIdSource.Cuisp), "cannot find Cuisp");
+            Assert.IsNull(group.Find(InstrumentSecurityIdSource.Cusip), "cannot find Cusip");
             Assert.IsNull(group.Find(InstrumentSecurityIdSource.Sedol), "cannot find Sedol");
             Assert.IsNull(group.Find(InstrumentSecurityIdSource.RicCode), "cannot find RicCode");
             Assert.IsNull(group.Find(InstrumentSecurityIdSource.BloombergSymbol), "cannot find BloombergSymbol");
@@ -42,7 +43,7 @@ namespace Mbs.UnitTests.Trading.Instruments
             group.Add(value, InstrumentSecurityIdSource.ExchangeSymbol);
 
             Assert.IsNull(group.Find(InstrumentSecurityIdSource.Isin), "cannot find Isin");
-            Assert.IsNull(group.Find(InstrumentSecurityIdSource.Cuisp), "cannot find Cuisp");
+            Assert.IsNull(group.Find(InstrumentSecurityIdSource.Cusip), "cannot find Cusip");
             Assert.IsNull(group.Find(InstrumentSecurityIdSource.Sedol), "cannot find Sedol");
             Assert.IsNull(group.Find(InstrumentSecurityIdSource.RicCode), "cannot find RicCode");
             Assert.IsNull(group.Find(InstrumentSecurityIdSource.BloombergSymbol), "cannot find BloombergSymbol");

@@ -3,7 +3,6 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1652:Enable XML documentation output", Justification = "Not needed in unit tests.")]
-[assembly: SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1117:Parameters must be on same line or separate lines", Justification = "Reviewed.")]
-
+// [assembly: SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1652:Enable XML documentation output", Justification = "Not needed in unit tests.")]
+// [assembly: SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1117:Parameters must be on same line or separate lines", Justification = "Reviewed.")]
 [assembly: SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores", Justification = "Reviewed.")]

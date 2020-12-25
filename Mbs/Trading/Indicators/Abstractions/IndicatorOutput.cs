@@ -6,7 +6,7 @@
     public class IndicatorOutput
     {
         /// <summary>
-        /// A data object per indicator output.
+        /// Gets or sets a data object array per indicator output.
         /// </summary>
         public object[] Outputs { get; set; }
     }

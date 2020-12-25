@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
+// ReSharper disable once CheckNamespace
 namespace Mbs.Trading.Data
 {
     /// <summary>
@@ -9,25 +10,6 @@ namespace Mbs.Trading.Data
     [DataContract]
     public sealed class Scalar : TemporalEntity
     {
-        /// <summary>
-        /// Gets or sets the value.
-        /// </summary>
-        [DataMember(Name = "value", IsRequired = true)]
-        public double Value { get; set; }
-
-        /// <summary>
-        /// Gets a value indicating whether the scalar value is not initialized.
-        /// </summary>
-        public bool IsEmpty => double.IsNaN(Value);
-
-        /// <summary>
-        /// Uninitializes the scalar data; the date and time remain unchanged.
-        /// </summary>
-        public void Empty()
-        {
-            Value = double.NaN;
-        }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="Scalar"/> class.
         /// </summary>
@@ -47,8 +29,27 @@ namespace Mbs.Trading.Data
         }
 
         /// <summary>
+        /// Gets or sets the value.
+        /// </summary>
+        [DataMember(Name = "value", IsRequired = true)]
+        public double Value { get; set; }
+
+        /// <summary>
+        /// Gets a value indicating whether the scalar value is not initialized.
+        /// </summary>
+        public bool IsEmpty => double.IsNaN(Value);
+
+        /// <summary>
         /// Gets a deep copy of this object.
         /// </summary>
         public override TemporalEntity Clone => new Scalar(Time, Value);
+
+        /// <summary>
+        /// Un-initialize the scalar data; the date and time remain unchanged.
+        /// </summary>
+        public void Empty()
+        {
+            Value = double.NaN;
+        }
     }
 }

@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using Mbs.Numerics.Random;
+using Mbs.Numerics.RandomGenerators;
+using Mbs.Numerics.RandomGenerators.FractionalBrownianMotion;
 
 namespace Mbs.Trading.Data.Generators.FractionalBrownianMotion
 {

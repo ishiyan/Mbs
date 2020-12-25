@@ -22,7 +22,9 @@ namespace Mbs.Trading.Data.Generators
             int count)
         {
             if (count <= 0)
+            {
                 throw new ArgumentException("The number of samples to generate should be positive", nameof(count));
+            }
 
             return await Task.Run(() =>
             {
@@ -30,7 +32,7 @@ namespace Mbs.Trading.Data.Generators
                 {
                     Moniker = generator.Moniker,
                     Name = generator.Name,
-                    Data = generator.GenerateNext(count).ToArray()
+                    Data = generator.GenerateNext(count).ToArray(),
                 };
 
                 return output;

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using Mbs.Utilities;
 
 namespace Mbs.Trading.Data.Generators.RepetitiveSample
 {

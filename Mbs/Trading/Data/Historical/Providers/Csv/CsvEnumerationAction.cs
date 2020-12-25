@@ -1,4 +1,5 @@
-﻿namespace Mbs.Trading.Data.Historical
+﻿// ReSharper disable once CheckNamespace
+namespace Mbs.Trading.Data.Historical
 {
     /// <summary>
     /// Actions used to select a date range while enumerating entities.
@@ -18,6 +19,6 @@
         /// <summary>
         /// Do not process current entity and skip enumeration.
         /// </summary>
-        Break
+        Break,
     }
 }

@@ -6,17 +6,17 @@
     public class IndicatorInput
     {
         /// <summary>
-        /// Identifies the indicator.
+        /// Gets or sets the identification of an indicator.
         /// </summary>
         public IndicatorType IndicatorType { get; set; }
 
         /// <summary>
-        /// Parameters to create the indicator.
+        /// Gets or sets parameters to create an indicator.
         /// </summary>
         public object Parameters { get; set; }
 
         /// <summary>
-        /// Outputs of the indicator.
+        /// Gets or sets outputs of an indicator.
         /// </summary>
         public int[] OutputKinds { get; set; }
     }

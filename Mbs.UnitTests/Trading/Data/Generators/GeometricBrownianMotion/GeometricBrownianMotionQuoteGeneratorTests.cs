@@ -7,8 +7,6 @@ namespace Mbs.UnitTests.Trading.Data.Generators.GeometricBrownianMotion
     [TestClass]
     public class GeometricBrownianMotionQuoteGeneratorTests
     {
-        // ReSharper disable InconsistentNaming
-
         [TestMethod]
         public void GeometricBrownianMotionQuoteGenerator_Construction_DefaultConstructor_PropertyValuesCorrect()
         {

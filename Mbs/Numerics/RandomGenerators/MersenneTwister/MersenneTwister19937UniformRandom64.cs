@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace Mbs.Numerics.Random
+namespace Mbs.Numerics.RandomGenerators.MersenneTwister
 {
     /// <summary>
     /// The Mersenne Twister uniform mt19937ar 64-bit pseudo-random number generator with the period of 2¹⁹⁹³⁷-1
-    /// is based upon information and the implementation presented on the Mersenne Twister home page
+    /// is based upon information and the implementation presented on the Mersenne Twister home page:
     /// <para />
     /// http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html.
     /// <para />
@@ -27,11 +27,6 @@ namespace Mbs.Numerics.Random
         /// The word size, w.
         /// </summary>
         private const int WordSize = 64;
-
-        // /// <summary>
-        // /// The mask bits, r.
-        // /// </summary>
-        // private const int MaskBits = 31;
 
         /// <summary>
         /// Constant matrix a.
@@ -97,17 +92,12 @@ namespace Mbs.Numerics.Random
         private const double OnePlus53BitsOf1S = FiftyThreeBitsOf1S + 1.0;
         private const double InverseOnePlus53BitsOf1S = 1.0 / OnePlus53BitsOf1S;
 
+        private static readonly ulong[] Mag01 = { 0x0UL, MatrixA };
+
         /// <summary>
         /// Stores the state vector array.
         /// </summary>
         private readonly ulong[] mt = new ulong[StateSize];
-
-        /// <summary>
-        /// An index for the state vector array element that will be accessed next.
-        /// </summary>
-        private uint mti;
-
-        private static readonly ulong[] Mag01 = { 0x0UL, MatrixA };
 
         /// <summary>
         /// The used seed value.
@@ -118,6 +108,11 @@ namespace Mbs.Numerics.Random
         /// The used seed array.
         /// </summary>
         private readonly ulong[] seedArray;
+
+        /// <summary>
+        /// An index for the state vector array element that will be accessed next.
+        /// </summary>
+        private uint mti;
 
         private ulong lastUlong;
         private bool loadedUlong;
@@ -131,7 +126,8 @@ namespace Mbs.Numerics.Random
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MersenneTwister19937UniformRandom64"/> class, using the specified seed value.
+        /// Initializes a new instance of the <see cref="MersenneTwister19937UniformRandom64"/> class,
+        /// using the specified seed value.
         /// </summary>
         /// <param name="seed">A number used to calculate a starting value for the pseudo-random number sequence.</param>
         public MersenneTwister19937UniformRandom64(int seed)
@@ -141,7 +137,8 @@ namespace Mbs.Numerics.Random
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MersenneTwister19937UniformRandom64"/> class, using the specified seed value.
+        /// Initializes a new instance of the <see cref="MersenneTwister19937UniformRandom64"/> class,
+        /// using the specified seed value.
         /// </summary>
         /// <param name="seed">A number used to calculate a starting value for the pseudo-random number sequence.</param>
         public MersenneTwister19937UniformRandom64(long seed)
@@ -151,7 +148,8 @@ namespace Mbs.Numerics.Random
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MersenneTwister19937UniformRandom64"/> class, using the specified seed array.
+        /// Initializes a new instance of the <see cref="MersenneTwister19937UniformRandom64"/> class,
+        /// using the specified seed array.
         /// </summary>
         /// <param name="seedArray">An array of numbers used to calculate a starting values for the pseudo-random number sequence.</param>
         public MersenneTwister19937UniformRandom64(int[] seedArray)
@@ -159,12 +157,16 @@ namespace Mbs.Numerics.Random
             seedValue = DefaultSeedValue;
             this.seedArray = new ulong[seedArray.Length];
             for (int index = 0; index != seedArray.Length; ++index)
+            {
                 this.seedArray[index] = (ulong)seedArray[index];
+            }
+
             Init();
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MersenneTwister19937UniformRandom64"/> class, using the specified seed array.
+        /// Initializes a new instance of the <see cref="MersenneTwister19937UniformRandom64"/> class,
+        /// using the specified seed array.
         /// </summary>
         /// <param name="seedArray">An array of numbers used to calculate a starting values for the pseudo-random number sequence.</param>
         public MersenneTwister19937UniformRandom64(long[] seedArray)
@@ -172,79 +174,27 @@ namespace Mbs.Numerics.Random
             seedValue = DefaultSeedValue;
             this.seedArray = new ulong[seedArray.Length];
             for (int index = 0; index != seedArray.Length; ++index)
+            {
                 this.seedArray[index] = (ulong)seedArray[index];
+            }
+
             Init();
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void Init()
-        {
-            // New seeding algorithm from
-            // http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/MT2002/emt19937ar.html.
-            mt[0] = seedValue;
-            var x = seedValue;
-            for (uint i = 1; i != StateSize; ++i)
-            {
-                // See Knuth "The Art of Computer Programming" Vol. 2, 3rd ed., page 106 for multiplier.
-                x = InitializationMultiplier * (x ^ (x >> (WordSize - 2))) + i;
-                mt[i] = x;
-            }
-
-            if (seedArray != null)
-            {
-                uint i = 1, j = 0, l = (uint)seedArray.Length;
-                x = mt[0];
-                uint k = StateSize > l ? StateSize : l;
-                for (; k != 0; --k)
-                {
-                    x = (mt[i] ^ ((x ^ (x >> (WordSize - 2))) * ArrayInitializationMultiplier1)) + seedArray[j] + j; // Non-linear.
-                    mt[i] = x;
-                    if (++i >= StateSize)
-                    {
-                        x = mt[StateSize - 1];
-                        mt[0] = x;
-                        i = 1;
-                    }
-
-                    if (++j >= l)
-                        j = 0;
-                }
-
-                for (k = StateSize - 1; k != 0; --k)
-                {
-                    x = (mt[i] ^ ((x ^ (x >> (WordSize - 2))) * ArrayInitializationMultiplier2)) - i; // Non-linear.
-                    mt[i] = x;
-                    if (++i >= StateSize)
-                    {
-                        x = mt[StateSize - 1];
-                        mt[0] = x;
-                        i = 1;
-                    }
-                }
-
-                mt[0] = ArrayInitializationMsb1; // MSB is 1; assuring non-zero initial array.
-            }
-
-            mti = StateSize + 1;
-            loadedUlong = false;
-
-            // Reset helper variables used for generation of random booleans.
-            BitBuffer = 0;
-            BitCount = 32;
-        }
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="MersenneTwister19937UniformRandom64"/> can be reset,
+        /// so that it produces the same pseudo-random number sequence again.
+        /// </summary>
+        public override bool CanReset => true;
 
         /// <summary>
-        /// Resets the <see cref="MersenneTwister19937UniformRandom64"/>, so that it produces the same pseudo-random number sequence again.
+        /// Resets the <see cref="MersenneTwister19937UniformRandom64"/>,
+        /// so that it produces the same pseudo-random number sequence again.
         /// </summary>
         public override void Reset()
         {
             Init();
         }
-
-        /// <summary>
-        /// Gets a value indicating whether the <see cref="MersenneTwister19937UniformRandom64"/> can be reset, so that it produces the same pseudo-random number sequence again.
-        /// </summary>
-        public override bool CanReset => true;
 
         /// <summary>
         /// A next random 64-bit unsigned integer ∊[<see cref="ulong.MinValue"/>, <see cref="ulong.MaxValue"/>].
@@ -303,21 +253,21 @@ namespace Mbs.Numerics.Random
         }
 
         /// <summary>
-        /// A double-precision floating point random number ∊[0.0, 1.0).
-        /// </summary>
-        /// <returns>A double-precision floating point random number.</returns>
-        public override double NextDouble()
-        {
-            return (NextULong() >> 11) * InverseOnePlus53BitsOf1S;
-        }
-
-        /// <summary>
         /// A double-precision floating point random number ∊[0.0, 1.0].
         /// </summary>
         /// <returns>A double-precision floating point random number.</returns>
         public double NextDoubleInclusiveOne()
         {
             return (NextULong() >> 11) * Inverse53BitsOf1S;
+        }
+
+        /// <summary>
+        /// A double-precision floating point random number ∊[0.0, 1.0).
+        /// </summary>
+        /// <returns>A double-precision floating point random number.</returns>
+        public override double NextDouble()
+        {
+            return (NextULong() >> 11) * InverseOnePlus53BitsOf1S;
         }
 
         /// <summary>
@@ -339,6 +289,65 @@ namespace Mbs.Numerics.Random
         public override double NextDouble(double minValue, double maxValue)
         {
             return minValue + (NextULong() >> 11) * InverseOnePlus53BitsOf1S * (maxValue - minValue);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void Init()
+        {
+            // New seeding algorithm from
+            // http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/MT2002/emt19937ar.html.
+            mt[0] = seedValue;
+            var x = seedValue;
+            for (uint i = 1; i != StateSize; ++i)
+            {
+                // See Knuth "The Art of Computer Programming" Vol. 2, 3rd ed., page 106 for multiplier.
+                x = InitializationMultiplier * (x ^ (x >> (WordSize - 2))) + i;
+                mt[i] = x;
+            }
+
+            if (seedArray != null)
+            {
+                uint i = 1, j = 0, l = (uint)seedArray.Length;
+                x = mt[0];
+                uint k = l < StateSize ? StateSize : l;
+                for (; k != 0; --k)
+                {
+                    x = (mt[i] ^ ((x ^ (x >> (WordSize - 2))) * ArrayInitializationMultiplier1)) + seedArray[j] + j; // Non-linear.
+                    mt[i] = x;
+                    if (++i >= StateSize)
+                    {
+                        x = mt[StateSize - 1];
+                        mt[0] = x;
+                        i = 1;
+                    }
+
+                    if (++j >= l)
+                    {
+                        j = 0;
+                    }
+                }
+
+                for (k = StateSize - 1; k != 0; --k)
+                {
+                    x = (mt[i] ^ ((x ^ (x >> (WordSize - 2))) * ArrayInitializationMultiplier2)) - i; // Non-linear.
+                    mt[i] = x;
+                    if (++i >= StateSize)
+                    {
+                        x = mt[StateSize - 1];
+                        mt[0] = x;
+                        i = 1;
+                    }
+                }
+
+                mt[0] = ArrayInitializationMsb1; // MSB is 1; assuring non-zero initial array.
+            }
+
+            mti = StateSize + 1;
+            loadedUlong = false;
+
+            // Reset helper variables used for generation of random booleans.
+            BitBuffer = 0;
+            BitCount = 32;
         }
     }
 }

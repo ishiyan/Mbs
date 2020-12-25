@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-// ReSharper disable once CheckNamespace
-namespace Mbs.Numerics.Random
+namespace Mbs.Numerics.RandomGenerators.ParkMiller
 {
-    // ReSharper disable once CommentTypo
     /// <summary>
     /// A uniform pseudo-random number generator based on the Park–Miller (sometimes called Lehmer) algorithm.
     /// See https://en.wikipedia.org/wiki/Lehmer_random_number_generator.
@@ -45,7 +43,8 @@ namespace Mbs.Numerics.Random
         private int countUlong;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ParkMillerUniformRandom"/> class, using the current system tick count as a seed value.
+        /// Initializes a new instance of the <see cref="ParkMillerUniformRandom"/> class,
+        /// using the current system tick count as a seed value.
         /// </summary>
         public ParkMillerUniformRandom()
             : this(Environment.TickCount)
@@ -53,7 +52,8 @@ namespace Mbs.Numerics.Random
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ParkMillerUniformRandom"/> class., using the specified seed value.
+        /// Initializes a new instance of the <see cref="ParkMillerUniformRandom"/> class,
+        /// using the specified seed value.
         /// </summary>
         /// <param name="seed">A number used to calculate a starting value for the pseudo-random number sequence.</param>
         public ParkMillerUniformRandom(int seed)
@@ -63,7 +63,8 @@ namespace Mbs.Numerics.Random
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ParkMillerUniformRandom"/> class, using the specified seed value.
+        /// Initializes a new instance of the <see cref="ParkMillerUniformRandom"/> class,
+        /// using the specified seed value.
         /// </summary>
         /// <param name="seed">A number used to calculate a starting value for the pseudo-random number sequence.</param>
         public ParkMillerUniformRandom(long seed)
@@ -72,69 +73,19 @@ namespace Mbs.Numerics.Random
             Init();
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void Init()
-        {
-            // Initialize seed.
-            y = seedValue;
-
-            // Prevent zero value.
-            if (y == 0)
-                y = 1;
-
-            // Load the shuffle table after 8 warm-ups.
-            for (int j = TableSize + 7; j >= 0; --j)
-            {
-                // ReSharper disable once CommentTypo
-                // Implement multiplicative congruential generator with Schrage's algorithm.
-                long k = y / Iq;
-                y = g * (y - k * Iq) - Ir * k;
-                if (y < 0)
-                    y += LongMax;
-                if (j < TableSize)
-                    z[j] = y;
-            }
-
-            x = z[0];
-            countUlong = 0;
-
-            // Reset helper variables used for generation of random booleans.
-            BitBuffer = 0;
-            BitCount = 32;
-        }
-
         /// <summary>
-        /// Resets the <see cref="ParkMillerUniformRandom"/>, so that it produces the same pseudo-random number sequence again.
-        /// </summary>
-        public override void Reset()
-        {
-            Init();
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether the <see cref="ParkMillerUniformRandom"/> can be reset, so that it produces the same pseudo-random number sequence again.
+        /// Gets a value indicating whether the <see cref="ParkMillerUniformRandom"/> can be reset,
+        /// so that it produces the same pseudo-random number sequence again.
         /// </summary>
         public override bool CanReset => true;
 
         /// <summary>
-        /// A next random 64-bit unsigned integer ∊[<see cref="ulong.MinValue"/>, <see cref="ulong.MaxValue"/>].
+        /// Resets the <see cref="ParkMillerUniformRandom"/>,
+        /// so that it produces the same pseudo-random number sequence again.
         /// </summary>
-        /// <returns>A next random 64-bit unsigned integer.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private ulong NextULong()
+        public override void Reset()
         {
-            // ReSharper disable once CommentTypo
-            // Implement multiplicative congruential generator with Schrage's algorithm.
-            long k = y / Iq;
-            y = g * (y - k * Iq) - Ir * k;
-            if (y < 0)
-                y += LongMax;
-
-            // Perform Bays-Durham shuffle to remove low-order serial correlations.
-            long j = x / Ndiv;
-            x = z[j];
-            z[j] = y;
-            return (ulong)x;
+            Init();
         }
 
         /// <summary>
@@ -155,21 +106,21 @@ namespace Mbs.Numerics.Random
         }
 
         /// <summary>
-        /// A double-precision floating point random number ∊[0.0, 1.0).
-        /// </summary>
-        /// <returns>A double-precision floating point random number.</returns>
-        public override double NextDouble()
-        {
-            return (NextULong() >> 11) * InverseOnePlus53BitsOf1S;
-        }
-
-        /// <summary>
         /// A double-precision floating point random number ∊[0.0, 1.0].
         /// </summary>
         /// <returns>A double-precision floating point random number.</returns>
         public double NextDoubleInclusiveOne()
         {
             return (NextULong() >> 11) * Inverse53BitsOf1S;
+        }
+
+        /// <summary>
+        /// A double-precision floating point random number ∊[0.0, 1.0).
+        /// </summary>
+        /// <returns>A double-precision floating point random number.</returns>
+        public override double NextDouble()
+        {
+            return (NextULong() >> 11) * InverseOnePlus53BitsOf1S;
         }
 
         /// <summary>
@@ -191,6 +142,67 @@ namespace Mbs.Numerics.Random
         public override double NextDouble(double minValue, double maxValue)
         {
             return minValue + (NextULong() >> 11) * InverseOnePlus53BitsOf1S * (maxValue - minValue);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void Init()
+        {
+            // Initialize seed.
+            y = seedValue;
+
+            // Prevent zero value.
+            if (y == 0)
+            {
+                y = 1;
+            }
+
+            // Load the shuffle table after 8 warm-ups.
+            for (int j = TableSize + 7; j >= 0; --j)
+            {
+                // ReSharper disable once CommentTypo
+                // Implement multiplicative congruential generator with Schrage's algorithm.
+                long k = y / Iq;
+                y = g * (y - k * Iq) - Ir * k;
+                if (y < 0)
+                {
+                    y += LongMax;
+                }
+
+                if (j < TableSize)
+                {
+                    z[j] = y;
+                }
+            }
+
+            x = z[0];
+            countUlong = 0;
+
+            // Reset helper variables used for generation of random booleans.
+            BitBuffer = 0;
+            BitCount = 32;
+        }
+
+        /// <summary>
+        /// A next random 64-bit unsigned integer ∊[<see cref="ulong.MinValue"/>, <see cref="ulong.MaxValue"/>].
+        /// </summary>
+        /// <returns>A next random 64-bit unsigned integer.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private ulong NextULong()
+        {
+            // ReSharper disable once CommentTypo
+            // Implement multiplicative congruential generator with Schrage's algorithm.
+            long k = y / Iq;
+            y = g * (y - k * Iq) - Ir * k;
+            if (y < 0)
+            {
+                y += LongMax;
+            }
+
+            // Perform Bays-Durham shuffle to remove low-order serial correlations.
+            long j = x / Ndiv;
+            x = z[j];
+            z[j] = y;
+            return (ulong)x;
         }
     }
 }

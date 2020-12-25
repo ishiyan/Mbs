@@ -1,8 +1,8 @@
-﻿using Mbs.Numerics.Random;
+﻿using Mbs.Numerics.RandomGenerators.Ziggurat;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static System.FormattableString;
 
-namespace Mbs.UnitTests.Numerics.RandomGenerators
+namespace Mbs.UnitTests.Numerics.RandomGenerators.Ziggurat
 {
     [TestClass]
     public class ZigguratLeongZhangNormalRandomTests
@@ -13,8 +13,9 @@ namespace Mbs.UnitTests.Numerics.RandomGenerators
         private static readonly double[] Expected =
         {
             -0.0348489455891, 0.1133640240572, 0.4399593126786,  0.8364859775316, -1.3212429099975,
-            -0.3842937024311, 1.5063555141008, -0.5565839502005, 0.5643957962826, -2.1546832849813
+            -0.3842937024311, 1.5063555141008, -0.5565839502005, 0.5643957962826, -2.1546832849813,
         };
+#pragma warning disable S2699 // Tests should include assertions
 
         /// <summary>
         /// Taken from http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/SFMT/index.html.
@@ -29,7 +30,10 @@ namespace Mbs.UnitTests.Numerics.RandomGenerators
             {
                 double expected = Expected[i];
                 double actual = gen.NextDouble();
-                Doubles.AreEqual(expected, actual, 1e-13,
+                Doubles.AreEqual(
+                    expected,
+                    actual,
+                    1e-13,
                     Invariant($"Reference implementation: index={i}, actual={actual} expected={expected}"));
             }
         }
@@ -46,11 +50,15 @@ namespace Mbs.UnitTests.Numerics.RandomGenerators
             for (int i = 0; i < ExpectedCount; ++i)
             {
                 double expected = Expected[i];
-                double actual = gen.NextDouble();
-                Doubles.AreEqual(expected, actual, 1e-13,
+                double actual = gen.NextDoubleStandard();
+                Doubles.AreEqual(
+                    expected,
+                    actual,
+                    1e-13,
                     Invariant($"Reference implementation: index={i}, actual={actual} expected={expected}"));
             }
         }
+#pragma warning restore S2699 // Tests should include assertions
 
         [TestMethod]
         public void ZigguratLeongZhangNormalRandom_Seed_SameSeed_SameValue()

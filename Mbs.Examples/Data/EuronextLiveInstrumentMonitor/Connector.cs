@@ -45,8 +45,10 @@ namespace EuronextLiveInstrumentMonitor
                 action = t =>
                 {
                     if (t is Ohlcv ohlcv)
+                    {
                         Console.WriteLine(
                             $"{instr}; {t.Time.ToString("yyyy-MM-dd hh:mm:ss", CultureInfo.InvariantCulture)}; {ohlcv.Open.ToString(CultureInfo.InvariantCulture)}; {ohlcv.High.ToString(CultureInfo.InvariantCulture)}; {ohlcv.Low.ToString(CultureInfo.InvariantCulture)}; {ohlcv.Close.ToString(CultureInfo.InvariantCulture)}; {ohlcv.Volume.ToString(CultureInfo.InvariantCulture)}");
+                    }
                 };
             }
             else if (typeof(T) == typeof(Trade))
@@ -55,8 +57,10 @@ namespace EuronextLiveInstrumentMonitor
                 action = t =>
                 {
                     if (t is Trade trade)
+                    {
                         Console.WriteLine(
                             $"{instr}; {t.Time.ToString("yyyy-MM-dd hh:mm:ss", CultureInfo.InvariantCulture)}; {trade.Price.ToString(CultureInfo.InvariantCulture)}; {trade.Volume.ToString(CultureInfo.InvariantCulture)}");
+                    }
                 };
             }
             else if (typeof(T) == typeof(Quote))
@@ -65,8 +69,10 @@ namespace EuronextLiveInstrumentMonitor
                 action = t =>
                 {
                     if (t is Quote quote)
+                    {
                         Console.WriteLine(
                             $"{instr}; {t.Time.ToString("yyyy-MM-dd hh:mm:ss", CultureInfo.InvariantCulture)}; {quote.AskPrice.ToString(CultureInfo.InvariantCulture)}; {quote.BidPrice.ToString(CultureInfo.InvariantCulture)}; {quote.AskSize.ToString(CultureInfo.InvariantCulture)}; {quote.BidSize.ToString(CultureInfo.InvariantCulture)}");
+                    }
                 };
             }
             else
@@ -77,7 +83,9 @@ namespace EuronextLiveInstrumentMonitor
             try
             {
                 if (provider == null)
+                {
                     throw new ArgumentException($"temporal entity {type} is not supported.", nameof(type));
+                }
 
                 var subscription = provider.Subscribe(instrument, timeGranularity, action);
 
@@ -90,28 +98,10 @@ namespace EuronextLiveInstrumentMonitor
             }
         }
 
-        private static void AddSubscription<T>(ISubscription<T> subscription)
-            where T : TemporalEntity
-        {
-            if (typeof(T) == typeof(Ohlcv))
-            {
-                OhlcvSubscriptions.Add(subscription as ISubscription<Ohlcv>);
-            }
-            else if (typeof(T) == typeof(Trade))
-            {
-                TradeSubscriptions.Add(subscription as ISubscription<Trade>);
-            }
-            else if (typeof(T) == typeof(Quote))
-            {
-                QuoteSubscriptions.Add(subscription as ISubscription<Quote>);
-            }
-        }
-
         internal static void ConnectAll()
         {
             foreach (var s in TradeSubscriptions)
             {
-
                 Console.Write($"connecting {s.Instrument.Symbol}@{s.Instrument.Exchange.Mic}@{s.TimeGranularity}@Trade ...");
                 s.Connect();
                 Console.WriteLine(" connected");
@@ -153,6 +143,23 @@ namespace EuronextLiveInstrumentMonitor
                 Console.Write($"disconnecting {s.Instrument.Symbol}@{s.Instrument.Exchange.Mic}@{s.TimeGranularity}@Trade ...");
                 s.Disconnect();
                 Console.WriteLine(" disconnected");
+            }
+        }
+
+        private static void AddSubscription<T>(ISubscription<T> subscription)
+            where T : TemporalEntity
+        {
+            if (typeof(T) == typeof(Ohlcv))
+            {
+                OhlcvSubscriptions.Add(subscription as ISubscription<Ohlcv>);
+            }
+            else if (typeof(T) == typeof(Trade))
+            {
+                TradeSubscriptions.Add(subscription as ISubscription<Trade>);
+            }
+            else if (typeof(T) == typeof(Quote))
+            {
+                QuoteSubscriptions.Add(subscription as ISubscription<Quote>);
             }
         }
     }

@@ -18,12 +18,6 @@ namespace Mbs.UnitTests.Trading.Data
         private static readonly DateTime DefaultDateTime = DateTime.Now;
         private static readonly DateTime GreaterDateTime = new DateTime(2099, 5, 5, 12, 4, 6);
 
-        private static Quote CreateDefaultInstance()
-        {
-            return new Quote(DefaultDateTime, DefaultBidPrice, DefaultBidSize, DefaultAskPrice, DefaultAskSize);
-        }
-
-        // ReSharper disable InconsistentNaming
         [TestMethod]
         public void Quote_Time_CorrectValue()
         {
@@ -186,6 +180,11 @@ namespace Mbs.UnitTests.Trading.Data
             Assert.IsTrue(double.IsNaN(target.AskSize));
             Assert.IsTrue(double.IsNaN(target.BidPrice));
             Assert.IsTrue(double.IsNaN(target.BidSize));
+        }
+
+        private static Quote CreateDefaultInstance()
+        {
+            return new Quote(DefaultDateTime, DefaultBidPrice, DefaultBidSize, DefaultAskPrice, DefaultAskSize);
         }
     }
 }

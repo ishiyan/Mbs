@@ -1,15 +1,15 @@
-﻿namespace Mbs.Numerics.Random
+﻿namespace Mbs.Numerics.RandomGenerators.Well
 {
     /// <summary>
-    /// The Well1024a pseudo-random number generator as described in a paper by François Panneton, Pierre L'Ecuyer and Makoto Matsumoto.
+    /// The Well1024a pseudo-random number generator as described in a paper by François Panneton, Pierre L'Ecuyer and Makoto Matsumoto:
     /// <para />
-    /// http://www.iro.umontreal.ca/~lecuyer/myftp/papers/wellrng.pdf
+    /// http://www.iro.umontreal.ca/~lecuyer/myftp/papers/wellrng.pdf.
     /// <para />
     /// Improved Long-Period Generators Based on Linear Recurrences Modulo 2, ACM Transactions on Mathematical Software, 32, 1 (2006).
     /// <para />
-    /// The errata for the paper are in
+    /// The errata for the paper are in:
     /// <para />
-    /// http://www.iro.umontreal.ca/~lecuyer/myftp/papers/wellrng-errata.txt
+    /// http://www.iro.umontreal.ca/~lecuyer/myftp/papers/wellrng-errata.txt.
     /// <para />
     /// See also http://www.iro.umontreal.ca/~panneton/WELLRNG.html.
     /// </summary>

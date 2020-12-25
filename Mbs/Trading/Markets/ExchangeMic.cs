@@ -1,4 +1,6 @@
-﻿namespace Mbs.Trading.Markets
+﻿// ReSharper disable CommentTypo
+// ReSharper disable IdentifierTypo
+namespace Mbs.Trading.Markets
 {
     /// <summary>
     /// Exchange representations according to ISO 10383 Market Identifier Code (MIC).
@@ -2641,6 +2643,6 @@
         Xoff,
 
         /// <summary>NO MARKET (EG UNLISTED)</summary>
-        Xxxx
+        Xxxx,
     }
 }

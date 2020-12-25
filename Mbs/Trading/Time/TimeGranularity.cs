@@ -1,7 +1,7 @@
 ﻿namespace Mbs.Trading.Time
 {
     /// <summary>
-    /// Enumerates predefined time granularities.
+    /// Enumerates predefined time granularity.
     /// </summary>
     public enum TimeGranularity
     {
@@ -203,6 +203,6 @@
         /// <summary>
         /// The 1-year time granularity.
         /// </summary>
-        Year1
+        Year1,
     }
 }

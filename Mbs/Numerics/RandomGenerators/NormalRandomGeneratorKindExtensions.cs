@@ -1,7 +1,8 @@
 ﻿using System;
+using Mbs.Numerics.RandomGenerators.BoxMuller;
+using Mbs.Numerics.RandomGenerators.Ziggurat;
 
-// ReSharper disable once CheckNamespace
-namespace Mbs.Numerics.Random
+namespace Mbs.Numerics.RandomGenerators
 {
     /// <summary>
     /// The <see cref="NormalRandomGeneratorKind"/> extensions.
@@ -19,9 +20,9 @@ namespace Mbs.Numerics.Random
         {
             return kind switch
             {
-                NormalRandomGeneratorKind.ZigguratColinGreen => (INormalRandomGenerator) new ZigguratNormalRandom(uniformGeneratorKind.RandomGenerator(seed)),
-                NormalRandomGeneratorKind.ZigguratLeongZhang => new ZigguratLeongZhangNormalRandom((uint) seed),
-                NormalRandomGeneratorKind.ZigguratMarsagliaTsang => new ZigguratMarsagliaTsangNormalRandom((uint) seed),
+                NormalRandomGeneratorKind.ZigguratColinGreen => new ZigguratNormalRandom(uniformGeneratorKind.RandomGenerator(seed)),
+                NormalRandomGeneratorKind.ZigguratLeongZhang => new ZigguratLeongZhangNormalRandom((uint)seed),
+                NormalRandomGeneratorKind.ZigguratMarsagliaTsang => new ZigguratMarsagliaTsangNormalRandom((uint)seed),
                 NormalRandomGeneratorKind.BoxMuller => new BoxMullerNormalRandom(uniformGeneratorKind.RandomGenerator(seed)),
                 _ => throw new ArgumentException("Unknown NormalRandomGeneratorKind enum value.", nameof(kind))
             };

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace Mbs.Numerics.Random
+namespace Mbs.Numerics.RandomGenerators.MersenneTwister
 {
     /// <summary>
     /// The Mersenne Twister uniform mt19937ar 32-bit pseudo-random number generator with the period of 2¹⁹⁹³⁷-1
-    /// is based upon information and the implementation presented on the Mersenne Twister home page
+    /// is based upon information and the implementation presented on the Mersenne Twister home page:
     /// <para />
     /// http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html.
     /// <para />
@@ -27,11 +27,6 @@ namespace Mbs.Numerics.Random
         /// The word size, w.
         /// </summary>
         private const int WordSize = 32;
-
-        // /// <summary>
-        // /// The mask bits, r.
-        // /// </summary>
-        // private const int MaskBits = 31;
 
         /// <summary>
         /// Constant matrix a.
@@ -58,10 +53,10 @@ namespace Mbs.Numerics.Random
         /// </summary>
         private const uint TemperingMaskC = 0xefc60000U;
 
-        // /// <summary>
-        // /// The tempering mask d.
-        // /// </summary>
-        // private const uint TemperingMaskD = 0xffffffffU;
+        /// <summary>
+        /// The tempering mask d.
+        /// </summary>
+        private const uint TemperingMaskD = 0xffffffffU;
 
         /// <summary>
         /// The initialization multiplier, f.
@@ -97,17 +92,12 @@ namespace Mbs.Numerics.Random
         private const double OnePlus53BitsOf1S = FiftyThreeBitsOf1S + 1.0;
         private const double InverseOnePlus53BitsOf1S = 1.0 / OnePlus53BitsOf1S;
 
+        private static readonly uint[] Mag01 = { 0x0U, MatrixA };
+
         /// <summary>
         /// Stores the state vector array.
         /// </summary>
         private readonly uint[] mt = new uint[StateSize];
-
-        /// <summary>
-        /// An index for the state vector array element that will be accessed next.
-        /// </summary>
-        private uint mti;
-
-        private static readonly uint[] Mag01 = { 0x0U, MatrixA };
 
         /// <summary>
         /// The used seed value.
@@ -120,7 +110,13 @@ namespace Mbs.Numerics.Random
         private readonly uint[] seedArray;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MersenneTwister19937UniformRandom"/> class, using the current system tick count as a seed value.
+        /// An index for the state vector array element that will be accessed next.
+        /// </summary>
+        private uint mti;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MersenneTwister19937UniformRandom"/> class,
+        /// using the current system tick count as a seed value.
         /// </summary>
         public MersenneTwister19937UniformRandom()
             : this(Environment.TickCount)
@@ -128,7 +124,8 @@ namespace Mbs.Numerics.Random
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MersenneTwister19937UniformRandom"/> class, using the specified seed value.
+        /// Initializes a new instance of the <see cref="MersenneTwister19937UniformRandom"/> class,
+        /// using the specified seed value.
         /// </summary>
         /// <param name="seed">A number used to calculate a starting value for the pseudo-random number sequence.</param>
         public MersenneTwister19937UniformRandom(int seed)
@@ -138,7 +135,8 @@ namespace Mbs.Numerics.Random
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MersenneTwister19937UniformRandom"/> class, using the specified seed array.
+        /// Initializes a new instance of the <see cref="MersenneTwister19937UniformRandom"/> class,
+        /// using the specified seed array.
         /// </summary>
         /// <param name="seedArray">An array of numbers used to calculate a starting values for the pseudo-random number sequence.</param>
         public MersenneTwister19937UniformRandom(int[] seedArray)
@@ -146,78 +144,27 @@ namespace Mbs.Numerics.Random
             seedValue = DefaultSeedValue;
             this.seedArray = new uint[seedArray.Length];
             for (int index = 0; index < seedArray.Length; ++index)
+            {
                 this.seedArray[index] = (uint)seedArray[index];
+            }
+
             Init();
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void Init()
-        {
-            // New seeding algorithm from
-            // http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/MT2002/emt19937ar.html.
-            mt[0] = seedValue /*& TemperingMaskD*/; // & TemperingMaskD is for WordSize > 32 machines.
-            var x = mt[0];
-            for (uint i = 1; i != StateSize; ++i)
-            {
-                // See Knuth "The Art of Computer Programming" Vol. 2, 3rd ed., page 106 for multiplier.
-                x = InitializationMultiplier * (x ^ (x >> (WordSize - 2))) + i /*& TemperingMaskD*/; // & TemperingMaskD is for WordSize > 32 machines.
-                mt[i] = x;
-            }
-
-            if (seedArray != null)
-            {
-                uint i = 1, j = 0, l = (uint)seedArray.Length;
-                x = mt[0];
-                uint k = StateSize > l ? StateSize : l;
-                for (; k != 0; --k)
-                {
-                    x = (mt[i] ^ ((x ^ (x >> (WordSize - 2))) * ArrayInitializationMultiplier1)) + seedArray[j] + j; // Non-linear.
-                    mt[i] = x;
-                    if (++i >= StateSize)
-                    {
-                        x = mt[StateSize - 1];
-                        mt[0] = x;
-                        i = 1;
-                    }
-
-                    if (++j >= seedArray.Length)
-                        j = 0;
-                }
-
-                for (k = StateSize - 1; k != 0; --k)
-                {
-                    x = (mt[i] ^ ((x ^ (x >> (WordSize - 2))) * ArrayInitializationMultiplier2)) - i; // Non-linear.
-                    mt[i] = x;
-                    if (++i >= StateSize)
-                    {
-                        x = mt[StateSize - 1];
-                        mt[0] = x;
-                        i = 1;
-                    }
-                }
-
-                mt[0] = ArrayInitializationMsb1; // MSB is 1; assuring non-0 initial array.
-            }
-
-            mti = StateSize + 1;
-
-            // Reset helper variables used for generation of random booleans.
-            BitBuffer = 0;
-            BitCount = 32;
-        }
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="MersenneTwister19937UniformRandom"/> can be reset,
+        /// so that it produces the same pseudo-random number sequence again.
+        /// </summary>
+        public override bool CanReset => true;
 
         /// <summary>
-        /// Resets the <see cref="MersenneTwister19937UniformRandom"/>, so that it produces the same pseudo-random number sequence again.
+        /// Resets the <see cref="MersenneTwister19937UniformRandom"/>,
+        /// so that it produces the same pseudo-random number sequence again.
         /// </summary>
         public override void Reset()
         {
             Init();
         }
-
-        /// <summary>
-        /// Gets a value indicating whether the <see cref="MersenneTwister19937UniformRandom"/> can be reset, so that it produces the same pseudo-random number sequence again.
-        /// </summary>
-        public override bool CanReset => true;
 
         /// <summary>
         /// A next random 32-bit unsigned integer ∊[<see cref="uint.MinValue"/>, <see cref="uint.MaxValue"/>].
@@ -258,6 +205,115 @@ namespace Mbs.Numerics.Random
         }
 
         /// <summary>
+        /// A double-precision floating point random number ∊[0.0, 1.0].
+        /// </summary>
+        /// <returns>A double-precision floating point random number.</returns>
+        public double NextDoubleInclusiveOne()
+        {
+            return Next53Bit(0, Inverse53BitsOf1S);
+        }
+
+        /// <summary>
+        /// A double-precision floating point random number ∊(0.0, 1.0).
+        /// </summary>
+        /// <returns>A double-precision floating point random number.</returns>
+        public double NextDoublePositive()
+        {
+            return Next53Bit(0.5, Inverse53BitsOf1S);
+        }
+
+        /// <summary>
+        /// A double-precision floating point random number ∊[0.0, 1.0).
+        /// </summary>
+        /// <returns>A double-precision floating point random number.</returns>
+        public override double NextDouble()
+        {
+            return Next53Bit(0, InverseOnePlus53BitsOf1S);
+        }
+
+        /// <summary>
+        /// A double-precision floating point random number ∊[0.0, <paramref name="maxValue"/>).
+        /// </summary>
+        /// <param name="maxValue">The exclusive upper bound of the random number to be generated. The <paramref name="maxValue"/> must be greater than or equal to 0.0.</param>
+        /// <returns>A double-precision floating point random number.</returns>
+        public override double NextDouble(double maxValue)
+        {
+            return Next53Bit(0, InverseOnePlus53BitsOf1S) * maxValue;
+        }
+
+        /// <summary>
+        /// A double-precision floating point random number ∊[<paramref name="minValue"/>, <paramref name="maxValue"/>).
+        /// </summary>
+        /// <param name="minValue">The inclusive lower bound of the random number to be generated. The range between <paramref name="minValue"/> and <paramref name="maxValue"/> must be less than or equal to <see cref="double.MaxValue"/>.</param>
+        /// <param name="maxValue">The exclusive upper bound of the random number to be generated. The <paramref name="maxValue"/> must be greater than or equal to <paramref name="minValue"/>. The range between <paramref name="minValue"/> and <paramref name="maxValue"/> must be less than or equal to <see cref="double.MaxValue"/>.</param>
+        /// <returns>A double-precision floating point random number.</returns>
+        public override double NextDouble(double minValue, double maxValue)
+        {
+            double range = maxValue - minValue;
+            return minValue + Next53Bit(0, InverseOnePlus53BitsOf1S) * range;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void Init()
+        {
+            // New seeding algorithm from
+            // http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/MT2002/emt19937ar.html.
+            // & TemperingMaskD is for WordSize > 32 machines.
+            mt[0] = seedValue & TemperingMaskD;
+            var x = mt[0];
+            for (uint i = 1; i != StateSize; ++i)
+            {
+                // See Knuth "The Art of Computer Programming" Vol. 2, 3rd ed., page 106 for multiplier.
+                // & TemperingMaskD is for WordSize > 32 machines.
+                x = InitializationMultiplier * (x ^ (x >> (WordSize - 2))) + i & TemperingMaskD;
+                mt[i] = x;
+            }
+
+            if (seedArray != null)
+            {
+                uint i = 1, j = 0, l = (uint)seedArray.Length;
+                x = mt[0];
+                uint k = l < StateSize ? StateSize : l;
+                for (; k != 0; --k)
+                {
+                    x = (mt[i] ^ ((x ^ (x >> (WordSize - 2))) * ArrayInitializationMultiplier1)) + seedArray[j] + j; // Non-linear.
+                    mt[i] = x;
+                    if (++i >= StateSize)
+                    {
+                        x = mt[StateSize - 1];
+                        mt[0] = x;
+                        i = 1;
+                    }
+
+                    if (++j >= seedArray.Length)
+                    {
+                        j = 0;
+                    }
+                }
+
+                for (k = StateSize - 1; k != 0; --k)
+                {
+                    x = (mt[i] ^ ((x ^ (x >> (WordSize - 2))) * ArrayInitializationMultiplier2)) - i; // Non-linear.
+                    mt[i] = x;
+                    if (++i >= StateSize)
+                    {
+                        x = mt[StateSize - 1];
+                        mt[0] = x;
+                        i = 1;
+                    }
+                }
+
+                mt[0] = ArrayInitializationMsb1; // MSB is 1; assuring non-0 initial array.
+            }
+
+            mti = StateSize + 1;
+
+            // Reset helper variables used for generation of random booleans.
+            BitBuffer = 0;
+            BitCount = 32;
+        }
+
+        /// <summary>
         /// There are two common ways to create a double floating point using MT19937:
         /// using <see cref="NextUInt"/> and dividing by 0xFFFFFFFF + 1,  or else generating
         /// two double words and shifting the first by 26 bits and adding the second.
@@ -291,58 +347,6 @@ namespace Mbs.Numerics.Random
             // Shift the 27 pseudo-random bits (a) over by 26 bits (* 67108864.0) and
             // add another pseudo-random 26 bits (+ b).
             return ((a * 67108864.0 + b) + translate) * scale;
-
-            // What about the following instead of the above? Is the multiply better?
-            // return BitConverter.Int64BitsToDouble((a << 26) + b));
-        }
-
-        /// <summary>
-        /// A double-precision floating point random number ∊[0.0, 1.0).
-        /// </summary>
-        /// <returns>A double-precision floating point random number.</returns>
-        public override double NextDouble()
-        {
-            return Next53Bit(0, InverseOnePlus53BitsOf1S);
-        }
-
-        /// <summary>
-        /// A double-precision floating point random number ∊[0.0, 1.0].
-        /// </summary>
-        /// <returns>A double-precision floating point random number.</returns>
-        public double NextDoubleInclusiveOne()
-        {
-            return Next53Bit(0, Inverse53BitsOf1S);
-        }
-
-        /// <summary>
-        /// A double-precision floating point random number ∊(0.0, 1.0).
-        /// </summary>
-        /// <returns>A double-precision floating point random number.</returns>
-        public double NextDoublePositive()
-        {
-            return Next53Bit(0.5, Inverse53BitsOf1S);
-        }
-
-        /// <summary>
-        /// A double-precision floating point random number ∊[0.0, <paramref name="maxValue"/>).
-        /// </summary>
-        /// <param name="maxValue">The exclusive upper bound of the random number to be generated. The <paramref name="maxValue"/> must be greater than or equal to 0.0.</param>
-        /// <returns>A double-precision floating point random number.</returns>
-        public override double NextDouble(double maxValue)
-        {
-            return Next53Bit(0, InverseOnePlus53BitsOf1S) * maxValue;
-        }
-
-        /// <summary>
-        /// A double-precision floating point random number ∊[<paramref name="minValue"/>, <paramref name="maxValue"/>).
-        /// </summary>
-        /// <param name="minValue">The inclusive lower bound of the random number to be generated. The range between <paramref name="minValue"/> and <paramref name="maxValue"/> must be less than or equal to <see cref="double.MaxValue"/>.</param>
-        /// <param name="maxValue">The exclusive upper bound of the random number to be generated. The <paramref name="maxValue"/> must be greater than or equal to <paramref name="minValue"/>. The range between <paramref name="minValue"/> and <paramref name="maxValue"/> must be less than or equal to <see cref="double.MaxValue"/>.</param>
-        /// <returns>A double-precision floating point random number.</returns>
-        public override double NextDouble(double minValue, double maxValue)
-        {
-            double range = maxValue - minValue;
-            return minValue + Next53Bit(0, InverseOnePlus53BitsOf1S) * range;
         }
     }
 }

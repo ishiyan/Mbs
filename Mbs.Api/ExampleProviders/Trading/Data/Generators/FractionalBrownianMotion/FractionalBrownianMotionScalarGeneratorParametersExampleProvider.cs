@@ -19,7 +19,7 @@ namespace Mbs.Api.ExampleProviders.Trading.Data.Generators.FractionalBrownianMot
                     SessionEndTime = DefaultParameterValues.SessionEndTime,
                     StartDate = DefaultParameterValues.StartDate,
                     TimeGranularity = DefaultParameterValues.TimeGranularity,
-                    BusinessDayCalendar = DefaultParameterValues.BusinessDayCalendar
+                    BusinessDayCalendar = DefaultParameterValues.BusinessDayCalendar,
                 },
                 WaveformParameters = new WaveformParameters
                 {
@@ -28,7 +28,7 @@ namespace Mbs.Api.ExampleProviders.Trading.Data.Generators.FractionalBrownianMot
                     RepetitionsCount = DefaultParameterValues.RepetitionsCount,
                     NoiseAmplitudeFraction = DefaultParameterValues.NoiseAmplitudeFraction,
                     NoiseUniformRandomGeneratorKind = DefaultParameterValues.NoiseUniformRandomGeneratorKind,
-                    NoiseUniformRandomGeneratorSeed = DefaultParameterValues.NoiseUniformRandomGeneratorSeed
+                    NoiseUniformRandomGeneratorSeed = DefaultParameterValues.NoiseUniformRandomGeneratorSeed,
                 },
                 FbmParameters = new FractionalBrownianMotionParameters
                 {
@@ -38,8 +38,8 @@ namespace Mbs.Api.ExampleProviders.Trading.Data.Generators.FractionalBrownianMot
                     Algorithm = DefaultParameterValues.FbmAlgorithm,
                     NormalRandomGeneratorKind = DefaultParameterValues.FbmNormalRandomGeneratorKind,
                     AssociatedUniformRandomGeneratorKind = DefaultParameterValues.FbmAssociatedUniformRandomGeneratorKind,
-                    Seed = DefaultParameterValues.FbmSeed
-                }
+                    Seed = DefaultParameterValues.FbmSeed,
+                },
             };
         }
     }

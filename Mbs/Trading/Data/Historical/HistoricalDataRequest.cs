@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using Mbs.Trading.Instruments;
 using Mbs.Trading.Time;
+using Mbs.Utilities;
 
 namespace Mbs.Trading.Data.Historical
 {
@@ -13,6 +14,41 @@ namespace Mbs.Trading.Data.Historical
     /// </summary>
     public class HistoricalDataRequest : IValidatableObject
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HistoricalDataRequest"/> class.
+        /// </summary>
+        public HistoricalDataRequest()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HistoricalDataRequest"/> class.
+        /// </summary>
+        /// <param name="instrument">The instrument of the time series.</param>
+        /// <param name="startDate">The first date and time of the time series.</param>
+        /// <param name="endDate">The last date and time of the time series.</param>
+        /// <param name="timeGranularity">The time granularity of the time series.</param>
+        /// <param name="endofdayClosingTime">Specifies a time-of-day to apply to the end-of-day dates during data fetching.</param>
+        /// <param name="adjustedDataIfPresent">Use adjusted data if present.</param>
+        public HistoricalDataRequest(
+            Instrument instrument,
+            DateTime startDate,
+            DateTime endDate,
+            TimeGranularity timeGranularity = TimeGranularity.Day1,
+            TimeSpan? endofdayClosingTime = null,
+            bool adjustedDataIfPresent = true)
+        {
+            Instrument = instrument;
+            StartDate = startDate;
+            EndDate = endDate;
+            TimeGranularity = timeGranularity;
+            AdjustedDataIfPresent = adjustedDataIfPresent;
+            if (endofdayClosingTime.HasValue)
+            {
+                EndofdayClosingTime = endofdayClosingTime.Value;
+            }
+        }
+
         /// <summary>
         /// Gets or sets an instrument specifying the data series to fetch.
         /// </summary>
@@ -65,39 +101,6 @@ namespace Mbs.Trading.Data.Historical
         [DataType(DataType.Date)]
         [DefaultValue("9999-12-31")]
         public DateTime EndDate { get; set; } = DateTime.MaxValue;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="HistoricalDataRequest"/> class.
-        /// </summary>
-        public HistoricalDataRequest()
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="HistoricalDataRequest"/> class.
-        /// </summary>
-        /// <param name="instrument">The instrument of the time series.</param>
-        /// <param name="startDate">The first date and time of the time series.</param>
-        /// <param name="endDate">The last date and time of the time series.</param>
-        /// <param name="timeGranularity">The time granularity of the time series.</param>
-        /// <param name="endofdayClosingTime">Specifies a time-of-day to apply to the end-of-day dates during data fetching.</param>
-        /// <param name="adjustedDataIfPresent">Use adjusted data if present.</param>
-        public HistoricalDataRequest(
-            Instrument instrument,
-            DateTime startDate,
-            DateTime endDate,
-            TimeGranularity timeGranularity = TimeGranularity.Day1,
-            TimeSpan? endofdayClosingTime = null,
-            bool adjustedDataIfPresent = true)
-        {
-            Instrument = instrument;
-            StartDate = startDate;
-            EndDate = endDate;
-            TimeGranularity = timeGranularity;
-            AdjustedDataIfPresent = adjustedDataIfPresent;
-            if (endofdayClosingTime.HasValue)
-                EndofdayClosingTime = endofdayClosingTime.Value;
-        }
 
         /// <inheritdoc />
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

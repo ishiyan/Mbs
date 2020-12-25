@@ -1,9 +1,10 @@
 ﻿using System;
-using Mbs.Numerics.Random;
+using Mbs.Numerics.RandomGenerators.Marsaglia;
+using Mbs.Numerics.RandomGenerators.Ziggurat;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static System.FormattableString;
 
-namespace Mbs.UnitTests.Numerics.RandomGenerators
+namespace Mbs.UnitTests.Numerics.RandomGenerators.Ziggurat
 {
     [TestClass]
     public class ZigguratNormalRandomTests
@@ -13,11 +14,7 @@ namespace Mbs.UnitTests.Numerics.RandomGenerators
         private const double Mean = 12.3;
         private const double StandardDeviation = 1.23;
 
-        private static ZigguratNormalRandom CreateGenerator(int seed = Seed)
-        {
-            return new ZigguratNormalRandom(new XorShiftUniformRandom(seed), Mean, StandardDeviation);
-        }
-
+#pragma warning disable S2699 // Tests should include assertions
         [TestMethod]
         public void ZigguratNormalRandom_NextDouble_GeneratedMany_MeanHasCorrectValue()
         {
@@ -29,7 +26,10 @@ namespace Mbs.UnitTests.Numerics.RandomGenerators
             }
 
             double mean = sum / Count;
-            Doubles.AreEqual(mean / Mean, 1, 1e-3,
+            Doubles.AreEqual(
+                1,
+                mean / Mean,
+                1e-3,
                 Invariant($"Mean value: actual={mean}, expected={Mean}"));
         }
 
@@ -45,7 +45,10 @@ namespace Mbs.UnitTests.Numerics.RandomGenerators
             }
 
             double standardDeviation = Math.Sqrt(sqrSum / (Count - 1));
-            Doubles.AreEqual(standardDeviation / StandardDeviation, 1, 1e-2,
+            Doubles.AreEqual(
+                1,
+                standardDeviation / StandardDeviation,
+                1e-2,
                 Invariant($"Standard deviation value: actual={standardDeviation}, expected={StandardDeviation}"));
         }
 
@@ -60,7 +63,10 @@ namespace Mbs.UnitTests.Numerics.RandomGenerators
             }
 
             double mean = sum / Count;
-            Doubles.AreEqual(mean, 0, 1e-2,
+            Doubles.AreEqual(
+                0,
+                mean,
+                1e-2,
                 Invariant($"Mean value: actual={mean}, expected=0"));
         }
 
@@ -76,9 +82,13 @@ namespace Mbs.UnitTests.Numerics.RandomGenerators
             }
 
             double standardDeviation = Math.Sqrt(sqrSum / (Count - 1));
-            Doubles.AreEqual(standardDeviation, 1, 1e-2,
+            Doubles.AreEqual(
+                1,
+                standardDeviation,
+                1e-2,
                 Invariant($"Standard deviation value: actual={standardDeviation}, expected=1"));
         }
+#pragma warning restore S2699 // Tests should include assertions
 
         [TestMethod]
         public void ZigguratNormalRandom_Seed_SameSeed_SameValue()
@@ -122,6 +132,11 @@ namespace Mbs.UnitTests.Numerics.RandomGenerators
             double actual = gen.NextDouble();
 
             Assert.AreEqual(expected, actual);
+        }
+
+        private static ZigguratNormalRandom CreateGenerator(int seed = Seed)
+        {
+            return new ZigguratNormalRandom(new XorShiftUniformRandom(seed), Mean, StandardDeviation);
         }
     }
 }

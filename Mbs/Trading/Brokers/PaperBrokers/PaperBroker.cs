@@ -6,8 +6,10 @@ using Mbs.Trading.Data;
 using Mbs.Trading.Data.Live;
 using Mbs.Trading.Instruments;
 using Mbs.Trading.Orders;
+using Mbs.Trading.Orders.Enumerations;
 using Mbs.Trading.Portfolios;
-using Mbs.Trading.Time;
+using Mbs.Trading.Time.Timepieces;
+using Mbs.Utilities;
 
 namespace Mbs.Trading.Brokers.PaperBrokers
 {
@@ -16,6 +18,235 @@ namespace Mbs.Trading.Brokers.PaperBrokers
     /// </summary>
     public sealed class PaperBroker : Broker, IDisposable
     {
+        private static long nextBuySideOrderId;
+        private static long nextSellSideOrderId;
+        private static long nextSellSideReportId;
+
+        private readonly CompareAndSwapQueue<Action> sellSideQueue = new CompareAndSwapQueue<Action>();
+        private AutoResetEventThread sellSideThread;
+        private double fillQuantityRatio;
+        private volatile bool sellSideActive = true;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PaperBroker"/> class.
+        /// </summary>
+        /// <param name="timepiece">Provides the simulated time. Set to <c>null</c> to use the real time.</param>
+        /// <param name="dataPublisher">The data publisher. Used to monitor prices.</param>
+        /// <param name="commission">The commission provider.</param>
+        /// <param name="fillQuantityRatio">If not zero, allows partial fills and specifies the quantity fill ratio. If zero, forbids the partial fills. The value range must be from 0 to 1 (inclusive).</param>
+        /// <param name="fillOnQuote">The fill on quote mode.</param>
+        /// <param name="fillOnTrade">The fill on trade mode.</param>
+        /// <param name="fillOnOhlcv">The fill on ohlcv mode.</param>
+        public PaperBroker(
+            ITimepiece timepiece,
+            IDataPublisher dataPublisher,
+            ICommission commission,
+            double fillQuantityRatio,
+            FillOnQuote fillOnQuote,
+            FillOnTrade fillOnTrade,
+            FillOnOhlcv fillOnOhlcv)
+        {
+            Timepiece = timepiece;
+            DataPublisher = dataPublisher;
+            Commission = commission;
+            if (fillQuantityRatio < 0d)
+            {
+                fillQuantityRatio = 0d;
+            }
+
+            if (fillQuantityRatio > 1d)
+            {
+                fillQuantityRatio = 1d;
+            }
+
+            this.fillQuantityRatio = fillQuantityRatio;
+            FillOnQuote = fillOnQuote;
+            FillOnTrade = fillOnTrade;
+            FillOnOhlcv = fillOnOhlcv;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PaperBroker"/> class.
+        /// </summary>
+        public PaperBroker()
+        {
+        }
+
+        /// <summary>
+        /// Gets or sets the data publisher interface.
+        /// </summary>
+        public IDataPublisher DataPublisher { get; set; }
+
+        /// <summary>
+        /// Gets or sets the commission interface.
+        /// </summary>
+        public ICommission Commission { get; set; }
+
+        /// <summary>
+        /// Gets or sets the timepiece interface.
+        /// </summary>
+        public ITimepiece Timepiece { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the sell side is asynchronous.
+        /// </summary>
+        public bool SellSideAsynchronous { get; set; }
+
+        /// <summary>
+        /// Gets or sets a non-zero value ⋲(0,1] allows partial fills and specifies the fraction of the volume available for order filling.
+        /// The value of zero forbids partial fills.
+        /// </summary>
+        public double FillQuantityRatio
+        {
+            get => fillQuantityRatio;
+            set
+            {
+                if (value < 0d)
+                {
+                    value = 0d;
+                }
+                else if (value > 1d)
+                {
+                    value = 1d;
+                }
+
+                fillQuantityRatio = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the fill on quote mode.
+        /// </summary>
+        public FillOnQuote FillOnQuote { get; set; } = FillOnQuote.Last;
+
+        /// <summary>
+        /// Gets or sets the fill on trade mode.
+        /// </summary>
+        public FillOnTrade FillOnTrade { get; set; } = FillOnTrade.Last;
+
+        /// <summary>
+        /// Gets or sets the fill on ohlcv mode.
+        /// </summary>
+        public FillOnOhlcv FillOnOhlcv { get; set; } = FillOnOhlcv.LastClose;
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        /// <summary>
+        /// The implementation.
+        /// </summary>
+        /// <param name="order">The order.</param>
+        /// <param name="parent">The parent broker.</param>
+        /// <param name="reportAction">Called when a report has been received.</param>
+        /// <param name="completionAction">Called when the order has been completed.</param>
+        /// <returns>The order ticket interface.</returns>
+        protected override ISingleOrderTicket CreateOrderTicket(
+            SingleOrder order,
+            Broker parent,
+            Action<ISingleOrderTicket, SingleOrderReport> reportAction,
+            Action<ISingleOrderTicket> completionAction)
+        {
+            return new PaperSingleOrderTicket(
+                order,
+                parent,
+                DataPublisher,
+                Commission,
+                reportAction,
+                completionAction,
+                SellSideAction,
+                Time,
+                NextBuySideOrderId,
+                NextSellSideOrderId,
+                NextSellSideReportId,
+                fillQuantityRatio,
+                FillOnQuote,
+                FillOnTrade,
+                FillOnOhlcv);
+        }
+
+        private DateTime Time()
+        {
+            ITimepiece t = Timepiece;
+            return t?.Time ?? DateTime.Now;
+        }
+
+        private string NextBuySideOrderId()
+        {
+            return $"{Time():yyyyMMddHHmmss}-pc-{Interlocked.Increment(ref nextBuySideOrderId)}"
+                .ToString(CultureInfo.InvariantCulture);
+        }
+
+        private string NextSellSideOrderId()
+        {
+            return $"{Time():yyyyMMddHHmmss}-po-{Interlocked.Increment(ref nextSellSideOrderId)}"
+                .ToString(CultureInfo.InvariantCulture);
+        }
+
+        private string NextSellSideReportId()
+        {
+            return $"{Time():yyyyMMddHHmmss}-pr-{Interlocked.Increment(ref nextSellSideReportId)}"
+                .ToString(CultureInfo.InvariantCulture);
+        }
+
+        private void SellSideAction(Action action)
+        {
+            if (SellSideAsynchronous)
+            {
+                if (sellSideThread == null)
+                {
+                    sellSideThread = new AutoResetEventThread(() =>
+                    {
+                        while (sellSideActive)
+                        {
+                            Action a;
+                            while ((a = sellSideQueue.Dequeue()) != null)
+                            {
+                                a();
+                            }
+
+                            sellSideThread?.AutoResetEvent.WaitOne(10000, false);
+                        }
+
+                        if (sellSideThread != null)
+                        {
+                            sellSideThread.AutoResetEvent.Close();
+                            sellSideThread.Dispose();
+                            sellSideThread = null;
+                        }
+                    });
+                    sellSideThread.Thread.IsBackground = true;
+                    sellSideThread.Thread.Start();
+                }
+
+                sellSideQueue.Enqueue(action);
+                sellSideThread.AutoResetEvent.Set();
+            }
+            else
+            {
+                action();
+            }
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (sellSideThread == null)
+                {
+                    return;
+                }
+
+                sellSideActive = false;
+                sellSideThread.AutoResetEvent?.Close();
+
+                sellSideThread.Dispose();
+                sellSideThread = null;
+            }
+        }
+
         /// <summary>
         /// The paper broker order ticket implementation.
         /// </summary>
@@ -82,256 +313,162 @@ namespace Mbs.Trading.Brokers.PaperBrokers
             {
                 this.dataPublisher = dataPublisher;
                 this.commission = commission;
-                commissionCurrency = commission?.Currency ?? order.Instrument.Currency;
+                CommissionCurrency = commission?.Currency ?? order.Instrument.Currency;
                 this.sellSideAction = sellSideAction;
                 this.currentTime = currentTime;
                 this.sellSideOrderId = sellSideOrderId;
                 this.sellSideReportId = sellSideReportId;
-                allowPartialFills = 0d < fillQuantityRatio;
+                allowPartialFills = fillQuantityRatio > 0d;
                 this.fillQuantityRatio = fillQuantityRatio;
                 this.fillOnQuote = fillOnQuote;
                 this.fillOnTrade = fillOnTrade;
                 this.fillOnOhlcv = fillOnOhlcv;
 
-                clientOrderId = buySideOrderId();
+                UnderlyingClientOrderId = buySideOrderId();
                 order.CreationTime = this.currentTime();
-                leavesQuantity = order.Quantity;
+                CurrentLeavesQuantity = order.Quantity;
                 account = order.Account;
                 portfolio = order.Portfolio;
                 Submit();
             }
 
-            private void SendReport(OrderReportType type, OrderStatus status)
-            {
-                OnReport(new SingleOrderReport(
-                    currentTime(),
-                    sellSideReportId(),
-                    type,
-                    status,
-                    null,
-                    lastPrice,
-                    lastQuantity,
-                    leavesQuantity,
-                    cumulativeQuantity,
-                    averagePrice,
-                    lastCommission,
-                    cumulativeCommission,
-                    commissionCurrency));
-            }
-
-            private void SendReport(OrderReportType type, OrderStatus status, string text)
-            {
-                OnReport(new SingleOrderReport(
-                    currentTime(),
-                    sellSideReportId(),
-                    type,
-                    status,
-                    text,
-                    lastPrice,
-                    lastQuantity,
-                    leavesQuantity,
-                    cumulativeQuantity,
-                    averagePrice,
-                    lastCommission,
-                    cumulativeCommission,
-                    commissionCurrency));
-            }
-
-            private void SendReport(OrderReportType type, OrderStatus status, string text, SingleOrder replaceSourceOrder, SingleOrder replaceTargetOrder)
-            {
-                OnReport(new SingleOrderReport(
-                    currentTime(),
-                    sellSideReportId(),
-                    type,
-                    status,
-                    text,
-                    lastPrice,
-                    lastQuantity,
-                    leavesQuantity,
-                    cumulativeQuantity,
-                    averagePrice,
-                    lastCommission,
-                    cumulativeCommission,
-                    commissionCurrency,
-                    replaceSourceOrder,
-                    replaceTargetOrder));
-            }
-
-            private void SendReportWithCompletion(OrderReportType type, OrderStatus status)
-            {
-                OnReportWithCompletion(new SingleOrderReport(
-                    currentTime(),
-                    sellSideReportId(),
-                    type,
-                    status,
-                    null,
-                    lastPrice,
-                    lastQuantity,
-                    leavesQuantity,
-                    cumulativeQuantity,
-                    averagePrice,
-                    lastCommission,
-                    cumulativeCommission,
-                    commissionCurrency));
-            }
-
-            private void SendReportWithCompletion(OrderReportType type, OrderStatus status, string text)
-            {
-                OnReportWithCompletion(new SingleOrderReport(
-                    currentTime(),
-                    sellSideReportId(),
-                    type,
-                    status,
-                    text,
-                    lastPrice,
-                    lastQuantity,
-                    leavesQuantity,
-                    cumulativeQuantity,
-                    averagePrice,
-                    lastCommission,
-                    cumulativeCommission,
-                    commissionCurrency));
-            }
-
             /// <inheritdoc />
             protected override void HandleSubmit()
             {
-                sellSideAction(() =>
+                sellSideAction?.Invoke(() =>
                 {
-                    OrderStatus rollbackStatus = orderStatus;
-                    orderId = sellSideOrderId();
+                    OrderStatus rollbackStatus = UnderlyingOrderStatus;
+                    UnderlyingOrderId = sellSideOrderId();
                     SendReport(OrderReportType.PendingNew, OrderStatus.PendingNew);
 
-                    string reason = null;
-                    switch (rollbackStatus)
-                    {
-                        case OrderStatus.Accepted:
-                            break;
-                        /* case OrderStatus.Filled: */
-                        /* case OrderStatus.Expired: */
-                        /* case OrderStatus.Canceled: */
-                        /* case OrderStatus.Rejected: */
-                        /* case OrderStatus.New: */
-                        /* case OrderStatus.PartiallyFilled: */
-                        /* case OrderStatus.PendingNew: */
-                        /* case OrderStatus.PendingCancel: */
-                        /* case OrderStatus.PendingReplace: */
-                        default:
-                            reason = string.Concat("Cannot submit order in the ", rollbackStatus.ToString(), " state.");
-                            break;
-                    }
+                    string reason = rollbackStatus == OrderStatus.Accepted
+                        ? null
+                        : $"Cannot submit order in the {rollbackStatus} state.";
 
-                    SingleOrder singleOrder = order;
+                    SingleOrder singleOrder = UnderlyingOrder;
                     Instrument instrument = singleOrder.Instrument;
                     bool isBuy = IsBuy(singleOrder.Side);
-                    if (null == reason)
+                    if (reason == null && !isBuy && !IsSell(singleOrder.Side))
                     {
-                        if (!isBuy && !IsSell(singleOrder.Side))
-                            reason = string.Concat("Order side ", order.Side.ToString(), " is not supported.");
+                        reason = $"Order side {UnderlyingOrder.Side} is not supported.";
                     }
 
-                    if (null == reason)
+                    if (reason == null)
                     {
-                        switch (order.TimeInForce)
+                        switch (UnderlyingOrder.TimeInForce)
                         {
                             case OrderTimeInForce.AtOpen:
-                                /* TODO: begin of session time? What is 'session' in 24-hour Forex trading? +1day: weekends, holidays? */
-                                expiration = order.CreationTime.Date.AddDays(1);
+                                // TODO: begin of session time? What is 'session' in 24-hour Forex trading? +1day: weekends, holidays?
+                                expiration = UnderlyingOrder.CreationTime.Date.AddDays(1);
                                 break;
                             case OrderTimeInForce.AtClose:
                             case OrderTimeInForce.Day:
-                                /* TODO: end of session time? What is 'session' in 24-hour Forex trading?  +1day: weekends, holidays? */
-                                expiration = order.CreationTime.Date.AddDays(1);
+                                // TODO: end of session time? What is 'session' in 24-hour Forex trading?  +1day: weekends, holidays?
+                                expiration = UnderlyingOrder.CreationTime.Date.AddDays(1);
                                 break;
                             case OrderTimeInForce.ImmediateOrCancel:
                             case OrderTimeInForce.FillOrKill:
-                                expiration = order.CreationTime;
+                                expiration = UnderlyingOrder.CreationTime;
                                 break;
                             case OrderTimeInForce.GoodTillCanceled:
-                                expiration = DateTime.MaxValue; // singleOrder.CreationTime.AddMonths(3);
+                                expiration = singleOrder.CreationTime.AddMonths(3);
                                 break;
                             case OrderTimeInForce.GoodTillDate:
-                                expiration = order.ExpirationTime;
+                                expiration = UnderlyingOrder.ExpirationTime;
                                 break;
                             default:
-                                reason = string.Concat("TimeInForce ", order.TimeInForce.ToString(), " is not supported.");
+                                reason = $"TimeInForce {UnderlyingOrder.TimeInForce} is not supported.";
                                 break;
                         }
                     }
 
-                    if (null != reason)
+                    if (reason != null)
                     {
                         SendReportWithCompletion(OrderReportType.Rejected, OrderStatus.Rejected, reason);
                         return;
                     }
 
                     SendReport(OrderReportType.New, OrderStatus.New);
-                    if (OrderType.TrailingStop == singleOrder.Type)
+                    if (singleOrder.Type == OrderType.TrailingStop)
+                    {
                         trailingPrice = isBuy ? double.MaxValue : double.MinValue;
+                    }
 
-                    if (FillOnQuote.Last == fillOnQuote)
+                    if (fillOnQuote == FillOnQuote.Last)
                     {
                         var quote = dataPublisher.Last<Quote>(instrument);
-                        if (null != quote)
+                        if (quote != null)
                         {
                             Process(singleOrder, quote, null, null);
                             if (IsCompleted)
+                            {
                                 return;
+                            }
                         }
                     }
 
-                    if (FillOnTrade.Last == fillOnTrade)
+                    if (fillOnTrade == FillOnTrade.Last)
                     {
                         var trade = dataPublisher.Last<Trade>(instrument);
-                        if (null != trade)
+                        if (trade != null)
                         {
                             Process(singleOrder, null, trade, null);
                             if (IsCompleted)
+                            {
                                 return;
+                            }
                         }
                     }
 
-                    if (FillOnOhlcv.LastClose == fillOnOhlcv)
+                    if (fillOnOhlcv == FillOnOhlcv.LastClose)
                     {
                         var ohlcv = dataPublisher.Last<Ohlcv>(instrument);
-                        if (null != ohlcv)
+                        if (ohlcv != null)
                         {
                             Process(singleOrder, null, null, ohlcv);
                             if (IsCompleted)
+                            {
                                 return;
+                            }
                         }
                     }
 
-                    if (FillOnQuote.None != fillOnQuote)
+                    if (fillOnQuote != FillOnQuote.None)
                     {
                         quoteSubscription = dataPublisher.Monitor<Quote>(instrument);
-                        if (null != quoteSubscription)
+                        if (quoteSubscription != null)
                         {
                             quoteSubscription.SubscriptionAction += OnQuote;
                             if (!quoteSubscription.IsConnected)
+                            {
                                 quoteSubscription.Connect();
+                            }
                         }
                     }
 
-                    if (FillOnTrade.None != fillOnTrade)
+                    if (fillOnTrade != FillOnTrade.None)
                     {
                         tradeSubscription = dataPublisher.Monitor<Trade>(instrument);
-                        if (null != tradeSubscription)
+                        if (tradeSubscription != null)
                         {
                             tradeSubscription.SubscriptionAction += OnTrade;
                             if (!tradeSubscription.IsConnected)
+                            {
                                 tradeSubscription.Connect();
+                            }
                         }
                     }
 
-                    if (FillOnOhlcv.None != fillOnOhlcv)
+                    if (fillOnOhlcv != FillOnOhlcv.None)
                     {
                         ohlcvSubscription = dataPublisher.Monitor<Ohlcv>(instrument);
-                        if (null != ohlcvSubscription)
+                        if (ohlcvSubscription != null)
                         {
                             ohlcvSubscription.SubscriptionAction += OnOhlcv;
                             if (!ohlcvSubscription.IsConnected)
+                            {
                                 ohlcvSubscription.Connect();
+                            }
                         }
                     }
                 });
@@ -342,77 +479,76 @@ namespace Mbs.Trading.Brokers.PaperBrokers
             {
                 sellSideAction(() =>
                 {
-                    OrderStatus rollbackStatus = orderStatus;
+                    OrderStatus rollbackStatus = UnderlyingOrderStatus;
                     SendReport(OrderReportType.PendingReplace, OrderStatus.PendingReplace);
 
-                    // Valiate the replacement.
+                    // Validate the replacement.
                     string reason = null;
-                    SingleOrder sourceOrder = order;
+                    SingleOrder sourceOrder = UnderlyingOrder;
                     switch (rollbackStatus)
                     {
                         case OrderStatus.Filled:
                         case OrderStatus.Expired:
                         case OrderStatus.Canceled:
                         case OrderStatus.Rejected:
-                            reason = string.Concat("Cannot replace already completed order in the ", rollbackStatus.ToString(), " state.");
+                            reason = $"Cannot replace already completed order in the {rollbackStatus} state.";
                             break;
                         case OrderStatus.New:
                         case OrderStatus.PartiallyFilled:
                             break;
-                        /* case OrderStatus.Accepted: */
-                        /* case OrderStatus.PendingNew: */
-                        /* case OrderStatus.PendingCancel: */
-                        /* case OrderStatus.PendingReplace: */
                         default:
-                            reason = string.Concat("Cannot replace order in the ", rollbackStatus.ToString(), " state.");
+                            reason = $"Cannot replace order in the {rollbackStatus} state.";
                             break;
                     }
 
-                    if (null == reason)
+                    if (reason == null)
                     {
                         if (sourceOrder.Instrument != replacementOrder.Instrument)
+                        {
                             reason = "Cannot replace order instrument.";
-                        if (sourceOrder.Type != replacementOrder.Type)
+                        }
+                        else if (sourceOrder.Type != replacementOrder.Type)
+                        {
                             reason = "Cannot replace order type.";
+                        }
                         else if (sourceOrder.Side != replacementOrder.Side)
+                        {
                             reason = "Cannot replace order side.";
+                        }
                     }
 
-                    if (null != reason)
+                    if (reason != null)
                     {
                         SendReport(OrderReportType.ReplaceRejected, rollbackStatus, reason, sourceOrder, replacementOrder);
                     }
                     else
                     {
                         double leaves;
-                        lock (fillLock)
+                        lock (FillLock)
                         {
-                            leaves = replacementOrder.Quantity - cumulativeQuantity;
-                            if (0d > leaves)
+                            leaves = replacementOrder.Quantity - CurrentCumulativeQuantity;
+                            if (leaves < 0d)
                             {
                                 reason = "Cannot replace because of negative leaves quantity.";
                             }
                             else
                             {
-                                leavesQuantity = leaves;
-                                if (leaves < double.Epsilon)
+                                CurrentLeavesQuantity = leaves;
+                                if (leaves < double.Epsilon && commission != null)
                                 {
-                                    if (null != commission)
+                                    double amount = commission.Amount(UnderlyingOrder, 0d, 0d, 0d, CurrentCumulativeQuantity, CurrentAveragePrice, CurrentCumulativeCommission);
+                                    if (amount > 0d)
                                     {
-                                        double amount = commission.Amount(order, 0d, 0d, 0d, cumulativeQuantity, averagePrice, cumulativeCommission);
-                                        if (0d < amount)
-                                        {
-                                            lastCommission = amount;
-                                            cumulativeCommission += amount;
-                                        }
+                                        LastCommission = amount;
+                                        CurrentCumulativeCommission += amount;
                                     }
                                 }
 
-                                order = replacementOrder;
+                                UnderlyingOrder = replacementOrder;
                             }
                         }
 
-                        if (null != reason)
+                        if (reason != null)
                         {
                             SendReport(OrderReportType.ReplaceRejected, rollbackStatus, reason, sourceOrder, replacementOrder);
                             return;
@@ -428,19 +564,21 @@ namespace Mbs.Trading.Brokers.PaperBrokers
                                 OrderReportType.Filled,
                                 OrderStatus.Filled,
                                 string.Empty,
-                                lastPrice,
-                                lastQuantity,
-                                leavesQuantity,
-                                cumulativeQuantity,
-                                averagePrice,
-                                lastCommission,
-                                cumulativeCommission,
-                                commissionCurrency));
+                                LastPrice,
+                                LastQuantity,
+                                CurrentLeavesQuantity,
+                                CurrentCumulativeQuantity,
+                                CurrentAveragePrice,
+                                LastCommission,
+                                CurrentCumulativeCommission,
+                                CommissionCurrency));
                         }
                         else
                         {
-                            if (OrderType.StopLimit == replacementOrder.Type)
+                            if (replacementOrder.Type == OrderType.StopLimit)
+                            {
                                 isStopLimitReady = false;
+                            }
                         }
                     }
                 });
@@ -451,46 +589,38 @@ namespace Mbs.Trading.Brokers.PaperBrokers
             {
                 sellSideAction(() =>
                 {
-                    OrderStatus rollbackStatus = orderStatus;
+                    OrderStatus rollbackStatus = UnderlyingOrderStatus;
                     SendReport(OrderReportType.PendingCancel, OrderStatus.PendingCancel);
 
-                    // Valiate the cancellation.
+                    // Validate the cancellation.
                     string reason = null;
                     switch (rollbackStatus)
                     {
                         case OrderStatus.New:
                         case OrderStatus.PartiallyFilled:
                             break;
-                        /* case OrderStatus.Filled: */
-                        /* case OrderStatus.Expired: */
-                        /* case OrderStatus.Canceled: */
-                        /* case OrderStatus.Rejected: */
-                        /* case OrderStatus.Accepted: */
-                        /* case OrderStatus.PendingNew: */
-                        /* case OrderStatus.PendingCancel: */
-                        /* case OrderStatus.PendingReplace: */
                         default:
-                            reason = string.Concat("Cannot cancel order in the ", rollbackStatus.ToString(), " state.");
+                            reason = $"Cannot cancel order in the {rollbackStatus} state.";
                             break;
                     }
 
-                    if (null != reason)
+                    if (reason != null)
                     {
                         SendReport(OrderReportType.CancelRejected, rollbackStatus, reason);
                     }
                     else
                     {
                         Unsubscribe();
-                        lock (fillLock)
+                        lock (FillLock)
                         {
-                            leavesQuantity = 0d;
-                            if (null != commission)
+                            CurrentLeavesQuantity = 0d;
+                            if (commission != null)
                             {
-                                double amount = commission.Amount(order, 0d, 0d, 0d, cumulativeQuantity, averagePrice, cumulativeCommission);
-                                if (0d < amount)
+                                double amount = commission.Amount(UnderlyingOrder, 0d, 0d, 0d, CurrentCumulativeQuantity, CurrentAveragePrice, CurrentCumulativeCommission);
+                                if (amount > 0d)
                                 {
-                                    lastCommission = amount;
-                                    cumulativeCommission += amount;
+                                    LastCommission = amount;
+                                    CurrentCumulativeCommission += amount;
                                 }
                             }
                         }
@@ -500,29 +630,171 @@ namespace Mbs.Trading.Brokers.PaperBrokers
                 });
             }
 
-            private void Process(SingleOrder singleOrder, Quote quote, Trade trade, Ohlcv ohlcv)
+            private static bool IsBuy(OrderSide orderSide)
             {
-                double priceMarket = CalculatePriceAndQuantity(singleOrder, quote, trade, ohlcv, out double priceHigh, out double priceLow, out double quantity);
-                if (0d < priceMarket && 0d < quantity)
-                    TryToExecute(singleOrder, priceMarket, priceHigh, priceLow, quantity);
+                return orderSide == OrderSide.Buy || orderSide == OrderSide.BuyMinus;
             }
 
+            private static bool IsSell(OrderSide orderSide)
+            {
+                switch (orderSide)
+                {
+                    case OrderSide.Sell:
+                    case OrderSide.SellPlus:
+                    case OrderSide.SellShort:
+                    case OrderSide.SellShortExempt:
+                        return true;
+                }
+
+                return false;
+            }
+
+            private static bool IsShort(OrderSide orderSide)
+            {
+                switch (orderSide)
+                {
+                    case OrderSide.SellPlus:
+                    case OrderSide.SellShort:
+                    case OrderSide.SellShortExempt:
+                        return true;
+                }
+
+                return false;
+            }
+
+            private void SendReport(OrderReportType type, OrderStatus status)
+            {
+                OnReport(new SingleOrderReport(
+                    currentTime(),
+                    sellSideReportId(),
+                    type,
+                    status,
+                    null,
+                    LastPrice,
+                    LastQuantity,
+                    CurrentLeavesQuantity,
+                    CurrentCumulativeQuantity,
+                    CurrentAveragePrice,
+                    LastCommission,
+                    CurrentCumulativeCommission,
+                    CommissionCurrency));
+            }
+
+            private void SendReport(OrderReportType type, OrderStatus status, string text)
+            {
+                OnReport(new SingleOrderReport(
+                    currentTime(),
+                    sellSideReportId(),
+                    type,
+                    status,
+                    text,
+                    LastPrice,
+                    LastQuantity,
+                    CurrentLeavesQuantity,
+                    CurrentCumulativeQuantity,
+                    CurrentAveragePrice,
+                    LastCommission,
+                    CurrentCumulativeCommission,
+                    CommissionCurrency));
+            }
+
+            private void SendReport(OrderReportType type, OrderStatus status, string text, SingleOrder replaceSourceOrder, SingleOrder replaceTargetOrder)
+            {
+                OnReport(new SingleOrderReport(
+                    currentTime(),
+                    sellSideReportId(),
+                    type,
+                    status,
+                    text,
+                    LastPrice,
+                    LastQuantity,
+                    CurrentLeavesQuantity,
+                    CurrentCumulativeQuantity,
+                    CurrentAveragePrice,
+                    LastCommission,
+                    CurrentCumulativeCommission,
+                    CommissionCurrency,
+                    replaceSourceOrder,
+                    replaceTargetOrder));
+            }
+
+            private void SendReportWithCompletion(OrderReportType type, OrderStatus status)
+            {
+                OnReportWithCompletion(new SingleOrderReport(
+                    currentTime(),
+                    sellSideReportId(),
+                    type,
+                    status,
+                    null,
+                    LastPrice,
+                    LastQuantity,
+                    CurrentLeavesQuantity,
+                    CurrentCumulativeQuantity,
+                    CurrentAveragePrice,
+                    LastCommission,
+                    CurrentCumulativeCommission,
+                    CommissionCurrency));
+            }
+
+            private void SendReportWithCompletion(OrderReportType type, OrderStatus status, string text)
+            {
+                OnReportWithCompletion(new SingleOrderReport(
+                    currentTime(),
+                    sellSideReportId(),
+                    type,
+                    status,
+                    text,
+                    LastPrice,
+                    LastQuantity,
+                    CurrentLeavesQuantity,
+                    CurrentCumulativeQuantity,
+                    CurrentAveragePrice,
+                    LastCommission,
+                    CurrentCumulativeCommission,
+                    CommissionCurrency));
+            }
+
+            private void Process(SingleOrder singleOrder, Quote quote, Trade trade, Ohlcv ohlcv)
+            {
+                double priceMarket = CalculatePriceAndQuantity(
+                    singleOrder,
+                    quote,
+                    trade,
+                    ohlcv,
+                    out double priceHigh,
+                    out double priceLow,
+                    out double quantity);
+
+                if (priceMarket > 0d && quantity > 0d)
+                {
+                    TryToExecute(singleOrder, priceMarket, priceHigh, priceLow, quantity);
+                }
+            }
+
+#pragma warning disable S907 // "goto" statement should not be used
             private double CalculatePriceAndQuantity(SingleOrder singleOrder, Quote quote, Trade trade, Ohlcv ohlcv, out double high, out double low, out double quantity)
             {
                 double price = double.NaN;
-                if (null != quote && FillOnQuote.None != fillOnQuote)
+                if (quote != null && fillOnQuote != FillOnQuote.None)
                 {
                     if (singleOrder.TimeInForce == OrderTimeInForce.AtOpen)
                     {
                         if (expiration > quote.Time)
+                        {
                             goto labelSkipped;
+                        }
                     }
                     else if (singleOrder.TimeInForce == OrderTimeInForce.AtClose)
                     {
                         if (expiration > quote.Time)
+                        {
                             goto labelSkipped;
-                        if (null != lastQuote)
+                        }
+
+                        if (lastQuote != null)
+                        {
                             quote = lastQuote;
+                        }
                     }
 
                     if (IsBuy(singleOrder.Side))
@@ -536,10 +808,9 @@ namespace Mbs.Trading.Brokers.PaperBrokers
                                 double askSize = quote.AskSize;
                                 askSize = double.IsNaN(askSize) ? 0 : Math.Floor(askSize * fillQuantityRatio);
                                 quantity = Math.Min(askSize, quantity);
-                                if (OrderTimeInForce.FillOrKill == singleOrder.TimeInForce)
+                                if (singleOrder.TimeInForce == OrderTimeInForce.FillOrKill && quantity < singleOrder.Quantity)
                                 {
-                                    if (quantity < singleOrder.Quantity)
-                                        quantity = 0d;
+                                    quantity = 0d;
                                 }
                             }
 
@@ -559,10 +830,9 @@ namespace Mbs.Trading.Brokers.PaperBrokers
                                 double bidSize = quote.BidSize;
                                 bidSize = double.IsNaN(bidSize) ? 0 : Math.Floor(bidSize * fillQuantityRatio);
                                 quantity = Math.Min(bidSize, quantity);
-                                if (OrderTimeInForce.FillOrKill == singleOrder.TimeInForce)
+                                if (singleOrder.TimeInForce == OrderTimeInForce.FillOrKill && quantity < singleOrder.Quantity)
                                 {
-                                    if (quantity < singleOrder.Quantity)
-                                        quantity = 0d;
+                                    quantity = 0d;
                                 }
                             }
 
@@ -573,7 +843,7 @@ namespace Mbs.Trading.Brokers.PaperBrokers
                     }
                 }
 
-                if (null != trade && FillOnTrade.None != fillOnTrade)
+                if (trade != null && fillOnTrade != FillOnTrade.None)
                 {
                     price = trade.Price;
                     if (!double.IsNaN(price))
@@ -581,14 +851,21 @@ namespace Mbs.Trading.Brokers.PaperBrokers
                         if (singleOrder.TimeInForce == OrderTimeInForce.AtOpen)
                         {
                             if (expiration > trade.Time)
+                            {
                                 goto labelSkipped;
+                            }
                         }
                         else if (singleOrder.TimeInForce == OrderTimeInForce.AtClose)
                         {
                             if (expiration > trade.Time)
+                            {
                                 goto labelSkipped;
-                            if (null != lastTrade)
+                            }
+
+                            if (lastTrade != null)
+                            {
                                 trade = lastTrade;
+                            }
                         }
 
                         quantity = singleOrder.Quantity;
@@ -597,10 +874,9 @@ namespace Mbs.Trading.Brokers.PaperBrokers
                             double volume = trade.Volume;
                             volume = double.IsNaN(volume) ? 0 : Math.Floor(volume * fillQuantityRatio);
                             quantity = Math.Min(volume, quantity);
-                            if (OrderTimeInForce.FillOrKill == singleOrder.TimeInForce)
+                            if (singleOrder.TimeInForce == OrderTimeInForce.FillOrKill && quantity < singleOrder.Quantity)
                             {
-                                if (quantity < singleOrder.Quantity)
-                                    quantity = 0d;
+                                quantity = 0d;
                             }
                         }
 
@@ -610,19 +886,26 @@ namespace Mbs.Trading.Brokers.PaperBrokers
                     }
                 }
 
-                if (null != ohlcv && FillOnOhlcv.None != fillOnOhlcv)
+                if (ohlcv != null && fillOnOhlcv != FillOnOhlcv.None)
                 {
                     if (singleOrder.TimeInForce == OrderTimeInForce.AtOpen)
                     {
                         if (expiration > ohlcv.Time)
+                        {
                             goto labelSkipped;
+                        }
                     }
                     else if (singleOrder.TimeInForce == OrderTimeInForce.AtClose)
                     {
                         if (expiration > ohlcv.Time)
+                        {
                             goto labelSkipped;
-                        if (null != lastOhlcv)
+                        }
+
+                        if (lastOhlcv != null)
+                        {
                             ohlcv = lastOhlcv;
+                        }
                     }
 
                     bool isBuy = IsBuy(singleOrder.Side);
@@ -659,10 +942,9 @@ namespace Mbs.Trading.Brokers.PaperBrokers
                         {
                             double volume = ohlcv.IsVolumeEmpty ? 0 : Math.Floor(ohlcv.Volume * fillQuantityRatio);
                             quantity = Math.Min(volume, quantity);
-                            if (OrderTimeInForce.FillOrKill == singleOrder.TimeInForce)
+                            if (singleOrder.TimeInForce == OrderTimeInForce.FillOrKill && quantity < singleOrder.Quantity)
                             {
-                                if (quantity < singleOrder.Quantity)
-                                    quantity = 0d;
+                                quantity = 0d;
                             }
                         }
 
@@ -676,9 +958,9 @@ namespace Mbs.Trading.Brokers.PaperBrokers
                                 low = ohlcv.Low;
                                 if (!ohlcv.IsOpenEmpty)
                                 {
-                                    high = ohlcv.IsCloseEmpty ?
-                                        ohlcv.Open : // Open is initialized, close is not.
-                                        Math.Max(ohlcv.Open, ohlcv.Close); // Both open and close are initialized.
+                                    high = ohlcv.IsCloseEmpty
+                                        ? ohlcv.Open // Open is initialized, close is not.
+                                        : Math.Max(ohlcv.Open, ohlcv.Close); // Both open and close are initialized.
                                 }
                                 else if (!ohlcv.IsCloseEmpty)
                                 {
@@ -691,9 +973,9 @@ namespace Mbs.Trading.Brokers.PaperBrokers
                                 high = ohlcv.High;
                                 if (!ohlcv.IsOpenEmpty)
                                 {
-                                    low = ohlcv.IsCloseEmpty ?
-                                        ohlcv.Open : // Open is initialized, close is not.
-                                        Math.Min(ohlcv.Open, ohlcv.Close); // Both open and close are initialized.
+                                    low = ohlcv.IsCloseEmpty
+                                        ? ohlcv.Open // Open is initialized, close is not.
+                                        : Math.Min(ohlcv.Open, ohlcv.Close); // Both open and close are initialized.
                                 }
                                 else if (!ohlcv.IsCloseEmpty)
                                 {
@@ -725,13 +1007,16 @@ namespace Mbs.Trading.Brokers.PaperBrokers
                         // When limit is hit, convert it to a market order.
                         if (IsBuy(singleOrder.Side))
                         {
-                            if (priceMarket <= singleOrder.LimitPrice) // Better than the limit price.
+                            // Better than the limit price.
+                            if (priceMarket <= singleOrder.LimitPrice)
+                            {
                                 goto labelMarket;
+                            }
                         }
-                        else if (IsSell(singleOrder.Side))
+                        else if (IsSell(singleOrder.Side) && priceMarket >= singleOrder.LimitPrice)
                         {
-                            if (priceMarket >= singleOrder.LimitPrice) // Better than the limit price.
-                                goto labelMarket;
+                            // Better than the limit price.
+                            goto labelMarket;
                         }
 
                         goto labelLimit;
@@ -740,12 +1025,13 @@ namespace Mbs.Trading.Brokers.PaperBrokers
                         if (IsBuy(singleOrder.Side))
                         {
                             if (priceLow <= singleOrder.LimitPrice)
+                            {
                                 ValidateAndSendExecutionReport(singleOrder, singleOrder.LimitPrice, quantity);
+                            }
                         }
-                        else if (IsSell(singleOrder.Side))
+                        else if (IsSell(singleOrder.Side) && priceHigh >= singleOrder.LimitPrice)
                         {
-                            if (priceHigh >= singleOrder.LimitPrice)
-                                ValidateAndSendExecutionReport(singleOrder, singleOrder.LimitPrice, quantity);
+                            ValidateAndSendExecutionReport(singleOrder, singleOrder.LimitPrice, quantity);
                         }
 
                         break;
@@ -753,12 +1039,13 @@ namespace Mbs.Trading.Brokers.PaperBrokers
                         if (IsBuy(singleOrder.Side))
                         {
                             if (priceHigh >= singleOrder.StopPrice)
+                            {
                                 ValidateAndSendExecutionReport(singleOrder, singleOrder.StopPrice, quantity);
+                            }
                         }
-                        else if (IsSell(singleOrder.Side))
+                        else if (IsSell(singleOrder.Side) && priceLow <= singleOrder.StopPrice)
                         {
-                            if (priceLow <= singleOrder.StopPrice)
-                                ValidateAndSendExecutionReport(singleOrder, singleOrder.StopPrice, quantity);
+                            ValidateAndSendExecutionReport(singleOrder, singleOrder.StopPrice, quantity);
                         }
 
                         break;
@@ -767,13 +1054,17 @@ namespace Mbs.Trading.Brokers.PaperBrokers
                         {
                             trailingPrice = Math.Min(trailingPrice, priceLow + singleOrder.TrailingDistance);
                             if (priceHigh >= trailingPrice)
+                            {
                                 ValidateAndSendExecutionReport(singleOrder, trailingPrice, quantity);
+                            }
                         }
                         else if (IsSell(singleOrder.Side))
                         {
                             trailingPrice = Math.Max(trailingPrice, priceHigh - singleOrder.TrailingDistance);
                             if (priceLow <= trailingPrice)
+                            {
                                 ValidateAndSendExecutionReport(singleOrder, trailingPrice, quantity);
+                            }
                         }
 
                         break;
@@ -783,48 +1074,58 @@ namespace Mbs.Trading.Brokers.PaperBrokers
                             if (IsBuy(singleOrder.Side))
                             {
                                 if (priceHigh >= singleOrder.StopPrice)
+                                {
                                     isStopLimitReady = true;
+                                }
                             }
-                            else if (IsSell(singleOrder.Side))
+                            else if (IsSell(singleOrder.Side) && priceLow <= singleOrder.StopPrice)
                             {
-                                if (priceLow <= singleOrder.StopPrice)
-                                    isStopLimitReady = true;
+                                isStopLimitReady = true;
                             }
                         }
 
                         if (isStopLimitReady)
+                        {
                             goto labelLimit;
+                        }
+
                         break;
                 }
             }
+#pragma warning restore S907 // "goto" statement should not be used
 
             private void ValidateAndSendExecutionReport(SingleOrder singleOrder, double price, double quantity)
             {
                 if (ValidateAccountAndPortfolio(singleOrder, price, quantity))
+                {
                     SendExecutionReport(singleOrder, price, quantity);
+                }
             }
 
             private void SendExecutionReport(SingleOrder singleOrder, double price, double quantity)
             {
                 if (IsCompleted)
+                {
                     return;
+                }
+
                 SingleOrderReport report;
                 bool completed;
-                lock (fillLock)
+                lock (FillLock)
                 {
-                    if (quantity < leavesQuantity)
+                    if (quantity < CurrentLeavesQuantity)
                     {
                         completed = false;
-                        averagePrice = (averagePrice * cumulativeQuantity + price * quantity) / (cumulativeQuantity + quantity);
-                        lastQuantity = quantity;
-                        leavesQuantity -= quantity;
-                        lastPrice = price;
-                        cumulativeQuantity += quantity;
-                        if (null != commission)
+                        CurrentAveragePrice = (CurrentAveragePrice * CurrentCumulativeQuantity + price * quantity) / (CurrentCumulativeQuantity + quantity);
+                        LastQuantity = quantity;
+                        CurrentLeavesQuantity -= quantity;
+                        LastPrice = price;
+                        CurrentCumulativeQuantity += quantity;
+                        if (commission != null)
                         {
-                            price = commission.Amount(singleOrder, price, quantity, leavesQuantity, cumulativeQuantity, averagePrice, cumulativeCommission);
-                            lastCommission = price;
-                            cumulativeCommission += price;
+                            price = commission.Amount(singleOrder, price, quantity, CurrentLeavesQuantity, CurrentCumulativeQuantity, CurrentAveragePrice, CurrentCumulativeCommission);
+                            LastCommission = price;
+                            CurrentCumulativeCommission += price;
                         }
 
                         report = new SingleOrderReport(
@@ -833,30 +1134,30 @@ namespace Mbs.Trading.Brokers.PaperBrokers
                             OrderReportType.PartiallyFilled,
                             OrderStatus.PartiallyFilled,
                             string.Empty,
-                            lastPrice,
-                            lastQuantity,
-                            leavesQuantity,
-                            cumulativeQuantity,
-                            averagePrice,
-                            lastCommission,
-                            cumulativeCommission,
-                            commissionCurrency);
+                            LastPrice,
+                            LastQuantity,
+                            CurrentLeavesQuantity,
+                            CurrentCumulativeQuantity,
+                            CurrentAveragePrice,
+                            LastCommission,
+                            CurrentCumulativeCommission,
+                            CommissionCurrency);
                     }
                     else
                     {
                         completed = true;
                         Unsubscribe();
-                        quantity = leavesQuantity;
-                        averagePrice = (averagePrice * cumulativeQuantity + price * quantity) / (cumulativeQuantity + quantity);
-                        lastQuantity = quantity;
-                        leavesQuantity = 0d;
-                        cumulativeQuantity += quantity;
-                        lastPrice = price;
-                        if (null != commission)
+                        quantity = CurrentLeavesQuantity;
+                        CurrentAveragePrice = (CurrentAveragePrice * CurrentCumulativeQuantity + price * quantity) / (CurrentCumulativeQuantity + quantity);
+                        LastQuantity = quantity;
+                        CurrentLeavesQuantity = 0d;
+                        CurrentCumulativeQuantity += quantity;
+                        LastPrice = price;
+                        if (commission != null)
                         {
-                            price = commission.Amount(singleOrder, price, quantity, 0d, cumulativeQuantity, averagePrice, cumulativeCommission);
-                            lastCommission = price;
-                            cumulativeCommission += price;
+                            price = commission.Amount(singleOrder, price, quantity, 0d, CurrentCumulativeQuantity, CurrentAveragePrice, CurrentCumulativeCommission);
+                            LastCommission = price;
+                            CurrentCumulativeCommission += price;
                         }
 
                         report = new SingleOrderReport(
@@ -865,43 +1166,47 @@ namespace Mbs.Trading.Brokers.PaperBrokers
                             OrderReportType.Filled,
                             OrderStatus.Filled,
                             string.Empty,
-                            lastPrice,
-                            lastQuantity,
-                            leavesQuantity,
-                            cumulativeQuantity,
-                            averagePrice,
-                            lastCommission,
-                            cumulativeCommission,
-                            commissionCurrency);
+                            LastPrice,
+                            LastQuantity,
+                            CurrentLeavesQuantity,
+                            CurrentCumulativeQuantity,
+                            CurrentAveragePrice,
+                            LastCommission,
+                            CurrentCumulativeCommission,
+                            CommissionCurrency);
                     }
 
                     Log.Debug(
-                        $"PaperBroker.SendExecutionReport: ({(IsBuy(singleOrder.Side) ? "buy" : "sell")}){lastQuantity}@{lastPrice} + commission={lastCommission}/{cumulativeCommission}");
+                        $"PaperBroker.SendExecutionReport: ({(IsBuy(singleOrder.Side) ? "buy" : "sell")}){LastQuantity}@{LastPrice} + commission={LastCommission}/{CurrentCumulativeCommission}");
                 }
 
                 if (completed)
+                {
                     OnReportWithCompletion(report);
+                }
                 else
+                {
                     OnReport(report);
+                }
 
                 portfolio?.Add(new PortfolioExecution(this, report));
             }
 
             private void Unsubscribe()
             {
-                if (null != quoteSubscription)
+                if (quoteSubscription != null)
                 {
                     quoteSubscription.SubscriptionAction -= OnQuote;
                     quoteSubscription = null;
                 }
 
-                if (null != tradeSubscription)
+                if (tradeSubscription != null)
                 {
                     tradeSubscription.SubscriptionAction -= OnTrade;
                     tradeSubscription = null;
                 }
 
-                if (null != ohlcvSubscription)
+                if (ohlcvSubscription != null)
                 {
                     ohlcvSubscription.SubscriptionAction -= OnOhlcv;
                     ohlcvSubscription = null;
@@ -910,11 +1215,14 @@ namespace Mbs.Trading.Brokers.PaperBrokers
 
             private void OnQuote(Quote quote)
             {
-                if (null == quote)
+                if (quote == null)
+                {
                     return;
+                }
+
                 if (CanFill)
                 {
-                    SingleOrder singleOrder = order;
+                    SingleOrder singleOrder = UnderlyingOrder;
                     Process(singleOrder, quote, null, null);
                     ValidateTimeInForce(singleOrder, quote.Time);
                 }
@@ -924,11 +1232,14 @@ namespace Mbs.Trading.Brokers.PaperBrokers
 
             private void OnTrade(Trade trade)
             {
-                if (null == trade)
+                if (trade == null)
+                {
                     return;
+                }
+
                 if (CanFill)
                 {
-                    SingleOrder singleOrder = order;
+                    SingleOrder singleOrder = UnderlyingOrder;
                     Process(singleOrder, null, trade, null);
                     ValidateTimeInForce(singleOrder, trade.Time);
                 }
@@ -938,11 +1249,14 @@ namespace Mbs.Trading.Brokers.PaperBrokers
 
             private void OnOhlcv(Ohlcv ohlcv)
             {
-                if (null == ohlcv)
+                if (ohlcv == null)
+                {
                     return;
+                }
+
                 if (CanFill)
                 {
-                    SingleOrder singleOrder = order;
+                    SingleOrder singleOrder = UnderlyingOrder;
                     Process(singleOrder, null, null, ohlcv);
                     ValidateTimeInForce(singleOrder, ohlcv.Time);
                 }
@@ -952,21 +1266,23 @@ namespace Mbs.Trading.Brokers.PaperBrokers
 
             private double CommissionValue(SingleOrder singleOrder, double price, double quantity)
             {
-                if (null == commission)
-                    return 0;
-
-                lock (fillLock)
+                if (commission == null)
                 {
-                    if (quantity < leavesQuantity)
+                    return 0;
+                }
+
+                lock (FillLock)
+                {
+                    if (quantity < CurrentLeavesQuantity)
                     {
-                        double avgPrice = (averagePrice * cumulativeQuantity + price * quantity) / (cumulativeQuantity + quantity);
-                        return commission.Amount(singleOrder, price, quantity, leavesQuantity - quantity, cumulativeQuantity + quantity, avgPrice, cumulativeCommission);
+                        double avgPrice = (CurrentAveragePrice * CurrentCumulativeQuantity + price * quantity) / (CurrentCumulativeQuantity + quantity);
+                        return commission.Amount(singleOrder, price, quantity, CurrentLeavesQuantity - quantity, CurrentCumulativeQuantity + quantity, avgPrice, CurrentCumulativeCommission);
                     }
                     else
                     {
-                        quantity = leavesQuantity;
-                        double avgPrice = (averagePrice * cumulativeQuantity + price * quantity) / (cumulativeQuantity + quantity);
-                        return commission.Amount(singleOrder, price, quantity, 0d, cumulativeQuantity + quantity, avgPrice, cumulativeCommission);
+                        quantity = CurrentLeavesQuantity;
+                        double avgPrice = (CurrentAveragePrice * CurrentCumulativeQuantity + price * quantity) / (CurrentCumulativeQuantity + quantity);
+                        return commission.Amount(singleOrder, price, quantity, 0d, CurrentCumulativeQuantity + quantity, avgPrice, CurrentCumulativeCommission);
                     }
                 }
             }
@@ -978,7 +1294,7 @@ namespace Mbs.Trading.Brokers.PaperBrokers
                 double commissionValue = CommissionValue(singleOrder, price, quantity);
                 if (IsBuy(side))
                 {
-                    if (null != account)
+                    if (account != null)
                     {
                         double buyingPower = account.Balance(instrument.Currency);
 
@@ -986,7 +1302,7 @@ namespace Mbs.Trading.Brokers.PaperBrokers
                         if ((price + instrument.Margin) * quantity + commissionValue > buyingPower)
                         {
                             string reason;
-                            if (0 < instrument.Margin)
+                            if (instrument.Margin > 0)
                             {
                                 reason = string.Format(
                                     CultureInfo.InvariantCulture,
@@ -1018,7 +1334,7 @@ namespace Mbs.Trading.Brokers.PaperBrokers
                 else if (IsSell(side))
                 {
                     bool isShort = IsShort(side);
-                    if (null != account)
+                    if (account != null)
                     {
                         double buyingPower = account.Balance(instrument.Currency);
 
@@ -1037,7 +1353,7 @@ namespace Mbs.Trading.Brokers.PaperBrokers
                         }
                     }
 
-                    if (null != portfolio && !isShort)
+                    if (portfolio != null && !isShort)
                     {
                         PortfolioPosition position = portfolio.GetPosition(instrument);
                         double positionQuantity = position?.Quantity ?? 0d;
@@ -1062,9 +1378,11 @@ namespace Mbs.Trading.Brokers.PaperBrokers
             private void ValidateTimeInForce(SingleOrder singleOrder, DateTime dateTime)
             {
                 if (IsCompleted)
+                {
                     return;
+                }
 
-                // At this point, posssible partial fill report has already been sent.
+                // At this point, possible partial fill report has already been sent.
                 bool cancel = false;
                 switch (singleOrder.TimeInForce)
                 {
@@ -1078,7 +1396,10 @@ namespace Mbs.Trading.Brokers.PaperBrokers
                     case OrderTimeInForce.GoodTillCanceled:
                     case OrderTimeInForce.GoodTillDate:
                         if (expiration <= dateTime)
+                        {
                             cancel = true;
+                        }
+
                         break;
                 }
 
@@ -1090,249 +1411,6 @@ namespace Mbs.Trading.Brokers.PaperBrokers
                     Log.Debug("PaperBroker.ValidateTimeInForce: " + reason);
                 }
             }
-
-            private static bool IsBuy(OrderSide orderSide)
-            {
-                return OrderSide.Buy == orderSide || OrderSide.BuyMinus == orderSide;
-            }
-
-            private static bool IsSell(OrderSide orderSide)
-            {
-                switch (orderSide)
-                {
-                    case OrderSide.Sell:
-                    case OrderSide.SellPlus:
-                    case OrderSide.SellShort:
-                    case OrderSide.SellShortExempt:
-                        return true;
-                }
-
-                return false;
-            }
-
-            private static bool IsShort(OrderSide orderSide)
-            {
-                switch (orderSide)
-                {
-                    case OrderSide.SellPlus:
-                    case OrderSide.SellShort:
-                    case OrderSide.SellShortExempt:
-                        return true;
-                }
-
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the data publisher interface.
-        /// </summary>
-        public IDataPublisher DataPublisher { get; set; }
-
-        /// <summary>
-        /// Gets or sets the commision interface.
-        /// </summary>
-        public ICommission Commission { get; set; }
-
-        /// <summary>
-        /// Gets or sets the timepiece interface.
-        /// </summary>
-        public ITimepiece Timepiece { get; set; }
-
-        private DateTime Time()
-        {
-            ITimepiece t = Timepiece;
-            return t?.Time ?? DateTime.Now;
-        }
-
-        private static long nextBuySideOrderId;
-        private static long nextSellSideOrderId;
-        private static long nextSellSideReportId;
-
-        private string NextBuySideOrderId()
-        {
-            return $"{Time():yyyyMMddHHmmss}-pc-{Interlocked.Increment(ref nextBuySideOrderId)}".ToString(CultureInfo.InvariantCulture);
-        }
-
-        private string NextSellSideOrderId()
-        {
-            return $"{Time():yyyyMMddHHmmss}-po-{Interlocked.Increment(ref nextSellSideOrderId)}".ToString(CultureInfo.InvariantCulture);
-        }
-
-        private string NextSellSideReportId()
-        {
-            return $"{Time():yyyyMMddHHmmss}-pr-{Interlocked.Increment(ref nextSellSideReportId)}".ToString(CultureInfo.InvariantCulture);
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the sell side is asynchronous.
-        /// </summary>
-        public bool SellSideAsynchronous { get; set; }
-
-        private readonly CompareAndSwapQueue<Action> sellSideQueue = new CompareAndSwapQueue<Action>();
-        private AutoResetEventThread sellSideThread;
-        private volatile bool sellSideActive = true;
-
-        private void SellSideAction(Action action)
-        {
-            // if (!sellSideActive)
-            //     return;
-            if (SellSideAsynchronous)
-            {
-                if (null == sellSideThread)
-                {
-                    sellSideThread = new AutoResetEventThread(() =>
-                    {
-                        while (sellSideActive)
-                        {
-                            Action a;
-                            while (null != (a = sellSideQueue.Dequeue()))
-                                a();
-                            sellSideThread?.AutoResetEvent.WaitOne(10000, false);
-                        }
-
-                        // Dispose.
-                        if (null != sellSideThread)
-                        {
-                            sellSideThread.AutoResetEvent.Close();
-                            sellSideThread = null;
-                        }
-                    });
-                    sellSideThread.Thread.IsBackground = true;
-                    sellSideThread.Thread.Start();
-                }
-
-                sellSideQueue.Enqueue(action);
-                sellSideThread.AutoResetEvent.Set();
-            }
-            else
-            {
-                action();
-            }
-        }
-
-        private double fillQuantityRatio;
-
-        /// <summary>
-        /// Gets or sets a non-zero value ⋲(0,1] allows partial fills and specifies the fraction of the volume available for order filling.
-        /// The value of zero forbids partial fills.
-        /// </summary>
-        public double FillQuantityRatio
-        {
-            get => fillQuantityRatio;
-            set
-            {
-                if (0d > value)
-                    value = 0d;
-                if (1d < value)
-                    value = 1d;
-                fillQuantityRatio = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the fill on quote mode.
-        /// </summary>
-        public FillOnQuote FillOnQuote { get; set; } = FillOnQuote.Last;
-
-        /// <summary>
-        /// Gets or sets the fill on trade mode.
-        /// </summary>
-        public FillOnTrade FillOnTrade { get; set; } = FillOnTrade.Last;
-
-        /// <summary>
-        /// Gets or sets the fill on ohlcv mode.
-        /// </summary>
-        public FillOnOhlcv FillOnOhlcv { get; set; } = FillOnOhlcv.LastClose;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PaperBroker"/> class.
-        /// </summary>
-        /// <param name="timepiece">Provides the simulated time. Set to <c>null</c> to use the real time.</param>
-        /// <param name="dataPublisher">The data publisher. Used to monitor prices.</param>
-        /// <param name="commission">The commission provider.</param>
-        /// <param name="fillQuantityRatio">If not zero, allows partial fills and specifies the quantity fill ratio. If zero, forbids the partial fills. The value range must be from 0 to 1 (inclusive).</param>
-        /// <param name="fillOnQuote">The fill on quote mode.</param>
-        /// <param name="fillOnTrade">The fill on trade mode.</param>
-        /// <param name="fillOnOhlcv">The fill on ohlcv mode.</param>
-        public PaperBroker(
-            ITimepiece timepiece,
-            IDataPublisher dataPublisher,
-            ICommission commission,
-            double fillQuantityRatio,
-            FillOnQuote fillOnQuote,
-            FillOnTrade fillOnTrade,
-            FillOnOhlcv fillOnOhlcv)
-        {
-            Timepiece = timepiece;
-            DataPublisher = dataPublisher;
-            Commission = commission;
-            if (0d > fillQuantityRatio)
-                fillQuantityRatio = 0d;
-            if (1d < fillQuantityRatio)
-                fillQuantityRatio = 1d;
-            this.fillQuantityRatio = fillQuantityRatio;
-            FillOnQuote = fillOnQuote;
-            FillOnTrade = fillOnTrade;
-            FillOnOhlcv = fillOnOhlcv;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PaperBroker"/> class.
-        /// </summary>
-        public PaperBroker()
-        {
-        }
-
-        private void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                if (null == sellSideThread)
-                    return;
-                sellSideActive = false;
-                /* sellSideThread.AutoResetEvent.Close(); */
-                sellSideThread.Dispose();
-                sellSideThread = null;
-            }
-        }
-
-        /// <inheritdoc />
-        public void Dispose()
-        {
-            Dispose(true);
-        }
-
-        /// <summary>
-        /// The implementation.
-        /// </summary>
-        /// <param name="order">The order.</param>
-        /// <param name="parent">The parent broker.</param>
-        /// <param name="reportAction">Called when a report has been received.</param>
-        /// <param name="completionAction">Called when the order has been completed.</param>
-        /// <returns>The order ticket interface.</returns>
-        protected override ISingleOrderTicket CreateOrderTicket(
-            SingleOrder order,
-            Broker parent,
-            Action<ISingleOrderTicket, SingleOrderReport> reportAction,
-            Action<ISingleOrderTicket> completionAction)
-        {
-            return new PaperSingleOrderTicket(
-                order,
-                parent,
-                DataPublisher,
-                Commission,
-                reportAction,
-                completionAction,
-                SellSideAction,
-                Time,
-                NextBuySideOrderId,
-                NextSellSideOrderId,
-                NextSellSideReportId,
-                fillQuantityRatio,
-                FillOnQuote,
-                FillOnTrade,
-                FillOnOhlcv);
         }
     }
 }

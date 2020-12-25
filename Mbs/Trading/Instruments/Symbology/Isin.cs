@@ -1,4 +1,4 @@
-﻿namespace Mbs.Trading.Instruments
+﻿namespace Mbs.Trading.Instruments.Symbology
 {
     /// <summary>
     /// ISIN (International Securities Identifying Number) utilities.
@@ -54,11 +54,17 @@
         {
             char[] input = isin.ToCharArray();
             int number = input.Length;
-            if (12 != number)
+            if (number != 12)
+            {
                 return false;
+            }
+
             number = input[11];
             if (number < '0' || number > '9')
+            {
                 return false;
+            }
+
             int sum = 0;
             bool multiply = true;
             for (int i = 10; i > -1; --i)
@@ -67,18 +73,28 @@
                 if (i < 2)
                 {
                     if (number >= 'A' && number <= 'Z')
+                    {
                         number = number - 'A' + 10;
+                    }
                     else
+                    {
                         return false;
+                    }
                 }
                 else
                 {
                     if (number >= 'A' && number <= 'Z')
+                    {
                         number = number - 'A' + 10;
+                    }
                     else if (number >= '0' && number <= '9')
+                    {
                         number -= '0';
+                    }
                     else
+                    {
                         return false;
+                    }
                 }
 
                 if (number < 10)

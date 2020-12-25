@@ -20,12 +20,18 @@ namespace Mbs.Numerics
         public static double FresnelC(double x)
         {
             if (x < 0d)
+            {
                 return -FresnelC(-x);
+            }
+
             if (x < 2d)
+            {
                 return FresnelSeriesC(x);
-            if (x > 64d)
-                return FresnelAsymptotic(x).Real;
-            return FresnelContinuedFraction(x).Real;
+            }
+
+            return x > 64d
+                ? FresnelAsymptotic(x).Real
+                : FresnelContinuedFraction(x).Real;
         }
 
         /// <summary>
@@ -39,12 +45,18 @@ namespace Mbs.Numerics
         public static double FresnelS(double x)
         {
             if (x < 0d)
+            {
                 return -FresnelS(-x);
+            }
+
             if (x < 2d)
+            {
                 return FresnelSeriesS(x);
-            if (x > 64d)
-                return FresnelAsymptotic(x).Imag;
-            return FresnelContinuedFraction(x).Imag;
+            }
+
+            return x > 64d
+                ? FresnelAsymptotic(x).Imag
+                : FresnelContinuedFraction(x).Imag;
         }
 
         /// <summary>
@@ -60,18 +72,26 @@ namespace Mbs.Numerics
         public static Complex Fresnel(double x)
         {
             if (x < 0d)
+            {
                 return -Fresnel(-x);
+            }
+
             if (x < 2d)
+            {
                 return new Complex(FresnelSeriesC(x), FresnelSeriesS(x));
-            if (x > 64d)
-                return FresnelAsymptotic(x);
-            return FresnelContinuedFraction(x);
+            }
+
+            return x > 64d
+                ? FresnelAsymptotic(x)
+                : FresnelContinuedFraction(x);
         }
 
-        // The use of the asymptotic series doesn't appear to be strictly necessary; the
-        // continued fraction converges quickly to the right result in just a few terms
-        // for arbitrarily large x; aha! this is because the continued fraction is just the
-        // asymptotic series in that limit, down to the evaluation of sin(pi x²/2).
+        /// <summary>
+        /// The use of the asymptotic series doesn't appear to be strictly necessary; the
+        /// continued fraction converges quickly to the right result in just a few terms
+        /// for arbitrarily large x; aha! this is because the continued fraction is just the
+        /// asymptotic series in that limit, down to the evaluation of sin(pi x²/2).
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static double FresnelSeriesC(double x)
         {
@@ -91,7 +111,9 @@ namespace Mbs.Numerics
                 df = -df * x4 / (2 * n) / (2 * n - 1);
                 f += df / (4 * n + 1);
                 if (Math.Abs(f - fPrev) < double.Epsilon)
+                {
                     return f;
+                }
             }
 
             throw new NonConvergenceException(IterationLimit);
@@ -115,7 +137,9 @@ namespace Mbs.Numerics
                 df = -df * x4 / (2 * n + 1) / (2 * n);
                 f += df / (4 * n + 3);
                 if (Math.Abs(f - fPrev) < double.Epsilon)
+                {
                     return f;
+                }
             }
 
             throw new NonConvergenceException(IterationLimit);
@@ -124,7 +148,8 @@ namespace Mbs.Numerics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static Complex FresnelAsymptotic(double x)
         {
-            // Series requires ~3 terms at x~50, ~6 terms at x~10, ~10 terms at x~7, fails to converge to double precision much below that.
+            // Series requires ~3 terms at x~50, ~6 terms at x~10, ~10 terms at x~7,
+            // fails to converge to double precision much below that.
             double x2 = x * x * Constants.Pi;
             double x4 = x2 * x2;
             double f = 1d;
@@ -137,13 +162,18 @@ namespace Mbs.Numerics
                 d = -d * (4 * n - 1) / x4;
                 f += d;
                 double gPrev = g;
-                d *= (4 * n + 1);
+                d *= 4 * n + 1;
                 g += d;
                 if (Math.Abs(f - fPrev) < double.Epsilon && Math.Abs(g - gPrev) < double.Epsilon)
+                {
                     break;
+                }
+
                 ++n;
                 if (n > IterationLimit)
+                {
                     throw new NonConvergenceException(IterationLimit);
+                }
             }
 
             double px = Constants.Pi * x;
@@ -163,14 +193,11 @@ namespace Mbs.Numerics
             // Series requires ~35 terms at x~2, ~12 terms at x~4, ~6 terms at x~8, ~3 terms for x~12 and above.
             double px2 = Constants.Pi * x * x;
 
-            // Complex z = Constants.SqrtPi * x / 2d * (1d - Complex.ImaginaryOne);
-            // Investigate this carefully: it appears that (1) imaginary part of f doesn't change and
-            // (2) real part of f merely increases at constant rate until "right" number is reached.
-            Complex a = 1d;                // a₁
+            Complex a = 1d;                            // a₁
             var b = new Complex(1d, -px2); // b₁
-            Complex d = 1d / b;            // D₁ = b₀ / b₁
-            Complex df = a / b;            // Df₁ = f₁ - f₀
-            Complex f = 0d + df;           // f₁ = f₀ + Df₁ = b₀ + Df₁
+            Complex d = 1d / b;                        // D₁ = b₀ / b₁
+            Complex df = a / b;                        // Df₁ = f₁ - f₀
+            Complex f = 0d + df;                       // f₁ = f₀ + Df₁ = b₀ + Df₁
             for (int k = 1; ; ++k)
             {
                 Complex fPrev = f;
@@ -180,9 +207,14 @@ namespace Mbs.Numerics
                 df = (b * d - 1d) * df;
                 f += df;
                 if (f == fPrev)
+                {
                     break;
+                }
+
                 if (k > IterationLimit)
+                {
                     throw new NonConvergenceException(IterationLimit);
+                }
             }
 
             double xx = x * x / 4d;

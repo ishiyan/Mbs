@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace Mbs.Numerics.Random
+namespace Mbs.Numerics.RandomGenerators.Marsaglia
 {
     /// <summary>
-    /// Based on George Marsaglia's MWC (multiply with carry) uniform pseudo-random number generator from
+    /// Based on George Marsaglia's MWC (multiply with carry) uniform pseudo-random number generator from:
     /// <para />
     /// http://www.bobwheeler.com/statistics/Password/MarsagliaPost.txt.
     /// <para />
@@ -18,13 +18,13 @@ namespace Mbs.Numerics.Random
         /// <summary>
         /// The default value of <c>W</c>used by Marsaglia.
         /// </summary>
-        public const int DefaultW = (int)521288629U;
+        private const int DefaultW = (int)521288629U;
 
         /// <summary>
         /// The default value of <c>Z</c>used by Marsaglia.
         /// </summary>
-        public const int DefaultZ = (int)362436069U;
-#pragma warning restore SA1139 // Use literal suffix notation instead of casting
+        private const int DefaultZ = (int)362436069U;
+#pragma warning restore SA1139
 
         // These values are not magical, just the default values Marsaglia used.
         // Any pair of unsigned integers should be fine.
@@ -35,7 +35,8 @@ namespace Mbs.Numerics.Random
         private uint z;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MultiplyWithCarryUniformRandom"/> class, using the current system tick count as a seed value.
+        /// Initializes a new instance of the <see cref="MultiplyWithCarryUniformRandom"/> class,
+        /// using the current system tick count as a seed value.
         /// </summary>
         public MultiplyWithCarryUniformRandom()
         {
@@ -46,7 +47,8 @@ namespace Mbs.Numerics.Random
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MultiplyWithCarryUniformRandom"/> class, using the specified seed value.
+        /// Initializes a new instance of the <see cref="MultiplyWithCarryUniformRandom"/> class,
+        /// using the specified seed value.
         /// </summary>
         /// <param name="seedW">A non-zero seed value of <c>W</c> for the pseudo-random number sequence. If a negative number is specified, the absolute value of the number is used.</param>
         /// <param name="seedZ">A non-zero seed value of <c>Z</c> for the pseudo-random number sequence. If a negative number is specified, the absolute value of the number is used.</param>
@@ -57,29 +59,20 @@ namespace Mbs.Numerics.Random
             Init();
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void Init()
-        {
-            w = seedW;
-            z = seedZ;
-
-            // Reset helper variables used for generation of random bools.
-            BitBuffer = 0;
-            BitCount = 0;
-        }
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="MultiplyWithCarryUniformRandom"/> can be reset,
+        /// so that it produces the same pseudo-random number sequence again.
+        /// </summary>
+        public override bool CanReset => true;
 
         /// <summary>
-        /// Resets the <see cref="MultiplyWithCarryUniformRandom"/>, so that it produces the same pseudo-random number sequence again.
+        /// Resets the <see cref="MultiplyWithCarryUniformRandom"/>,
+        /// so that it produces the same pseudo-random number sequence again.
         /// </summary>
         public override void Reset()
         {
             Init();
         }
-
-        /// <summary>
-        /// Gets a value indicating whether the <see cref="MultiplyWithCarryUniformRandom"/> can be reset, so that it produces the same pseudo-random number sequence again.
-        /// </summary>
-        public override bool CanReset => true;
 
         /// <summary>
         /// A next random 32-bit unsigned integer ∊[<see cref="uint.MinValue"/>, <see cref="uint.MaxValue"/>).
@@ -92,6 +85,17 @@ namespace Mbs.Numerics.Random
             z = 36969 * (z & 65535) + (z >> 16);
             w = 18000 * (w & 65535) + (w >> 16);
             return (z << 16) + w;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void Init()
+        {
+            w = seedW;
+            z = seedZ;
+
+            // Reset helper variables used for generation of random booleans.
+            BitBuffer = 0;
+            BitCount = 0;
         }
     }
 }

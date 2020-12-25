@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+#pragma warning disable S125 // Sections of code should not be commented out
 
 // ReSharper disable once CheckNamespace
 namespace Mbs.Numerics
@@ -30,9 +31,15 @@ namespace Mbs.Numerics
         public static double HermiteH(int n, double x)
         {
             if (n < 0)
+            {
                 return double.NaN;
+            }
+
             if (n == 0)
+            {
                 return 1d;
+            }
+
             double h0 = 1d;
             double h1 = 2d * x;
             for (int k = 1; k < n; ++k)
@@ -64,9 +71,15 @@ namespace Mbs.Numerics
         public static double HermiteHe(int n, double x)
         {
             if (n < 0)
+            {
                 return double.NaN;
+            }
+
             if (n == 0)
+            {
                 return 1d;
+            }
+
             double h0 = 1d;
             double h1 = x;
             for (int k = 1; k < n; ++k)
@@ -94,9 +107,15 @@ namespace Mbs.Numerics
         public static double LaguerreL(int n, double x)
         {
             if (n < 0 || x < 0d)
+            {
                 return double.NaN;
+            }
+
             if (n == 0)
+            {
                 return 1d;
+            }
+
             double l0 = 1d;
             double l1 = 1d - x;
             for (int k = 1; k < n; ++k)
@@ -122,7 +141,9 @@ namespace Mbs.Numerics
         public static double LaguerreL(int n, double a, double x)
         {
             if (n < 0 || a <= -1 || x < 0d)
+            {
                 return double.NaN;
+            }
 
             // Standard recurrence on n is claimed stable.
             double l0 = 0d; // L₋₁
@@ -152,11 +173,20 @@ namespace Mbs.Numerics
         public static double LegendreP(int l, double x)
         {
             if (Math.Abs(x) > 1d)
+            {
                 return double.NaN;
+            }
+
             if (l < 0)
+            {
                 return LegendreP(-l - 1, x);
+            }
+
             if (l == 0)
+            {
                 return 1d;
+            }
+
             double p0 = 1d;
             double p1 = x;
             for (int n = 1; n < l; ++n)
@@ -184,16 +214,21 @@ namespace Mbs.Numerics
         public static double LegendreP(int l, int m, double x)
         {
             if (l < 0 || Math.Abs(m) > l || Math.Abs(x) > 1d)
+            {
                 return double.NaN;
+            }
+
             // For low enough orders, we can can get the factorial quickly from a table look-up and without danger of overflow.
             // For higher orders, we must move into log space to avoid overflow.
-            var f = l < 10 ? Math.Sqrt(Factorial(l + m) / Factorial(l - m)) : Math.Exp((LnFactorial(l + m) - LnFactorial(l - m)) / 2d);
+            var f = l < 10 ? Math.Sqrt(Factorial(l + m) / Factorial(l - m)) : Math.Exp((LogFactorial(l + m) - LogFactorial(l - m)) / 2d);
 
             if (m < 0)
             {
                 m = -m;
                 if (m % 2 != 0)
+                {
                     f = -f;
+                }
             }
 
             return f * LegendrePe(l, m, x);
@@ -214,14 +249,22 @@ namespace Mbs.Numerics
         public static double ChebyshevT(int n, double x)
         {
             if (Math.Abs(x) > 1d || n < 0)
+            {
                 return double.NaN;
-            if (n == 0)
-                return 1d;
+            }
 
-            // Very close to the endpoints, the recurrence looses accuracy for high n;
-            // use a series expansion there instead.
+            if (n == 0)
+            {
+                return 1d;
+            }
+
+            // Very close to the endpoints, the recurrence looses accuracy for high n.
+            // Use a series expansion there instead.
             if (n > 10 && (n * n * (1d - Math.Abs(x)) < 1d))
+            {
                 return ChebyshevTSeries1(n, x);
+            }
+
             double t0 = 1d;
             double t1 = x;
             for (int k = 1; k < n; ++k)
@@ -257,20 +300,28 @@ namespace Mbs.Numerics
         public static double ZernikeR(int n, int m, double rho)
         {
             if (n < 0 || m < 0 || m > n || rho < 0d || rho > 1d)
+            {
                 return double.NaN;
+            }
 
             // n and m have the same parity.
             if ((n - m) % 2 != 0)
+            {
                 return 0d;
+            }
 
             // R00.
             if (n == 0)
+            {
                 return 1d;
+            }
 
             // R^{m}_m.
             double r2 = Math.Pow(rho, m);
             if (n == m)
+            {
                 return r2;
+            }
 
             // R^{m+1}_{m+1}.
             int k = m;
@@ -287,7 +338,9 @@ namespace Mbs.Numerics
                 // 2n R^{m+1}_{n-1} = (n+m) R^{m}_{n-2} + (n-m) R^{m}_{n}
                 double r0 = ((2 * k) * rho * r1 - (k + m) * r2) / (k - m);
                 if (k == n)
+                {
                     return r0;
+                }
 
                 // |  *
                 // | /
@@ -317,12 +370,20 @@ namespace Mbs.Numerics
             // Determine P{m,m}.
             double p0 = 1d;
             for (int k = 1; k <= m; ++k)
+            {
                 p0 *= (1d - 1d / (2 * k)) * xx;
+            }
+
             p0 = Math.Sqrt(p0);
             if (m % 2 != 0)
+            {
                 p0 = -p0;
+            }
+
             if (l == m)
+            {
                 return p0;
+            }
 
             // Determine P{m+1,m}.
             double s0 = Math.Sqrt(2 * m + 1);
@@ -348,7 +409,10 @@ namespace Mbs.Numerics
             // A series expansion for Chebyshev polynomials near x~1. Good in the n²(x-1)<<1 limit.
             // Handle negative case.
             if (x < 0d)
+            {
                 return n % 2 == 0 ? ChebyshevTSeries1(n, -x) : -ChebyshevTSeries1(n, -x);
+            }
+
             double xm = x - 1d;
 
             double f = 1d;
@@ -359,7 +423,9 @@ namespace Mbs.Numerics
                 df = df * (n + k - 1) * (n - k + 1) * xm / k / (2 * k - 1);
                 f += df;
                 if (Math.Abs(f - fOld) < double.Epsilon)
+                {
                     return f;
+                }
             }
 
             return double.NaN;

@@ -91,22 +91,34 @@ namespace Mbs.Api.Models.Trading.Instruments
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             if (Stock != null && Type != InstrumentType.Stock)
+            {
                 yield return new ValidationResult($"The Stock field is not allowed when the type is {Type}.", new[] { "Type", "Stock" });
+            }
 
             if (Etv != null && Type != InstrumentType.Etv)
+            {
                 yield return new ValidationResult($"The Etv field is not allowed when the type is {Type}.", new[] { "Type", "Etv" });
+            }
 
             if (Etf != null && Type != InstrumentType.Etf)
+            {
                 yield return new ValidationResult($"The Etf field is not allowed when the type is {Type}.", new[] { "Type", "Etf" });
+            }
 
             if (Inav != null && Type != InstrumentType.Inav)
+            {
                 yield return new ValidationResult($"The Inav field is not allowed when the type is {Type}.", new[] { "Type", "Inav" });
+            }
 
             if (Fund != null && Type != InstrumentType.Fund)
+            {
                 yield return new ValidationResult($"The Fund field is not allowed when the type is {Type}.", new[] { "Type", "Fund" });
+            }
 
             if (Index != null && Type != InstrumentType.Index)
+            {
                 yield return new ValidationResult($"The Index field is not allowed when the type is {Type}.", new[] { "Type", "Index" });
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿namespace Mbs.Trading.Data
+﻿// ReSharper disable once CheckNamespace
+namespace Mbs.Trading.Data
 {
     /// <summary>
     /// An ohlcv price type.
@@ -38,6 +39,6 @@
         /// <summary>
         /// The weighted price, calculated as (low + hight + open + close)/4.
         /// </summary>
-        Weighted
+        Weighted,
     }
 }

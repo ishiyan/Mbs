@@ -1,21 +1,20 @@
 ﻿using System;
-using static System.FormattableString;
-
 using Mbs.Trading.Data;
 using Mbs.Trading.Indicators.Abstractions;
+using static System.FormattableString;
 
 namespace Mbs.Trading.Indicators
 {
     /// <summary>
     /// Given a constant smoothing percentage factor <c>0 &lt; α ≤ 1</c>, an exponential, or exponentially weighted, moving average (EMA)
-    /// is calculated by applying a constant smoothing factor <c>α</c> to a difference of today's sample and yesterday's EMA value
-    /// <para><c>EMAᵢ = αPᵢ + (1-α)EMAᵢ₋₁ = EMAᵢ₋₁ + α(Pᵢ - EMAᵢ₋₁), 0 &lt; α ≤ 1</c></para>
+    /// is calculated by applying a constant smoothing factor <c>α</c> to a difference of today's sample and yesterday's EMA value:
+    /// <para><c>EMAᵢ = αPᵢ + (1-α)EMAᵢ₋₁ = EMAᵢ₋₁ + α(Pᵢ - EMAᵢ₋₁), 0 &lt; α ≤ 1</c>.</para>
     /// Thus, the weighting for each older sample is given by the geometric progression <c>1, α, α², α³, …</c>, giving much
     /// more importance to recent observations while not discarding older ones: all data previously used are always part of the new EMA value.
     /// <para>
     /// <c>α</c> may be expressed as a percentage, so a smoothing factor of 10% is equivalent to <c>α = 0.1</c>. A higher <c>α</c>
-    /// discounts older observations faster. Alternatively, <c>α</c> may be expressed in terms of <c>ℓ</c> time periods (length), where
-    /// <para><c>α = 2 / (ℓ + 1)</c> and <c>ℓ = 2/α - 1</c></para>
+    /// discounts older observations faster. Alternatively, <c>α</c> may be expressed in terms of <c>ℓ</c> time periods (length), where:
+    /// <para><c>α = 2 / (ℓ + 1)</c> and <c>ℓ = 2/α - 1</c>.</para>
     /// <para>The indicator is not primed during the first <c>ℓ-1</c> updates.</para>
     /// The 12- and 26-day EMAs are the most popular short-term averages, and they are used to create indicators like MACD and PPO.
     /// In general, the 50- and 200-day EMAs are used as signals of long-term trends.
@@ -26,61 +25,6 @@ namespace Mbs.Trading.Indicators
     /// </summary>
     public sealed class ExponentialMovingAverage : ScalarIndicator
     {
-        /// <summary>
-        /// The parameters to create the indicator based on length.
-        /// </summary>
-        public class ParametersLength
-        {
-            /// <summary>
-            /// The length (the number of time periods) of the exponential moving average, should be greater than 1.
-            /// </summary>
-            public int Length;
-
-            /// <summary>
-            /// If the very first exponential moving average value is a simple average of the first 'period' (the most widely documented approach) or the first input value (used in Metastock).
-            /// </summary>
-            public bool FirstIsAverage = true;
-
-            /// <summary>
-            /// The <see cref="Ohlcv"/> component to use when calculating indicator from an <see cref="Ohlcv"/> data.
-            /// </summary>
-            public OhlcvComponent OhlcvComponent = OhlcvComponent.ClosingPrice;
-        }
-
-        /// <summary>
-        /// The parameters to create the indicator based on smoothing factor.
-        /// </summary>
-        public class ParametersSmoothingFactor
-        {
-            /// <summary>
-            /// The smoothing factor, <c>α</c>, of the exponential moving average.
-            /// The equivalent length <c>ℓ</c> is
-            /// <para><c>ℓ = 2/α - 1, 0 &lt; α ≤ 1, 1 ≤ ℓ</c></para>
-            /// </summary>
-            public double SmoothingFactor;
-
-            /// <summary>
-            /// If the very first exponential moving average value is a simple average of the first 'period' (the most widely documented approach) or the first input value (used in Metastock).
-            /// </summary>
-            public bool FirstIsAverage = true;
-
-            /// <summary>
-            /// The <see cref="Ohlcv"/> component to use when calculating indicator from an <see cref="Ohlcv"/> data.
-            /// </summary>
-            public OhlcvComponent OhlcvComponent = OhlcvComponent.ClosingPrice;
-        }
-
-        /// <summary>
-        /// Identifies possible outputs of the indicator.
-        /// </summary>
-        public enum OutputKind
-        {
-            /// <summary>
-            /// The scalar value of the the exponential moving average.
-            /// </summary>
-            Value
-        }
-
         private const double Epsilon = 0.00000001;
 
         private readonly string name;
@@ -95,14 +39,17 @@ namespace Mbs.Trading.Indicators
         private bool primed;
 
         /// <summary>
-        /// Constructs a new instance of the <see cref="ExponentialMovingAverage"/> class based on length.
+        /// Initializes a new instance of the <see cref="ExponentialMovingAverage"/> class based on length.
         /// </summary>
         /// <param name="parameters">Parameters to create the indicator based on length.</param>
         public ExponentialMovingAverage(ParametersLength parameters)
             : base(parameters.OhlcvComponent)
         {
-            if (1 > parameters.Length)
-                throw new ArgumentOutOfRangeException(nameof(parameters.Length), "Should be positive.");
+            if (parameters.Length < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(parameters), "Length should be positive.");
+            }
+
             length = parameters.Length;
             firstIsAverage = parameters.FirstIsAverage;
             smoothingFactor = 2d / (1 + length);
@@ -111,25 +58,77 @@ namespace Mbs.Trading.Indicators
         }
 
         /// <summary>
-        /// Constructs a new instance of the <see cref="ExponentialMovingAverage"/> class based on smoothing factor.
+        /// Initializes a new instance of the <see cref="ExponentialMovingAverage"/> class based on smoothing factor.
         /// </summary>
         /// <param name="parameters">Parameters to create the indicator based on smoothing factor.</param>
         public ExponentialMovingAverage(ParametersSmoothingFactor parameters)
             : base(parameters.OhlcvComponent)
         {
             smoothingFactor = parameters.SmoothingFactor;
-            if (0d > smoothingFactor || 1d < smoothingFactor)
-                throw new ArgumentOutOfRangeException(nameof(parameters.SmoothingFactor), "Should be in range [0, 1].");
-            if (Epsilon > smoothingFactor)
+            if (smoothingFactor < 0d || smoothingFactor > 1d)
+            {
+                throw new ArgumentOutOfRangeException(nameof(parameters), "SmoothingFactor should be in range [0, 1].");
+            }
+
+            if (smoothingFactor < Epsilon)
+            {
                 length = int.MaxValue;
+            }
             else
+            {
                 length = (int)Math.Round(2d / smoothingFactor) - 1;
+            }
+
             firstIsAverage = parameters.FirstIsAverage;
             name = Invariant($"ema({length},{parameters.OhlcvComponent.ToShortString()})");
             description = string.Concat("Exponential moving average ", name);
         }
 
-        #region IIndicator implementation
+        /// <summary>
+        /// Identifies possible outputs of the indicator.
+        /// </summary>
+        public enum OutputKind
+        {
+            /// <summary>
+            /// The scalar value of the the exponential moving average.
+            /// </summary>
+            Value,
+        }
+
+        /// <inheritdoc />
+        public override bool IsPrimed
+        {
+            get
+            {
+                lock (UpdateLock)
+                {
+                    return primed;
+                }
+            }
+        }
+
+        /// <inheritdoc />
+        public override IndicatorMetadata Metadata
+        {
+            get
+            {
+                return new IndicatorMetadata
+                {
+                    IndicatorType = IndicatorType.ExponentialMovingAverage,
+                    Outputs = new[]
+                    {
+                        new Metadata
+                        {
+                            Kind = (int)OutputKind.Value,
+                            Type = IndicatorOutputType.Scalar,
+                            Name = name,
+                            Description = description,
+                        },
+                    },
+                };
+            }
+        }
+
         /// <inheritdoc />
         public override void Reset()
         {
@@ -142,35 +141,9 @@ namespace Mbs.Trading.Indicators
             }
         }
 
-        /// <inheritdoc />
-        public override bool IsPrimed { get { lock (UpdateLock) { return primed; } } }
-
-        /// <inheritdoc />
-        public override IndicatorMetadata Metadata
-        {
-            get
-            {
-                return new IndicatorMetadata
-                {
-                    IndicatorType = IndicatorType.ExponentialMovingAverage,
-                    Outputs = new []
-                    {
-                        new Metadata
-                        {
-                            Kind = (int)OutputKind.Value,
-                            Type = IndicatorOutputType.Scalar,
-                            Name = name,
-                            Description = description
-                        }
-                    }
-                };
-            }
-        }
-        #endregion
-
         /// <summary>
         /// Updates the value of the exponential moving average from the input array using the formula:
-        /// <para><c>EMAᵢ = EMAᵢ₋₁ + α(Pᵢ - EMAᵢ₋₁), 0 ≤ α ≤ 1</c></para>
+        /// <para><c>EMAᵢ = EMAᵢ₋₁ + α(Pᵢ - EMAᵢ₋₁), 0 ≤ α ≤ 1</c>.</para>
         /// The indicator is primed after the first update.
         /// </summary>
         /// <param name="sample">A new sample.</param>
@@ -178,9 +151,14 @@ namespace Mbs.Trading.Indicators
         protected override double Update(double sample)
         {
             if (double.IsNaN(sample))
+            {
                 return sample;
+            }
+
             if (primed)
+            {
                 value += (sample - value) * smoothingFactor;
+            }
             else
             {
                 if (firstIsAverage)
@@ -192,22 +170,77 @@ namespace Mbs.Trading.Indicators
                         value = sum / length;
                     }
                     else
+                    {
                         return double.NaN;
+                    }
                 }
                 else
                 {
-                    if (1 == ++count)
+                    if (++count == 1)
+                    {
                         value = sample;
+                    }
                     else
+                    {
                         value += (sample - value) * smoothingFactor;
+                    }
+
                     if (length == count)
+                    {
                         primed = true;
+                    }
                     else
+                    {
                         return double.NaN;
+                    }
                 }
             }
 
             return value;
+        }
+
+        /// <summary>
+        /// The parameters to create the indicator based on length.
+        /// </summary>
+        public class ParametersLength
+        {
+            /// <summary>
+            /// Gets or sets the length (the number of time periods) of the exponential moving average, should be greater than 1.
+            /// </summary>
+            public int Length { get; set; }
+
+            /// <summary>
+            /// Gets or sets a value indicating whether the very first exponential moving average value is a simple average of the first 'period' (the most widely documented approach) or the first input value (used in Metastock).
+            /// </summary>
+            public bool FirstIsAverage { get; set; } = true;
+
+            /// <summary>
+            /// Gets or sets the <see cref="Ohlcv"/> component to use when calculating indicator from an <see cref="Ohlcv"/> data.
+            /// </summary>
+            public OhlcvComponent OhlcvComponent { get; set; } = OhlcvComponent.ClosingPrice;
+        }
+
+        /// <summary>
+        /// The parameters to create the indicator based on smoothing factor.
+        /// </summary>
+        public class ParametersSmoothingFactor
+        {
+            /// <summary>
+            /// Gets or sets the smoothing factor, <c>α</c>, of the exponential moving average.
+            /// The equivalent length <c>ℓ</c> is:
+            /// <para><c>ℓ = 2/α - 1, 0 &lt; α ≤ 1, 1 ≤ ℓ</c>.</para>
+            /// </summary>
+            public double SmoothingFactor { get; set; }
+
+            /// <summary>
+            /// Gets or sets a value indicating whether the very first exponential moving average value is a simple average of the first 'period' (the most widely documented approach) or the first input value (used in Metastock).
+            /// </summary>
+            public bool FirstIsAverage { get; set; } = true;
+
+            /// <summary>
+            /// Gets or sets the <see cref="Ohlcv"/> component to use when calculating indicator from an <see cref="Ohlcv"/> data.
+            /// </summary>
+            public OhlcvComponent OhlcvComponent { get; set; } = OhlcvComponent.ClosingPrice;
         }
     }
 }

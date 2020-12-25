@@ -4,6 +4,7 @@ using System.Linq;
 using Mbs.Trading.Data.Live;
 using Mbs.Trading.Instruments;
 using Mbs.Trading.Time;
+using Mbs.Utilities;
 
 namespace Mbs.Trading.Data
 {
@@ -12,21 +13,346 @@ namespace Mbs.Trading.Data
     /// </summary>
     public class DataEmitter : IDataEmitter
     {
+        private const string TemporalEntityType = "Unknown TemporalEntity type.";
+
+        private readonly EntityProvider<Ohlcv> ohlcvEntityProvider = new EntityProvider<Ohlcv>();
+        private readonly EntityProvider<Trade> tradeEntityProvider = new EntityProvider<Trade>();
+        private readonly EntityProvider<Quote> quoteEntityProvider = new EntityProvider<Quote>();
+        private readonly EntityProvider<Scalar> scalarEntityProvider = new EntityProvider<Scalar>();
+        private readonly object defaultMonitorGranularityLock = new object();
+
+        private TimeGranularity ohlcvDefaultMonitorGranularity = TimeGranularity.Day1;
+        private TimeGranularity tradeDefaultMonitorGranularity = TimeGranularity.Aperiodic;
+        private TimeGranularity quoteDefaultMonitorGranularity = TimeGranularity.Aperiodic;
+        private TimeGranularity scalarDefaultMonitorGranularity = TimeGranularity.Day1;
+
+        /// <summary>
+        /// The default time granularity of the monitoring.
+        /// </summary>
+        /// <typeparam name="T">A temporal entity type.</typeparam>
+        /// <returns>The time granularity.</returns>
+        public TimeGranularity DefaultMonitorGranularity<T>()
+            where T : TemporalEntity
+        {
+            Type type = typeof(T);
+            lock (defaultMonitorGranularityLock)
+            {
+                if (type == Types.OhlcvType)
+                {
+                    return ohlcvDefaultMonitorGranularity;
+                }
+
+                if (type == Types.ScalarType)
+                {
+                    return scalarDefaultMonitorGranularity;
+                }
+
+                if (type == Types.TradeType)
+                {
+                    return tradeDefaultMonitorGranularity;
+                }
+
+                if (type == Types.QuoteType)
+                {
+                    return quoteDefaultMonitorGranularity;
+                }
+
+                throw new ArgumentException(TemporalEntityType);
+            }
+        }
+
+        /// <summary>
+        /// Sets the default time granularity of the  monitoring.
+        /// </summary>
+        /// <typeparam name="T">A temporal entity type.</typeparam>
+        /// <param name="timeGranularity">The time granularity.</param>
+        public void DefaultMonitorGranularity<T>(TimeGranularity timeGranularity)
+            where T : TemporalEntity
+        {
+            Type type = typeof(T);
+            lock (defaultMonitorGranularityLock)
+            {
+                if (type == Types.OhlcvType)
+                {
+                    ohlcvDefaultMonitorGranularity = timeGranularity;
+                }
+                else if (type == Types.ScalarType)
+                {
+                    scalarDefaultMonitorGranularity = timeGranularity;
+                }
+                else if (type == Types.TradeType)
+                {
+                    tradeDefaultMonitorGranularity = timeGranularity;
+                }
+                else if (type == Types.QuoteType)
+                {
+                    quoteDefaultMonitorGranularity = timeGranularity;
+                }
+                else
+                {
+                    throw new ArgumentException(TemporalEntityType);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Monitor the last entity for an instrument.
+        /// Connect the subscription (if it is not activated yet) to actually start monitoring.
+        /// </summary>
+        /// <typeparam name="T">A temporal entity type.</typeparam>
+        /// <param name="instrument">The instrument.</param>
+        /// <param name="timeGranularity">The time granularity.</param>
+        /// <param name="vendor">Specifies the vendor if not null or empty.</param>
+        /// <returns>The subscription or null if failed to subscribe.</returns>
+        public ISubscription<T> Monitor<T>(Instrument instrument, TimeGranularity timeGranularity, string vendor)
+            where T : TemporalEntity
+        {
+            Type type = typeof(T);
+            var topic = new Topic(instrument, timeGranularity);
+            if (type == Types.OhlcvType)
+            {
+                return ohlcvEntityProvider.Monitor(topic, vendor) as ISubscription<T>;
+            }
+
+            if (type == Types.ScalarType)
+            {
+                return scalarEntityProvider.Monitor(topic, vendor) as ISubscription<T>;
+            }
+
+            if (type == Types.TradeType)
+            {
+                return tradeEntityProvider.Monitor(topic, vendor) as ISubscription<T>;
+            }
+
+            if (type == Types.QuoteType)
+            {
+                return quoteEntityProvider.Monitor(topic, vendor) as ISubscription<T>;
+            }
+
+            throw new ArgumentException(TemporalEntityType);
+        }
+
+        /// <inheritdoc />
+        public ISubscription<T> Monitor<T>(Instrument instrument, TimeGranularity timeGranularity)
+            where T : TemporalEntity
+        {
+            return Monitor<T>(instrument, timeGranularity, null);
+        }
+
+        /// <inheritdoc />
+        public ISubscription<T> Monitor<T>(Instrument instrument)
+            where T : TemporalEntity
+        {
+            Type type = typeof(T);
+
+            // First, try to subscribe to the lowest available time granularity.
+            ISubscription<T> subscription = null;
+            if (type == Types.OhlcvType)
+            {
+                subscription = ohlcvEntityProvider.Monitor(instrument, null) as ISubscription<T>;
+            }
+            else if (type == Types.ScalarType)
+            {
+                subscription = scalarEntityProvider.Monitor(instrument, null) as ISubscription<T>;
+            }
+            else if (type == Types.TradeType)
+            {
+                subscription = tradeEntityProvider.Monitor(instrument, null) as ISubscription<T>;
+            }
+            else if (type == Types.QuoteType)
+            {
+                subscription = quoteEntityProvider.Monitor(instrument, null) as ISubscription<T>;
+            }
+
+            if (subscription != null)
+            {
+                return subscription;
+            }
+
+            lock (defaultMonitorGranularityLock)
+            {
+                if (type == Types.OhlcvType)
+                {
+                    return ohlcvEntityProvider.Monitor(new Topic(instrument, ohlcvDefaultMonitorGranularity), null) as ISubscription<T>;
+                }
+
+                if (type == Types.ScalarType)
+                {
+                    return scalarEntityProvider.Monitor(new Topic(instrument, scalarDefaultMonitorGranularity), null) as ISubscription<T>;
+                }
+
+                if (type == Types.TradeType)
+                {
+                    return tradeEntityProvider.Monitor(new Topic(instrument, tradeDefaultMonitorGranularity), null) as ISubscription<T>;
+                }
+
+                if (type == Types.QuoteType)
+                {
+                    return quoteEntityProvider.Monitor(new Topic(instrument, quoteDefaultMonitorGranularity), null) as ISubscription<T>;
+                }
+
+                throw new ArgumentException(TemporalEntityType);
+            }
+        }
+
+        /// <summary>
+        /// Adds a subscription provider of the specified type.
+        /// </summary>
+        /// <typeparam name="T">A temporal entity type.</typeparam>
+        /// <param name="subscriptionProvider">The subscription provider of the specified type.</param>
+        public void Add<T>(ISubscriptionProvider<T> subscriptionProvider)
+            where T : TemporalEntity
+        {
+            if (subscriptionProvider == null)
+            {
+                return;
+            }
+
+            Type type = typeof(T);
+            if (type == Types.OhlcvType)
+            {
+                ohlcvEntityProvider.Add((ISubscriptionProvider<Ohlcv>)subscriptionProvider);
+            }
+            else if (type == Types.ScalarType)
+            {
+                scalarEntityProvider.Add((ISubscriptionProvider<Scalar>)subscriptionProvider);
+            }
+            else if (type == Types.TradeType)
+            {
+                tradeEntityProvider.Add((ISubscriptionProvider<Trade>)subscriptionProvider);
+            }
+            else if (type == Types.QuoteType)
+            {
+                quoteEntityProvider.Add((ISubscriptionProvider<Quote>)subscriptionProvider);
+            }
+            else
+            {
+                throw new ArgumentException(TemporalEntityType);
+            }
+        }
+
+        /// <inheritdoc />
+        public double LastBuyPrice(Instrument instrument)
+        {
+            Quote quote = quoteEntityProvider.Last(instrument);
+            if (quote != null)
+            {
+                return quote.BidPrice;
+            }
+
+            Trade trade = tradeEntityProvider.Last(instrument);
+            if (trade != null)
+            {
+                return trade.Price;
+            }
+
+            Ohlcv ohlcv = ohlcvEntityProvider.Last(instrument);
+            return ohlcv?.Close ?? double.NaN;
+        }
+
+        /// <inheritdoc />
+        public double LastSellPrice(Instrument instrument)
+        {
+            Quote quote = quoteEntityProvider.Last(instrument);
+            if (quote != null)
+            {
+                return quote.AskPrice;
+            }
+
+            Trade trade = tradeEntityProvider.Last(instrument);
+            if (trade != null)
+            {
+                return trade.Price;
+            }
+
+            Ohlcv ohlcv = ohlcvEntityProvider.Last(instrument);
+            return ohlcv?.Close ?? double.NaN;
+        }
+
+        /// <inheritdoc />
+        public T Last<T>(Instrument instrument)
+            where T : TemporalEntity
+        {
+            Type type = typeof(T);
+            if (type == Types.OhlcvType)
+            {
+                return ohlcvEntityProvider.Last(instrument) as T;
+            }
+
+            if (type == Types.ScalarType)
+            {
+                return scalarEntityProvider.Last(instrument) as T;
+            }
+
+            if (type == Types.TradeType)
+            {
+                return tradeEntityProvider.Last(instrument) as T;
+            }
+
+            if (type == Types.QuoteType)
+            {
+                return quoteEntityProvider.Last(instrument) as T;
+            }
+
+            throw new ArgumentException(TemporalEntityType);
+        }
+
+        /// <inheritdoc />
+        public ISubscription<T> Subscribe<T>(Instrument instrument, TimeGranularity timeGranularity, Action<T> action)
+            where T : TemporalEntity
+        {
+            var topic = new Topic(instrument, timeGranularity);
+            Type type = typeof(T);
+            if (type == Types.OhlcvType)
+            {
+                return (ISubscription<T>)ohlcvEntityProvider.Subscribe(topic, null, action as Action<Ohlcv>);
+            }
+
+            if (type == Types.ScalarType)
+            {
+                return (ISubscription<T>)scalarEntityProvider.Subscribe(topic, null, action as Action<Scalar>);
+            }
+
+            if (type == Types.TradeType)
+            {
+                return (ISubscription<T>)tradeEntityProvider.Subscribe(topic, null, action as Action<Trade>);
+            }
+
+            if (type == Types.QuoteType)
+            {
+                return (ISubscription<T>)quoteEntityProvider.Subscribe(topic, null, action as Action<Quote>);
+            }
+
+            throw new ArgumentException(TemporalEntityType);
+        }
+
+        /// <summary>
+        /// Cancels all current active subscriptions.
+        /// </summary>
+        public void Cancel()
+        {
+            ohlcvEntityProvider.Cancel();
+            scalarEntityProvider.Cancel();
+            tradeEntityProvider.Cancel();
+            quoteEntityProvider.Cancel();
+        }
+
+        /// <summary>
+        /// Activates all current not active subscriptions.
+        /// </summary>
+        public void Activate()
+        {
+            ohlcvEntityProvider.Activate();
+            scalarEntityProvider.Activate();
+            tradeEntityProvider.Activate();
+            quoteEntityProvider.Activate();
+        }
+
         /// <summary>
         /// A unique identity for a subscription.
         /// </summary>
         private sealed class Topic
         {
-            /// <summary>
-            /// The instrument.
-            /// </summary>
-            internal readonly Instrument Instrument;
-
-            /// <summary>
-            /// The time granularity.
-            /// </summary>
-            internal readonly TimeGranularity TimeGranularity;
-
             /// <summary>
             /// Initializes a new instance of the <see cref="Topic"/> class.
             /// </summary>
@@ -37,6 +363,16 @@ namespace Mbs.Trading.Data
                 Instrument = instrument;
                 TimeGranularity = timeGranularity;
             }
+
+            /// <summary>
+            /// Gets the instrument.
+            /// </summary>
+            public Instrument Instrument { get; }
+
+            /// <summary>
+            /// Gets the time granularity.
+            /// </summary>
+            public TimeGranularity TimeGranularity { get; }
         }
 
         /// <summary>
@@ -45,17 +381,6 @@ namespace Mbs.Trading.Data
         private sealed class EntityProvider<T>
             where T : TemporalEntity
         {
-            /// <summary>
-            /// A container for the last entity.
-            /// </summary>
-            private sealed class LastContainer
-            {
-                /// <summary>
-                /// The last entity.
-                /// </summary>
-                internal T Entity;
-            }
-
             private readonly object providerLock = new object();
             private readonly List<ISubscriptionProvider<T>> providerList = new List<ISubscriptionProvider<T>>();
 
@@ -101,7 +426,7 @@ namespace Mbs.Trading.Data
                     }
                 }
 
-                return null == last ? null : Subscribe(topic, vendor, t => last.Entity = t);
+                return last == null ? null : Subscribe(topic, vendor, t => last.Entity = t);
             }
 
             /// <summary>
@@ -123,7 +448,7 @@ namespace Mbs.Trading.Data
                     }
                 }
 
-                return null == last ? null : Subscribe(instrument, vendor, t => last.Entity = t);
+                return last == null ? null : Subscribe(instrument, vendor, t => last.Entity = t);
             }
 
             /// <summary>
@@ -135,7 +460,9 @@ namespace Mbs.Trading.Data
                 lock (providerLock)
                 {
                     if (!providerList.Contains(provider))
+                    {
                         providerList.Add(provider);
+                    }
                 }
             }
 
@@ -157,7 +484,9 @@ namespace Mbs.Trading.Data
                         foreach (var subscription in subscriptionList)
                         {
                             if (subscription.IsConnected)
+                            {
                                 subscription.Disconnect();
+                            }
                         }
 
                         subscriptionList.Clear();
@@ -175,7 +504,9 @@ namespace Mbs.Trading.Data
                     foreach (var subscription in subscriptionList)
                     {
                         if (!subscription.IsConnected)
+                        {
                             subscription.Connect();
+                        }
                     }
                 }
             }
@@ -196,7 +527,7 @@ namespace Mbs.Trading.Data
                     topicDictionary.TryGetValue(topic, out ISubscriptionProvider<T> subscriptionProvider);
                     if (string.IsNullOrEmpty(provider))
                     {
-                        if (null != subscriptionProvider)
+                        if (subscriptionProvider != null)
                         {
                             subscription = subscriptionProvider.Subscribe(topic.Instrument, topic.TimeGranularity, action);
                         }
@@ -216,8 +547,11 @@ namespace Mbs.Trading.Data
                                         continue;
                                     }
 
-                                    if (null == subscription)
+                                    if (subscription == null)
+                                    {
                                         continue;
+                                    }
+
                                     topicDictionary.Add(topic, p);
                                     break;
                                 }
@@ -241,10 +575,16 @@ namespace Mbs.Trading.Data
                                         continue;
                                     }
 
-                                    if (null == subscription)
+                                    if (subscription == null)
+                                    {
                                         continue;
-                                    if (null == subscriptionProvider)
+                                    }
+
+                                    if (subscriptionProvider == null)
+                                    {
                                         topicDictionary.Add(topic, p);
+                                    }
+
                                     break;
                                 }
                             }
@@ -252,7 +592,7 @@ namespace Mbs.Trading.Data
                     }
                 }
 
-                if (null != subscription)
+                if (subscription != null)
                 {
                     lock (subscriptionListLock)
                     {
@@ -279,36 +619,40 @@ namespace Mbs.Trading.Data
                     Topic bestTopic = null;
                     ISubscriptionProvider<T> bestSubscriptionProvider = null;
                     IEnumerable<Topic> enumerable = topicDictionary.Keys.Where(t => instrument == t.Instrument);
-                    if (null == provider)
+                    if (provider == null)
                     {
                         foreach (var t in enumerable)
                         {
-                            if (null == bestTopic)
+                            if (bestTopic == null)
+                            {
                                 bestTopic = t;
+                            }
                             else if (bestTopic.TimeGranularity > t.TimeGranularity)
+                            {
                                 bestTopic = t;
+                            }
                         }
 
-                        if (null != bestTopic)
+                        if (bestTopic != null)
+                        {
                             bestSubscriptionProvider = topicDictionary[bestTopic];
+                        }
                     }
                     else
                     {
                         foreach (var t in enumerable)
                         {
                             ISubscriptionProvider<T> p = topicDictionary[t];
-                            if (provider.Equals(p.Provider, StringComparison.Ordinal))
+                            if (provider.Equals(p.Provider, StringComparison.Ordinal)
+                                && (bestTopic == null || bestTopic.TimeGranularity > t.TimeGranularity))
                             {
-                                if (null == bestTopic || bestTopic.TimeGranularity > t.TimeGranularity)
-                                {
-                                    bestTopic = t;
-                                    bestSubscriptionProvider = p;
-                                }
+                                bestTopic = t;
+                                bestSubscriptionProvider = p;
                             }
                         }
                     }
 
-                    if (null != bestSubscriptionProvider)
+                    if (bestSubscriptionProvider != null)
                     {
                         lock (providerLock)
                         {
@@ -317,7 +661,7 @@ namespace Mbs.Trading.Data
                     }
                 }
 
-                if (null != subscription)
+                if (subscription != null)
                 {
                     lock (subscriptionListLock)
                     {
@@ -327,235 +671,17 @@ namespace Mbs.Trading.Data
 
                 return subscription;
             }
-        }
 
-        private const string TemporalEntityType = "Unknown TemporalEntity type.";
-
-        private readonly EntityProvider<Ohlcv> ohlcvEntityProvider = new EntityProvider<Ohlcv>();
-        private readonly EntityProvider<Trade> tradeEntityProvider = new EntityProvider<Trade>();
-        private readonly EntityProvider<Quote> quoteEntityProvider = new EntityProvider<Quote>();
-        private readonly EntityProvider<Scalar> scalarEntityProvider = new EntityProvider<Scalar>();
-        private readonly object defaultMonitorGranularityLock = new object();
-
-        private TimeGranularity ohlcvDefaultMonitorGranularity = TimeGranularity.Day1;
-        private TimeGranularity tradeDefaultMonitorGranularity = TimeGranularity.Aperiodic;
-        private TimeGranularity quoteDefaultMonitorGranularity = TimeGranularity.Aperiodic;
-        private TimeGranularity scalarDefaultMonitorGranularity = TimeGranularity.Day1;
-
-        /// <summary>
-        /// The default time granularity of the monitoring.
-        /// </summary>
-        /// <typeparam name="T">A temporal entity type.</typeparam>
-        /// <returns>The time granularity.</returns>
-        public TimeGranularity DefaultMonitorGranularity<T>()
-            where T : TemporalEntity
-        {
-            Type type = typeof(T);
-            lock (defaultMonitorGranularityLock)
+            /// <summary>
+            /// A container for the last entity.
+            /// </summary>
+            private sealed class LastContainer
             {
-                if (type == Types.OhlcvType)
-                    return ohlcvDefaultMonitorGranularity;
-                if (type == Types.ScalarType)
-                    return scalarDefaultMonitorGranularity;
-                if (type == Types.TradeType)
-                    return tradeDefaultMonitorGranularity;
-                if (type == Types.QuoteType)
-                    return quoteDefaultMonitorGranularity;
-                throw new ArgumentException(TemporalEntityType);
+                /// <summary>
+                /// Gets or sets the last entity.
+                /// </summary>
+                public T Entity { get; set; }
             }
-        }
-
-        /// <summary>
-        /// Sets the default time granularity of the  monitoring.
-        /// </summary>
-        /// <typeparam name="T">A temporal entity type.</typeparam>
-        /// <param name="timeGranularity">The time granularity.</param>
-        public void DefaultMonitorGranularity<T>(TimeGranularity timeGranularity)
-            where T : TemporalEntity
-        {
-            Type type = typeof(T);
-            lock (defaultMonitorGranularityLock)
-            {
-                if (type == Types.OhlcvType)
-                    ohlcvDefaultMonitorGranularity = timeGranularity;
-                else if (type == Types.ScalarType)
-                    scalarDefaultMonitorGranularity = timeGranularity;
-                else if (type == Types.TradeType)
-                    tradeDefaultMonitorGranularity = timeGranularity;
-                else if (type == Types.QuoteType)
-                    quoteDefaultMonitorGranularity = timeGranularity;
-                else
-                    throw new ArgumentException(TemporalEntityType);
-            }
-        }
-
-        /// <summary>
-        /// Monitor the last entity for an instrument.
-        /// Connect the subscription (if it is not activated yet) to actually start monitoring.
-        /// </summary>
-        /// <typeparam name="T">A temporal entity type.</typeparam>
-        /// <param name="instrument">The instrument.</param>
-        /// <param name="timeGranularity">The time granularity.</param>
-        /// <param name="vendor">Specifies the vendor if not null or empty.</param>
-        /// <returns>The subscription or null if failed to subscribe.</returns>
-        public ISubscription<T> Monitor<T>(Instrument instrument, TimeGranularity timeGranularity, string vendor)
-            where T : TemporalEntity
-        {
-            Type type = typeof(T);
-            var topic = new Topic(instrument, timeGranularity);
-            if (type == Types.OhlcvType)
-                return ohlcvEntityProvider.Monitor(topic, vendor) as ISubscription<T>;
-            if (type == Types.ScalarType)
-                return scalarEntityProvider.Monitor(topic, vendor) as ISubscription<T>;
-            if (type == Types.TradeType)
-                return tradeEntityProvider.Monitor(topic, vendor) as ISubscription<T>;
-            if (type == Types.QuoteType)
-                return quoteEntityProvider.Monitor(topic, vendor) as ISubscription<T>;
-            throw new ArgumentException(TemporalEntityType);
-        }
-
-        /// <inheritdoc />
-        public ISubscription<T> Monitor<T>(Instrument instrument, TimeGranularity timeGranularity)
-            where T : TemporalEntity
-        {
-            return Monitor<T>(instrument, timeGranularity, null);
-        }
-
-        /// <inheritdoc />
-        public ISubscription<T> Monitor<T>(Instrument instrument)
-            where T : TemporalEntity
-        {
-            Type type = typeof(T);
-
-            // First, try to subscribe to the lowest available time granularity.
-            ISubscription<T> subscription = null;
-            if (type == Types.OhlcvType)
-                subscription = ohlcvEntityProvider.Monitor(instrument, null) as ISubscription<T>;
-            else if (type == Types.ScalarType)
-                subscription = scalarEntityProvider.Monitor(instrument, null) as ISubscription<T>;
-            else if (type == Types.TradeType)
-                subscription = tradeEntityProvider.Monitor(instrument, null) as ISubscription<T>;
-            else if (type == Types.QuoteType)
-                subscription = quoteEntityProvider.Monitor(instrument, null) as ISubscription<T>;
-            if (null != subscription)
-                return subscription;
-
-            lock (defaultMonitorGranularityLock)
-            {
-                if (type == Types.OhlcvType)
-                    return ohlcvEntityProvider.Monitor(new Topic(instrument, ohlcvDefaultMonitorGranularity), null) as ISubscription<T>;
-                if (type == Types.ScalarType)
-                    return scalarEntityProvider.Monitor(new Topic(instrument, scalarDefaultMonitorGranularity), null) as ISubscription<T>;
-                if (type == Types.TradeType)
-                    return tradeEntityProvider.Monitor(new Topic(instrument, tradeDefaultMonitorGranularity), null) as ISubscription<T>;
-                if (type == Types.QuoteType)
-                    return quoteEntityProvider.Monitor(new Topic(instrument, quoteDefaultMonitorGranularity), null) as ISubscription<T>;
-                throw new ArgumentException(TemporalEntityType);
-            }
-        }
-
-        /// <summary>
-        /// Adds a subscription provider of the specified type.
-        /// </summary>
-        /// <typeparam name="T">A temporal entity type.</typeparam>
-        /// <param name="subscriptionProvider">The subscription provider of the specified type.</param>
-        public void Add<T>(ISubscriptionProvider<T> subscriptionProvider)
-            where T : TemporalEntity
-        {
-            if (null == subscriptionProvider)
-                return;
-            Type type = typeof(T);
-            if (type == Types.OhlcvType)
-                ohlcvEntityProvider.Add((ISubscriptionProvider<Ohlcv>)subscriptionProvider);
-            else if (type == Types.ScalarType)
-                scalarEntityProvider.Add((ISubscriptionProvider<Scalar>)subscriptionProvider);
-            else if (type == Types.TradeType)
-                tradeEntityProvider.Add((ISubscriptionProvider<Trade>)subscriptionProvider);
-            else if (type == Types.QuoteType)
-                quoteEntityProvider.Add((ISubscriptionProvider<Quote>)subscriptionProvider);
-            else
-                throw new ArgumentException(TemporalEntityType);
-        }
-
-        /// <inheritdoc />
-        public double LastBuyPrice(Instrument instrument)
-        {
-            Quote quote = quoteEntityProvider.Last(instrument);
-            if (quote != null)
-                return quote.BidPrice;
-            Trade trade = tradeEntityProvider.Last(instrument);
-            if (trade != null)
-                return trade.Price;
-            Ohlcv ohlcv = ohlcvEntityProvider.Last(instrument);
-            return ohlcv?.Close ?? double.NaN;
-        }
-
-        /// <inheritdoc />
-        public double LastSellPrice(Instrument instrument)
-        {
-            Quote quote = quoteEntityProvider.Last(instrument);
-            if (quote != null)
-                return quote.AskPrice;
-            Trade trade = tradeEntityProvider.Last(instrument);
-            if (trade != null)
-                return trade.Price;
-            Ohlcv ohlcv = ohlcvEntityProvider.Last(instrument);
-            return ohlcv?.Close ?? double.NaN;
-        }
-
-        /// <inheritdoc />
-        public T Last<T>(Instrument instrument)
-            where T : TemporalEntity
-        {
-            Type type = typeof(T);
-            if (type == Types.OhlcvType)
-                return ohlcvEntityProvider.Last(instrument) as T;
-            if (type == Types.ScalarType)
-                return scalarEntityProvider.Last(instrument) as T;
-            if (type == Types.TradeType)
-                return tradeEntityProvider.Last(instrument) as T;
-            if (type == Types.QuoteType)
-                return quoteEntityProvider.Last(instrument) as T;
-            throw new ArgumentException(TemporalEntityType);
-        }
-
-        /// <inheritdoc />
-        public ISubscription<T> Subscribe<T>(Instrument instrument, TimeGranularity timeGranularity, Action<T> action)
-            where T : TemporalEntity
-        {
-            var topic = new Topic(instrument, timeGranularity);
-            Type type = typeof(T);
-            if (type == Types.OhlcvType)
-                return (ISubscription<T>)ohlcvEntityProvider.Subscribe(topic, null, action as Action<Ohlcv>);
-            if (type == Types.ScalarType)
-                return (ISubscription<T>)scalarEntityProvider.Subscribe(topic, null, action as Action<Scalar>);
-            if (type == Types.TradeType)
-                return (ISubscription<T>)tradeEntityProvider.Subscribe(topic, null, action as Action<Trade>);
-            if (type == Types.QuoteType)
-                return (ISubscription<T>)quoteEntityProvider.Subscribe(topic, null, action as Action<Quote>);
-            throw new ArgumentException(TemporalEntityType);
-        }
-
-        /// <summary>
-        /// Cancels all current active subscriptions.
-        /// </summary>
-        public void Cancel()
-        {
-            ohlcvEntityProvider.Cancel();
-            scalarEntityProvider.Cancel();
-            tradeEntityProvider.Cancel();
-            quoteEntityProvider.Cancel();
-        }
-
-        /// <summary>
-        /// Activates all current not active subscriptions.
-        /// </summary>
-        public void Activate()
-        {
-            ohlcvEntityProvider.Activate();
-            scalarEntityProvider.Activate();
-            tradeEntityProvider.Activate();
-            quoteEntityProvider.Activate();
         }
     }
 }

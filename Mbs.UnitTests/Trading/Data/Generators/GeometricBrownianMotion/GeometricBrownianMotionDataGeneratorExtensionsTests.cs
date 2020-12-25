@@ -7,8 +7,6 @@ namespace Mbs.UnitTests.Trading.Data.Generators.GeometricBrownianMotion
     [TestClass]
     public class GeometricBrownianMotionDataGeneratorExtensionsTests
     {
-        // ReSharper disable InconsistentNaming
-
         [TestMethod]
         public async Task GeometricBrownianMotionDataGeneratorExtensions_GenerateAsync_Ohlcv_CorrectLength()
         {

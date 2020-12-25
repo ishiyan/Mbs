@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using Mbs.Trading.Data.Generators;
 using Mbs.Trading.Data.Generators.GeometricBrownianMotion;
+using Mbs.Utilities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 
@@ -13,15 +14,13 @@ namespace Mbs.UnitTests.Trading.Data.Generators.GeometricBrownianMotion
     [TestClass]
     public class GeometricBrownianMotionScalarGeneratorParametersTests
     {
-        // ReSharper disable InconsistentNaming
-
         [TestMethod]
         [ExpectedException(typeof(ValidationException))]
         public void GeometricBrownianMotionScalarGeneratorParameters_Validate_SampleCountOutOfRange_Exception()
         {
             var parameters = new GeometricBrownianMotionScalarGeneratorParameters
             {
-                SampleCount = -1
+                SampleCount = -1,
             };
 
             var context = new ValidationContext(parameters);
@@ -33,7 +32,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.GeometricBrownianMotion
         {
             var parameters = new GeometricBrownianMotionScalarGeneratorParameters
             {
-                SampleCount = 1
+                SampleCount = 1,
             };
 
             var expectedMessage = string.Format(
@@ -56,7 +55,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.GeometricBrownianMotion
         {
             var parameters = new GeometricBrownianMotionScalarGeneratorParameters
             {
-                TimeParameters = null
+                TimeParameters = null,
             };
 
             var context = new ValidationContext(parameters);
@@ -68,7 +67,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.GeometricBrownianMotion
         {
             var parameters = new GeometricBrownianMotionScalarGeneratorParameters
             {
-                TimeParameters = null
+                TimeParameters = null,
             };
 
             var expectedMessage = string.Format(
@@ -91,7 +90,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.GeometricBrownianMotion
         {
             var parameters = new GeometricBrownianMotionScalarGeneratorParameters
             {
-                TimeParameters = new TimeParameters { SessionEndTime = TimeSpan.MinValue, SessionStartTime = TimeSpan.MaxValue }
+                TimeParameters = new TimeParameters { SessionEndTime = TimeSpan.MinValue, SessionStartTime = TimeSpan.MaxValue },
             };
 
             var context = new ValidationContext(parameters);
@@ -103,7 +102,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.GeometricBrownianMotion
         {
             var parameters = new GeometricBrownianMotionScalarGeneratorParameters
             {
-                TimeParameters = new TimeParameters { SessionEndTime = TimeSpan.MinValue, SessionStartTime = TimeSpan.MaxValue }
+                TimeParameters = new TimeParameters { SessionEndTime = TimeSpan.MinValue, SessionStartTime = TimeSpan.MaxValue },
             };
 
             var expectedMessage = string.Format(
@@ -126,7 +125,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.GeometricBrownianMotion
         {
             var parameters = new GeometricBrownianMotionScalarGeneratorParameters
             {
-                WaveformParameters = null
+                WaveformParameters = null,
             };
 
             var context = new ValidationContext(parameters);
@@ -138,7 +137,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.GeometricBrownianMotion
         {
             var parameters = new GeometricBrownianMotionScalarGeneratorParameters
             {
-                WaveformParameters = null
+                WaveformParameters = null,
             };
 
             var expectedMessage = string.Format(
@@ -161,7 +160,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.GeometricBrownianMotion
         {
             var parameters = new GeometricBrownianMotionScalarGeneratorParameters
             {
-                WaveformParameters = new WaveformParameters { WaveformSamples = -1 }
+                WaveformParameters = new WaveformParameters { WaveformSamples = -1 },
             };
 
             var context = new ValidationContext(parameters);
@@ -173,7 +172,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.GeometricBrownianMotion
         {
             var parameters = new GeometricBrownianMotionScalarGeneratorParameters
             {
-                WaveformParameters = new WaveformParameters { WaveformSamples = -1 }
+                WaveformParameters = new WaveformParameters { WaveformSamples = -1 },
             };
 
             var expectedMessage = string.Format(
@@ -196,7 +195,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.GeometricBrownianMotion
         {
             var parameters = new GeometricBrownianMotionScalarGeneratorParameters
             {
-                GbmParameters = null
+                GbmParameters = null,
             };
 
             var context = new ValidationContext(parameters);
@@ -208,7 +207,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.GeometricBrownianMotion
         {
             var parameters = new GeometricBrownianMotionScalarGeneratorParameters
             {
-                GbmParameters = null
+                GbmParameters = null,
             };
 
             var expectedMessage = string.Format(
@@ -231,7 +230,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.GeometricBrownianMotion
         {
             var parameters = new GeometricBrownianMotionScalarGeneratorParameters
             {
-                GbmParameters = new GeometricBrownianMotionParameters { MinimalValue = -1 }
+                GbmParameters = new GeometricBrownianMotionParameters { MinimalValue = -1 },
             };
 
             var context = new ValidationContext(parameters);
@@ -243,7 +242,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.GeometricBrownianMotion
         {
             var parameters = new GeometricBrownianMotionScalarGeneratorParameters
             {
-                GbmParameters = new GeometricBrownianMotionParameters { MinimalValue = -1 }
+                GbmParameters = new GeometricBrownianMotionParameters { MinimalValue = -1 },
             };
 
             var expectedMessage = string.Format(
@@ -267,7 +266,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.GeometricBrownianMotion
             {
                 TimeParameters = null,
                 WaveformParameters = null,
-                GbmParameters = null
+                GbmParameters = null,
             };
 
             var results = new List<ValidationResult>();
@@ -311,7 +310,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators.GeometricBrownianMotion
         [TestMethod]
         public void GeometricBrownianMotionScalarGeneratorParameters_DeserializeFromJson_ValidInput_CorrectValidationResults()
         {
-            var json = @"{
+            const string json = @"{
 timeParameters: {
     sessionBeginTime: ""09:00:00"",
     sessionEndTime: ""18:00:00"",

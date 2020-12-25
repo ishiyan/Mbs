@@ -9,40 +9,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
     [TestClass]
     public class TemporalDataGeneratorTests
     {
-        private class MockTemporalDataGenerator : TemporalDataGenerator<Scalar>
-        {
-            internal const string MockName = "name";
-            internal const string MockMoniker = "moniker";
-            internal const double StartValue = 1.1;
-
-            internal static readonly DateTime StartDateTime = new DateTime(2000, 1, 1);
-
-            private DateTime dateTime = StartDateTime;
-            private double value = StartValue;
-
-            public MockTemporalDataGenerator(TimeParameters timeParameters)
-                : base(timeParameters)
-            {
-                Name = MockName;
-                Moniker = MockMoniker;
-            }
-
-            public override Scalar GenerateNext()
-            {
-                dateTime = dateTime.AddDays(1);
-                return new Scalar(dateTime, ++value);
-            }
-
-            public override void Reset()
-            {
-                dateTime = StartDateTime;
-                value = StartValue;
-            }
-        }
-
         private readonly TimeParameters defaultTimeParameters = new TimeParameters();
-
-        // ReSharper disable InconsistentNaming
 
         [TestMethod]
         public void TemporalDataGenerator_Construction_DefaultArgumentValues_CorrectProperties()
@@ -138,6 +105,37 @@ namespace Mbs.UnitTests.Trading.Data.Generators
 
             Assert.AreEqual(MockTemporalDataGenerator.StartDateTime.AddDays(3), enumerable2[2].Time, "enumerable2[2] time is correct");
             Assert.AreEqual(MockTemporalDataGenerator.StartValue + 3, enumerable2[2].Value, "enumerable2[2] value is correct");
+        }
+
+        private class MockTemporalDataGenerator : TemporalDataGenerator<Scalar>
+        {
+            internal const string MockName = "name";
+            internal const string MockMoniker = "moniker";
+            internal const double StartValue = 1.1;
+
+            internal static readonly DateTime StartDateTime = new DateTime(2000, 1, 1);
+
+            private DateTime dateTime = StartDateTime;
+            private double value = StartValue;
+
+            public MockTemporalDataGenerator(TimeParameters timeParameters)
+                : base(timeParameters)
+            {
+                Name = MockName;
+                Moniker = MockMoniker;
+            }
+
+            public override Scalar GenerateNext()
+            {
+                dateTime = dateTime.AddDays(1);
+                return new Scalar(dateTime, ++value);
+            }
+
+            public override void Reset()
+            {
+                dateTime = StartDateTime;
+                value = StartValue;
+            }
         }
     }
 }

@@ -1,2264 +1,1975 @@
 ﻿using System;
 using System.Globalization;
-using System.IO;
-using System.Runtime.Serialization;
-using System.Xml;
+using Mbs.Numerics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Mbst.Numerics;
 
 namespace Mbs.UnitTests.Numerics
 {
-    /// <summary>
-    /// This is a test class for ComplexTest and is intended to contain all ComplexTest Unit Tests.
-    /// </summary>
     [TestClass]
-    public class ComplexTest
+    public class ComplexTests
     {
-        #region TestContext
-        private TestContext testContextInstance;
-
-        /// <summary>
-        /// Gets or sets the test context which provides information about and functionality for the current test run.
-        /// </summary>
-        public TestContext TestContext
-        {
-            get
-            {
-                return testContextInstance;
-            }
-            set
-            {
-                testContextInstance = value;
-            }
-        }
-        #endregion
-
-        #region Utils
-        private static void Normalize2Pi(ref double value)
-        {
-            while (value < 0d)
-                value += Constants.Pi * 2d;
-            value = Math.IEEERemainder(value, Constants.Pi * 2d);
-        }
-        #endregion
-
-        #region Construction tests
-        #region ConstructorTest
-        /// <summary>
-        /// A test for Complex Constructor.
-        ///  </summary>
         [TestMethod]
-        public void ConstructorTest()
+        public void Complex_Constructor_RealImaginary_Instance()
         {
             const double real = 3.5;
             const double imaginary = 4.6;
             var target = new Complex(real, imaginary);
-            Assert.AreEqual(real, target.Real);
-            Assert.AreEqual(imaginary, target.Imag);
-        }
-        #endregion
 
-        #region ConstructorTest1
-        /// <summary>
-        /// A test for Complex Constructor.
-        /// </summary>
+            Assert.AreEqual(real, target.Real, "#1");
+            Assert.AreEqual(imaginary, target.Imag, "#2");
+        }
+
         [TestMethod]
-        public void ConstructorTest1()
+        public void Complex_Constructor_RealOnly_Instance()
         {
             const double real = 7.7;
             var target = new Complex(real);
-            Assert.AreEqual(real, target.Real);
-            Assert.AreEqual(0d, target.Imag);
-        }
-        #endregion
 
-        #region FromModulusArgumentTest
-        /// <summary>
-        /// A test for FromModulusArgument.
-        /// </summary>
+            Assert.AreEqual(real, target.Real, "#1");
+            Assert.AreEqual(0, target.Imag, "#2");
+        }
+
+        [TestMethod]
+        public void Complex_FromModulus_ValidArguments_Success()
+        {
+            double modulus = 8.8;
+            double argument = 9.9;
+            Complex target = Complex.FromModulusArgument(modulus, argument);
+            Assert.AreEqual(modulus, target.Modulus, "#1");
+
+            double input = Normalize2Pi(argument);
+            double output = Normalize2Pi(target.Argument);
+            Assert.AreEqual(input, output, 1e-5, "#2");
+
+            modulus = 1;
+            argument = 0;
+            target = Complex.FromModulusArgument(modulus, argument);
+            Assert.AreEqual(modulus, target.Modulus, "#3");
+
+            output = target.Argument;
+            Assert.AreEqual(argument, output, 1e-5, "#4");
+
+            modulus = 0;
+            argument = 0;
+            target = Complex.FromModulusArgument(modulus, argument);
+            Assert.AreEqual(modulus, target.Modulus, "#5");
+
+            output = target.Argument;
+            Assert.AreEqual(argument, output, 1e-5, "#6");
+        }
+
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
-        public void FromModulusArgumentTest()
+        public void Complex_FromModulus_InvalidArguments_Exception()
         {
-            double modulus = 8.8, argument = 9.9;
-            Complex target = Complex.FromModulusArgument(modulus, argument);
-            Assert.AreEqual(modulus, target.Modulus, "1.1");
-            double output = target.Argument;
-            Normalize2Pi(ref output);
-            double input = argument;
-            Normalize2Pi(ref input);
-            Assert.IsTrue(Accuracy.AlmostEqual(input, output), "1.2");
+            Complex.FromModulusArgument(-1, 1);
 
-            modulus = 1d; argument = 0d;
-            target = Complex.FromModulusArgument(modulus, argument);
-            Assert.AreEqual(modulus, target.Modulus, "2.1");
-            output = target.Argument;
-            Assert.AreEqual(argument, output, "2.2");
-
-            modulus = 0d; argument = 0d;
-            target = Complex.FromModulusArgument(modulus, argument);
-            Assert.AreEqual(modulus, target.Modulus, "3.1");
-            output = target.Argument;
-            Assert.AreEqual(argument, output, "3.2");
-
-            modulus = -1d; argument = 1d;
-            /*target =*/ Complex.FromModulusArgument(modulus, argument);
+            // Should throw.
+            Assert.IsTrue(true);
         }
-        #endregion
 
-        #region FromRealImaginaryTest
-        /// <summary>
-        /// A test for FromRealImaginary.
-        /// </summary>
         [TestMethod]
-        public void FromRealImaginaryTest()
+        public void Complex_FromRealImaginary_ValidArguments_Success()
         {
-            double real = 8.8, imaginary = 9.9;
+            double real = 8.8;
+            double imaginary = 9.9;
             Complex target = Complex.FromRealImaginary(real, imaginary);
-            Assert.AreEqual(real, target.Real, "1.1");
-            Assert.AreEqual(imaginary, target.Imag, "1.2");
+            Assert.AreEqual(real, target.Real, "#1");
+            Assert.AreEqual(imaginary, target.Imag, "#2");
 
-            real = 0d; imaginary = 9.9;
+            real = 0;
             target = Complex.FromRealImaginary(real, imaginary);
-            Assert.AreEqual(real, target.Real, "2.1");
-            Assert.AreEqual(imaginary, target.Imag, "2.2");
+            Assert.AreEqual(real, target.Real, "#3");
+            Assert.AreEqual(imaginary, target.Imag, "B2");
 
-            real = 0d; imaginary = 0d;
+            imaginary = 0;
             target = Complex.FromRealImaginary(real, imaginary);
-            Assert.AreEqual(real, target.Real, "3.1");
-            Assert.AreEqual(imaginary, target.Imag, "3.2");
+            Assert.AreEqual(real, target.Real, "#4");
+            Assert.AreEqual(imaginary, target.Imag, "#5");
 
-            real = -9d; imaginary = 0d;
+            real = -9;
             target = Complex.FromRealImaginary(real, imaginary);
-            Assert.AreEqual(real, target.Real, "4.1");
-            Assert.AreEqual(imaginary, target.Imag, "4.2");
+            Assert.AreEqual(real, target.Real, "#6");
+            Assert.AreEqual(imaginary, target.Imag, "#7");
 
-            real = -9d; imaginary = -8d;
+            imaginary = -8;
             target = Complex.FromRealImaginary(real, imaginary);
-            Assert.AreEqual(real, target.Real, "5.1");
-            Assert.AreEqual(imaginary, target.Imag, "5.2");
+            Assert.AreEqual(real, target.Real, "#8");
+            Assert.AreEqual(imaginary, target.Imag, "#9");
         }
-        #endregion
-        #endregion
 
-        #region Functions
-        #region AbsTest
-        /// <summary>
-        /// A test for Abs.
-        /// </summary>
         [TestMethod]
-        public void AbsTest()
+        public void Complex_Abs_ValidArguments_Success()
         {
-            var target = new Complex(0d, 0d);
-            Assert.AreEqual(0d, target.Abs(), "1.1");
-            target = new Complex(0d, 1d);
-            Assert.AreEqual(1d, target.Abs(), "1.2");
-            target = new Complex(1d, 5d);
-            Assert.AreEqual(Math.Sqrt(26.0), target.Abs(), "1.3");
+            var target = new Complex(0, 0);
+            Assert.AreEqual(0, target.Abs(), "#1");
+
+            target = new Complex(0, 1);
+            Assert.AreEqual(1, target.Abs(), "#2");
+
+            target = new Complex(1, 5);
+            Assert.AreEqual(Math.Sqrt(26), target.Abs(), "#3");
+
             // Static
-            Assert.AreEqual(Math.Sqrt(26.0), Complex.Abs(target), "2");
+            Assert.AreEqual(Math.Sqrt(26.0), Complex.Abs(target), "#4");
+
             // Matlab
             target = new Complex(1.1, 1.2);
-            Assert.IsTrue(Math.Abs(1.627882059609971 - target.Abs()) < 1e-15, "3.1");
+            Assert.AreEqual(1.627882059609971, target.Abs(), 1e-15, "#5");
             target = new Complex(123.456, 789.123);
-            Assert.IsTrue(Math.Abs(798.7217870228657 - target.Abs()) < 1e-12, "3.2");
+            Assert.AreEqual(798.7217870228657, target.Abs(), 1e-15, "#6");
         }
-        #endregion
 
-        #region InvTest
-        /// <summary>
-        /// A test for Inv.
-        /// </summary>
         [TestMethod]
-        public void InvTest()
+        public void Complex_Inv_Matlab_Conformance()
         {
-            // Matlab
             var number = new Complex(123.456, 789.123);
             Complex target = number.Inv();
-            Assert.IsTrue(Math.Abs(0.000193517898700 - target.Real) < 1e-15, "1.1");
-            Assert.IsTrue(Math.Abs(-0.001236954257192 - target.Imag) < 1e-15, "1.2");
+            Assert.AreEqual(0.000193517898700, target.Real, 1e-15, "#1 real");
+            Assert.AreEqual(-0.001236954257192, target.Imag, 1e-15, "#1 imag");
+
             number = new Complex(1.2345, -1.6789);
             target = number.Inv();
-            Assert.IsTrue(Math.Abs(0.284270451697757 - target.Real) < 1e-15, "2.1");
-            Assert.IsTrue(Math.Abs(0.386603208874334 - target.Imag) < 1e-15, "2.2");
+            Assert.AreEqual(0.284270451697757, target.Real, 1e-15, "#2 real");
+            Assert.AreEqual(0.386603208874334, target.Imag, 1e-15, "#2 imag");
+
             number = new Complex(1.2345, 1.6789);
             target = number.Inv();
-            Assert.IsTrue(Math.Abs(0.284270451697757 - target.Real) < 1e-15, "3.1");
-            Assert.IsTrue(Math.Abs(-0.386603208874334 - target.Imag) < 1e-15, "3.2");
+            Assert.AreEqual(0.284270451697757, target.Real, 1e-15, "#3 real");
+            Assert.AreEqual(-0.386603208874334, target.Imag, 1e-15, "#3 imag");
+
             number = new Complex(-1.2345, 1.6789);
             target = number.Inv();
-            Assert.IsTrue(Math.Abs(-0.284270451697757 - target.Real) < 1e-15, "3.1");
-            Assert.IsTrue(Math.Abs(-0.386603208874334 - target.Imag) < 1e-15, "3.2");
+            Assert.AreEqual(-0.284270451697757, target.Real, 1e-15, "#4 real");
+            Assert.AreEqual(-0.386603208874334, target.Imag, 1e-15, "#4 imag");
+
             number = new Complex(-1.2345, -1.6789);
             target = number.Inv();
-            Assert.IsTrue(Math.Abs(-0.284270451697757 - target.Real) < 1e-15, "3.1");
-            Assert.IsTrue(Math.Abs(0.386603208874334 - target.Imag) < 1e-15, "3.2");
+            Assert.AreEqual(-0.284270451697757, target.Real, 1e-15, "#5 real");
+            Assert.AreEqual(0.386603208874334, target.Imag, 1e-15, "#5 imag");
+
             // Static
             target = Complex.Inv(number);
-            Assert.IsTrue(Math.Abs(-0.284270451697757 - target.Real) < 1e-15, "3.1");
-            Assert.IsTrue(Math.Abs(0.386603208874334 - target.Imag) < 1e-15, "3.2");
+            Assert.AreEqual(-0.284270451697757, target.Real, 1e-15, "#6 real");
+            Assert.AreEqual(0.386603208874334, target.Imag, 1e-15, "#6 imag");
         }
-        #endregion
-        #endregion
 
-        #region Exponential functions
-        #region ExpTest
-        /// <summary>
-        /// A test for Exp.
-        /// </summary>
         [TestMethod]
-        public void ExpTest()
+        public void Complex_Exp_Matlab_Conformance()
         {
-            // Matlab
-            var number = new Complex(1d, 3d);
+            var number = new Complex(1, 3);
             Complex target = number.Exp();
-            Assert.IsTrue(target.Abs() - Math.Exp(1d) < 0.0001 && target.Argument - 3 < 0.0001, "1.1");
+            Assert.AreEqual(Math.Exp(1), target.Abs(), 1e-4, "#1 a");
+            Assert.AreEqual(3, target.Argument, 1e-4, "#1 b");
+
             // Static
             target = Complex.Exp(number);
-            Assert.IsTrue(target.Abs() - Math.Exp(1d) < 0.0001 && target.Argument - 3 < 0.0001, "1.1");
+            Assert.AreEqual(Math.Exp(1), target.Abs(), 1e-4, "#2 a");
+            Assert.AreEqual(3, target.Argument, 1e-4, "#2 b");
+        }
 
+        [TestMethod]
+        public void Complex_Exp_KnownProperties_Conformance()
+        {
             // exp(0) = 1
-            number = Complex.Zero;
-            target = number.Exp();
-            Assert.AreEqual(1d, target.Real, "2.1");
-            Assert.AreEqual(0d, target.Imag, "2.2");
+            var number = Complex.Zero;
+            Complex target = number.Exp();
+            Assert.AreEqual(1, target.Real, "#1 real");
+            Assert.AreEqual(0, target.Imag, "#1 imag");
 
             // exp(1) = e
             number = Complex.One;
             target = number.Exp();
-            Assert.AreEqual(Constants.E, target.Real, "3.1");
-            Assert.AreEqual(0d, target.Imag, "3.2");
+            Assert.AreEqual(Constants.E, target.Real, "#2 real");
+            Assert.AreEqual(0, target.Imag, "#2 imag");
 
             // exp(i) = cos(1) + sin(1) * i
             number = Complex.ImaginaryOne;
             target = number.Exp();
-            Assert.AreEqual(Math.Cos(1d), target.Real, "4.1");
-            Assert.AreEqual(Math.Sin(1d), target.Imag, "4.2");
+            Assert.AreEqual(Math.Cos(1), target.Real, "#3 real");
+            Assert.AreEqual(Math.Sin(1), target.Imag, "#3 imag");
 
             // exp(-1) = 1/e
             number = -Complex.One;
             target = number.Exp();
-            Assert.AreEqual(1d / Constants.E, target.Real, "5.1");
-            Assert.AreEqual(0d, target.Imag, "5.2");
+            Assert.AreEqual(1 / Constants.E, target.Real, "#4 real");
+            Assert.AreEqual(0, target.Imag, "#4 imag");
 
             // exp(-i) = cos(1) - sin(1) * i
             number = -Complex.ImaginaryOne;
             target = number.Exp();
-            Assert.AreEqual(Math.Cos(1d), target.Real, "6.1");
-            Assert.AreEqual(-Math.Sin(1d), target.Imag, "6.2");
+            Assert.AreEqual(Math.Cos(1), target.Real, "#5 real");
+            Assert.AreEqual(-Math.Sin(1), target.Imag, "#5 imag");
 
             // exp(i+1) = e * cos(1) + e * sin(1) * i
             number = Complex.One + Complex.ImaginaryOne;
             target = number.Exp();
-            Assert.AreEqual(Constants.E * Math.Cos(1d), target.Real, "7.1");
-            Assert.AreEqual(Constants.E * Math.Sin(1d), target.Imag, "7.2");
+            Assert.AreEqual(Constants.E * Math.Cos(1), target.Real, "#6 real");
+            Assert.AreEqual(Constants.E * Math.Sin(1), target.Imag, "#6 imag");
         }
-        #endregion
 
-        #region LogTest
-        /// <summary>
-        /// A test for Log.
-        /// </summary>
         [TestMethod]
-        public void LogTest()
+        public void Complex_Log_Matlab_Conformance()
         {
-            // Matlab comparisons
             var number = new Complex(0.1, 0.3);
             Complex target = number.Log();
-            Assert.IsTrue(Math.Abs(target.Real - -1.151292546497023) < 1e-15, "m1.1");
-            Assert.IsTrue(Math.Abs(target.Imag - 1.249045772398254) < 1e-15, "m1.2");
+            Assert.AreEqual(-1.151292546497023, target.Real, 1e-15, "#1 real");
+            Assert.AreEqual(1.249045772398254, target.Imag, 1e-15, "#1 imag");
+
             number = new Complex(-0.1, 1.5);
             target = number.Log();
-            Assert.IsTrue(Math.Abs(target.Real - 0.407682406642097) < 1e-15, "m2.1");
-            Assert.IsTrue(Math.Abs(target.Imag - 1.637364490570721) < 1e-15, "m2.2");
+            Assert.AreEqual(0.407682406642097, target.Real, 1e-15, "#2 real");
+            Assert.AreEqual(1.637364490570721, target.Imag, 1e-15, "#2 imag");
+
             number = new Complex(-0.5, -0.3);
             target = number.Log();
-            Assert.IsTrue(Math.Abs(target.Real - -0.539404830685965) < 1e-15, "m3.1");
-            Assert.IsTrue(Math.Abs(target.Imag - -2.601173153319209) < 1e-15, "m3.2");
+            Assert.AreEqual(-0.539404830685965, target.Real, 1e-15, "#3 real");
+            Assert.AreEqual(-2.601173153319209, target.Imag, 1e-15, "#3 imag");
+
             number = new Complex(0.5, -1.2);
             target = number.Log();
-            Assert.IsTrue(Math.Abs(target.Real - 0.262364264467491) < 1e-15, "m3.1");
-            Assert.IsTrue(Math.Abs(target.Imag - -1.176005207095135) < 1e-15, "m3.2");
+            Assert.AreEqual(0.262364264467491, target.Real, 1e-15, "#4 real");
+            Assert.AreEqual(-1.176005207095135, target.Imag, 1e-15, "#4 imag");
 
-            // ln(0) = -infty
-            number = Complex.Zero;
-            target = number.Log();
-            Assert.AreEqual(double.NegativeInfinity, target.Real, "1.1");
-            Assert.AreEqual(0d, target.Imag, "1.2");
+            // Static
+            target = Complex.Log(number);
+            Assert.AreEqual(0.262364264467491, target.Real, 1e-15, "#5 real");
+            Assert.AreEqual(-1.176005207095135, target.Imag, 1e-15, "#5 imag");
+        }
+
+        [TestMethod]
+        public void Complex_Log_KnownProperties_Conformance()
+        {
+            // ln(0) = -infinity
+            var number = Complex.Zero;
+            Complex target = number.Log();
+            Assert.AreEqual(double.NegativeInfinity, target.Real, "#1 real");
+            Assert.AreEqual(0, target.Imag, "#1 imag");
 
             // ln(1) = 0
             number = Complex.One;
             target = number.Log();
-            Assert.AreEqual(0d, target.Real, "2.1");
-            Assert.AreEqual(0d, target.Imag, "2.2");
+            Assert.AreEqual(0, target.Real, "#2 real");
+            Assert.AreEqual(0, target.Imag, "#2 imag");
 
             // ln(i) = Pi/2 * i
             number = Complex.ImaginaryOne;
             target = number.Log();
-            Assert.AreEqual(0d, target.Real, "3.1");
-            Assert.AreEqual(Constants.PiOver2, target.Imag, "3.2");
+            Assert.AreEqual(0, target.Real, "#3 real");
+            Assert.AreEqual(Constants.PiOver2, target.Imag, "#3 imag");
 
             // ln(-1) = Pi * i
             number = -Complex.One;
             target = number.Log();
-            Assert.AreEqual(0d, target.Real, "4.1");
-            Assert.AreEqual(Constants.Pi, target.Imag, "4.2");
+            Assert.AreEqual(0, target.Real, "#4 real");
+            Assert.AreEqual(Constants.Pi, target.Imag, "#4 imag");
 
             // ln(-i) = -Pi/2 * i
             number = -Complex.ImaginaryOne;
             target = number.Log();
-            Assert.AreEqual(0d, target.Real, "5.1");
-            Assert.AreEqual(-Constants.PiOver2, target.Imag, "5.2");
+            Assert.AreEqual(0, target.Real, "#5 real");
+            Assert.AreEqual(-Constants.PiOver2, target.Imag, "#5 imag");
 
             // ln(i+1) = ln(2)/2 + Pi/4 * i
             number = Complex.One + Complex.ImaginaryOne;
             target = number.Log();
-            Assert.AreEqual(Constants.Ln2 * 0.5, target.Real, "6.1");
-            Assert.AreEqual(Constants.PiOver4, target.Imag, "6.2");
-
-            // Static
-            number = new Complex(-0.1, 1.5);
-            target = number.Log();
-            Assert.IsTrue(Math.Abs(target.Real - 0.407682406642097) < 1e-15, "s1.1");
-            Assert.IsTrue(Math.Abs(target.Imag - 1.637364490570721) < 1e-15, "s1.2");
+            Assert.AreEqual(Constants.Ln2 / 2, target.Real, "#6 real");
+            Assert.AreEqual(Constants.PiOver4, target.Imag, "#6 imag");
         }
-        #endregion
-        #endregion
 
-        #region Power functions
-        #region PowTest
-        /// <summary>
-        /// A test for Pow.
-        /// </summary>
         [TestMethod]
-        public void PowTest()
+        public void Complex_Pow_Matlab_Conformance()
         {
-            // Matlab
             var number = new Complex(0.5, -Math.Sqrt(3) / 2);
             Complex target = number.Pow(2d);
-            Assert.IsTrue(Math.Abs(target.Real + 0.5) < 1e-15 && Math.Abs(target.Imag + Math.Sqrt(3) / 2) < 1e-15, "1.1");
+            Assert.AreEqual(0.5, target.Real, 1e-15, "#1 real");
+            Assert.AreEqual(Math.Sqrt(3) / 2, target.Imag, 1e-15, "#1 imag");
+
             number = new Complex(3, 2);
             target = number.Pow(-2d);
-            Complex temp = 1d / (number * number);
-            Assert.IsTrue(Math.Abs(target.Real - temp.Real) < 1e-15 && Math.Abs(target.Imag - temp.Imag) < 1e-15, "1.2");
-            //Static
-            target = Complex.Pow(number, -2d);
-            Assert.IsTrue(Math.Abs(target.Real - temp.Real) < 1e-15 && Math.Abs(target.Imag - temp.Imag) < 1e-15, "1.3");
+            Complex expected = 1d / (number * number);
+            Assert.AreEqual(expected.Real, target.Real, 1e-15, "#2 real");
+            Assert.AreEqual(expected.Imag, target.Imag, 1e-15, "#2 imag");
 
+            // Static
+            target = Complex.Pow(number, -2d);
+            Assert.AreEqual(expected.Real, target.Real, 1e-15, "#3 real");
+            Assert.AreEqual(expected.Imag, target.Imag, 1e-15, "#3 imag");
+        }
+
+        [TestMethod]
+        public void Complex_Pow_KnownProperties_Conformance()
+        {
             // (1)^(1) = 1
-            number = Complex.One;
-            target = number.Pow(number);
-            Assert.AreEqual(1d, target.Real, "2.1");
-            Assert.AreEqual(0d, target.Imag, "2.2");
+            var number = Complex.One;
+            Complex target = number.Pow(number);
+            Assert.AreEqual(1, target.Real, 1e-15, "#1 real");
+            Assert.AreEqual(0, target.Imag, 1e-15, "#1 imag");
 
             // (i)^(1) = i
             number = Complex.ImaginaryOne;
             target = number.Pow(Complex.One);
-            Assert.IsTrue(Accuracy.AlmostEqual(0d, target.Real), "3.1");
-            Assert.AreEqual(1d, target.Imag, "3.2");
+            Assert.AreEqual(0, target.Real, 1e-15, "#2 real");
+            Assert.AreEqual(1, target.Imag, 1e-15, "#2 imag");
 
             // (1)^(-1) = 1
-            number = -Complex.One;
-            target = Complex.One.Pow(number);
-            Assert.AreEqual(1d, target.Real, "4.1");
-            Assert.AreEqual(0d, target.Imag, "4.2");
+            number = Complex.One;
+            target = number.Pow(-Complex.One);
+            Assert.AreEqual(1, target.Real, 1e-15, "#3 real");
+            Assert.AreEqual(0, target.Imag, 1e-15, "#3 imag");
 
             // (i)^(-1) = -i
-            target = Complex.ImaginaryOne.Pow(-Complex.One);
-            Assert.IsTrue(Accuracy.AlmostEqual(0d, target.Real), "5.1");
-            Assert.AreEqual(-1d, target.Imag, "5.2");
+            number = Complex.ImaginaryOne;
+            target = number.Pow(-Complex.One);
+            Assert.AreEqual(0, target.Real, 1e-15, "#4 real");
+            Assert.AreEqual(-1, target.Imag, 1e-15, "#4 imag");
 
             // (i)^(-i) = exp(Pi/2)
-            number = -Complex.ImaginaryOne;
-            target = Complex.ImaginaryOne.Pow(number);
-            Assert.AreEqual(Math.Exp(Constants.PiOver2), target.Real, "6.1");
-            Assert.AreEqual(0d, target.Imag, "6.2");
+            number = Complex.ImaginaryOne;
+            target = number.Pow(-Complex.ImaginaryOne);
+            Assert.AreEqual(Math.Exp(Constants.PiOver2), target.Real, 1e-15, "#5 real");
+            Assert.AreEqual(0, target.Imag, 1e-15, "#5 imag");
 
             // (0)^(0) = 1
-            Assert.AreEqual(1d, Math.Pow(0d, 0d), "(0)^(0) = 1 (.Net Framework Sanity Check)");
+            Assert.AreEqual(1, Math.Pow(0d, 0d), "#6 (0)^(0) = 1 (.Net Sanity Check)");
             number = Complex.Zero;
-            target = number.Pow(number);
-            Assert.AreEqual(1d, target.Real, "7.1");
-            Assert.AreEqual(0d, target.Imag, "7.1");
+            target = number.Pow(Complex.Zero);
+            Assert.AreEqual(1, target.Real, 1e-15, "#6 real");
+            Assert.AreEqual(0, target.Imag, 1e-15, "#6 imag");
 
             // (0)^(2) = 0
-            Assert.AreEqual(0d, Math.Pow(0d, 2d), "(0)^(2) = 0 (.Net Framework Sanity Check)");
-            number = new Complex(2d, 0d);
-            target = Complex.Zero.Pow(number);
-            Assert.AreEqual(0d, target.Real, "8.1");
-            Assert.AreEqual(0d, target.Imag, "8.1");
+            Assert.AreEqual(0, Math.Pow(0d, 2d), "#7 (0)^(2) = 0 (.Net Sanity Check)");
+            number = Complex.Zero;
+            target = number.Pow(new Complex(2, 0));
+            Assert.AreEqual(0, target.Real, 1e-15, "#7 real");
+            Assert.AreEqual(0, target.Imag, 1e-15, "#7 imag");
 
-            // (0)^(-2) = infty
-            Assert.AreEqual(double.PositiveInfinity, Math.Pow(0d, -2d), "(0)^(-2) = infty (.Net Framework Sanity Check)");
-            number = Complex.FromRealImaginary(-2d, 0d);
-            target = Complex.Zero.Pow(number);
-            Assert.AreEqual(double.PositiveInfinity, target.Real, "9.1");
-            Assert.AreEqual(0d, target.Imag, "9.2");
+            // (0)^(-2) = infinity
+            Assert.AreEqual(double.PositiveInfinity, Math.Pow(0d, -2d), "#8 (0)^(-2) = infinity (.Net Sanity Check)");
+            number = Complex.Zero;
+            target = number.Pow(Complex.FromRealImaginary(-2d, 0d));
+            Assert.IsTrue(double.IsPositiveInfinity(target.Real), "#8 real");
+            Assert.AreEqual(0, target.Imag, 1e-15, "#8 imag");
 
             // (0)^(ImaginaryOne) = NaN
-            target = Complex.Zero.Pow(Complex.ImaginaryOne);
-            Assert.AreEqual(double.NaN, target.Real, "10.1");
-            Assert.AreEqual(double.NaN, target.Imag, "10.2");
+            number = Complex.Zero;
+            target = number.Pow(Complex.ImaginaryOne);
+            Assert.IsTrue(double.IsNaN(target.Real), "#9 real");
+            Assert.IsTrue(double.IsNaN(target.Imag), "#9 imag");
 
             // (0)^(-ImaginaryOne) = NaN
-            target = Complex.Zero.Pow(-Complex.ImaginaryOne);
-            Assert.AreEqual(double.NaN, target.Real, "11.1");
-            Assert.AreEqual(double.NaN, target.Imag, "11.2");
+            number = Complex.Zero;
+            target = number.Pow(-Complex.ImaginaryOne);
+            Assert.IsTrue(double.IsNaN(target.Real), "#10 real");
+            Assert.IsTrue(double.IsNaN(target.Imag), "#10 imag");
 
             // (0)^(1+ImaginaryOne) = 0
-            number = Complex.One + Complex.ImaginaryOne;
-            target = Complex.Zero.Pow(number);
-            Assert.AreEqual(0d, target.Real, "12.1");
-            Assert.AreEqual(0d, target.Imag, "12.2");
+            number = Complex.Zero;
+            target = number.Pow(Complex.One + Complex.ImaginaryOne);
+            Assert.AreEqual(0, target.Real, 1e-15, "#11 real");
+            Assert.AreEqual(0, target.Imag, 1e-15, "#11 imag");
 
             // (0)^(1-ImaginaryOne) = 0
-            number = Complex.One - Complex.ImaginaryOne;
-            target = Complex.Zero.Pow(number);
-            Assert.AreEqual(0d, target.Real, "13.1");
-            Assert.AreEqual(0d, target.Imag, "13.2");
+            number = Complex.Zero;
+            target = number.Pow(Complex.One - Complex.ImaginaryOne);
+            Assert.AreEqual(0, target.Real, 1e-15, "#12 real");
+            Assert.AreEqual(0, target.Imag, 1e-15, "#12 imag");
 
-            // (0)^(-1+ImaginaryOne) = infty + infty * i
-            number = new Complex(-1d, 1d);
-            target = Complex.Zero.Pow(number);
-            Assert.AreEqual(double.PositiveInfinity, target.Real, "14.1");
-            Assert.AreEqual(double.PositiveInfinity, target.Imag, "14.2");
+            // (0)^(-1+ImaginaryOne) = infinity + infinity * i
+            number = Complex.Zero;
+            target = number.Pow(new Complex(-1d, 1d));
+            Assert.IsTrue(double.IsPositiveInfinity(target.Real), "#13 real");
+            Assert.IsTrue(double.IsPositiveInfinity(target.Imag), "#13 imag");
         }
-        #endregion
 
-        #region SquareTest
-        /// <summary>
-        /// A test for Square.
-        /// </summary>
         [TestMethod]
-        public void SquareTest()
+        public void Complex_Square_Matlab_Conformance()
         {
-            // Matlab
             var number = new Complex(0.1, 0.3);
             Complex target = number.Square();
-            Assert.IsTrue(Math.Abs(-0.080000000000000 - target.Real) < 1e-15, "1.1");
-            Assert.IsTrue(Math.Abs(0.060000000000000 - target.Imag) < 1e-15, "1.2");
+            Assert.AreEqual(-0.080000000000000, target.Real, 1e-15, "#1 real");
+            Assert.AreEqual(0.060000000000000, target.Imag, 1e-15, "#1 imag");
 
             number = new Complex(-0.1, 1.5);
             target = number.Square();
-            Assert.IsTrue(Math.Abs(-2.240000000000000 - target.Real) < 1e-15, "2.1");
-            Assert.IsTrue(Math.Abs(-0.300000000000000 - target.Imag) < 1e-15, "2.2");
+            Assert.AreEqual(-2.240000000000000, target.Real, 1e-15, "#2 real");
+            Assert.AreEqual(-0.300000000000000, target.Imag, 1e-15, "#2 imag");
 
             number = new Complex(-0.5, -1.3);
             target = number.Square();
-            Assert.IsTrue(Math.Abs(-1.440000000000000 - target.Real) < 1e-15, "3.1");
-            Assert.IsTrue(Math.Abs(1.300000000000000 - target.Imag) < 1e-15, "3.2");
+            Assert.AreEqual(-1.440000000000000, target.Real, 1e-15, "#3 real");
+            Assert.AreEqual(1.300000000000000, target.Imag, 1e-15, "#3 imag");
 
             number = new Complex(0.6, -1.1);
             target = number.Square();
-            Assert.IsTrue(Math.Abs(-0.850000000000000 - target.Real) < 1e-15, "4.1");
-            Assert.IsTrue(Math.Abs(-1.320000000000000 - target.Imag) < 1e-15, "4.2");
+            Assert.AreEqual(-0.850000000000000, target.Real, 1e-15, "#4 real");
+            Assert.AreEqual(-1.320000000000000, target.Imag, 1e-15, "#4 imag");
+
             // Static
             number = new Complex(0.678, -1.123);
             target = Complex.Square(number);
-            Assert.IsTrue(Math.Abs(-0.801445000000000 - target.Real) < 1e-15, "5.1");
-            Assert.IsTrue(Math.Abs(-1.522788000000000 - target.Imag) < 1e-15, "5.2");
+            Assert.AreEqual(-0.801445000000000, target.Real, 1e-15, "#5 real");
+            Assert.AreEqual(-1.522788000000000, target.Imag, 1e-15, "#5 imag");
         }
-        #endregion
 
-        #region SqrtTest
-        /// <summary>
-        /// A test for Sqrt.
-        /// </summary>
         [TestMethod]
-        public void SqrtTest()
+        public void Complex_Sqrt_Matlab_Conformance()
         {
-            // Matlab
-            var number = new Complex(1d, 4d);
+            var number = new Complex(1, 4);
             Complex target = number.Sqrt();
-            Assert.IsTrue(Math.Abs(1.600485180440241 - target.Real) < 1e-15, "1.1");
-            Assert.IsTrue(Math.Abs(1.249621067687653 - target.Imag) < 1e-15, "1.2");
+            Assert.AreEqual(1.600485180440241, target.Real, 1e-15, "#1 real");
+            Assert.AreEqual(1.249621067687653, target.Imag, 1e-15, "#1 imag");
+
             number = new Complex(2.3, -3.6);
             target = number.Sqrt();
-            Assert.IsTrue(Math.Abs(1.812733001941925 - target.Real) < 1e-15, "2.1");
-            Assert.IsTrue(Math.Abs(-0.992975798461062 - target.Imag) < 1e-15, "2.2");
+            Assert.AreEqual(1.812733001941925, target.Real, 1e-15, "#2 real");
+            Assert.AreEqual(-0.992975798461062, target.Imag, 1e-15, "#2 imag");
+
             number = new Complex(-3.1, -2.5);
             target = number.Sqrt();
-            Assert.IsTrue(Math.Abs(0.664252041904267 - target.Real) < 1e-15, "3.1");
-            Assert.IsTrue(Math.Abs(-1.881815818610841 - target.Imag) < 1e-15, "3.2");
+            Assert.AreEqual(0.664252041904267, target.Real, 1e-15, "#3 real");
+            Assert.AreEqual(-1.881815818610841, target.Imag, 1e-15, "#3 imag");
+
             number = new Complex(-1.9, 5.3);
             target = number.Sqrt();
-            Assert.IsTrue(Math.Abs(1.365700425441777 - target.Real) < 1e-15, "4.1");
-            Assert.IsTrue(Math.Abs(1.940396261605307 - target.Imag) < 1e-15, "4.2");
+            Assert.AreEqual(1.365700425441777, target.Real, 1e-15, "#4 real");
+            Assert.AreEqual(1.940396261605307, target.Imag, 1e-15, "#4 imag");
+
             // Static
             target = Complex.Sqrt(number);
-            Assert.IsTrue(Math.Abs(1.365700425441777 - target.Real) < 1e-15, "5.1");
-            Assert.IsTrue(Math.Abs(1.940396261605307 - target.Imag) < 1e-15, "5.2");
+            Assert.AreEqual(1.365700425441777, target.Real, 1e-15, "#5 real");
+            Assert.AreEqual(1.940396261605307, target.Imag, 1e-15, "#5 imag");
 
-            // Matlab
             target = Complex.Sqrt(9.7);
-            Assert.IsTrue(Math.Abs(3.114482300479487 - target.Real) < 1e-15, "6.1");
-            Assert.IsTrue(Math.Abs(0d - target.Imag) < 1e-15, "6.2");
-            target = Complex.Sqrt(0d);
-            Assert.IsTrue(Math.Abs(0d - target.Real) < 1e-15, "7.1");
-            Assert.IsTrue(Math.Abs(0d - target.Imag) < 1e-15, "7.2");
-            target = Complex.Sqrt(1d);
-            Assert.IsTrue(Math.Abs(1d - target.Real) < 1e-15, "8.1");
-            Assert.IsTrue(Math.Abs(0d - target.Imag) < 1e-15, "8.2");
-            target = Complex.Sqrt(-7);
-            Assert.IsTrue(Math.Abs(0d - target.Real) < 1e-15, "9.1");
-            Assert.IsTrue(Math.Abs(2.645751311064591 - target.Imag) < 1e-15, "9.2");
-            target = Complex.Sqrt(-0.005);
-            Assert.IsTrue(Math.Abs(0d - target.Real) < 1e-15, "10.1");
-            Assert.IsTrue(Math.Abs(0.070710678118655 - target.Imag) < 1e-15, "10.2");
-        }
-        #endregion
-        #endregion
+            Assert.AreEqual(3.114482300479487, target.Real, 1e-15, "#6 real");
+            Assert.AreEqual(0, target.Imag, 1e-15, "#6 imag");
 
-        #region Trigonometric functions
-        #region CosTest
-        /// <summary>
-        /// A test for Cos.
-        /// </summary>
+            target = Complex.Sqrt(0d);
+            Assert.AreEqual(0, target.Real, 1e-15, "#7 real");
+            Assert.AreEqual(0, target.Imag, 1e-15, "#7 imag");
+
+            target = Complex.Sqrt(1d);
+            Assert.AreEqual(1, target.Real, 1e-15, "#8 real");
+            Assert.AreEqual(0, target.Imag, 1e-15, "#8 imag");
+
+            target = Complex.Sqrt(-7);
+            Assert.AreEqual(0, target.Real, 1e-15, "#9 real");
+            Assert.AreEqual(2.645751311064591, target.Imag, 1e-15, "#9 imag");
+
+            target = Complex.Sqrt(-0.005);
+            Assert.AreEqual(0, target.Real, 1e-15, "#10 real");
+            Assert.AreEqual(0.070710678118655, target.Imag, 1e-15, "#10 imag");
+        }
+
         [TestMethod]
-        public void CosTest()
+        public void Complex_Cos_Matlab_Conformance()
         {
-            // Matlab
             var number = new Complex(0.1, 0.3);
             Complex target = number.Cos();
-            Assert.IsTrue(Math.Abs(1.040116175683759 - target.Real) < 1e-15, "1.1");
-            Assert.IsTrue(Math.Abs(-0.030401301333123 - target.Imag) < 1e-15, "1.2");
+            Assert.AreEqual(1.040116175683759, target.Real, 1e-15, "#1 real");
+            Assert.AreEqual(-0.030401301333123, target.Imag, 1e-15, "#1 imag");
+
             number = new Complex(-0.1, 1.5);
             target = number.Cos();
-            Assert.IsTrue(Math.Abs(2.340657365607109 - target.Real) < 1e-15, "2.1");
-            Assert.IsTrue(Math.Abs(0.212573242998012 - target.Imag) < 1e-15, "2.2");
+            Assert.AreEqual(2.340657365607109, target.Real, 1e-15, "#2 real");
+            Assert.AreEqual(0.212573242998012, target.Imag, 1e-15, "#2 imag");
+
             number = new Complex(-0.5, -0.3);
             target = number.Cos();
-            Assert.IsTrue(Math.Abs(0.917370851271881 - target.Real) < 1e-15, "3.1");
-            Assert.IsTrue(Math.Abs(-0.145994805701806 - target.Imag) < 1e-15, "3.2");
+            Assert.AreEqual(0.917370851271881, target.Real, 1e-15, "#3 real");
+            Assert.AreEqual(-0.145994805701806, target.Imag, 1e-15, "#3 imag");
+
             number = new Complex(0.5, -1.2);
             target = number.Cos();
-            Assert.IsTrue(Math.Abs(1.588999751473591 - target.Real) < 1e-15, "4.1");
-            Assert.IsTrue(Math.Abs(0.723674323320711 - target.Imag) < 1e-15, "4.2");
+            Assert.AreEqual(1.588999751473591, target.Real, 1e-15, "#4 real");
+            Assert.AreEqual(0.723674323320711, target.Imag, 1e-15, "#4 imag");
+
             // Static
             target = Complex.Cos(number);
-            Assert.IsTrue(Math.Abs(1.588999751473591 - target.Real) < 1e-15, "5.1");
-            Assert.IsTrue(Math.Abs(0.723674323320711 - target.Imag) < 1e-15, "5.2");
+            Assert.AreEqual(1.588999751473591, target.Real, 1e-15, "#5 real");
+            Assert.AreEqual(0.723674323320711, target.Imag, 1e-15, "#5 imag");
         }
-        #endregion
 
-        #region SinTest
-        /// <summary>
-        /// A test for Sin.
-        /// </summary>
         [TestMethod]
-        public void SinTest()
+        public void Complex_Sin_Matlab_Conformance()
         {
-            // Matlab
             var number = new Complex(0.1, 0.3);
             Complex target = number.Sin();
-            Assert.IsTrue(Math.Abs(0.104359715418003 - target.Real) < 1e-15, "1.1");
-            Assert.IsTrue(Math.Abs(0.302998960391594 - target.Imag) < 1e-15, "1.2");
+            Assert.AreEqual(0.104359715418003, target.Real, 1e-15, "#1 real");
+            Assert.AreEqual(0.302998960391594, target.Imag, 1e-15, "#1 imag");
+
             number = new Complex(-0.1, 1.5);
             target = number.Sin();
-            Assert.IsTrue(Math.Abs(-0.234849089242584 - target.Real) < 1e-15, "2.1");
-            Assert.IsTrue(Math.Abs(2.118641926860268 - target.Imag) < 1e-15, "2.2");
+            Assert.AreEqual(-0.234849089242584, target.Real, 1e-15, "#2 real");
+            Assert.AreEqual(2.118641926860268, target.Imag, 1e-15, "#2 imag");
+
             number = new Complex(-0.5, -0.3);
             target = number.Sin();
-            Assert.IsTrue(Math.Abs(-0.501161980159946 - target.Real) < 1e-15, "3.1");
-            Assert.IsTrue(Math.Abs(-0.267241699270951 - target.Imag) < 1e-15, "3.2");
+            Assert.AreEqual(-0.501161980159946, target.Real, 1e-15, "#3 real");
+            Assert.AreEqual(-0.267241699270951, target.Imag, 1e-15, "#3 imag");
+
             number = new Complex(0.5, -1.2);
             target = number.Sin();
-            Assert.IsTrue(Math.Abs(0.868074520591187 - target.Real) < 1e-15, "4.1");
-            Assert.IsTrue(Math.Abs(-1.324676963357129 - target.Imag) < 1e-15, "4.2");
+            Assert.AreEqual(0.868074520591187, target.Real, 1e-15, "#4 real");
+            Assert.AreEqual(-1.324676963357129, target.Imag, 1e-15, "#4 imag");
+
             // Static
             target = Complex.Sin(number);
-            Assert.IsTrue(Math.Abs(0.868074520591187 - target.Real) < 1e-15, "4.1");
-            Assert.IsTrue(Math.Abs(-1.324676963357129 - target.Imag) < 1e-15, "4.2");
+            Assert.AreEqual(0.868074520591187, target.Real, 1e-15, "#5 real");
+            Assert.AreEqual(-1.324676963357129, target.Imag, 1e-15, "#5 imag");
         }
-        #endregion
 
-        #region TanTest
-        /// <summary>
-        /// A test for Tan.
-        /// </summary>
         [TestMethod]
-        public void TanTest()
+        public void Complex_Tan_Matlab_Conformance()
         {
-            // Matlab
             var number = new Complex(0.1, 0.3);
             Complex target = number.Tan();
-            Assert.IsTrue(Math.Abs(0.091741590289446 - target.Real) < 1e-15, "1.1");
-            Assert.IsTrue(Math.Abs(0.293994104958268 - target.Imag) < 1e-15, "1.2");
+            Assert.AreEqual(0.091741590289446, target.Real, 1e-15, "#1 real");
+            Assert.AreEqual(0.293994104958268, target.Imag, 1e-15, "#1 imag");
+
             number = new Complex(-0.1, 1.5);
             target = number.Tan();
-            Assert.IsTrue(Math.Abs(-0.017982821488705 - target.Real) < 1e-15, "2.1");
-            Assert.IsTrue(Math.Abs(0.906781413088994 - target.Imag) < 1e-15, "2.2");
+            Assert.AreEqual(-0.017982821488705, target.Real, 1e-15, "#2 real");
+            Assert.AreEqual(0.906781413088994, target.Imag, 1e-15, "#2 imag");
+
             number = new Complex(-0.5, -0.3);
             target = number.Tan();
-            Assert.IsTrue(Math.Abs(-0.487592316492139 - target.Real) < 1e-15, "3.1");
-            Assert.IsTrue(Math.Abs(-0.368910396825564 - target.Imag) < 1e-15, "3.2");
+            Assert.AreEqual(-0.487592316492139, target.Real, 1e-15, "#3 real");
+            Assert.AreEqual(-0.368910396825564, target.Imag, 1e-15, "#3 imag");
+
             number = new Complex(0.5, -1.2);
             target = number.Tan();
-            Assert.IsTrue(Math.Abs(0.138008291862926 - target.Real) < 1e-15, "4.1");
-            Assert.IsTrue(Math.Abs(-0.896507390427591 - target.Imag) < 1e-15, "4.2");
+            Assert.AreEqual(0.138008291862926, target.Real, 1e-15, "#4 real");
+            Assert.AreEqual(-0.896507390427591, target.Imag, 1e-15, "#4 imag");
+
             // Static
             target = Complex.Tan(number);
-            Assert.IsTrue(Math.Abs(0.138008291862926 - target.Real) < 1e-15, "5.1");
-            Assert.IsTrue(Math.Abs(-0.896507390427591 - target.Imag) < 1e-15, "5.2");
+            Assert.AreEqual(0.138008291862926, target.Real, 1e-15, "#5 real");
+            Assert.AreEqual(-0.896507390427591, target.Imag, 1e-15, "#5 imag");
         }
-        #endregion
 
-        #region CotTest
-        /// <summary>
-        /// A test for Cot.
-        /// </summary>
         [TestMethod]
-        public void CotTest()
+        public void Complex_Cot_Matlab_Conformance()
         {
-            // Matlab
             var number = new Complex(0.1, 0.3);
             Complex target = number.Cot();
-            Assert.IsTrue(Math.Abs(0.967237808425478 - target.Real) < 1e-15, "1.1");
-            Assert.IsTrue(Math.Abs(-3.099599787541052 - target.Imag) < 1e-15, "1.2");
+            Assert.AreEqual(0.967237808425478, target.Real, 1e-15, "#1 real");
+            Assert.AreEqual(-3.099599787541052, target.Imag, 1e-15, "#1 imag");
+
             number = new Complex(-0.1, 1.5);
             target = number.Cot();
-            Assert.IsTrue(Math.Abs(-0.021861595026880 - target.Real) < 1e-15, "2.1");
-            Assert.IsTrue(Math.Abs(-1.102368059612034 - target.Imag) < 1e-15, "2.2");
+            Assert.AreEqual(-0.021861595026880, target.Real, 1e-15, "#2 real");
+            Assert.AreEqual(-1.102368059612034, target.Imag, 1e-15, "#2 imag");
+
             number = new Complex(-0.5, -0.3);
             target = number.Cot();
-            Assert.IsTrue(Math.Abs(-1.304276747265860 - target.Real) < 1e-15, "3.1");
-            Assert.IsTrue(Math.Abs(0.986810571310472 - target.Imag) < 1e-15, "3.2");
+            Assert.AreEqual(-1.304276747265860, target.Real, 1e-15, "#3 real");
+            Assert.AreEqual(0.986810571310472, target.Imag, 1e-15, "#3 imag");
+
             number = new Complex(0.5, -1.2);
             target = number.Cot();
-            Assert.IsTrue(Math.Abs(0.167735809112832 - target.Real) < 1e-15, "4.1");
-            Assert.IsTrue(Math.Abs(1.089618532909340 - target.Imag) < 1e-15, "4.2");
+            Assert.AreEqual(0.167735809112832, target.Real, 1e-15, "#4 real");
+            Assert.AreEqual(1.089618532909340, target.Imag, 1e-15, "#4 imag");
+
             // Static
             target = Complex.Cot(number);
-            Assert.IsTrue(Math.Abs(0.167735809112832 - target.Real) < 1e-15, "5.1");
-            Assert.IsTrue(Math.Abs(1.089618532909340 - target.Imag) < 1e-15, "5.2");
+            Assert.AreEqual(0.167735809112832, target.Real, 1e-15, "#5 real");
+            Assert.AreEqual(1.089618532909340, target.Imag, 1e-15, "#5 imag");
         }
-        #endregion
 
-        #region SecTest
-        /// <summary>
-        /// A test for Sec.
-        /// </summary>
         [TestMethod]
-        public void SecTest()
+        public void Complex_Sec_Matlab_Conformance()
         {
-            // Matlab
             var number = new Complex(0.1, 0.3);
             Complex target = number.Sec();
-            Assert.IsTrue(Math.Abs(0.960610393774748 - target.Real) < 1e-15, "1.1");
-            Assert.IsTrue(Math.Abs(0.028077446277266 - target.Imag) < 1e-15, "1.2");
+            Assert.AreEqual(0.960610393774748, target.Real, 1e-15, "#1 real");
+            Assert.AreEqual(0.028077446277266, target.Imag, 1e-15, "#1 imag");
+
             number = new Complex(-0.1, 1.5);
             target = number.Sec();
-            Assert.IsTrue(Math.Abs(0.423735494587800 - target.Real) < 1e-15, "2.1");
-            Assert.IsTrue(Math.Abs(-0.038482705577257 - target.Imag) < 1e-15, "2.2");
+            Assert.AreEqual(0.423735494587800, target.Real, 1e-15, "#2 real");
+            Assert.AreEqual(-0.038482705577257, target.Imag, 1e-15, "#2 imag");
+
             number = new Complex(-0.5, -0.3);
             target = number.Sec();
-            Assert.IsTrue(Math.Abs(1.063145340789472 - target.Real) < 1e-15, "3.1");
-            Assert.IsTrue(Math.Abs(0.169194058483704 - target.Imag) < 1e-15, "3.2");
+            Assert.AreEqual(1.063145340789472, target.Real, 1e-15, "#3 real");
+            Assert.AreEqual(0.169194058483704, target.Imag, 1e-15, "#3 imag");
+
             number = new Complex(0.5, -1.2);
             target = number.Sec();
-            Assert.IsTrue(Math.Abs(0.521218545691264 - target.Real) < 1e-15, "4.1");
-            Assert.IsTrue(Math.Abs(-0.237377304814261 - target.Imag) < 1e-15, "4.2");
+            Assert.AreEqual(0.521218545691264, target.Real, 1e-15, "#4 real");
+            Assert.AreEqual(-0.237377304814261, target.Imag, 1e-15, "#4 imag");
+
             // Static
             target = Complex.Sec(number);
-            Assert.IsTrue(Math.Abs(0.521218545691264 - target.Real) < 1e-15, "5.1");
-            Assert.IsTrue(Math.Abs(-0.237377304814261 - target.Imag) < 1e-15, "5.2");
+            Assert.AreEqual(0.521218545691264, target.Real, 1e-15, "#5 real");
+            Assert.AreEqual(-0.237377304814261, target.Imag, 1e-15, "#5 imag");
         }
-        #endregion
 
-        #region CosecTest
-        /// <summary>
-        /// A test for Cosec.
-        /// </summary>
         [TestMethod]
-        public void CosecTest()
+        public void Complex_Cosec_Matlab_Conformance()
         {
-            // Matlab
             var number = new Complex(0.1, 0.3);
             Complex target = number.Cosec();
-            Assert.IsTrue(Math.Abs(1.016167538541131 - target.Real) < 1e-15, "1.1");
-            Assert.IsTrue(Math.Abs(-2.950350204850528 - target.Imag) < 1e-15, "1.2");
+            Assert.AreEqual(1.016167538541131, target.Real, 1e-15, "#1 real");
+            Assert.AreEqual(-2.950350204850528, target.Imag, 1e-15, "#1 imag");
+
             number = new Complex(-0.1, 1.5);
             target = number.Cosec();
-            Assert.IsTrue(Math.Abs(-0.051685639257015 - target.Real) < 1e-15, "2.1");
-            Assert.IsTrue(Math.Abs(-0.466271181632630 - target.Imag) < 1e-15, "2.2");
+            Assert.AreEqual(-0.051685639257015, target.Real, 1e-15, "#2 real");
+            Assert.AreEqual(-0.466271181632630, target.Imag, 1e-15, "#2 imag");
+
             number = new Complex(-0.5, -0.3);
             target = number.Cosec();
-            Assert.IsTrue(Math.Abs(-1.553598232470387 - target.Real) < 1e-15, "3.1");
-            Assert.IsTrue(Math.Abs(0.828447184874691 - target.Imag) < 1e-15, "3.2");
+            Assert.AreEqual(-1.553598232470387, target.Real, 1e-15, "#3 real");
+            Assert.AreEqual(0.828447184874691, target.Imag, 1e-15, "#3 imag");
+
             number = new Complex(0.5, -1.2);
             target = number.Cosec();
-            Assert.IsTrue(Math.Abs(0.346077725103826 - target.Real) < 1e-15, "4.1");
-            Assert.IsTrue(Math.Abs(0.528112712793212 - target.Imag) < 1e-15, "4.2");
+            Assert.AreEqual(0.346077725103826, target.Real, 1e-15, "#4 real");
+            Assert.AreEqual(0.528112712793212, target.Imag, 1e-15, "#4 imag");
+
             // Static
             target = Complex.Cosec(number);
-            Assert.IsTrue(Math.Abs(0.346077725103826 - target.Real) < 1e-15, "5.1");
-            Assert.IsTrue(Math.Abs(0.528112712793212 - target.Imag) < 1e-15, "5.2");
+            Assert.AreEqual(0.346077725103826, target.Real, 1e-15, "#5 real");
+            Assert.AreEqual(0.528112712793212, target.Imag, 1e-15, "#5 imag");
         }
-        #endregion
-        #endregion
 
-        #region Inverse trigonometric functions
-        #region AcosTest
-        /// <summary>
-        /// A test for Acos.
-        /// </summary>
         [TestMethod]
-        public void AcosTest()
+        public void Complex_Acos_Matlab_Conformance()
         {
-            // Matlab
             var number = new Complex(0.1, 0.3);
             Complex target = number.Acos();
-            Assert.IsTrue(Math.Abs(1.474903367519443 - target.Real) < 1e-15, "1.1");
-            Assert.IsTrue(Math.Abs(-0.296999023408390 - target.Imag) < 1e-15, "1.2");
+            Assert.AreEqual(1.474903367519443, target.Real, 1e-15, "#1 real");
+            Assert.AreEqual(-0.296999023408390, target.Imag, 1e-15, "#1 imag");
+
             number = new Complex(-0.1, 1.5);
             target = number.Acos();
-            Assert.IsTrue(Math.Abs(1.626235699131362 - target.Real) < 1e-15, "2.1");
-            Assert.IsTrue(Math.Abs(-1.196042838552249 - target.Imag) < 1e-15, "2.2");
+            Assert.AreEqual(1.626235699131362, target.Real, 1e-15, "#2 real");
+            Assert.AreEqual(-1.196042838552249, target.Imag, 1e-15, "#2 imag");
+
             number = new Complex(-0.5, -0.3);
             target = number.Acos();
-            Assert.IsTrue(Math.Abs(2.063835567380515 - target.Real) < 1e-15, "3.1");
-            Assert.IsTrue(Math.Abs(0.334299817774938 - target.Imag) < 1e-15, "3.2");
+            Assert.AreEqual(2.063835567380515, target.Real, 1e-15, "#3 real");
+            Assert.AreEqual(0.334299817774938, target.Imag, 1e-15, "#3 imag");
+
             number = new Complex(0.5, -1.2);
             target = number.Acos();
-            Assert.IsTrue(Math.Abs(1.255110336239894 - target.Real) < 1e-15, "4.1");
-            Assert.IsTrue(Math.Abs(1.055304915437955 - target.Imag) < 1e-15, "4.2");
+            Assert.AreEqual(1.255110336239894, target.Real, 1e-15, "#4 real");
+            Assert.AreEqual(1.055304915437955, target.Imag, 1e-15, "#4 imag");
+
             // Static
             target = Complex.Acos(number);
-            Assert.IsTrue(Math.Abs(1.255110336239894 - target.Real) < 1e-15, "5.1");
-            Assert.IsTrue(Math.Abs(1.055304915437955 - target.Imag) < 1e-15, "5.2");
+            Assert.AreEqual(1.255110336239894, target.Real, 1e-15, "#5 real");
+            Assert.AreEqual(1.055304915437955, target.Imag, 1e-15, "#5 imag");
         }
-        #endregion
 
-        #region AsinTest
-        /// <summary>
-        /// A test for Asin.
-        /// </summary>
         [TestMethod]
-        public void AsinTest()
+        public void Complex_Asin_Matlab_Conformance()
         {
-            // Matlab
             var number = new Complex(0.1, 0.3);
             Complex target = number.Asin();
-            Assert.IsTrue(Math.Abs(0.095892959275454 - target.Real) < 1e-15, "1.1");
-            Assert.IsTrue(Math.Abs(0.296999023408390 - target.Imag) < 1e-15, "1.2");
+            Assert.AreEqual(0.095892959275454, target.Real, 1e-15, "#1 real");
+            Assert.AreEqual(0.296999023408390, target.Imag, 1e-15, "#1 imag");
+
             number = new Complex(-0.1, 1.5);
             target = number.Asin();
-            Assert.IsTrue(Math.Abs(-0.055439372336465 - target.Real) < 1e-15, "2.1");
-            Assert.IsTrue(Math.Abs(1.196042838552249 - target.Imag) < 1e-15, "2.2");
+            Assert.AreEqual(-0.055439372336465, target.Real, 1e-15, "#2 real");
+            Assert.AreEqual(1.196042838552249, target.Imag, 1e-15, "#2 imag");
+
             number = new Complex(-0.5, -0.3);
             target = number.Asin();
-            Assert.IsTrue(Math.Abs(-0.493039240585618 - target.Real) < 1e-15, "3.1");
-            Assert.IsTrue(Math.Abs(-0.334299817774938 - target.Imag) < 1e-15, "3.2");
+            Assert.AreEqual(-0.493039240585618, target.Real, 1e-15, "#3 real");
+            Assert.AreEqual(-0.334299817774938, target.Imag, 1e-15, "#3 imag");
+
             number = new Complex(0.5, -1.2);
             target = number.Asin();
-            Assert.IsTrue(Math.Abs(0.315685990555002 - target.Real) < 1e-15, "4.1");
-            Assert.IsTrue(Math.Abs(-1.055304915437955 - target.Imag) < 1e-15, "4.2");
+            Assert.AreEqual(0.315685990555002, target.Real, 1e-15, "#4 real");
+            Assert.AreEqual(-1.055304915437955, target.Imag, 1e-15, "#4 imag");
+
             // Static
             target = Complex.Asin(number);
-            Assert.IsTrue(Math.Abs(0.315685990555002 - target.Real) < 1e-15, "5.1");
-            Assert.IsTrue(Math.Abs(-1.055304915437955 - target.Imag) < 1e-15, "5.2");
+            Assert.AreEqual(0.315685990555002, target.Real, 1e-15, "#5 real");
+            Assert.AreEqual(-1.055304915437955, target.Imag, 1e-15, "#5 imag");
         }
-        #endregion
 
-        #region AtanTest
-        /// <summary>
-        /// A test for Atan.
-        /// </summary>
         [TestMethod]
-        public void AtanTest()
+        public void Complex_Atan_Matlab_Conformance()
         {
-            // Matlab
             var number = new Complex(0.1, 0.3);
             Complex target = number.Atan();
-            Assert.IsTrue(Math.Abs(0.109334472936971 - target.Real) < 1e-15, "1.1");
-            Assert.IsTrue(Math.Abs(0.305943857905529 - target.Imag) < 1e-15, "1.2");
+            Assert.AreEqual(0.109334472936971, target.Real, 1e-15, "#1 real");
+            Assert.AreEqual(0.305943857905529, target.Imag, 1e-15, "#1 imag");
+
             number = new Complex(-0.1, 1.5);
             target = number.Atan();
-            Assert.IsTrue(Math.Abs(-1.492087890431601 - target.Real) < 1e-15, "2.1");
-            Assert.IsTrue(Math.Abs(0.795313458269654 - target.Imag) < 1e-15, "2.2");
+            Assert.AreEqual(-1.492087890431601, target.Real, 1e-15, "#2 real");
+            Assert.AreEqual(0.795313458269654, target.Imag, 1e-15, "#2 imag");
+
             number = new Complex(-0.5, -0.3);
             target = number.Atan();
-            Assert.IsTrue(Math.Abs(-0.493711659900520 - target.Real) < 1e-15, "3.1");
-            Assert.IsTrue(Math.Abs(-0.240948266464790 - target.Imag) < 1e-15, "3.2");
+            Assert.AreEqual(-0.493711659900520, target.Real, 1e-15, "#3 real");
+            Assert.AreEqual(-0.240948266464790, target.Imag, 1e-15, "#3 imag");
+
             number = new Complex(0.5, -1.2);
             target = number.Atan();
-            Assert.IsTrue(Math.Abs(1.087389652523947 - target.Real) < 1e-15, "4.1");
-            Assert.IsTrue(Math.Abs(-0.716288046641012 - target.Imag) < 1e-15, "4.2");
+            Assert.AreEqual(1.087389652523947, target.Real, 1e-15, "#4 real");
+            Assert.AreEqual(-0.716288046641012, target.Imag, 1e-15, "#4 imag");
+
             // Static
             target = Complex.Atan(number);
-            Assert.IsTrue(Math.Abs(1.087389652523947 - target.Real) < 1e-15, "5.1");
-            Assert.IsTrue(Math.Abs(-0.716288046641012 - target.Imag) < 1e-15, "5.2");
+            Assert.AreEqual(1.087389652523947, target.Real, 1e-15, "#5 real");
+            Assert.AreEqual(-0.716288046641012, target.Imag, 1e-15, "#5 imag");
         }
-        #endregion
 
-        #region AcotTest
-        /// <summary>
-        /// A test for Acot.
-        /// </summary>
         [TestMethod]
-        public void AcotTest()
+        public void Complex_Acot_Matlab_Conformance()
         {
-            // Matlab
             var number = new Complex(0.1, 0.3);
             Complex target = number.Acot();
-            Assert.IsTrue(Math.Abs(1.461461853857926 - target.Real) < 1e-15, "1.1");
-            Assert.IsTrue(Math.Abs(-0.305943857905529 - target.Imag) < 1e-15, "1.2");
+            Assert.AreEqual(1.461461853857926, target.Real, 1e-15, "#1 real");
+            Assert.AreEqual(-0.305943857905529, target.Imag, 1e-15, "#1 imag");
+
             number = new Complex(-0.1, 1.5);
             target = number.Acot();
-            Assert.IsTrue(Math.Abs(Constants.Pi + -0.078708436363295 - target.Real) < 1e-15, "2.1");
-            Assert.IsTrue(Math.Abs(-0.795313458269654 - target.Imag) < 1e-15, "2.2");
+            Assert.AreEqual(Constants.Pi + -0.078708436363295, target.Real, 1e-15, "#2 real");
+            Assert.AreEqual(-0.795313458269654, target.Imag, 1e-15, "#2 imag");
+
             number = new Complex(-0.5, -0.3);
             target = number.Acot();
-            Assert.IsTrue(Math.Abs(Constants.Pi + -1.077084666894376 - target.Real) < 1e-15, "3.1");
-            Assert.IsTrue(Math.Abs(0.240948266464790 - target.Imag) < 1e-15, "3.2");
+            Assert.AreEqual(Constants.Pi + -1.077084666894376, target.Real, 1e-15, "#3 real");
+            Assert.AreEqual(0.240948266464790, target.Imag, 1e-15, "#3 imag");
+
             number = new Complex(0.5, -1.2);
             target = number.Acot();
-            Assert.IsTrue(Math.Abs(0.483406674270949 - target.Real) < 1e-15, "4.1");
-            Assert.IsTrue(Math.Abs(0.716288046641012 - target.Imag) < 1e-15, "4.2");
+            Assert.AreEqual(0.483406674270949, target.Real, 1e-15, "#4 real");
+            Assert.AreEqual(0.716288046641012, target.Imag, 1e-15, "#4 imag");
+
             // Static
             target = Complex.Acot(number);
-            Assert.IsTrue(Math.Abs(0.483406674270949 - target.Real) < 1e-15, "5.1");
-            Assert.IsTrue(Math.Abs(0.716288046641012 - target.Imag) < 1e-15, "5.2");
+            Assert.AreEqual(0.483406674270949, target.Real, 1e-15, "#5 real");
+            Assert.AreEqual(0.716288046641012, target.Imag, 1e-15, "#5 imag");
         }
-        #endregion
 
-        #region AsecTest
-        /// <summary>
-        /// A test for Asec.
-        /// </summary>
         [TestMethod]
-        public void AsecTest()
+        public void Complex_Asec_Matlab_Conformance()
         {
-            // Matlab
             var number = new Complex(0.1, 0.3);
             Complex target = number.Asec();
-            Assert.IsTrue(Math.Abs(1.263192677264185 - target.Real) < 1e-14, "1.1");
-            Assert.IsTrue(Math.Abs(1.864161544157883 - target.Imag) < 1e-14, "1.2");
+            Assert.AreEqual(1.263192677264185, target.Real, 1e-15, "#1 real");
+            Assert.AreEqual(1.864161544157883, target.Imag, 1e-15, "#1 imag");
+
             number = new Complex(-0.1, 1.5);
             target = number.Asec();
-            Assert.IsTrue(Math.Abs(1.607663511869202 - target.Real) < 1e-14, "2.1");
-            Assert.IsTrue(Math.Abs(0.623065008994206 - target.Imag) < 1e-15, "2.2");
+            Assert.AreEqual(1.607663511869202, target.Real, 1e-15, "#2 real");
+            Assert.AreEqual(0.623065008994206, target.Imag, 1e-15, "#2 imag");
+
             number = new Complex(-0.5, -0.3);
             target = number.Asec();
-            Assert.IsTrue(Math.Abs(2.517873627505525 - target.Real) < 1e-15, "3.1");
-            Assert.IsTrue(Math.Abs(-1.200699546128141 - target.Imag) < 1e-15, "3.2");
+            Assert.AreEqual(2.517873627505525, target.Real, 1e-15, "#3 real");
+            Assert.AreEqual(-1.200699546128141, target.Imag, 1e-15, "#3 imag");
+
             number = new Complex(0.5, -1.2);
             target = number.Asec();
-            Assert.IsTrue(Math.Abs(1.329643731985686 - target.Real) < 1e-15, "4.1");
-            Assert.IsTrue(Math.Abs(-0.678053948499639 - target.Imag) < 1e-15, "4.2");
+            Assert.AreEqual(1.329643731985686, target.Real, 1e-15, "#4 real");
+            Assert.AreEqual(-0.678053948499639, target.Imag, 1e-15, "#4 imag");
+
             // Static
             target = Complex.Asec(number);
-            Assert.IsTrue(Math.Abs(1.329643731985686 - target.Real) < 1e-15, "5.1");
-            Assert.IsTrue(Math.Abs(-0.678053948499639 - target.Imag) < 1e-15, "5.2");
+            Assert.AreEqual(1.329643731985686, target.Real, 1e-15, "#5 real");
+            Assert.AreEqual(-0.678053948499639, target.Imag, 1e-15, "#5 imag");
         }
-        #endregion
 
-        #region AcosecTest
-        /// <summary>
-        /// A test for Acosec.
-        /// </summary>
         [TestMethod]
-        public void AcosecTest()
+        public void Complex_Acosec_Matlab_Conformance()
         {
-            // Matlab
             var number = new Complex(0.1, 0.3);
             Complex target = number.Acosec();
-            Assert.IsTrue(Math.Abs(0.307603649530711 - target.Real) < 1e-15, "1.1");
-            Assert.IsTrue(Math.Abs(-1.864161544157883 - target.Imag) < 1e-15, "1.2");
+            Assert.AreEqual(0.307603649530711, target.Real, 1e-15, "#1 real");
+            Assert.AreEqual(-1.864161544157883, target.Imag, 1e-15, "#1 imag");
+
             number = new Complex(-0.1, 1.5);
             target = number.Acosec();
-            Assert.IsTrue(Math.Abs(-0.036867185074306 - target.Real) < 1e-15, "2.1");
-            Assert.IsTrue(Math.Abs(-0.623065008994206 - target.Imag) < 1e-15, "2.2");
+            Assert.AreEqual(-0.036867185074306, target.Real, 1e-15, "#2 real");
+            Assert.AreEqual(-0.623065008994206, target.Imag, 1e-15, "#2 imag");
+
             number = new Complex(-0.5, -0.3);
             target = number.Acosec();
-            Assert.IsTrue(Math.Abs(-0.947077300710628 - target.Real) < 1e-15, "3.1");
-            Assert.IsTrue(Math.Abs(1.200699546128141 - target.Imag) < 1e-15, "3.2");
+            Assert.AreEqual(-0.947077300710628, target.Real, 1e-15, "#3 real");
+            Assert.AreEqual(1.200699546128141, target.Imag, 1e-15, "#3 imag");
+
             number = new Complex(0.5, -1.2);
             target = number.Acosec();
-            Assert.IsTrue(Math.Abs(0.241152594809211 - target.Real) < 1e-15, "4.1");
-            Assert.IsTrue(Math.Abs(0.678053948499639 - target.Imag) < 1e-15, "4.2");
+            Assert.AreEqual(0.241152594809211, target.Real, 1e-15, "#4 real");
+            Assert.AreEqual(0.678053948499639, target.Imag, 1e-15, "#4 imag");
+
             // Static
             target = Complex.Acosec(number);
-            Assert.IsTrue(Math.Abs(0.241152594809211 - target.Real) < 1e-15, "5.1");
-            Assert.IsTrue(Math.Abs(0.678053948499639 - target.Imag) < 1e-15, "5.2");
+            Assert.AreEqual(0.241152594809211, target.Real, 1e-15, "#5 real");
+            Assert.AreEqual(0.678053948499639, target.Imag, 1e-15, "#5 imag");
         }
-        #endregion
-        #endregion
 
-        #region Trigonometric hyperbolic functions
-        #region CoshTest
-        /// <summary>
-        /// A test for Cosh.
-        /// </summary>
         [TestMethod]
-        public void CoshTest()
+        public void Complex_Cosh_Matlab_Conformance()
         {
-            // Matlab
             var number = new Complex(0.1, 0.3);
             Complex target = number.Cosh();
-            Assert.IsTrue(Math.Abs(0.960117153467032 - target.Real) < 1e-15, "1.1");
-            Assert.IsTrue(Math.Abs(0.029601298666459 - target.Imag) < 1e-15, "1.2");
+            Assert.AreEqual(0.960117153467032, target.Real, 1e-15, "#1 real");
+            Assert.AreEqual(0.029601298666459, target.Imag, 1e-15, "#1 imag");
+
             number = new Complex(-0.1, 1.5);
             target = number.Cosh();
-            Assert.IsTrue(Math.Abs(0.071091182512645 - target.Real) < 1e-15, "2.1");
-            Assert.IsTrue(Math.Abs(-0.099915830969216 - target.Imag) < 1e-15, "2.2");
+            Assert.AreEqual(0.071091182512645, target.Real, 1e-15, "#2 real");
+            Assert.AreEqual(-0.099915830969216, target.Imag, 1e-15, "#2 imag");
+
             number = new Complex(-0.5, -0.3);
             target = number.Cosh();
-            Assert.IsTrue(Math.Abs(1.077262230647136 - target.Real) < 1e-15, "3.1");
-            Assert.IsTrue(Math.Abs(0.153994192369766 - target.Imag) < 1e-15, "3.2");
+            Assert.AreEqual(1.077262230647136, target.Real, 1e-15, "#3 real");
+            Assert.AreEqual(0.153994192369766, target.Imag, 1e-15, "#3 imag");
+
             number = new Complex(0.5, -1.2);
             target = number.Cosh();
-            Assert.IsTrue(Math.Abs(0.408604012641776 - target.Real) < 1e-15, "4.1");
-            Assert.IsTrue(Math.Abs(-0.485681192234205 - target.Imag) < 1e-15, "4.2");
+            Assert.AreEqual(0.408604012641776, target.Real, 1e-15, "#4 real");
+            Assert.AreEqual(-0.485681192234205, target.Imag, 1e-15, "#4 imag");
+
             // Static
             target = Complex.Cosh(number);
-            Assert.IsTrue(Math.Abs(0.408604012641776 - target.Real) < 1e-15, "5.1");
-            Assert.IsTrue(Math.Abs(-0.485681192234205 - target.Imag) < 1e-15, "5.2");
+            Assert.AreEqual(0.408604012641776, target.Real, 1e-15, "#5 real");
+            Assert.AreEqual(-0.485681192234205, target.Imag, 1e-15, "#5 imag");
         }
-        #endregion
 
-        #region SinhTest
-        /// <summary>
-        /// A test for Sinh.
-        /// </summary>
         [TestMethod]
-        public void SinhTest()
+        public void Complex_Sinh_Matlab_Conformance()
         {
-            // Matlab
             var number = new Complex(0.1, 0.3);
             Complex target = number.Sinh();
-            Assert.IsTrue(Math.Abs(0.095692951291080 - target.Real) < 1e-15, "1.1");
-            Assert.IsTrue(Math.Abs(0.296999039439359 - target.Imag) < 1e-15, "1.2");
+            Assert.AreEqual(0.095692951291080, target.Real, 1e-15, "#1 real");
+            Assert.AreEqual(0.296999039439359, target.Imag, 1e-15, "#1 imag");
+
             number = new Complex(-0.1, 1.5);
             target = number.Sinh();
-            Assert.IsTrue(Math.Abs(-0.007085515596552 - target.Real) < 1e-15, "2.1");
-            Assert.IsTrue(Math.Abs(1.002486619151843 - target.Imag) < 1e-15, "2.2");
+            Assert.AreEqual(-0.007085515596552, target.Real, 1e-15, "#2 real");
+            Assert.AreEqual(1.002486619151843, target.Imag, 1e-15, "#2 imag");
+
             number = new Complex(-0.5, -0.3);
             target = number.Sinh();
-            Assert.IsTrue(Math.Abs(-0.497821359650232 - target.Real) < 1e-15, "3.1");
-            Assert.IsTrue(Math.Abs(-0.333236258274482 - target.Imag) < 1e-15, "3.2");
+            Assert.AreEqual(-0.497821359650232, target.Real, 1e-15, "#3 real");
+            Assert.AreEqual(-0.333236258274482, target.Imag, 1e-15, "#3 imag");
+
             number = new Complex(0.5, -1.2);
             target = number.Sinh();
-            Assert.IsTrue(Math.Abs(0.188822924767051 - target.Real) < 1e-15, "4.1");
-            Assert.IsTrue(Math.Abs(-1.050991473923866 - target.Imag) < 1e-15, "4.2");
+            Assert.AreEqual(0.188822924767051, target.Real, 1e-15, "#4 real");
+            Assert.AreEqual(-1.050991473923866, target.Imag, 1e-15, "#4 imag");
+
             // Static
             target = Complex.Sinh(number);
-            Assert.IsTrue(Math.Abs(0.188822924767051 - target.Real) < 1e-15, "4.1");
-            Assert.IsTrue(Math.Abs(-1.050991473923866 - target.Imag) < 1e-15, "4.2");
+            Assert.AreEqual(0.188822924767051, target.Real, 1e-15, "#5 real");
+            Assert.AreEqual(-1.050991473923866, target.Imag, 1e-15, "#5 imag");
         }
-        #endregion
 
-        #region TanhTest
-        /// <summary>
-        /// A test for Tanh.
-        /// </summary>
         [TestMethod]
-        public void TanhTest()
+        public void Complex_Tanh_Matlab_Conformance()
         {
-            // Matlab
             var number = new Complex(0.1, 0.3);
             Complex target = number.Tanh();
-            Assert.IsTrue(Math.Abs(0.109101411029079 - target.Real) < 1e-15, "1.1");
-            Assert.IsTrue(Math.Abs(0.305972552334617 - target.Imag) < 1e-15, "1.2");
+            Assert.AreEqual(0.109101411029079, target.Real, 1e-15, "#1 real");
+            Assert.AreEqual(0.305972552334617, target.Imag, 1e-15, "#1 imag");
+
             number = new Complex(-0.1, 1.5);
             target = number.Tanh();
-            Assert.IsTrue(Math.Abs(-6.694628865714378 - target.Real) < 1e-15, "2.1");
-            Assert.IsTrue(Math.Abs(4.692385204651136 - target.Imag) < 1e-15, "2.2");
+            Assert.AreEqual(-6.694628865714378, target.Real, 1e-15, "#2 real");
+            Assert.AreEqual(4.692385204651136, target.Imag, 1e-15, "#2 imag");
+
             number = new Complex(-0.5, -0.3);
             target = number.Tanh();
-            Assert.IsTrue(Math.Abs(-0.496197065773508 - target.Real) < 1e-15, "3.1");
-            Assert.IsTrue(Math.Abs(-0.238405083338123 - target.Imag) < 1e-15, "3.2");
+            Assert.AreEqual(-0.496197065773508, target.Real, 1e-15, "#3 real");
+            Assert.AreEqual(-0.238405083338123, target.Imag, 1e-15, "#3 imag");
+
             number = new Complex(0.5, -1.2);
             target = number.Tanh();
-            Assert.IsTrue(Math.Abs(1.458632584854141 - target.Real) < 1e-15, "4.1");
-            Assert.IsTrue(Math.Abs(-0.838369302507491 - target.Imag) < 1e-15, "4.2");
+            Assert.AreEqual(1.458632584854141, target.Real, 1e-15, "#4 real");
+            Assert.AreEqual(-0.838369302507491, target.Imag, 1e-15, "#4 imag");
+
             // Static
             target = Complex.Tanh(number);
-            Assert.IsTrue(Math.Abs(1.458632584854141 - target.Real) < 1e-15, "5.1");
-            Assert.IsTrue(Math.Abs(-0.838369302507491 - target.Imag) < 1e-15, "5.2");
+            Assert.AreEqual(1.458632584854141, target.Real, 1e-15, "#5 real");
+            Assert.AreEqual(-0.838369302507491, target.Imag, 1e-15, "#5 imag");
         }
-        #endregion
 
-        #region CothTest
-        /// <summary>
-        /// A test for Coth.
-        /// </summary>
         [TestMethod]
-        public void CothTest()
+        public void Complex_Coth_Matlab_Conformance()
         {
-            // Matlab
             var number = new Complex(0.1, 0.3);
             Complex target = number.Coth();
-            Assert.IsTrue(Math.Abs(1.033917851082447 - target.Real) < 1e-15, "1.1");
-            Assert.IsTrue(Math.Abs(-2.899600296789029 - target.Imag) < 1e-15, "1.2");
+            Assert.AreEqual(1.033917851082447, target.Real, 1e-15, "#1 real");
+            Assert.AreEqual(-2.899600296789029, target.Imag, 1e-15, "#1 imag");
+
             number = new Complex(-0.1, 1.5);
             target = number.Coth();
-            Assert.IsTrue(Math.Abs(-0.100164212730932 - target.Real) < 1e-15, "2.1");
-            Assert.IsTrue(Math.Abs(-0.070206889624792 - target.Imag) < 1e-15, "2.2");
+            Assert.AreEqual(-0.100164212730932, target.Real, 1e-15, "#2 real");
+            Assert.AreEqual(-0.070206889624792, target.Imag, 1e-15, "#2 imag");
+
             number = new Complex(-0.5, -0.3);
             target = number.Coth();
-            Assert.IsTrue(Math.Abs(-1.637351930074588 - target.Real) < 1e-15, "3.1");
-            Assert.IsTrue(Math.Abs(0.786689503563990 - target.Imag) < 1e-15, "3.2");
+            Assert.AreEqual(-1.637351930074588, target.Real, 1e-15, "#3 real");
+            Assert.AreEqual(0.786689503563990, target.Imag, 1e-15, "#3 imag");
+
             number = new Complex(0.5, -1.2);
             target = number.Coth();
-            Assert.IsTrue(Math.Abs(0.515331906039676 - target.Real) < 1e-15, "4.1");
-            Assert.IsTrue(Math.Abs(0.296194158222197 - target.Imag) < 1e-15, "4.2");
+            Assert.AreEqual(0.515331906039676, target.Real, 1e-15, "#4 real");
+            Assert.AreEqual(0.296194158222197, target.Imag, 1e-15, "#4 imag");
+
             // Static
             target = Complex.Coth(number);
-            Assert.IsTrue(Math.Abs(0.515331906039676 - target.Real) < 1e-15, "5.1");
-            Assert.IsTrue(Math.Abs(0.296194158222197 - target.Imag) < 1e-15, "5.2");
+            Assert.AreEqual(0.515331906039676, target.Real, 1e-15, "#5 real");
+            Assert.AreEqual(0.296194158222197, target.Imag, 1e-15, "#5 imag");
         }
-        #endregion
 
-        #region SechTest
-        /// <summary>
-        /// A test for Sech.
-        /// </summary>
         [TestMethod]
-        public void SechTest()
+        public void Complex_Sech_Matlab_Conformance()
         {
-            // Matlab
             var number = new Complex(0.1, 0.3);
             Complex target = number.Sech();
-            Assert.IsTrue(Math.Abs(1.040550471593828 - target.Real) < 1e-15, "1.1");
-            Assert.IsTrue(Math.Abs(-0.032081132157620 - target.Imag) < 1e-15, "1.2");
+            Assert.AreEqual(1.040550471593828, target.Real, 1e-15, "#1 real");
+            Assert.AreEqual(-0.032081132157620, target.Imag, 1e-15, "#1 imag");
+
             number = new Complex(-0.1, 1.5);
             target = number.Sech();
-            Assert.IsTrue(Math.Abs(4.727709664840343 - target.Real) < 1e-14, "2.1");
-            Assert.IsTrue(Math.Abs(6.644607995649714 - target.Imag) < 1e-15, "2.2");
+            Assert.AreEqual(4.727709664840343, target.Real, 1e-15, "#2 real");
+            Assert.AreEqual(6.644607995649714, target.Imag, 1e-15, "#2 imag");
+
             number = new Complex(-0.5, -0.3);
             target = number.Sech();
-            Assert.IsTrue(Math.Abs(0.909689950634526 - target.Real) < 1e-15, "3.1");
-            Assert.IsTrue(Math.Abs(-0.130039803930286 - target.Imag) < 1e-15, "3.2");
+            Assert.AreEqual(0.909689950634526, target.Real, 1e-15, "#3 real");
+            Assert.AreEqual(-0.130039803930286, target.Imag, 1e-15, "#3 imag");
+
             number = new Complex(0.5, -1.2);
             target = number.Sech();
-            Assert.IsTrue(Math.Abs(1.014299730743966 - target.Real) < 1e-15, "4.1");
-            Assert.IsTrue(Math.Abs(1.205632561769404 - target.Imag) < 1e-15, "4.2");
+            Assert.AreEqual(1.014299730743966, target.Real, 1e-15, "#4 real");
+            Assert.AreEqual(1.205632561769404, target.Imag, 1e-15, "#4 imag");
+
             // Static
             target = Complex.Sech(number);
-            Assert.IsTrue(Math.Abs(1.014299730743966 - target.Real) < 1e-15, "5.1");
-            Assert.IsTrue(Math.Abs(1.205632561769404 - target.Imag) < 1e-15, "5.2");
+            Assert.AreEqual(1.014299730743966, target.Real, 1e-15, "#4 real");
+            Assert.AreEqual(1.205632561769404, target.Imag, 1e-15, "#4 imag");
         }
-        #endregion
 
-        #region CosechTest
-        /// <summary>
-        /// A test for Cosech.
-        /// </summary>
         [TestMethod]
-        public void CosechTest()
+        public void Complex_Cosech_Matlab_Conformance()
         {
-            // Matlab
             var number = new Complex(0.1, 0.3);
             Complex target = number.Cosech();
-            Assert.IsTrue(Math.Abs(0.982821247207556 - target.Real) < 1e-15, "1.1");
-            Assert.IsTrue(Math.Abs(-3.050349711478128 - target.Imag) < 1e-14, "1.2");
+            Assert.AreEqual(0.982821247207556, target.Real, 1e-15, "#1 real");
+            Assert.AreEqual(-3.050349711478128, target.Imag, 1e-15, "#1 imag");
+
             number = new Complex(-0.1, 1.5);
             target = number.Cosech();
-            Assert.IsTrue(Math.Abs(-0.007050056448563 - target.Real) < 1e-15, "2.1");
-            Assert.IsTrue(Math.Abs(-0.997469719407415 - target.Imag) < 1e-15, "2.2");
+            Assert.AreEqual(-0.007050056448563, target.Real, 1e-15, "#2 real");
+            Assert.AreEqual(-0.997469719407415, target.Imag, 1e-15, "#2 imag");
+
             number = new Complex(-0.5, -0.3);
             target = number.Cosech();
-            Assert.IsTrue(Math.Abs(-1.387181647643423 - target.Real) < 1e-15, "3.1");
-            Assert.IsTrue(Math.Abs(0.928564459613600 - target.Imag) < 1e-15, "3.2");
+            Assert.AreEqual(-1.387181647643423, target.Real, 1e-15, "#3 real");
+            Assert.AreEqual(0.928564459613600, target.Imag, 1e-15, "#3 imag");
+
             number = new Complex(0.5, -1.2);
             target = number.Cosech();
-            Assert.IsTrue(Math.Abs(0.165599691781259 - target.Real) < 1e-15, "4.1");
-            Assert.IsTrue(Math.Abs(0.921730580972834 - target.Imag) < 1e-15, "4.2");
+            Assert.AreEqual(0.165599691781259, target.Real, 1e-15, "#4 real");
+            Assert.AreEqual(0.921730580972834, target.Imag, 1e-15, "#4 imag");
+
             // Static
             target = Complex.Cosech(number);
-            Assert.IsTrue(Math.Abs(0.165599691781259 - target.Real) < 1e-15, "5.1");
-            Assert.IsTrue(Math.Abs(0.921730580972834 - target.Imag) < 1e-15, "5.2");
+            Assert.AreEqual(0.165599691781259, target.Real, 1e-15, "#5 real");
+            Assert.AreEqual(0.921730580972834, target.Imag, 1e-15, "#5 imag");
         }
-        #endregion
-        #endregion
 
-        #region Inverse trigonometric hyperbolic functions
-        #region AcoshTest
-        /// <summary>
-        /// A test for Acosh.
-        /// </summary>
         [TestMethod]
-        public void AcoshTest()
+        public void Complex_Acosh_Matlab_Conformance()
         {
-            // Matlab
             var number = new Complex(0.1, 0.3);
             Complex target = number.Acosh();
-            Assert.IsTrue(Math.Abs(0.296999023408390 - target.Real) < 1e-15, "1.1");
-            Assert.IsTrue(Math.Abs(1.474903367519443 - target.Imag) < 1e-15, "1.2");
+            Assert.AreEqual(0.296999023408390, target.Real, 1e-15, "#1 real");
+            Assert.AreEqual(1.474903367519443, target.Imag, 1e-15, "#1 imag");
+
             number = new Complex(-0.1, 1.5);
             target = number.Acosh();
-            Assert.IsTrue(Math.Abs(1.196042838552249 - target.Real) < 1e-15, "2.1");
-            Assert.IsTrue(Math.Abs(1.626235699131362 - target.Imag) < 1e-15, "2.2");
+            Assert.AreEqual(1.196042838552249, target.Real, 1e-15, "#2 real");
+            Assert.AreEqual(1.626235699131362, target.Imag, 1e-15, "#2 imag");
+
             number = new Complex(-0.5, -0.3);
             target = number.Acosh();
-            Assert.IsTrue(Math.Abs(0.334299817774938 - target.Real) < 1e-15, "2.1");
-            Assert.IsTrue(Math.Abs(-2.063835567380515 - target.Imag) < 1e-15, "2.2");
+            Assert.AreEqual(0.334299817774938, target.Real, 1e-15, "#3 real");
+            Assert.AreEqual(-2.063835567380515, target.Imag, 1e-15, "#3 imag");
+
             number = new Complex(0.5, -1.2);
             target = number.Acosh();
-            Assert.IsTrue(Math.Abs(1.055304915437955 - target.Real) < 1e-15, "4.1");
-            Assert.IsTrue(Math.Abs(-1.255110336239894 - target.Imag) < 1e-15, "4.2");
+            Assert.AreEqual(1.055304915437955, target.Real, 1e-15, "#4 real");
+            Assert.AreEqual(-1.255110336239894, target.Imag, 1e-15, "#4 imag");
+
             // Static
             target = Complex.Acosh(number);
-            Assert.IsTrue(Math.Abs(1.055304915437955 - target.Real) < 1e-15, "5.1");
-            Assert.IsTrue(Math.Abs(-1.255110336239894 - target.Imag) < 1e-15, "5.2");
+            Assert.AreEqual(1.055304915437955, target.Real, 1e-15, "#5 real");
+            Assert.AreEqual(-1.255110336239894, target.Imag, 1e-15, "#5 imag");
         }
-        #endregion
 
-        #region AsinhTest
-        /// <summary>
-        /// A test for Asinh.
-        /// </summary>
         [TestMethod]
-        public void AsinhTest()
+        public void Complex_Asinh_Matlab_Conformance()
         {
-            // Matlab
             var number = new Complex(0.1, 0.3);
             Complex target = number.Asinh();
-            Assert.IsTrue(Math.Abs(0.104581498839370 - target.Real) < 1e-15, "1.1");
-            Assert.IsTrue(Math.Abs(0.302981107347608 - target.Imag) < 1e-15, "1.2");
+            Assert.AreEqual(0.104581498839370, target.Real, 1e-15, "#1 real");
+            Assert.AreEqual(0.302981107347608, target.Imag, 1e-15, "#1 imag");
+
             number = new Complex(-0.1, 1.5);
             target = number.Asinh();
-            Assert.IsTrue(Math.Abs(-0.967727114204379 - target.Real) < 1e-15, "2.1");
-            Assert.IsTrue(Math.Abs(1.481869611649372 - target.Imag) < 1e-15, "2.2");
+            Assert.AreEqual(-0.967727114204379, target.Real, 1e-15, "#2 real");
+            Assert.AreEqual(1.481869611649372, target.Imag, 1e-15, "#2 imag");
+
             number = new Complex(-0.5, -0.3);
             target = number.Asinh();
-            Assert.IsTrue(Math.Abs(-0.497902942830288 - target.Real) < 1e-15, "3.1");
-            Assert.IsTrue(Math.Abs(-0.269555641424950 - target.Imag) < 1e-15, "3.2");
+            Assert.AreEqual(-0.497902942830288, target.Real, 1e-15, "#3 real");
+            Assert.AreEqual(-0.269555641424950, target.Imag, 1e-15, "#3 imag");
+
             number = new Complex(0.5, -1.2);
             target = number.Asinh();
-            Assert.IsTrue(Math.Abs(0.864263503049688 - target.Real) < 1e-15, "4.1");
-            Assert.IsTrue(Math.Abs(-1.032909408267385 - target.Imag) < 1e-15, "4.2");
+            Assert.AreEqual(0.864263503049688, target.Real, 1e-15, "#4 real");
+            Assert.AreEqual(-1.032909408267385, target.Imag, 1e-15, "#4 imag");
+
             // Static
             target = Complex.Asinh(number);
-            Assert.IsTrue(Math.Abs(0.864263503049688 - target.Real) < 1e-15, "4.1");
-            Assert.IsTrue(Math.Abs(-1.032909408267385 - target.Imag) < 1e-15, "4.2");
+            Assert.AreEqual(0.864263503049688, target.Real, 1e-15, "#5 real");
+            Assert.AreEqual(-1.032909408267385, target.Imag, 1e-15, "#5 imag");
         }
-        #endregion
 
-        #region AtanhTest
-        /// <summary>
-        /// A test for Atanh.
-        /// </summary>
         [TestMethod]
-        public void AtanhTest()
+        public void Complex_Atanh_Matlab_Conformance()
         {
-            // Matlab
             var number = new Complex(0.1, 0.3);
             Complex target = number.Atanh();
-            Assert.IsTrue(Math.Abs(0.091931195031329 - target.Real) < 1e-15, "1.1");
-            Assert.IsTrue(Math.Abs(0.294001301773784 - target.Imag) < 1e-15, "1.2");
+            Assert.AreEqual(0.091931195031329, target.Real, 1e-15, "#1 real");
+            Assert.AreEqual(0.294001301773784, target.Imag, 1e-15, "#1 imag");
+
             number = new Complex(-0.1, 1.5);
             target = number.Atanh();
-            Assert.IsTrue(Math.Abs(-0.030713418276336 - target.Real) < 1e-15, "2.1");
-            Assert.IsTrue(Math.Abs(0.984212159158513 - target.Imag) < 1e-15, "2.2");
+            Assert.AreEqual(-0.030713418276336, target.Real, 1e-15, "#2 real");
+            Assert.AreEqual(0.984212159158513, target.Imag, 1e-15, "#2 imag");
+
             number = new Complex(-0.5, -0.3);
             target = number.Atanh();
-            Assert.IsTrue(Math.Abs(-0.482240147685385 - target.Real) < 1e-15, "3.1");
-            Assert.IsTrue(Math.Abs(-0.368907530060232 - target.Imag) < 1e-15, "3.2");
+            Assert.AreEqual(-0.482240147685385, target.Real, 1e-15, "#3 real");
+            Assert.AreEqual(-0.368907530060232, target.Imag, 1e-15, "#3 imag");
+
             number = new Complex(0.5, -1.2);
             target = number.Atanh();
-            Assert.IsTrue(Math.Abs(0.195224482279363 - target.Real) < 1e-15, "4.1");
-            Assert.IsTrue(Math.Abs(-0.925373074659344 - target.Imag) < 1e-15, "4.2");
+            Assert.AreEqual(0.195224482279363, target.Real, 1e-15, "#4 real");
+            Assert.AreEqual(-0.925373074659344, target.Imag, 1e-15, "#4 imag");
+
             // Static
             target = Complex.Atanh(number);
-            Assert.IsTrue(Math.Abs(0.195224482279363 - target.Real) < 1e-15, "5.1");
-            Assert.IsTrue(Math.Abs(-0.925373074659344 - target.Imag) < 1e-15, "5.2");
+            Assert.AreEqual(0.195224482279363, target.Real, 1e-15, "#5 real");
+            Assert.AreEqual(-0.925373074659344, target.Imag, 1e-15, "#5 imag");
         }
-        #endregion
 
-        #region AcothTest
-        /// <summary>
-        /// A test for Acoth.
-        /// </summary>
         [TestMethod]
-        public void AcothTest()
+        public void Complex_Acoth_Matlab_Conformance()
         {
-            // Matlab
             var number = new Complex(0.1, 0.3);
             Complex target = number.Acoth();
-            Assert.IsTrue(Math.Abs(0.091931195031329 - target.Real) < 1e-15, "1.1");
-            Assert.IsTrue(Math.Abs(-1.276795025021113 - target.Imag) < 1e-15, "1.2");
+            Assert.AreEqual(0.091931195031329, target.Real, 1e-15, "#1 real");
+            Assert.AreEqual(-1.276795025021113, target.Imag, 1e-15, "#1 imag");
+
             number = new Complex(-0.1, 1.5);
             target = number.Acoth();
-            Assert.IsTrue(Math.Abs(-0.030713418276336 - target.Real) < 1e-15, "2.1");
-            Assert.IsTrue(Math.Abs(-0.586584167636384 - target.Imag) < 1e-15, "2.2");
+            Assert.AreEqual(-0.030713418276336, target.Real, 1e-15, "#2 real");
+            Assert.AreEqual(-0.586584167636384, target.Imag, 1e-15, "#2 imag");
+
             number = new Complex(-0.5, -0.3);
             target = number.Acoth();
-            Assert.IsTrue(Math.Abs(-0.482240147685385 - target.Real) < 1e-15, "3.1");
-            Assert.IsTrue(Math.Abs(1.201888796734664 - target.Imag) < 1e-15, "3.2");
+            Assert.AreEqual(-0.482240147685385, target.Real, 1e-15, "#3 real");
+            Assert.AreEqual(1.201888796734664, target.Imag, 1e-15, "#3 imag");
+
             number = new Complex(0.5, -1.2);
             target = number.Acoth();
-            Assert.IsTrue(Math.Abs(0.195224482279363 - target.Real) < 1e-15, "4.1");
-            Assert.IsTrue(Math.Abs(0.645423252135553 - target.Imag) < 1e-15, "4.2");
+            Assert.AreEqual(0.195224482279363, target.Real, 1e-15, "#4 real");
+            Assert.AreEqual(0.645423252135553, target.Imag, 1e-15, "#4 imag");
+
             // Static
             target = Complex.Acoth(number);
-            Assert.IsTrue(Math.Abs(0.195224482279363 - target.Real) < 1e-15, "5.1");
-            Assert.IsTrue(Math.Abs(0.645423252135553 - target.Imag) < 1e-15, "5.2");
+            Assert.AreEqual(0.195224482279363, target.Real, 1e-15, "#5 real");
+            Assert.AreEqual(0.645423252135553, target.Imag, 1e-15, "#5 imag");
         }
-        #endregion
 
-        #region AsechTest
-        /// <summary>
-        /// A test for Asech.
-        /// </summary>
         [TestMethod]
-        public void AsechTest()
+        public void Complex_Asech_Matlab_Conformance()
         {
-            // Matlab
             var number = new Complex(0.1, 0.3);
             Complex target = number.Asech();
-            Assert.IsTrue(Math.Abs(1.864161544157883 - target.Real) < 1e-15, "1.1");
-            Assert.IsTrue(Math.Abs(-1.263192677264185 - target.Imag) < 1e-15, "1.2");
+            Assert.AreEqual(1.864161544157883, target.Real, 1e-15, "#1 real");
+            Assert.AreEqual(-1.263192677264185, target.Imag, 1e-15, "#1 imag");
+
             number = new Complex(-0.1, 1.5);
             target = number.Asech();
-            Assert.IsTrue(Math.Abs(0.623065008994206 - target.Real) < 1e-15, "2.1");
-            Assert.IsTrue(Math.Abs(-1.607663511869202 - target.Imag) < 1e-15, "2.2");
+            Assert.AreEqual(0.623065008994206, target.Real, 1e-15, "#2 real");
+            Assert.AreEqual(-1.607663511869202, target.Imag, 1e-15, "#2 imag");
+
             number = new Complex(-0.5, -0.3);
             target = number.Asech();
-            Assert.IsTrue(Math.Abs(1.200699546128141 - target.Real) < 1e-15, "3.1");
-            Assert.IsTrue(Math.Abs(2.517873627505525 - target.Imag) < 1e-15, "3.2");
+            Assert.AreEqual(1.200699546128141, target.Real, 1e-15, "#3 real");
+            Assert.AreEqual(2.517873627505525, target.Imag, 1e-15, "#3 imag");
+
             number = new Complex(0.5, -1.2);
             target = number.Asech();
-            Assert.IsTrue(Math.Abs(0.678053948499639 - target.Real) < 1e-15, "4.1");
-            Assert.IsTrue(Math.Abs(1.329643731985686 - target.Imag) < 1e-15, "4.2");
+            Assert.AreEqual(0.678053948499639, target.Real, 1e-15, "#4 real");
+            Assert.AreEqual(1.329643731985686, target.Imag, 1e-15, "#4 imag");
+
             // Static
             target = Complex.Asech(number);
-            Assert.IsTrue(Math.Abs(0.678053948499639 - target.Real) < 1e-15, "5.1");
-            Assert.IsTrue(Math.Abs(1.329643731985686 - target.Imag) < 1e-15, "5.2");
+            Assert.AreEqual(0.678053948499639, target.Real, 1e-15, "#5 real");
+            Assert.AreEqual(1.329643731985686, target.Imag, 1e-15, "#5 imag");
         }
-        #endregion
 
-        #region AcosechTest
-        /// <summary>
-        /// A test for Acosech.
-        /// </summary>
         [TestMethod]
-        public void AcosechTest()
+        public void Complex_Acosech_Matlab_Conformance()
         {
-            // Matlab
             var number = new Complex(0.1, 0.3);
             Complex target = number.Acosech();
-            Assert.IsTrue(Math.Abs(1.824198702193883 - target.Real) < 1e-15, "1.1");
-            Assert.IsTrue(Math.Abs(-1.233095217529344 - target.Imag) < 1e-15, "1.2");
+            Assert.AreEqual(1.824198702193883, target.Real, 1e-15, "#1 real");
+            Assert.AreEqual(-1.233095217529344, target.Imag, 1e-15, "#1 imag");
+
             number = new Complex(-0.1, 1.5);
             target = number.Acosech();
-            Assert.IsTrue(Math.Abs(-0.059040931232830 - target.Real) < 1e-15, "2.1");
-            Assert.IsTrue(Math.Abs(-0.724233722076607 - target.Imag) < 1e-15, "2.2");
+            Assert.AreEqual(-0.059040931232830, target.Real, 1e-15, "#2 real");
+            Assert.AreEqual(-0.724233722076607, target.Imag, 1e-15, "#2 imag");
+
             number = new Complex(-0.5, -0.3);
             target = number.Acosech();
-            Assert.IsTrue(Math.Abs(-1.276772226623233 - target.Real) < 1e-15, "3.1");
-            Assert.IsTrue(Math.Abs(0.474289102065753 - target.Imag) < 1e-15, "3.2");
+            Assert.AreEqual(-1.276772226623233, target.Real, 1e-15, "#3 real");
+            Assert.AreEqual(0.474289102065753, target.Imag, 1e-15, "#3 imag");
+
             number = new Complex(0.5, -1.2);
             target = number.Acosech();
-            Assert.IsTrue(Math.Abs(0.384546338338748 - target.Real) < 1e-15, "4.1");
-            Assert.IsTrue(Math.Abs(0.721631195207434 - target.Imag) < 1e-15, "4.2");
+            Assert.AreEqual(0.384546338338748, target.Real, 1e-15, "#4 real");
+            Assert.AreEqual(0.721631195207434, target.Imag, 1e-15, "#4 imag");
+
             // Static
             target = Complex.Acosech(number);
-            Assert.IsTrue(Math.Abs(0.384546338338748 - target.Real) < 1e-15, "5.1");
-            Assert.IsTrue(Math.Abs(0.721631195207434 - target.Imag) < 1e-15, "5.2");
+            Assert.AreEqual(0.384546338338748, target.Real, 1e-15, "#5 real");
+            Assert.AreEqual(0.721631195207434, target.Imag, 1e-15, "#5 imag");
         }
-        #endregion
-        #endregion
 
-        #region Accessors
-
-        #region J*
-        //// Ïðîâåðêà êîíñòàíòû j
-        //Complex c12 = Complex.J;
-        //Assert.IsTrue (c12.Re == 0 && c12.Im == 1, c12.ToString ());
-
-        //Complex c13 = new Complex(2, 3);
-        //Complex c14 = c13 + Complex.J;
-        //Assert.IsTrue (c14.Re == 2 && c14.Im == 4, c14.ToString ());
-        #endregion
-
-        #region ITest
-        /// <summary>
-        /// A test for ImaginaryOne.
-        /// </summary>
         [TestMethod]
-        public void Itest()
+        public void Complex_Real_Accessor()
         {
-            Complex target = Complex.ImaginaryOne;
-            Assert.IsTrue(target.Real == 0 && target.Imag == 1, target.ToString());
+            const double expected = 12.3;
+            var target = new Complex(expected, 45.6);
+            Assert.AreEqual(expected, target.Real, "#1");
+
+            target = new Complex(expected);
+            Assert.AreEqual(expected, target.Real, "#2");
+
+            target.Imag += expected;
+            Assert.AreEqual(expected * 2, target.Real, "#3");
         }
-        #endregion
 
-        #region ImagTest
-        /// <summary>
-        /// A test for Imag.
-        /// </summary>
         [TestMethod]
-        public void ImagTest()
+        public void Complex_Imag_Accessor()
         {
-            var target = new Complex(12.3, 45.6);
-            Assert.AreEqual(target.Imag, 45.6);
+            const double expected = 45.6;
+            var target = new Complex(12.3, expected);
+            Assert.AreEqual(expected, target.Imag, "#1");
+
             target = new Complex(78.9);
-            Assert.AreEqual(target.Imag, 0d);
-        }
-        #endregion
+            Assert.AreEqual(0, target.Imag, "#2");
 
-        #region RealTest
-        /// <summary>
-        /// A test for Real.
-        /// </summary>
-        [TestMethod]
-        public void RealTest()
-        {
-            var target = new Complex(12.3, 45.6);
-            Assert.AreEqual(target.Imag, 45.6);
-            target = new Complex(78.9);
-            Assert.AreEqual(target.Imag, 0d);
+            target.Imag = expected;
+            Assert.AreEqual(expected, target.Imag, "#3");
         }
-        #endregion
 
-        #region InfinityTest
-        /// <summary>
-        /// A test for Infinity.
-        /// </summary>
         [TestMethod]
-        public void InfinityTest()
+        public void Complex_IsImaginaryOne_Correctness()
         {
-            Complex target = Complex.Infinity;
-            Assert.IsTrue(double.IsPositiveInfinity(target.Real));
-            Assert.IsTrue(double.IsPositiveInfinity(target.Imag));
-            Assert.IsTrue(double.IsInfinity(target.Real));
-            Assert.IsTrue(double.IsInfinity(target.Imag));
-            Assert.IsFalse(double.IsNegativeInfinity(target.Real));
-            Assert.IsFalse(double.IsNegativeInfinity(target.Imag));
-            target = new Complex(1d, 2d);
-            Assert.IsFalse(double.IsPositiveInfinity(target.Real));
-            Assert.IsFalse(double.IsPositiveInfinity(target.Imag));
-            Assert.IsFalse(double.IsInfinity(target.Real));
-            Assert.IsFalse(double.IsInfinity(target.Imag));
-            Assert.IsFalse(double.IsNegativeInfinity(target.Real));
-            Assert.IsFalse(double.IsNegativeInfinity(target.Imag));
+            Assert.IsFalse(new Complex(2, 3).IsImaginaryOne, "#1");
+
+            Assert.IsFalse(Complex.Infinity.IsImaginaryOne, "#2");
+            Assert.IsFalse(Complex.NaN.IsImaginaryOne, "#3");
+            Assert.IsFalse(Complex.One.IsImaginaryOne, "#4");
+            Assert.IsFalse(Complex.Zero.IsImaginaryOne, "#5");
+
+            Assert.IsTrue(Complex.ImaginaryOne.IsImaginaryOne, "#6");
+            Assert.IsTrue(new Complex(0, 1).IsImaginary, "#7");
         }
-        #endregion
 
-        #region IsITest
-        /// <summary>
-        /// A test for IsI.
-        /// </summary>
         [TestMethod]
-        public void IsITest()
+        public void Complex_IsImaginary_Correctness()
         {
-            var target = new Complex(2d, 3d);
-            Assert.IsFalse(target.IsImaginaryOne);
-            target = Complex.ImaginaryOne;
-            Assert.IsTrue(target.IsImaginaryOne);
-            target = Complex.Infinity;
-            Assert.IsFalse(target.IsImaginaryOne);
-            target = Complex.NaN;
-            Assert.IsFalse(target.IsImaginaryOne);
+            Assert.IsFalse(new Complex(2, 3).IsImaginary, "#1");
+            Assert.IsFalse(new Complex(0, 0).IsImaginary, "#2");
+
+            Assert.IsFalse(Complex.Infinity.IsImaginary, "#3");
+            Assert.IsFalse(Complex.NaN.IsImaginary, "#4");
+            Assert.IsFalse(Complex.One.IsImaginary, "#5");
+            Assert.IsFalse(Complex.Zero.IsImaginary, "#6");
+
+            Assert.IsTrue(Complex.ImaginaryOne.IsImaginary, "#7");
+            Assert.IsTrue(new Complex(0, 4).IsImaginary, "#8");
         }
-        #endregion
 
-        #region IsImaginaryTest
-        /// <summary>
-        /// A test for IsImaginary.
-        /// </summary>
         [TestMethod]
-        public void IsImaginaryTest()
+        public void Complex_IsInfinity_Correctness()
         {
-            var target = new Complex(2d, 3d);
-            Assert.IsFalse(target.IsImaginary);
-            target = new Complex(0d, 4d);
-            Assert.IsTrue(target.IsImaginary);
-            target = Complex.ImaginaryOne;
-            Assert.IsTrue(target.IsImaginary);
-            target = Complex.Infinity;
-            Assert.IsFalse(target.IsImaginary);
-            target = Complex.NaN;
-            Assert.IsFalse(target.IsImaginary);
+            Assert.IsFalse(new Complex(2, 3).IsInfinity, "#1");
+
+            Assert.IsFalse(Complex.NaN.IsInfinity, "#2");
+            Assert.IsFalse(Complex.One.IsInfinity, "#3");
+            Assert.IsFalse(Complex.ImaginaryOne.IsInfinity, "#4");
+            Assert.IsFalse(Complex.Zero.IsInfinity, "#5");
+
+            Assert.IsTrue(Complex.Infinity.IsInfinity, "#6");
         }
-        #endregion
 
-        #region IsInfinityTest
-        /// <summary>
-        /// A test for IsInfinity.
-        /// </summary>
         [TestMethod]
-        public void IsInfinityTest()
+        public void Complex_IsNaN_Correctness()
         {
-            var target = new Complex(2d, 3d);
-            Assert.IsFalse(target.IsInfinity);
-            target = Complex.ImaginaryOne;
-            Assert.IsFalse(target.IsInfinity);
-            target = Complex.Infinity;
-            Assert.IsTrue(target.IsInfinity);
-            target = Complex.NaN;
-            Assert.IsFalse(target.IsInfinity);
+            Assert.IsFalse(new Complex(2, 3).IsNaN, "#1");
+
+            Assert.IsFalse(Complex.Infinity.IsNaN, "#2");
+            Assert.IsFalse(Complex.One.IsNaN, "#3");
+            Assert.IsFalse(Complex.ImaginaryOne.IsNaN, "#4");
+            Assert.IsFalse(Complex.Zero.IsNaN, "#5");
+
+            Assert.IsTrue(Complex.NaN.IsNaN, "#6");
         }
-        #endregion
 
-        #region IsNaNTest
-        /// <summary>
-        /// A test for IsNaN.
-        /// </summary>
         [TestMethod]
-        public void IsNaNTest()
+        public void Complex_IsOne_Correctness()
         {
-            var target = new Complex(2d, 3d);
-            Assert.IsFalse(target.IsNaN);
-            target = Complex.ImaginaryOne;
-            Assert.IsFalse(target.IsNaN);
-            target = Complex.NaN;
-            Assert.IsTrue(target.IsNaN);
-            target = Complex.Infinity;
-            Assert.IsFalse(target.IsNaN);
+            Assert.IsFalse(new Complex(2, 3).IsOne, "#1");
+
+            Assert.IsFalse(Complex.ImaginaryOne.IsOne, "#2");
+            Assert.IsFalse(Complex.Zero.IsOne, "#3");
+            Assert.IsFalse(Complex.Infinity.IsOne, "#4");
+            Assert.IsFalse(Complex.NaN.IsOne, "#5");
+
+            Assert.IsTrue(Complex.One.IsOne, "#6");
         }
-        #endregion
 
-        #region IsOneTest
-        /// <summary>
-        /// A test for IsOne.
-        /// </summary>
         [TestMethod]
-        public void IsOneTest()
+        public void Complex_IsReal_Correctness()
         {
-            var target = new Complex(2d, 3d);
-            Assert.IsFalse(target.IsOne);
-            target = Complex.ImaginaryOne;
-            Assert.IsFalse(target.IsOne);
-            target = Complex.Infinity;
-            Assert.IsFalse(target.IsOne);
-            target = Complex.NaN;
-            Assert.IsFalse(target.IsOne);
-            target = Complex.One;
-            Assert.IsTrue(target.IsOne);
+            Assert.IsFalse(new Complex(2, 3).IsReal, "#1");
+            Assert.IsTrue(new Complex(2, 0).IsReal, "#2");
+            Assert.IsTrue(new Complex(-2, 0).IsReal, "#3");
+
+            Assert.IsFalse(Complex.ImaginaryOne.IsReal, "#4");
+            Assert.IsFalse(Complex.Infinity.IsReal, "#5");
+            Assert.IsFalse(Complex.NaN.IsReal, "#6");
+
+            Assert.IsTrue(Complex.One.IsReal, "#7");
+            Assert.IsTrue(Complex.Zero.IsReal, "#8");
         }
-        #endregion
 
-        #region IsRealTest
-        /// <summary>
-        /// A test for IsReal.
-        /// </summary>
         [TestMethod]
-        public void IsRealTest()
+        public void Complex_IsRealNonNegative_Correctness()
         {
-            var target = new Complex(2d, 3d);
-            Assert.IsFalse(target.IsReal);
-            target = new Complex(2d, 0d);
-            Assert.IsTrue(target.IsReal);
-            target = new Complex(-2d, 0d);
-            Assert.IsTrue(target.IsReal);
-            target = Complex.ImaginaryOne;
-            Assert.IsFalse(target.IsReal);
-            target = Complex.Infinity;
-            Assert.IsFalse(target.IsReal);
-            target = Complex.NaN;
-            Assert.IsFalse(target.IsReal);
-            target = Complex.One;
-            Assert.IsTrue(target.IsReal);
+            Assert.IsFalse(new Complex(2, 3).IsRealNonNegative, "#1");
+            Assert.IsTrue(new Complex(2, 0).IsRealNonNegative, "#2");
+            Assert.IsFalse(new Complex(-2, 0).IsRealNonNegative, "#3");
+
+            Assert.IsFalse(Complex.ImaginaryOne.IsRealNonNegative, "#4");
+            Assert.IsFalse(Complex.Infinity.IsRealNonNegative, "#5");
+            Assert.IsFalse(Complex.NaN.IsRealNonNegative, "#6");
+
+            Assert.IsTrue(Complex.One.IsRealNonNegative, "#7");
+            Assert.IsTrue(Complex.Zero.IsRealNonNegative, "#8");
         }
-        #endregion
 
-        #region IsRealNonNegativeTest
-        /// <summary>
-        /// A test for IsRealNonNegative.
-        /// </summary>
         [TestMethod]
-        public void IsRealNonNegativeTest()
+        public void Complex_IsZero_Correctness()
         {
-            var target = new Complex(2d, 3d);
-            Assert.IsFalse(target.IsRealNonNegative);
-            target = new Complex(2d, 0d);
-            Assert.IsTrue(target.IsRealNonNegative);
-            target = new Complex(-2d, 0d);
-            Assert.IsFalse(target.IsRealNonNegative);
-            target = Complex.ImaginaryOne;
-            Assert.IsFalse(target.IsRealNonNegative);
-            target = Complex.Infinity;
-            Assert.IsFalse(target.IsRealNonNegative);
-            target = Complex.NaN;
-            Assert.IsFalse(target.IsRealNonNegative);
-            target = Complex.One;
-            Assert.IsTrue(target.IsRealNonNegative);
-            target = Complex.Zero;
-            Assert.IsTrue(target.IsRealNonNegative);
+            Assert.IsFalse(new Complex(2, 3).IsZero, "#1");
+            Assert.IsFalse(new Complex(2, 0).IsZero, "#2");
+            Assert.IsFalse(new Complex(-2, 0).IsZero, "#3");
+
+            Assert.IsFalse(Complex.ImaginaryOne.IsZero, "#4");
+            Assert.IsFalse(Complex.One.IsZero, "#7");
+            Assert.IsFalse(Complex.Infinity.IsZero, "#5");
+            Assert.IsFalse(Complex.NaN.IsZero, "#6");
+
+            Assert.IsTrue(Complex.Zero.IsZero, "#8");
+            Assert.IsTrue(new Complex(0, 0).IsZero, "#9");
         }
-        #endregion
 
-        #region IsZeroTest
-        /// <summary>
-        /// A test for IsZero.
-        /// </summary>
         [TestMethod]
-        public void IsZeroTest()
+        public void Complex_One_Correctness()
         {
-            var target = new Complex(2d, 3d);
-            Assert.IsFalse(target.IsZero);
-            target = new Complex(2d, 0d);
-            Assert.IsFalse(target.IsZero);
-            target = new Complex(-2d, 0d);
-            Assert.IsFalse(target.IsZero);
-            target = Complex.ImaginaryOne;
-            Assert.IsFalse(target.IsZero);
-            target = Complex.Infinity;
-            Assert.IsFalse(target.IsZero);
-            target = Complex.NaN;
-            Assert.IsFalse(target.IsZero);
-            target = Complex.One;
-            Assert.IsFalse(target.IsZero);
-            target = Complex.Zero;
-            Assert.IsTrue(target.IsZero);
-            target = new Complex(0d, 0d);
-            Assert.IsTrue(target.IsZero);
+            Assert.IsFalse(Complex.One.IsNaN, "#1");
+            Assert.IsFalse(Complex.One.IsInfinity, "#2");
+            Assert.IsFalse(Complex.One.IsImaginary, "#3");
+            Assert.IsFalse(Complex.One.IsImaginaryOne, "#4");
+            Assert.IsFalse(Complex.One.IsZero, "#5");
+
+            Assert.IsTrue(Complex.One.IsReal, "#6");
+            Assert.IsTrue(Complex.One.IsRealNonNegative, "#7");
+            Assert.IsTrue(Complex.One.IsOne, "#8");
+
+            Assert.AreEqual(1, Complex.One.Real, "#9 real");
+            Assert.AreEqual(0, Complex.One.Imag, "#9 imag");
         }
-        #endregion
 
-        #region NaNTest
-        /// <summary>
-        /// A test for NaN.
-        /// </summary>
         [TestMethod]
-        public void NaNTest()
+        public void Complex_Zero_Correctness()
         {
-            Complex target = Complex.NaN;
-            Assert.IsTrue(target.IsNaN);
-            Assert.IsTrue(double.IsNaN(target.Real));
-            Assert.IsTrue(double.IsNaN(target.Imag));
-            target = Complex.Infinity;
-            Assert.IsFalse(target.IsNaN);
+            Assert.IsFalse(Complex.Zero.IsNaN, "#1");
+            Assert.IsFalse(Complex.Zero.IsInfinity, "#2");
+            Assert.IsFalse(Complex.Zero.IsImaginary, "#3");
+            Assert.IsFalse(Complex.Zero.IsImaginaryOne, "#4");
+            Assert.IsFalse(Complex.Zero.IsOne, "#5");
+
+            Assert.IsTrue(Complex.Zero.IsReal, "#6");
+            Assert.IsTrue(Complex.Zero.IsRealNonNegative, "#7");
+            Assert.IsTrue(Complex.Zero.IsZero, "#8");
+
+            Assert.AreEqual(0, Complex.Zero.Real, "#9 real");
+            Assert.AreEqual(0, Complex.Zero.Imag, "#9 imag");
         }
-        #endregion
 
-        #region OneTest
-        /// <summary>
-        /// A test for One.
-        /// </summary>
         [TestMethod]
-        public void OneTest()
+        public void Complex_ImaginaryOne_Correctness()
         {
-            Complex target = Complex.NaN;
-            Assert.IsFalse(target.IsOne);
-            target = Complex.Infinity;
-            Assert.IsFalse(target.IsOne);
-            target = Complex.One;
-            Assert.IsTrue(target.IsOne);
-            Assert.IsFalse(double.IsNaN(target.Real));
-            Assert.IsFalse(double.IsNaN(target.Imag));
-            Assert.AreEqual(target.Real, 1d);
-            Assert.AreEqual(target.Imag, 0d);
+            Assert.IsFalse(Complex.ImaginaryOne.IsNaN, "#1");
+            Assert.IsFalse(Complex.ImaginaryOne.IsInfinity, "#2");
+            Assert.IsFalse(Complex.ImaginaryOne.IsReal, "#3");
+            Assert.IsFalse(Complex.ImaginaryOne.IsRealNonNegative, "#4");
+            Assert.IsFalse(Complex.ImaginaryOne.IsZero, "#5");
+            Assert.IsFalse(Complex.ImaginaryOne.IsOne, "#6");
+
+            Assert.IsTrue(Complex.ImaginaryOne.IsImaginary, "#7");
+            Assert.IsTrue(Complex.ImaginaryOne.IsImaginaryOne, "#8");
+
+            Assert.AreEqual(0, Complex.ImaginaryOne.Real, "#9 real");
+            Assert.AreEqual(1, Complex.ImaginaryOne.Imag, "#9 imag");
         }
-        #endregion
 
-        #region ZeroTest
-        /// <summary>
-        /// A test for Zero.
-        /// </summary>
         [TestMethod]
-        public void ZeroTest()
+        public void Complex_Infinity_Correctness()
         {
-            Complex target = Complex.NaN;
-            Assert.IsFalse(target.IsZero);
-            target = Complex.Infinity;
-            Assert.IsFalse(target.IsZero);
-            target = Complex.One;
-            Assert.IsFalse(target.IsZero);
-            target = Complex.Zero;
-            Assert.IsTrue(target.IsZero);
-            Assert.AreEqual(target.Real, 0d);
-            Assert.AreEqual(target.Imag, 0d);
+            Assert.IsFalse(Complex.Infinity.IsNaN, "#1");
+            Assert.IsFalse(Complex.Infinity.IsImaginary, "#2");
+            Assert.IsFalse(Complex.Infinity.IsImaginaryOne, "#3");
+            Assert.IsFalse(Complex.Infinity.IsZero, "#4");
+            Assert.IsFalse(Complex.Infinity.IsOne, "#5");
+            Assert.IsFalse(Complex.Infinity.IsReal, "#6");
+            Assert.IsFalse(Complex.Infinity.IsRealNonNegative, "#7");
+
+            Assert.IsTrue(Complex.Infinity.IsInfinity, "#8");
+
+            Assert.IsFalse(double.IsNegativeInfinity(Complex.Infinity.Real), "#9 real");
+            Assert.IsFalse(double.IsNegativeInfinity(Complex.Infinity.Imag), "#9 imag");
+
+            Assert.IsTrue(double.IsPositiveInfinity(Complex.Infinity.Real), "#10 real");
+            Assert.IsTrue(double.IsPositiveInfinity(Complex.Infinity.Imag), "#10 imag");
+
+            Assert.IsTrue(double.IsInfinity(Complex.Infinity.Real), "#11 real");
+            Assert.IsTrue(double.IsInfinity(Complex.Infinity.Imag), "#11 imag");
         }
-        #endregion
 
-        #region ArgumentTest
-        /// <summary>
-        /// A test for Argument.
-        /// </summary>
         [TestMethod]
-        public void ArgumentTest()
+        public void Complex_NaN_Correctness()
         {
-            var target = new Complex(1d, 5d);
-            Assert.IsTrue(target.Argument - 1.373 < 0.001);
-            target = new Complex(1d, 1d);
-            Assert.IsTrue(target.Argument - 0.785 < 0.001);
-            target = new Complex(-1d, 1d);
-            Assert.IsTrue(target.Argument - 2.356 < 0.001);
-            target = new Complex(-1d, -1d);
-            Assert.IsTrue(target.Argument - 3.927 < 0.001);
-            target = new Complex(1d, -1d);
-            Assert.IsTrue(target.Argument - 5.498 < 0.001);
+            Assert.IsFalse(Complex.NaN.IsInfinity, "#1");
+            Assert.IsFalse(Complex.NaN.IsImaginary, "#2");
+            Assert.IsFalse(Complex.NaN.IsImaginaryOne, "#3");
+            Assert.IsFalse(Complex.NaN.IsZero, "#4");
+            Assert.IsFalse(Complex.NaN.IsOne, "#5");
+            Assert.IsFalse(Complex.NaN.IsReal, "#6");
+            Assert.IsFalse(Complex.NaN.IsRealNonNegative, "#7");
+
+            Assert.IsTrue(Complex.NaN.IsNaN, "#8");
+
+            Assert.IsTrue(double.IsNaN(Complex.NaN.Real), "#9 real");
+            Assert.IsTrue(double.IsNaN(Complex.NaN.Imag), "#9 imag");
         }
-        #endregion
 
-        #region ConjugateTest
-        /// <summary>
-        /// A test for Conjugate.
-        /// </summary>
         [TestMethod]
-        public void ConjugateTest()
+        public void Complex_Argument_Correctness()
         {
-            // Matlab
+            Assert.AreEqual(1.373, new Complex(1, 5).Argument, 0.001, "#1");
+            Assert.AreEqual(0.785, new Complex(1, 1).Argument, 0.001, "#2");
+            Assert.AreEqual(2.356, new Complex(-1, 1).Argument, 0.001, "#3");
+            Assert.AreEqual(3.927, new Complex(-1, -1).Argument, 0.001, "#4");
+            Assert.AreEqual(5.498, new Complex(1, -1).Argument, 0.001, "#5");
+        }
+
+        [TestMethod]
+        public void Complex_Conjugate_Matlab_Conformance()
+        {
             var number = new Complex(0.1, 0.3);
             Complex target = number.Conjugate;
-            Assert.IsTrue(Math.Abs(0.100000000000000 - target.Real) < 1e-15, "1.1");
-            Assert.IsTrue(Math.Abs(-0.300000000000000 - target.Imag) < 1e-15, "1.2");
+            Assert.AreEqual(0.100000000000000, target.Real, 1e-15, "#1 real");
+            Assert.AreEqual(-0.300000000000000, target.Imag, 1e-15, "#1 imag");
+
             number = new Complex(-0.1, 1.5);
             target = number.Conjugate;
-            Assert.IsTrue(Math.Abs(-0.100000000000000 - target.Real) < 1e-15, "2.1");
-            Assert.IsTrue(Math.Abs(-1.500000000000000 - target.Imag) < 1e-15, "2.2");
+            Assert.AreEqual(-0.100000000000000, target.Real, 1e-15, "#2 real");
+            Assert.AreEqual(-1.500000000000000, target.Imag, 1e-15, "#2 imag");
+
             number = new Complex(-0.5, -0.3);
             target = number.Conjugate;
-            Assert.IsTrue(Math.Abs(-0.500000000000000 - target.Real) < 1e-15, "3.1");
-            Assert.IsTrue(Math.Abs(0.300000000000000 - target.Imag) < 1e-15, "3.2");
+            Assert.AreEqual(-0.500000000000000, target.Real, 1e-15, "#3 real");
+            Assert.AreEqual(0.300000000000000, target.Imag, 1e-15, "#3 imag");
+
             number = new Complex(0.5, -1.2);
             target = number.Conjugate;
-            Assert.IsTrue(Math.Abs(0.500000000000000 - target.Real) < 1e-15, "4.1");
-            Assert.IsTrue(Math.Abs(1.200000000000000 - target.Imag) < 1e-15, "4.2");
+            Assert.AreEqual(0.500000000000000, target.Real, 1e-15, "#4 real");
+            Assert.AreEqual(1.200000000000000, target.Imag, 1e-15, "#4 imag");
+
             number = new Complex(123.4, 567.8);
             target.Conjugate = number;
-            Assert.IsTrue(Math.Abs(123.4 - target.Real) < 1e-15, "5.1");
-            Assert.IsTrue(Math.Abs(-567.8 - target.Imag) < 1e-15, "5.2");
+            Assert.AreEqual(123.4, target.Real, 1e-15, "#5 real");
+            Assert.AreEqual(-567.8, target.Imag, 1e-15, "#5 imag");
         }
-        #endregion
 
-        #region ModulusTest
-        /// <summary>
-        /// A test for Modulus.
-        /// </summary>
         [TestMethod]
-        public void ModulusTest()
+        public void Complex_Modulus_Matlab_Conformance()
         {
-            // Matlab
             var number = new Complex(0.1, 0.3);
             double target = number.Modulus;
-            Assert.IsTrue(Math.Abs(0.316227766016838 - target) < 1e-15, "1.1");
+            Assert.AreEqual(0.316227766016838, target, 1e-15, "#1");
+
             number = new Complex(-0.1, 1.5);
             target = number.Modulus;
-            Assert.IsTrue(Math.Abs(1.503329637837291 - target) < 1e-15, "2.1");
+            Assert.AreEqual(1.503329637837291, target, 1e-15, "#2");
+
             number = new Complex(-0.5, -0.3);
             target = number.Modulus;
-            Assert.IsTrue(Math.Abs(0.583095189484530 - target) < 1e-15, "3.1");
+            Assert.AreEqual(0.583095189484530, target, 1e-15, "#3");
+
             number = new Complex(0.5, -1.2);
             target = number.Modulus;
-            Assert.IsTrue(Math.Abs(1.300000000000000 - target) < 1e-15, "4.1");
+            Assert.AreEqual(1.300000000000000, target, 1e-15, "#4");
         }
-        #endregion
 
-        #region ModulusSquaredTest
-        /// <summary>
-        /// A test for ModulusSquared.
-        /// </summary>
         [TestMethod]
-        public void ModulusSquaredTest()
+        public void Complex_ModulusSquared_Matlab_Conformance()
         {
-            // Matlab
             var number = new Complex(0.1, 0.3);
             double target = number.ModulusSquared;
-            Assert.IsTrue(Math.Abs(0.100000000000000 - target) < 1e-15, "1.1");
+            Assert.AreEqual(0.100000000000000, target, 1e-15, "#1");
+
             number = new Complex(-0.1, 1.5);
             target = number.ModulusSquared;
-            Assert.IsTrue(Math.Abs(2.260000000000000 - target) < 1e-15, "2.1");
+            Assert.AreEqual(2.260000000000000, target, 1e-15, "#2");
+
             number = new Complex(-0.5, -0.3);
             target = number.ModulusSquared;
-            Assert.IsTrue(Math.Abs(0.340000000000000 - target) < 1e-15, "3.1");
+            Assert.AreEqual(0.340000000000000, target, 1e-15, "#3");
+
             number = new Complex(0.5, -1.2);
             target = number.ModulusSquared;
-            Assert.IsTrue(Math.Abs(1.690000000000000 - target) < 1e-15, "4.1");
+            Assert.AreEqual(1.690000000000000, target, 1e-15, "#4");
         }
-        #endregion
 
-        #region SignTest
-        /// <summary>
-        /// A test for Sign.
-        /// </summary>
         [TestMethod]
-        public void SignTest()
+        public void Complex_Sign_Matlab_Conformance()
         {
-            // Matlab
             var number = new Complex(0.1, 0.3);
             Complex target = number.Sign;
+
+            // Assert.AreEqual(1.249045772398254, target.Real, 1e-15, "#1 real")
+            // Assert.AreEqual(0, target.Imag, 1e-15, "#1 imag")
             Assert.IsFalse(target.IsNaN);
-            //Assert.IsTrue(Math.Abs(1.249045772398254 - target.Sign) < 1e-15, "1.1");
+
             number = new Complex(-0.1, 1.5);
             target = number.Sign;
+
+            // Assert.AreEqual(1.637364490570721, target.Real, 1e-15, "#2 real")
+            // Assert.AreEqual(0, target.Imag, 1e-15, "#2 imag")
             Assert.IsFalse(target.IsNaN);
-            //Assert.IsTrue(Math.Abs(1.637364490570721 - target) < 1e-15, "2.1");
+
             number = new Complex(-0.5, -0.3);
             target = number.Sign;
+
+            // Assert.AreEqual(-2.601173153319209, target.Real, 1e-15, "#3 real")
+            // Assert.AreEqual(0, target.Imag, 1e-15, "#3 imag")
             Assert.IsFalse(target.IsNaN);
-            //Assert.IsTrue(Math.Abs(-2.601173153319209 - target) < 1e-15, "3.1");
+
             number = new Complex(0.5, -1.2);
             target = number.Sign;
-            //Assert.IsTrue(Math.Abs(-1.176005207095135 - target) < 1e-15, "4.1");
+
+            // Assert.AreEqual(-1.176005207095135, target.Real, 1e-15, "#4 real")
+            // Assert.AreEqual(0, target.Imag, 1e-15, "#4 imag")
             Assert.IsFalse(target.IsNaN);
         }
-        #endregion
-        #endregion
 
-        #region Operations
-        #region op_AdditionTest
-        /// <summary>
-        /// A test for op_Addition.
-        /// </summary>
         [TestMethod]
-        public void OpAdditionTest()
+        public void Complex_Operator_Addition_DoubleComplex_Correctness()
         {
-            const double lhs = 1d;
-            var rhs = new Complex(1d, 5d);
+            const double lhs = 1;
+            const double rhsR = 1;
+            const double rhsI = 5;
+            var rhs = new Complex(rhsR, rhsI);
+
             Complex target = lhs + rhs;
-            Assert.AreEqual(2d, target.Real);
-            Assert.AreEqual(5d, target.Imag);
+
+            Assert.AreEqual(lhs + rhsR, target.Real, "#1 real");
+            Assert.AreEqual(rhsI, target.Imag, "#1 imag");
         }
 
-        /// <summary>
-        /// A test for op_Addition.
-        /// </summary>
         [TestMethod]
-        public void OpAdditionTest1()
+        public void Complex_Operator_Addition_ComplexDouble_Correctness()
         {
-            const double rhs = 1d;
-            var lhs = new Complex(5d, 7d);
+            const double rhs = 1;
+            const double lhsR = 5;
+            const double lhsI = 7;
+            var lhs = new Complex(lhsR, lhsI);
+
             Complex target = lhs + rhs;
-            Assert.AreEqual(6d, target.Real);
-            Assert.AreEqual(7d, target.Imag);
+
+            Assert.AreEqual(lhsR + rhs, target.Real, "#1 real");
+            Assert.AreEqual(lhsI, target.Imag, "#1 imag");
         }
 
-        /// <summary>
-        /// A test for op_Addition.
-        /// </summary>
         [TestMethod]
-        public void OpAdditionTest2()
+        public void Complex_Operator_Addition_ComplexComplex_Correctness()
         {
-            var lhs = new Complex(2d, 3d);
-            var rhs = new Complex(1d, 5d);
+            var lhs = new Complex(2, 3);
+            var rhs = new Complex(1, 5);
+
             Complex target = lhs + rhs;
-            Assert.AreEqual(3d, target.Real);
-            Assert.AreEqual(8d, target.Imag);
-        }
-        #endregion
 
-        #region op_DivisionTest
-        /// <summary>
-        /// A test for op_Division.
-        /// </summary>
-        [TestMethod]
-        public void OpDivisionTest()
-        {
-            var lhs = new Complex(4d, 7d);
-            const double rhs = 7.5;
-            Complex target = (lhs / rhs);
-            Assert.IsTrue(Math.Abs(0.533333333333333 - target.Real) < 1e-15, "1.1");
-            Assert.IsTrue(Math.Abs(0.933333333333333 - target.Imag) < 1e-15, "1.2");
+            Assert.AreEqual(lhs.Real + rhs.Real, target.Real, "#1 real");
+            Assert.AreEqual(lhs.Imag + rhs.Imag, target.Imag, "#1 imag");
         }
 
-        /// <summary>
-        /// A test for op_Division.
-        /// </summary>
         [TestMethod]
-        public void OpDivisionTest1()
+        public void Complex_Operator_Division_DoubleComplex_Correctness()
         {
             const double lhs = 7.5;
-            var rhs = new Complex(4d, 7d);
-            Complex target = (lhs / rhs);
-            Assert.IsTrue(Math.Abs(0.461538461538462 - target.Real) < 1e-15, "1.1");
-            Assert.IsTrue(Math.Abs(-0.807692307692308 - target.Imag) < 1e-15, "1.2");
+            var rhs = new Complex(4, 7);
+
+            Complex target = lhs / rhs;
+
+            Assert.AreEqual(0.461538461538462, target.Real, 1e-15, "#1 real");
+            Assert.AreEqual(-0.807692307692308, target.Imag, 1e-15, "#1 imag");
         }
 
-        /// <summary>
-        /// A test for op_Division.
-        /// </summary>
         [TestMethod]
-        public void OpDivisionTest2()
+        public void Complex_Operator_Division_ComplexDouble_Correctness()
         {
-            var lhs = new Complex(3d, 5d);
-            var rhs = new Complex(4d, 7d);
-            Complex target = (lhs / rhs);
-            Assert.IsTrue(Math.Abs(0.723076923076923 - target.Real) < 1e-15, "1.1");
-            Assert.IsTrue(Math.Abs(-0.015384615384615 - target.Imag) < 1e-15, "1.2");
-        }
-        #endregion
-
-        #region op_EqualityTest
-        /// <summary>
-        /// A test for op_Equality.
-        /// </summary>
-        [TestMethod]
-        public void OpEqualityTest()
-        {
-            var lhs = new Complex(3d, 7d);
-            var rhs = new Complex(3d, 7d);
-            Assert.AreEqual(true, (lhs == rhs));
-            rhs = new Complex(3d, 6d);
-            Assert.AreEqual(false, (lhs == rhs));
-            rhs = new Complex(4d, 7d);
-            Assert.AreEqual(false, (lhs == rhs));
-            rhs = new Complex(2d, 1d);
-            Assert.AreEqual(false, (lhs == rhs));
-        }
-
-        /// <summary>
-        /// A test for op_Equality.
-        /// </summary>
-        [TestMethod]
-        public void OpEqualityTest1()
-        {
-            const double lhs = 4.5;
-            var rhs = new Complex(4.5, 0d);
-            Assert.AreEqual(true, (lhs == rhs));
-            rhs = new Complex(4.5, 6d);
-            Assert.AreEqual(false, (lhs == rhs));
-            rhs = new Complex(8d, 0d);
-            Assert.AreEqual(false, (lhs == rhs));
-            rhs = new Complex(7d, 6d);
-            Assert.AreEqual(false, (lhs == rhs));
-        }
-
-        /// <summary>
-        /// A test for op_Equality.
-        /// </summary>
-        [TestMethod]
-        public void OpEqualityTest2()
-        {
-            var lhs = new Complex(4.5d, 0d);
-            double rhs = 4.5;
-            Assert.AreEqual(true, (lhs == rhs));
-            rhs = 5.4;
-            Assert.AreEqual(false, (lhs == rhs));
-        }
-        #endregion
-
-        #region op_ImplicitTest
-        /// <summary>
-        /// A test for op_Implicit.
-        /// </summary>
-        [TestMethod]
-        public void OpImplicitTest()
-        {
-            Complex target = 6.34;
-            Assert.AreEqual(6.34, target.Real);
-            Assert.AreEqual(0d, target.Imag);
-        }
-        #endregion
-
-        #region op_InequalityTest
-        /// <summary>
-        /// A test for op_Inequality.
-        /// </summary>
-        [TestMethod]
-        public void OpInequalityTest()
-        {
-            var lhs = new Complex(3d, 7d);
-            var rhs = new Complex(3d, 7d);
-            Assert.AreEqual(false, (lhs != rhs));
-            rhs = new Complex(3d, 6d);
-            Assert.AreEqual(true, (lhs != rhs));
-            rhs = new Complex(4d, 7d);
-            Assert.AreEqual(true, (lhs != rhs));
-            rhs = new Complex(2d, 1d);
-            Assert.AreEqual(true, (lhs != rhs));
-        }
-
-        /// <summary>
-        /// A test for op_Inequality.
-        /// </summary>
-        [TestMethod]
-        public void OpInequalityTest1()
-        {
-            const double lhs = 4.5;
-            var rhs = new Complex(4.5, 0d);
-            Assert.AreEqual(false, (lhs != rhs));
-            rhs = new Complex(4.5, 6d);
-            Assert.AreEqual(true, (lhs != rhs));
-            rhs = new Complex(8d, 0d);
-            Assert.AreEqual(true, (lhs != rhs));
-            rhs = new Complex(7d, 6d);
-            Assert.AreEqual(true, (lhs != rhs));
-        }
-
-        /// <summary>
-        /// A test for op_Inequality.
-        /// </summary>
-        [TestMethod]
-        public void OpInequalityTest2()
-        {
-            var lhs = new Complex(4.5d, 0d);
-            double rhs = 4.5;
-            Assert.AreEqual(false, (lhs != rhs));
-            rhs = 5.4;
-            Assert.AreEqual(true, (lhs != rhs));
-        }
-        #endregion
-
-        #region op_MultiplyTest
-        /// <summary>
-        /// A test for op_Multiply.
-        /// </summary>
-        [TestMethod]
-        public void OpMultiplyTest()
-        {
-            var lhs = new Complex(4d, 7d);
+            var lhs = new Complex(4, 7);
             const double rhs = 7.5;
-            Complex target = (lhs * rhs);
-            Assert.IsTrue(Math.Abs(30.000000000000000 - target.Real) < 1e-15, "1.1");
-            Assert.IsTrue(Math.Abs(52.500000000000000 - target.Imag) < 1e-15, "1.2");
+
+            Complex target = lhs / rhs;
+
+            Assert.AreEqual(0.533333333333333, target.Real, 1e-15, "#1 real");
+            Assert.AreEqual(0.933333333333333, target.Imag, 1e-15, "#1 imag");
         }
 
-        /// <summary>
-        /// A test for op_Multiply.
-        /// </summary>
         [TestMethod]
-        public void OpMultiplyTest1()
+        public void Complex_Operator_Division_ComplexComplex_Correctness()
         {
-            const double lhs = 7.5;
-            var rhs = new Complex(4d, 7d);
-            Complex target = (lhs * rhs);
-            Assert.IsTrue(Math.Abs(30.000000000000000 - target.Real) < 1e-15, "1.1");
-            Assert.IsTrue(Math.Abs(52.500000000000000 - target.Imag) < 1e-15, "1.2");
+            var lhs = new Complex(3, 5);
+            var rhs = new Complex(4, 7);
+
+            Complex target = lhs / rhs;
+
+            Assert.AreEqual(0.723076923076923, target.Real, 1e-15, "#1 real");
+            Assert.AreEqual(-0.015384615384615, target.Imag, 1e-15, "#1 imag");
         }
 
-        /// <summary>
-        /// A test for op_Multiply.
-        /// </summary>
         [TestMethod]
-        public void OpMultiplyTest2()
+        public void Complex_Operator_Equality_DoubleComplex_Correctness()
         {
-            var lhs = new Complex(3d, 5d);
-            var rhs = new Complex(4d, 7d);
-            Complex target = (lhs * rhs);
-            Assert.IsTrue(Math.Abs(-23.000000000000000 - target.Real) < 1e-15, "1.1");
-            Assert.IsTrue(Math.Abs(41.000000000000000 - target.Imag) < 1e-15, "1.2");
-        }
-        #endregion
+            // ReSharper disable once ConvertToConstant.Local
+            var lhs = 4.5;
+            var rhs = new Complex(4.5, 0);
+            Assert.IsTrue(lhs == rhs, "#1");
 
-        #region op_SubtractionTest
-        /// <summary>
-        /// A test for op_Subtraction.
-        /// </summary>
+            rhs = new Complex(4.5, 6);
+            Assert.IsFalse(lhs == rhs, "#2");
+
+            rhs = new Complex(8, 0);
+            Assert.IsFalse(lhs == rhs, "#3");
+
+            rhs = new Complex(7, 6);
+            Assert.IsFalse(lhs == rhs, "#4");
+        }
+
         [TestMethod]
-        public void OpSubtractionTest()
+        public void Complex_Operator_Equality_ComplexDouble_Correctness()
         {
-            const double lhs = 1d;
-            var rhs = new Complex(2d, 5d);
+            var lhs = new Complex(4.5, 0);
+            double rhs = 4.5;
+            Assert.IsTrue(lhs == rhs, "#1");
+
+            rhs = 5.4;
+            Assert.IsFalse(lhs == rhs, "#2");
+        }
+
+        [TestMethod]
+        public void Complex_Operator_Equality_ComplexComplex_Correctness()
+        {
+            var lhs = new Complex(3, 7);
+            var rhs = new Complex(3, 7);
+            Assert.IsTrue(lhs == rhs, "#1");
+
+            rhs = new Complex(3, 6);
+            Assert.IsFalse(lhs == rhs, "#2");
+
+            rhs = new Complex(4, 7);
+            Assert.IsFalse(lhs == rhs, "#3");
+
+            rhs = new Complex(2, 1);
+            Assert.IsFalse(lhs == rhs, "#4");
+        }
+
+        [TestMethod]
+        public void Complex_Operator_Implicit_Correctness()
+        {
+            Complex target = 2.34;
+            Assert.AreEqual(2.34, target.Real, "#1 real");
+            Assert.AreEqual(0, target.Imag, "#1 imag");
+        }
+
+        [TestMethod]
+        public void Complex_Operator_Inequality_DoubleComplex_Correctness()
+        {
+            // ReSharper disable once ConvertToConstant.Local
+            double lhs = 4.5;
+            var rhs = new Complex(4.5, 0);
+            Assert.IsFalse(lhs != rhs, "#1");
+
+            rhs = new Complex(4.5, 6);
+            Assert.IsTrue(lhs != rhs, "#2");
+
+            rhs = new Complex(8, 0);
+            Assert.IsTrue(lhs != rhs, "#3");
+
+            rhs = new Complex(7, 6);
+            Assert.IsTrue(lhs != rhs, "#4");
+        }
+
+        [TestMethod]
+        public void Complex_Operator_Inequality_ComplexDouble_Correctness()
+        {
+            var lhs = new Complex(4.5, 0);
+            double rhs = 4.5;
+            Assert.IsFalse(lhs != rhs, "#1");
+
+            rhs = 5.4;
+            Assert.IsTrue(lhs != rhs, "#2");
+        }
+
+        [TestMethod]
+        public void Complex_Operator_Inequality_ComplexComplex_Correctness()
+        {
+            var lhs = new Complex(3, 7);
+            var rhs = new Complex(3, 7);
+            Assert.IsFalse(lhs != rhs, "#1");
+
+            rhs = new Complex(3, 6);
+            Assert.IsTrue(lhs != rhs, "#2");
+
+            rhs = new Complex(4, 7);
+            Assert.IsTrue(lhs != rhs, "#3");
+
+            rhs = new Complex(2, 1);
+            Assert.IsTrue(lhs != rhs, "#4");
+        }
+
+        [TestMethod]
+        public void Complex_Operator_Multiplication_DoubleComplex_Correctness()
+        {
+            // ReSharper disable once ConvertToConstant.Local
+            double lhs = 7.5;
+            var rhs = new Complex(4, 7);
+
+            Complex target = lhs * rhs;
+
+            Assert.AreEqual(30.000000000000000, target.Real, 1e-15, "#1 real");
+            Assert.AreEqual(52.500000000000000, target.Imag, 1e-15, "#1 imag");
+        }
+
+        [TestMethod]
+        public void Complex_Operator_Multiplication_ComplexDouble_Correctness()
+        {
+            var lhs = new Complex(4, 7);
+            const double rhs = 7.5;
+
+            Complex target = lhs * rhs;
+
+            Assert.AreEqual(30.000000000000000, target.Real, 1e-15, "#1 real");
+            Assert.AreEqual(52.500000000000000, target.Imag, 1e-15, "#1 imag");
+        }
+
+        [TestMethod]
+        public void Complex_Operator_Multiplication_ComplexComplex_Correctness()
+        {
+            var lhs = new Complex(3, 5);
+            var rhs = new Complex(4, 7);
+
+            Complex target = lhs * rhs;
+
+            Assert.AreEqual(-23.000000000000000, target.Real, 1e-15, "#1 real");
+            Assert.AreEqual(41.000000000000000, target.Imag, 1e-15, "#1 imag");
+        }
+
+        [TestMethod]
+        public void Complex_Operator_Subtraction_DoubleComplex_Correctness()
+        {
+            // ReSharper disable once ConvertToConstant.Local
+            double lhs = 1;
+            var rhs = new Complex(2, 5);
+
             Complex target = lhs - rhs;
-            Assert.AreEqual(-1d, target.Real);
-            Assert.AreEqual(-5d, target.Imag);
+
+            Assert.AreEqual(-1, target.Real, "#1 real");
+            Assert.AreEqual(-5, target.Imag, "#1 imag");
         }
 
-        /// <summary>
-        /// A test for op_Subtraction.
-        /// </summary>
         [TestMethod]
-        public void OpSubtractionTest1()
+        public void Complex_Operator_Subtraction_ComplexDouble_Correctness()
         {
-            const double rhs = 1d;
-            var lhs = new Complex(5d, 7d);
+            var lhs = new Complex(5, 7);
+            const double rhs = 1;
+
             Complex target = lhs - rhs;
-            Assert.AreEqual(4d, target.Real);
-            Assert.AreEqual(7d, target.Imag);
+
+            Assert.AreEqual(4, target.Real, "#1 real");
+            Assert.AreEqual(7, target.Imag, "#1 imag");
         }
 
-        /// <summary>
-        /// A test for op_Subtraction.
-        /// </summary>
         [TestMethod]
-        public void OpSubtractionTest2()
+        public void Complex_Operator_Subtraction_ComplexComplex_Correctness()
         {
-            var lhs = new Complex(2d, 3d);
-            var rhs = new Complex(1d, 5d);
+            var lhs = new Complex(2, 3);
+            var rhs = new Complex(1, 5);
+
             Complex target = lhs - rhs;
-            Assert.AreEqual(1d, target.Real);
-            Assert.AreEqual(-2d, target.Imag);
-        }
-        #endregion
 
-        #region op_UnaryNegationTest
-        /// <summary>
-        /// A test for op_UnaryNegation.
-        /// </summary>
+            Assert.AreEqual(1, target.Real, "#1 real");
+            Assert.AreEqual(-2, target.Imag, "#1 imag");
+        }
+
         [TestMethod]
-        public void OpUnaryNegationTest()
+        public void Complex_Operator_UnaryNegation_Correctness()
         {
-            var subtrahend = new Complex(2d, 3d);
-            Complex target = -(subtrahend);
-            Assert.AreEqual(-2d, target.Real);
-            Assert.AreEqual(-3d, target.Imag);
-            subtrahend = new Complex(-2d, -3d);
-            target = -(subtrahend);
-            Assert.AreEqual(2d, target.Real);
-            Assert.AreEqual(3d, target.Imag);
-        }
-        #endregion
+            var subtrahend = new Complex(2, 3);
+            Complex target = -subtrahend;
+            Assert.AreEqual(-2, target.Real, "#1 real");
+            Assert.AreEqual(-3, target.Imag, "#1 imag");
 
-        #region op_UnaryPlusTest
-        /// <summary>
-        /// A test for op_UnaryPlus.
-        /// </summary>
+            subtrahend = new Complex(-2, -3);
+            target = -subtrahend;
+            Assert.AreEqual(2, target.Real, "#2 real");
+            Assert.AreEqual(3, target.Imag, "#2 imag");
+        }
+
         [TestMethod]
-        public void OpUnaryPlusTest()
+        public void Complex_Operator_UnaryPlus_Correctness()
         {
-            var subtrahend = new Complex(2d, 3d);
-            Complex target = +(subtrahend);
-            Assert.AreEqual(2d, target.Real);
-            Assert.AreEqual(3d, target.Imag);
-            subtrahend = new Complex(-2d, -3d);
-            target = +(subtrahend);
-            Assert.AreEqual(-2d, target.Real);
-            Assert.AreEqual(-3d, target.Imag);
-        }
-        #endregion
-        #endregion
+            var subtrahend = new Complex(2, 3);
+            Complex target = +subtrahend;
+            Assert.AreEqual(2, target.Real, "#1 real");
+            Assert.AreEqual(3, target.Imag, "#1 imag");
 
-        #region ToStringTest
-        /// <summary>
-        /// A test for ToString.
-        /// </summary>
+            subtrahend = new Complex(-2, -3);
+            target = +subtrahend;
+            Assert.AreEqual(-2, target.Real, "#2 real");
+            Assert.AreEqual(-3, target.Imag, "#2 imag");
+        }
+
         [TestMethod]
-        public void ToStringTest()
+        public void Complex_ToString_Correctness()
         {
-            var target = new Complex(0d, double.PositiveInfinity);
-            Assert.AreEqual("Infinity", target.ToString());
-            target = new Complex(0d, double.NegativeInfinity);
-            Assert.AreEqual("Infinity", target.ToString());
-            target = new Complex(0d, 1d);
-            Assert.AreEqual("i", target.ToString());
-            target = new Complex(0d, -1d);
-            Assert.AreEqual("-i", target.ToString());
-            target = new Complex(1d, 0d);
-            Assert.AreEqual("1", target.ToString());
-            target = new Complex(-1d, 0d);
-            Assert.AreEqual("-1", target.ToString());
-            target = new Complex(1d, 1d);
-            Assert.AreEqual("1+i", target.ToString());
-            target = new Complex(-1d, 1d);
-            Assert.AreEqual("-1+i", target.ToString());
-            target = new Complex(1d, -1d);
-            Assert.AreEqual("1-i", target.ToString());
-            target = new Complex(-1d, -1d);
-            Assert.AreEqual("-1-i", target.ToString());
-            target = new Complex(1d, 2d);
-            Assert.AreEqual("1+2i", target.ToString());
-            target = new Complex(-1d, 2d);
-            Assert.AreEqual("-1+2i", target.ToString());
-            target = new Complex(1d, -2d);
-            Assert.AreEqual("1-2i", target.ToString());
-            target = new Complex(-1d, -2d);
-            Assert.AreEqual("-1-2i", target.ToString());
+            Assert.AreEqual("Infinity", new Complex(0, double.PositiveInfinity).ToString(), "#1");
+
+            Assert.AreEqual("Infinity", new Complex(0, double.NegativeInfinity).ToString(), "#2");
+
+            Assert.AreEqual("i", new Complex(0, 1).ToString(), "#3");
+
+            Assert.AreEqual("-i", new Complex(0, -1).ToString(), "#4");
+
+            Assert.AreEqual("1", new Complex(1, 0).ToString(), "#5");
+
+            Assert.AreEqual("-1", new Complex(-1, 0).ToString(), "#6");
+
+            Assert.AreEqual("1+i", new Complex(1, 1).ToString(), "#7");
+
+            Assert.AreEqual("-1+i", new Complex(-1, 1).ToString(), "#8");
+
+            Assert.AreEqual("1-i", new Complex(1, -1).ToString(), "#9");
+
+            Assert.AreEqual("-1-i", new Complex(-1, -1).ToString(), "#10");
+
+            Assert.AreEqual("1+2i", new Complex(1, 2).ToString(), "#11");
+
+            Assert.AreEqual("-1+2i", new Complex(-1, 2).ToString(), "#12");
+
+            Assert.AreEqual("1-2i", new Complex(1, -2).ToString(), "#13");
+
+            Assert.AreEqual("-1-2i", new Complex(-1, -2).ToString(), "#14");
         }
 
-        /// <summary>
-        /// A test for ToString.
-        /// </summary>
         [TestMethod]
-        public void ToStringTest1()
+        public void Complex_ToString_NumberFormatInfo_Correctness()
         {
-            var target = new Complex(0d, double.PositiveInfinity);
-            Assert.AreEqual("Infinity", target.ToString(CultureInfo.InvariantCulture.NumberFormat));
-            target = new Complex(0d, double.NegativeInfinity);
-            Assert.AreEqual("Infinity", target.ToString(CultureInfo.InvariantCulture.NumberFormat));
-            target = new Complex(0d, 1d);
-            Assert.AreEqual("i", target.ToString(CultureInfo.InvariantCulture.NumberFormat));
-            target = new Complex(0d, -1d);
-            Assert.AreEqual("-i", target.ToString(CultureInfo.InvariantCulture.NumberFormat));
-            target = new Complex(1d, 0d);
-            Assert.AreEqual("1", target.ToString(CultureInfo.InvariantCulture.NumberFormat));
-            target = new Complex(-1d, 0d);
-            Assert.AreEqual("-1", target.ToString(CultureInfo.InvariantCulture.NumberFormat));
-            target = new Complex(1d, 1d);
-            Assert.AreEqual("1+i", target.ToString(CultureInfo.InvariantCulture.NumberFormat));
-            target = new Complex(-1d, 1d);
-            Assert.AreEqual("-1+i", target.ToString(CultureInfo.InvariantCulture.NumberFormat));
-            target = new Complex(1d, -1d);
-            Assert.AreEqual("1-i", target.ToString(CultureInfo.InvariantCulture.NumberFormat));
-            target = new Complex(-1d, -1d);
-            Assert.AreEqual("-1-i", target.ToString(CultureInfo.InvariantCulture.NumberFormat));
-            target = new Complex(1d, 2d);
-            Assert.AreEqual("1+2i", target.ToString(CultureInfo.InvariantCulture.NumberFormat));
-            target = new Complex(-1d, 2d);
-            Assert.AreEqual("-1+2i", target.ToString(CultureInfo.InvariantCulture.NumberFormat));
-            target = new Complex(1d, -2d);
-            Assert.AreEqual("1-2i", target.ToString(CultureInfo.InvariantCulture.NumberFormat));
-            target = new Complex(-1d, -2d);
-            Assert.AreEqual("-1-2i", target.ToString(CultureInfo.InvariantCulture.NumberFormat));
+            NumberFormatInfo nfi = CultureInfo.InvariantCulture.NumberFormat;
+
+            Assert.AreEqual("Infinity", new Complex(0, double.PositiveInfinity).ToString(nfi), "#1");
+
+            Assert.AreEqual("Infinity", new Complex(0, double.NegativeInfinity).ToString(nfi), "#2");
+
+            Assert.AreEqual("i", new Complex(0, 1).ToString(nfi), "#3");
+
+            Assert.AreEqual("-i", new Complex(0, -1).ToString(nfi), "#4");
+
+            Assert.AreEqual("1", new Complex(1, 0).ToString(nfi), "#5");
+
+            Assert.AreEqual("-1", new Complex(-1, 0).ToString(nfi), "#6");
+
+            Assert.AreEqual("1+i", new Complex(1, 1).ToString(nfi), "#7");
+
+            Assert.AreEqual("-1+i", new Complex(-1, 1).ToString(nfi), "#8");
+
+            Assert.AreEqual("1-i", new Complex(1, -1).ToString(nfi), "#9");
+
+            Assert.AreEqual("-1-i", new Complex(-1, -1).ToString(nfi), "#10");
+
+            Assert.AreEqual("1+2i", new Complex(1, 2).ToString(nfi), "#11");
+
+            Assert.AreEqual("-1+2i", new Complex(-1, 2).ToString(nfi), "#12");
+
+            Assert.AreEqual("1-2i", new Complex(1, -2).ToString(nfi), "#13");
+
+            Assert.AreEqual("-1-2i", new Complex(-1, -2).ToString(nfi), "#14");
         }
 
-        /// <summary>
-        /// A test for ToString.
-        /// </summary>
         [TestMethod]
-        public void ToStringTest2()
+        public void Complex_ToString_Format_NumberFormatInfo_Correctness()
         {
-            var target = new Complex(0d, double.PositiveInfinity);
-            Assert.AreEqual("Infinity", target.ToString("0.0##e+00", CultureInfo.InvariantCulture.NumberFormat));
-            target = new Complex(0d, double.NegativeInfinity);
-            Assert.AreEqual("Infinity", target.ToString("0.0##e+00", CultureInfo.InvariantCulture.NumberFormat));
-            target = new Complex(0d, 1d);
-            Assert.AreEqual("i", target.ToString("0.0##e+00", CultureInfo.InvariantCulture.NumberFormat));
-            target = new Complex(0d, -1d);
-            Assert.AreEqual("-i", target.ToString("0.0##e+00", CultureInfo.InvariantCulture.NumberFormat));
-            target = new Complex(1d, 0d);
-            Assert.AreEqual("1.0e+00", target.ToString("0.0##e+00", CultureInfo.InvariantCulture.NumberFormat));
-            target = new Complex(-1d, 0d);
-            Assert.AreEqual("-1.0e+00", target.ToString("0.0##e+00", CultureInfo.InvariantCulture.NumberFormat));
-            target = new Complex(1d, 1d);
-            Assert.AreEqual("1.0e+00+i", target.ToString("0.0##e+00", CultureInfo.InvariantCulture.NumberFormat));
-            target = new Complex(-1d, 1d);
-            Assert.AreEqual("-1.0e+00+i", target.ToString("0.0##e+00", CultureInfo.InvariantCulture.NumberFormat));
-            target = new Complex(1d, -1d);
-            Assert.AreEqual("1.0e+00-i", target.ToString("0.0##e+00", CultureInfo.InvariantCulture.NumberFormat));
-            target = new Complex(-1d, -1d);
-            Assert.AreEqual("-1.0e+00-i", target.ToString("0.0##e+00", CultureInfo.InvariantCulture.NumberFormat));
-            target = new Complex(1d, 2d);
-            Assert.AreEqual("1.0e+00+2.0e+00i", target.ToString("0.0##e+00", CultureInfo.InvariantCulture.NumberFormat));
-            target = new Complex(-1d, 2d);
-            Assert.AreEqual("-1.0e+00+2.0e+00i", target.ToString("0.0##e+00", CultureInfo.InvariantCulture.NumberFormat));
-            target = new Complex(1d, -2d);
-            Assert.AreEqual("1.0e+00-2.0e+00i", target.ToString("0.0##e+00", CultureInfo.InvariantCulture.NumberFormat));
-            target = new Complex(-1d, -2d);
-            Assert.AreEqual("-1.0e+00-2.0e+00i", target.ToString("0.0##e+00", CultureInfo.InvariantCulture.NumberFormat));
+            const string fmt = "0.0##e+00";
+            NumberFormatInfo nfi = CultureInfo.InvariantCulture.NumberFormat;
+
+            Assert.AreEqual("Infinity", new Complex(0, double.PositiveInfinity).ToString(fmt, nfi), "#1");
+
+            Assert.AreEqual("Infinity", new Complex(0, double.NegativeInfinity).ToString(fmt, nfi), "#2");
+
+            Assert.AreEqual("i", new Complex(0, 1).ToString(fmt, nfi), "#3");
+
+            Assert.AreEqual("-i", new Complex(0, -1).ToString(fmt, nfi), "#4");
+
+            Assert.AreEqual("1.0e+00", new Complex(1, 0).ToString(fmt, nfi), "#5");
+
+            Assert.AreEqual("-1.0e+00", new Complex(-1, 0).ToString(fmt, nfi), "#6");
+
+            Assert.AreEqual("1.0e+00+i", new Complex(1, 1).ToString(fmt, nfi), "#7");
+
+            Assert.AreEqual("-1.0e+00+i", new Complex(-1, 1).ToString(fmt, nfi), "#8");
+
+            Assert.AreEqual("1.0e+00-i", new Complex(1, -1).ToString(fmt, nfi), "#9");
+
+            Assert.AreEqual("-1.0e+00-i", new Complex(-1, -1).ToString(fmt, nfi), "#10");
+
+            Assert.AreEqual("1.0e+00+2.0e+00i", new Complex(1, 2).ToString(fmt, nfi), "#11");
+
+            Assert.AreEqual("-1.0e+00+2.0e+00i", new Complex(-1, 2).ToString(fmt, nfi), "#12");
+
+            Assert.AreEqual("1.0e+00-2.0e+00i", new Complex(1, -2).ToString(fmt, nfi), "#13");
+
+            Assert.AreEqual("-1.0e+00-2.0e+00i", new Complex(-1, -2).ToString(fmt, nfi), "#14");
         }
 
-        /// <summary>
-        /// A test for ToString.
-        /// </summary>
         [TestMethod]
-        public void ToStringTest3()
+        public void Complex_ToString_Format_Correctness()
         {
-            var target = new Complex(0d, double.PositiveInfinity);
-            Assert.AreEqual("Infinity", target.ToString("0.0##e+00"));
-            target = new Complex(0d, double.NegativeInfinity);
-            Assert.AreEqual("Infinity", target.ToString("0.0##e+00"));
-            target = new Complex(0d, 1d);
-            Assert.AreEqual("i", target.ToString("0.0##e+00"));
-            target = new Complex(0d, -1d);
-            Assert.AreEqual("-i", target.ToString("0.0##e+00"));
-            target = new Complex(1d, 0d);
-            Assert.AreEqual("1,0e+00", target.ToString("0.0##e+00"));
-            target = new Complex(-1d, 0d);
-            Assert.AreEqual("-1,0e+00", target.ToString("0.0##e+00"));
-            target = new Complex(1d, 1d);
-            Assert.AreEqual("1,0e+00+i", target.ToString("0.0##e+00"));
-            target = new Complex(-1d, 1d);
-            Assert.AreEqual("-1,0e+00+i", target.ToString("0.0##e+00"));
-            target = new Complex(1d, -1d);
-            Assert.AreEqual("1,0e+00-i", target.ToString("0.0##e+00"));
-            target = new Complex(-1d, -1d);
-            Assert.AreEqual("-1,0e+00-i", target.ToString("0.0##e+00"));
-            target = new Complex(1d, 2d);
-            Assert.AreEqual("1,0e+00+2,0e+00i", target.ToString("0.0##e+00"));
-            target = new Complex(-1d, 2d);
-            Assert.AreEqual("-1,0e+00+2,0e+00i", target.ToString("0.0##e+00"));
-            target = new Complex(1d, -2d);
-            Assert.AreEqual("1,0e+00-2,0e+00i", target.ToString("0.0##e+00"));
-            target = new Complex(-1d, -2d);
-            Assert.AreEqual("-1,0e+00-2,0e+00i", target.ToString("0.0##e+00"));
-        }
-        #endregion
+            const string fmt = "0.0##e+00";
 
-        #region EqualsTest
-        /// <summary>
-        /// A test for Equals.
-        /// </summary>
+            Assert.AreEqual("Infinity", new Complex(0, double.PositiveInfinity).ToString(fmt), "#1");
+
+            Assert.AreEqual("Infinity", new Complex(0, double.NegativeInfinity).ToString(fmt), "#2");
+
+            Assert.AreEqual("i", new Complex(0, 1).ToString(fmt), "#3");
+
+            Assert.AreEqual("-i", new Complex(0, -1).ToString(fmt), "#4");
+
+            Assert.AreEqual("1,0e+00", new Complex(1, 0).ToString(fmt), "#5");
+
+            Assert.AreEqual("-1,0e+00", new Complex(-1, 0).ToString(fmt), "#6");
+
+            Assert.AreEqual("1,0e+00+i", new Complex(1, 1).ToString(fmt), "#7");
+
+            Assert.AreEqual("-1,0e+00+i", new Complex(-1, 1).ToString(fmt), "#8");
+
+            Assert.AreEqual("1,0e+00-i", new Complex(1, -1).ToString(fmt), "#9");
+
+            Assert.AreEqual("-1,0e+00-i", new Complex(-1, -1).ToString(fmt), "#10");
+
+            Assert.AreEqual("1,0e+00+2,0e+00i", new Complex(1, 2).ToString(fmt), "#11");
+
+            Assert.AreEqual("-1,0e+00+2,0e+00i", new Complex(-1, 2).ToString(fmt), "#12");
+
+            Assert.AreEqual("1,0e+00-2,0e+00i", new Complex(1, -2).ToString(fmt), "#13");
+
+            Assert.AreEqual("-1,0e+00-2,0e+00i", new Complex(-1, -2).ToString(fmt), "#14");
+        }
+
         [TestMethod]
-        public void EqualsTest()
+        public void Complex_Equals_Correctness()
         {
-            var lhs = new Complex(3d, 7d);
-            var rhs = new Complex(3d, 7d);
-            Assert.AreEqual(true, (lhs.Equals(rhs)));
-            rhs = new Complex(3d, 6d);
-            Assert.AreEqual(false, (lhs.Equals(rhs)));
-            rhs = new Complex(4d, 7d);
-            Assert.AreEqual(false, (lhs.Equals(rhs)));
-            rhs = new Complex(2d, 1d);
-            Assert.AreEqual(false, (lhs.Equals(rhs)));
+            var lhs = new Complex(3, 7);
+            var rhs = new Complex(3, 7);
+            Assert.IsTrue(lhs.Equals(rhs), "#1");
+
+            rhs = new Complex(3, 6);
+            Assert.IsFalse(lhs.Equals(rhs), "#2");
+
+            rhs = new Complex(4, 7);
+            Assert.IsFalse(lhs.Equals(rhs), "#3");
+
+            rhs = new Complex(2, 1);
+            Assert.IsFalse(lhs.Equals(rhs), "#4");
         }
 
-        /// <summary>
-        /// A test for Equals.
-        /// </summary>
         [TestMethod]
-        public void EqualsTest1()
+        public void Complex_CompareTo_Correctness()
         {
-            var lhs = new Complex(3d, 7d);
-            var rhs = new Complex(3d, 7d);
-            Assert.AreEqual(true, (lhs.Equals(rhs)));
-            rhs = new Complex(3d, 6d);
-            Assert.AreEqual(false, (lhs.Equals(rhs)));
-            rhs = new Complex(4d, 7d);
-            Assert.AreEqual(false, (lhs.Equals(rhs)));
-            rhs = new Complex(2d, 1d);
-            Assert.AreEqual(false, (lhs.Equals(rhs)));
-        }
-        #endregion
+            var lhs = Complex.FromModulusArgument(0.456, 0.345);
+            var rhs = Complex.FromModulusArgument(0.457, 0.345);
+            Assert.IsTrue(lhs.CompareTo(rhs) < 0, "#1");
 
-        #region CompareToTest
-        /// <summary>
-        /// A test for CompareTo.
-        /// </summary>
+            rhs = Complex.FromModulusArgument(0.455, 0.345);
+            Assert.IsTrue(lhs.CompareTo(rhs) > 0, "#2");
+
+            rhs = Complex.FromModulusArgument(0.456, 0.346);
+            Assert.IsTrue(lhs.CompareTo(rhs) < 0, "#3");
+
+            rhs = Complex.FromModulusArgument(0.456, 0.344);
+            Assert.IsTrue(lhs.CompareTo(rhs) > 0, "#4");
+
+            rhs = Complex.FromModulusArgument(0.456, 0.345);
+            Assert.IsTrue(lhs.CompareTo(rhs) == 0, "#5");
+        }
+
         [TestMethod]
-        public void CompareToTest()
+        public void Complex_GetHashCode_Correctness()
         {
-            Complex target = Complex.FromModulusArgument(0.456, 0.345);
-            Complex other = Complex.FromModulusArgument(0.457, 0.345);
-            Assert.IsTrue(target.CompareTo(other) < 0);
-            other = Complex.FromModulusArgument(0.455, 0.345);
-            Assert.IsTrue(target.CompareTo(other) > 0);
-            other = Complex.FromModulusArgument(0.456, 0.346);
-            Assert.IsTrue(target.CompareTo(other) < 0);
-            other = Complex.FromModulusArgument(0.456, 0.344);
-            Assert.IsTrue(target.CompareTo(other) > 0);
-            other = Complex.FromModulusArgument(0.456, 0.345);
-            Assert.IsTrue(target.CompareTo(other) == 0);
+            var target = new Complex(0, 0);
+            Assert.AreEqual(0, target.GetHashCode(), "#1");
+            Assert.AreNotEqual(Complex.One.GetHashCode(), Complex.ImaginaryOne.GetHashCode(), "#2");
+            Assert.AreNotEqual(Complex.One.GetHashCode(), (-Complex.ImaginaryOne).GetHashCode(), "#3");
+            Assert.AreNotEqual((-Complex.One).GetHashCode(), Complex.ImaginaryOne.GetHashCode(), "#4");
+            Assert.AreNotEqual((-Complex.One).GetHashCode(), (-Complex.ImaginaryOne).GetHashCode(), "#5");
         }
-        #endregion
 
-        #region GetHashCodeTest
-        /// <summary>
-        /// A test for GetHashCode.
-        /// </summary>
-        [TestMethod]
-        public void GetHashCodeTest()
+        private static double Normalize2Pi(double value)
         {
-            var target = new Complex(0d, 0d);
-            Assert.AreEqual(0d, target.GetHashCode());
-            Assert.AreNotEqual(Complex.One.GetHashCode(), Complex.ImaginaryOne.GetHashCode(), "1");
-            Assert.AreNotEqual(Complex.One.GetHashCode(), (-Complex.ImaginaryOne).GetHashCode(), "2");
-            Assert.AreNotEqual((-Complex.One).GetHashCode(), Complex.ImaginaryOne.GetHashCode(), "3");
-            Assert.AreNotEqual((-Complex.One).GetHashCode(), (-Complex.ImaginaryOne).GetHashCode(), "4");
-        }
-        #endregion
-
-        #region SerializationTest
-        private static void SerializeTo(Complex instance, string fileName)
-        {
-            var dcs = new DataContractSerializer(typeof(Complex), null, 65536, false, true, null);
-            using (var fs = new FileStream(fileName, FileMode.Create))
+            while (value < 0d)
             {
-                dcs.WriteObject(fs, instance);
-                fs.Close();
+                value += Constants.Pi * 2d;
             }
-        }
 
-        private static Complex DeserializeFrom(string fileName)
-        {
-            var fs = new FileStream(fileName, FileMode.Open);
-            XmlDictionaryReader reader = XmlDictionaryReader.CreateTextReader(fs, new XmlDictionaryReaderQuotas());
-            var ser = new DataContractSerializer(typeof(Complex), null, 65536, false, true, null);
-            var instance = (Complex)ser.ReadObject(reader, true);
-            reader.Close();
-            fs.Close();
-            return instance;
+            return Math.IEEERemainder(value, Constants.Pi * 2d);
         }
-
-        /// <summary>
-        ///A test for the serialization
-        ///</summary>
-        [TestMethod]
-        public void SerializationTest()
-        {
-            var source = new Complex(1.2, 1.3);
-            const string fileName = "ComplexTest_1.xml";
-            SerializeTo(source, fileName);
-            Complex target = DeserializeFrom(fileName);
-            Assert.AreEqual(1.2, target.Real);
-            Assert.AreEqual(1.3, target.Imag);
-            //FileInfo fi = new FileInfo(fileName);
-            //fi.Delete();
-        }
-        #endregion
     }
 }

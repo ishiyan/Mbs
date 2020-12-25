@@ -3,8 +3,9 @@ using Mbs.Trading.Currencies;
 using Mbs.Trading.Data;
 using Mbs.Trading.Instruments;
 using Mbs.Trading.Orders;
+using Mbs.Trading.Orders.Enumerations;
 using Mbs.Trading.Portfolios;
-using Mbs.Trading.Time;
+using Mbs.Trading.Time.Timepieces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Mbs.UnitTests.Trading.Orders

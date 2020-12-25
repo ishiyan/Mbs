@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
+// ReSharper disable once CheckNamespace
 namespace Mbs.Numerics
 {
     /// <summary>
@@ -8,48 +9,9 @@ namespace Mbs.Numerics
     /// </summary>
     public static partial class SpecialFunctions
     {
-        /// <summary>
-        /// The complex error function, also known as the Faddeeva function, is defined as:
-        /// <para><c>w(x) = e⁻ˣˆ²erfc(-ix) = 2e⁻ˣˆ²∕√π ∫̥˚˚ e⁻ᵗˆ²dt</c>.</para>
-        /// <para>For purely imaginary values, it can be reduced to the error function. For purely real values, it can be reduced to Dawson's integral.</para>
-        /// </summary>
-        /// <param name="z">The complex argument.</param>
-        /// <returns>The complex value of <c>w(z)</c>.</returns>
-        /// <seealso href="http://en.wikipedia.org/wiki/Faddeeva" />
-        public static Complex Faddeeva(Complex z)
-        {
-            // Use reflection formulae to ensure that we are in the first quadrant.
-            if (z.Imag < 0d)
-                return 2d * Complex.Exp(-z * z) - Faddeeva(-z);
-            if (z.Real < 0d)
-                return Faddeeva(-z.Conjugate).Conjugate;
-            double r = Complex.Abs(z);
-            if (r < 2d)
-                return Complex.Exp(-z * z) * (1d - ErfSeries(-Complex.ImaginaryOne * z));
-            if (z.Imag < 0.1 && z.Real < 30d)
-            {
-                // This is a special, awkward region along the real axis, Re w(x) ~ e⁻ˣˆ²; the Weideman
-                // algorthm doesen't compute this small number well and the Laplace continued fraction
-                // misses it entirely; therefore very close to the real axis we will use an analytic result
-                // on the real axis and Taylor expand to where we need to go.
-                // Unfortunately the Taylor expansion converges poorly for large x, so we drop this
-                // work-arround near x~30, when this real part becomes too small to represent as a double anyway.
-                double x = z.Real, y = z.Imag;
-                return FaddeevaTaylor(new Complex(x, 0d), Math.Exp(-x * x) + 2d * Dawson(x) / Constants.SqrtPi * Complex.ImaginaryOne, new Complex(0d, y));
-            }
-
-            if (r > 7d)
-            {
-                // Use Laplace continued fraction for large z.
-                return FaddeevaContinuedFraction(z);
-            }
-
-            // Use Weideman algorithm for intermediate region.
-            return FaddeevaWeideman(z);
-        }
+        private const int FaddeevaWeidemanCoefficientsLen = 41;
 
         private static readonly double FaddeevaWeidemanL = Math.Sqrt(40d / Constants.Sqrt2);
-
         private static readonly double[] FaddeevaWeidemanCoefficients =
         {
             3.0005271472811341147438, // 0
@@ -92,12 +54,60 @@ namespace Mbs.Numerics
             -5.40931028288214223366e-15,
             1.135768719899924165040e-14,
             1.128073562364402060469e-15,
-            -1.89969494739492699566e-15 // 40
+            -1.89969494739492699566e-15, // 40
         };
 
-#pragma warning disable SA1203 // Constants must appear before fields
-        private const int FaddeevaWeidemanCoefficientsLen = 41;
-#pragma warning restore SA1203
+        /// <summary>
+        /// The complex error function, also known as the Faddeeva function, is defined as:
+        /// <para><c>w(x) = e⁻ˣˆ²erfc(-ix) = 2e⁻ˣˆ²∕√π ∫̥˚˚ e⁻ᵗˆ²dt</c>.</para>
+        /// <para>For purely imaginary values, it can be reduced to the error function. For purely real values, it can be reduced to Dawson's integral.</para>
+        /// </summary>
+        /// <param name="z">The complex argument.</param>
+        /// <returns>The complex value of <c>w(z)</c>.</returns>
+        /// <seealso href="http://en.wikipedia.org/wiki/Faddeeva" />
+        public static Complex Faddeeva(Complex z)
+        {
+            // Use reflection formulae to ensure that we are in the first quadrant.
+            if (z.Imag < 0d)
+            {
+                return 2d * Complex.Exp(-z * z) - Faddeeva(-z);
+            }
+
+            if (z.Real < 0d)
+            {
+                return Faddeeva(-z.Conjugate).Conjugate;
+            }
+
+            double r = Complex.Abs(z);
+            if (r < 2d)
+            {
+                return Complex.Exp(-z * z) * (1d - ErfSeries(-Complex.ImaginaryOne * z));
+            }
+
+            if (z.Imag < 0.1 && z.Real < 30d)
+            {
+                // This is a special, awkward region along the real axis, Re w(x) ~ e⁻ˣˆ²; the Weideman
+                // algorithm doesn't compute this small number well and the Laplace continued fraction
+                // misses it entirely; therefore very close to the real axis we will use an analytic result
+                // on the real axis and Taylor expand to where we need to go.
+                // Unfortunately the Taylor expansion converges poorly for large x, so we drop this
+                // workaround near x~30, when this real part becomes too small to represent as a double anyway.
+                double x = z.Real, y = z.Imag;
+                return FaddeevaTaylor(
+                    new Complex(x, 0d),
+                    Math.Exp(-x * x) + 2d * Dawson(x) / Constants.SqrtPi * Complex.ImaginaryOne,
+                    new Complex(0d, y));
+            }
+
+            if (r > 7d)
+            {
+                // Use Laplace continued fraction for large z.
+                return FaddeevaContinuedFraction(z);
+            }
+
+            // Use Weideman algorithm for intermediate region.
+            return FaddeevaWeideman(z);
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static Complex FaddeevaWeideman(Complex z)
@@ -109,7 +119,10 @@ namespace Mbs.Numerics
             zq = zn / zd;
             Complex f = FaddeevaWeidemanCoefficients[FaddeevaWeidemanCoefficientsLen - 1];
             for (int k = FaddeevaWeidemanCoefficientsLen - 2; k > 0; --k)
+            {
                 f = f * zq + FaddeevaWeidemanCoefficients[k];
+            }
+
             Complex zp = zn * zd;
             return 2d / zp * f * zq + Constants.OneOverSqrtPi / zd;
         }
@@ -132,16 +145,18 @@ namespace Mbs.Numerics
                 df = (b * d - 1d) * df;
                 f += df;
                 if (f == fOld)
+                {
                     return Complex.ImaginaryOne / Constants.SqrtPi * f;
+                }
             }
 
-            return Complex.NaN; // throw new NonConvergenceException(IterationLimit);
+            return Complex.NaN; // Or throw non convergence exception with iteration limit.
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static Complex FaddeevaTaylor(Complex z0, Complex w0, Complex dz)
         {
-            // Given a Faddeeva value w0 at a point z0, this routine computes the Fadeeva value a distance dz away
+            // Given a Faddeeva value w0 at a point z0, this routine computes the Faddeeva value a distance dz away
             // using a Taylor expansion. we use this near the real axis, where the Weideman algorithm doesn't give
             // the e⁻ˣˆ² real part of w(x) very accurately, and the Laplace continued fraction misses it entirely.
 
@@ -154,7 +169,7 @@ namespace Mbs.Numerics
             // Higher orders.
             for (int k = 2; k < IterationLimit; ++k)
             {
-                // Remmeber the current value.
+                // Remember the current value.
                 Complex wPrev = w;
 
                 // Compute the next derivative.
@@ -168,10 +183,12 @@ namespace Mbs.Numerics
 
                 // Test whether we have converged.
                 if (w == wPrev)
+                {
                     return w;
+                }
             }
 
-            return Complex.NaN; // throw new NonConvergenceException(IterationLimit);
+            return Complex.NaN; // Or throw non convergence exception with iteration limit.
         }
     }
 }

@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Mbs.Trading;
 using Mbs.Trading.Currencies;
 using Mbs.Trading.Data;
 using Mbs.Trading.Instruments;
+using Mbs.Trading.Portfolios.Enumerations;
 
 namespace Mbs.Trading.Portfolios
 {
@@ -44,6 +44,112 @@ namespace Mbs.Trading.Portfolios
         private Action<Portfolio, PortfolioPosition> positionOpenedDelegate;
         private Action<Portfolio, PortfolioPosition> positionClosedDelegate;
         private Action<Portfolio, PortfolioExecution> positionExecutedDelegate;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Portfolio"/> class.
+        /// </summary>
+        /// <param name="account">The associated account.</param>
+        /// <param name="dataPublisher">The sell price data publisher.</param>
+        public Portfolio(Account account, IDataPublisher dataPublisher)
+        {
+            this.dataPublisher = dataPublisher;
+            this.account = account;
+            currency = account.Currency;
+            converter = account.CurrencyConverter;
+            drawdownScalarList.Update(account.Timepiece.Time, account.Value());
+        }
+
+        /// <summary>
+        /// Notifies when a portfolio position has been changed.
+        /// </summary>
+        public event Action<Portfolio, PortfolioPosition> PositionChanged
+        {
+            add
+            {
+                lock (positionChangedDelegateLock)
+                {
+                    positionChangedDelegate += value;
+                }
+            }
+
+            remove
+            {
+                lock (positionChangedDelegateLock)
+                {
+                    // ReSharper disable once DelegateSubtraction
+                    positionChangedDelegate -= value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Notifies when a portfolio position has been opened.
+        /// </summary>
+        public event Action<Portfolio, PortfolioPosition> PositionOpened
+        {
+            add
+            {
+                lock (positionOpenedDelegateLock)
+                {
+                    positionOpenedDelegate += value;
+                }
+            }
+
+            remove
+            {
+                lock (positionOpenedDelegateLock)
+                {
+                    // ReSharper disable once DelegateSubtraction
+                    positionOpenedDelegate -= value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Notifies when a portfolio position has been closed.
+        /// </summary>
+        public event Action<Portfolio, PortfolioPosition> PositionClosed
+        {
+            add
+            {
+                lock (positionClosedDelegateLock)
+                {
+                    positionClosedDelegate += value;
+                }
+            }
+
+            remove
+            {
+                lock (positionClosedDelegateLock)
+                {
+                    // ReSharper disable once DelegateSubtraction
+                    positionClosedDelegate -= value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Notifies when a portfolio position has been executed.
+        /// </summary>
+        public event Action<Portfolio, PortfolioExecution> PositionExecuted
+        {
+            add
+            {
+                lock (positionExecutedDelegateLock)
+                {
+                    positionExecutedDelegate += value;
+                }
+            }
+
+            remove
+            {
+                lock (positionExecutedDelegateLock)
+                {
+                    // ReSharper disable once DelegateSubtraction
+                    positionExecutedDelegate -= value;
+                }
+            }
+        }
 
         /// <summary>
         /// Gets the collection of the portfolio positions.
@@ -131,175 +237,6 @@ namespace Mbs.Trading.Portfolios
                     }
                 }
             }
-        }
-
-        private void EmitPositionChanged(PortfolioPosition position)
-        {
-            lock (positionChangedDelegateLock)
-            {
-                if (positionChangedDelegate != null)
-                {
-                    var handlers = positionChangedDelegate.GetInvocationList();
-                    foreach (Delegate handler in handlers)
-                    {
-                        var theHandler = handler as Action<Portfolio, PortfolioPosition>;
-                        theHandler?.Invoke(this, position);
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Notifies when a portfolio position has been changed.
-        /// </summary>
-        public event Action<Portfolio, PortfolioPosition> PositionChanged
-        {
-            add
-            {
-                lock (positionChangedDelegateLock)
-                {
-                    positionChangedDelegate += value;
-                }
-            }
-
-            remove
-            {
-                lock (positionChangedDelegateLock)
-                {
-                    positionChangedDelegate -= value;
-                }
-            }
-        }
-
-        private void EmitPositionOpened(PortfolioPosition position)
-        {
-            lock (positionOpenedDelegateLock)
-            {
-                if (positionOpenedDelegate != null)
-                {
-                    var handlers = positionOpenedDelegate.GetInvocationList();
-                    foreach (Delegate handler in handlers)
-                    {
-                        var theHandler = handler as Action<Portfolio, PortfolioPosition>;
-                        theHandler?.Invoke(this, position);
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Notifies when a portfolio position has been opened.
-        /// </summary>
-        public event Action<Portfolio, PortfolioPosition> PositionOpened
-        {
-            add
-            {
-                lock (positionOpenedDelegateLock)
-                {
-                    positionOpenedDelegate += value;
-                }
-            }
-
-            remove
-            {
-                lock (positionOpenedDelegateLock)
-                {
-                    positionOpenedDelegate -= value;
-                }
-            }
-        }
-
-        private void EmitPositionClosed(PortfolioPosition position)
-        {
-            lock (positionClosedDelegateLock)
-            {
-                if (positionClosedDelegate != null)
-                {
-                    var handlers = positionClosedDelegate.GetInvocationList();
-                    foreach (Delegate handler in handlers)
-                    {
-                        var theHandler = handler as Action<Portfolio, PortfolioPosition>;
-                        theHandler?.Invoke(this, position);
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Notifies when a portfolio position has been closed.
-        /// </summary>
-        public event Action<Portfolio, PortfolioPosition> PositionClosed
-        {
-            add
-            {
-                lock (positionClosedDelegateLock)
-                {
-                    positionClosedDelegate += value;
-                }
-            }
-
-            remove
-            {
-                lock (positionClosedDelegateLock)
-                {
-                    positionClosedDelegate -= value;
-                }
-            }
-        }
-
-        private void EmitPositionExecuted(PortfolioExecution execution)
-        {
-            lock (positionExecutedDelegateLock)
-            {
-                if (positionExecutedDelegate != null)
-                {
-                    var handlers = positionExecutedDelegate.GetInvocationList();
-                    foreach (Delegate handler in handlers)
-                    {
-                        var theHandler = handler as Action<Portfolio, PortfolioExecution>;
-                        theHandler?.Invoke(this, execution);
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Notifies when a portfolio position has been executed.
-        /// </summary>
-        public event Action<Portfolio, PortfolioExecution> PositionExecuted
-        {
-            add
-            {
-                lock (positionExecutedDelegateLock)
-                {
-                    positionExecutedDelegate += value;
-                }
-            }
-
-            remove
-            {
-                lock (positionExecutedDelegateLock)
-                {
-                    positionExecutedDelegate -= value;
-                }
-            }
-        }
-
-        /// <summary>
-        /// The portfolio position of the instrument.
-        /// </summary>
-        /// <param name="instrument">The instrument.</param>
-        /// <returns>The portfolio position if the portfolio has the specified instrument.</returns>
-        public PortfolioPosition GetPosition(Instrument instrument)
-        {
-            PortfolioPosition position;
-            lock (accessLock)
-            {
-                if (!positionDictionary.TryGetValue(instrument, out position))
-                    return null;
-            }
-
-            return position;
         }
 
         /// <summary>
@@ -429,17 +366,22 @@ namespace Mbs.Trading.Portfolios
         public ReadOnlyCollection<Scalar> DrawdownMaxHistory => drawdownScalarList.DrawdownMaxCollection;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Portfolio"/> class.
+        /// The portfolio position of the instrument.
         /// </summary>
-        /// <param name="account">The associated account.</param>
-        /// <param name="dataPublisher">The sell price data publisher.</param>
-        public Portfolio(Account account, IDataPublisher dataPublisher)
+        /// <param name="instrument">The instrument.</param>
+        /// <returns>The portfolio position if the portfolio has the specified instrument.</returns>
+        public PortfolioPosition GetPosition(Instrument instrument)
         {
-            this.dataPublisher = dataPublisher;
-            this.account = account;
-            currency = account.Currency;
-            converter = account.CurrencyConverter;
-            drawdownScalarList.Update(account.Timepiece.Time, account.Value());
+            PortfolioPosition position;
+            lock (accessLock)
+            {
+                if (!positionDictionary.TryGetValue(instrument, out position))
+                {
+                    return null;
+                }
+            }
+
+            return position;
         }
 
         /// <summary>
@@ -462,8 +404,10 @@ namespace Mbs.Trading.Portfolios
                     positionOpened = true;
                     lock (monitorLock)
                     {
-                        if (PortfolioMonitors.None != monitors)
+                        if (monitors != PortfolioMonitors.None)
+                        {
                             position.Monitors = monitors;
+                        }
                     }
                 }
                 else
@@ -477,8 +421,10 @@ namespace Mbs.Trading.Portfolios
                         positionOpened = true;
                         lock (monitorLock)
                         {
-                            if (PortfolioMonitors.None != monitors)
+                            if (monitors != PortfolioMonitors.None)
+                            {
                                 position.Monitors = monitors;
+                            }
                         }
                     }
 
@@ -507,10 +453,79 @@ namespace Mbs.Trading.Portfolios
 
             EmitPositionExecuted(execution);
             if (positionOpened)
+            {
                 EmitPositionOpened(position);
+            }
+
             EmitPositionChanged(position);
             if (positionClosed)
+            {
                 EmitPositionClosed(position);
+            }
+        }
+
+        private void EmitPositionChanged(PortfolioPosition position)
+        {
+            lock (positionChangedDelegateLock)
+            {
+                if (positionChangedDelegate != null)
+                {
+                    var handlers = positionChangedDelegate.GetInvocationList();
+                    foreach (Delegate handler in handlers)
+                    {
+                        var theHandler = handler as Action<Portfolio, PortfolioPosition>;
+                        theHandler?.Invoke(this, position);
+                    }
+                }
+            }
+        }
+
+        private void EmitPositionOpened(PortfolioPosition position)
+        {
+            lock (positionOpenedDelegateLock)
+            {
+                if (positionOpenedDelegate != null)
+                {
+                    var handlers = positionOpenedDelegate.GetInvocationList();
+                    foreach (Delegate handler in handlers)
+                    {
+                        var theHandler = handler as Action<Portfolio, PortfolioPosition>;
+                        theHandler?.Invoke(this, position);
+                    }
+                }
+            }
+        }
+
+        private void EmitPositionClosed(PortfolioPosition position)
+        {
+            lock (positionClosedDelegateLock)
+            {
+                if (positionClosedDelegate != null)
+                {
+                    var handlers = positionClosedDelegate.GetInvocationList();
+                    foreach (Delegate handler in handlers)
+                    {
+                        var theHandler = handler as Action<Portfolio, PortfolioPosition>;
+                        theHandler?.Invoke(this, position);
+                    }
+                }
+            }
+        }
+
+        private void EmitPositionExecuted(PortfolioExecution execution)
+        {
+            lock (positionExecutedDelegateLock)
+            {
+                if (positionExecutedDelegate != null)
+                {
+                    var handlers = positionExecutedDelegate.GetInvocationList();
+                    foreach (Delegate handler in handlers)
+                    {
+                        var theHandler = handler as Action<Portfolio, PortfolioExecution>;
+                        theHandler?.Invoke(this, execution);
+                    }
+                }
+            }
         }
 
         private void Update(PortfolioPosition position, DateTime dateTime)
@@ -520,13 +535,12 @@ namespace Mbs.Trading.Portfolios
 
         private void Update(DateTime dateTime, bool executed)
         {
-            // Log.Debug("Pf update: {0}, {1}", dateTime, executed ? "execution" : "onOhlcv");
             double newEquity = 0d, newDebt = 0d, newMargin = 0d, newCashFlow = 0d, newNetCashFlow = 0d;
             foreach (KeyValuePair<Instrument, PortfolioPosition> pair in openedPositionDictionary)
             {
                 PortfolioPosition position = pair.Value;
                 CurrencyCode positionCurrency = position.Currency;
-                if (currency == positionCurrency || null == converter)
+                if (currency == positionCurrency || converter == null)
                 {
                     newEquity += position.Value;
                     newDebt += position.Debt;

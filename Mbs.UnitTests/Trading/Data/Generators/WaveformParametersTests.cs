@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
-using Mbs.Numerics.Random;
+using Mbs.Numerics.RandomGenerators;
 using Mbs.Trading.Data.Generators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
@@ -12,15 +12,13 @@ namespace Mbs.UnitTests.Trading.Data.Generators
     [TestClass]
     public class WaveformParametersTests
     {
-        // ReSharper disable InconsistentNaming
-
         [TestMethod]
         [ExpectedException(typeof(ValidationException))]
         public void WaveformParameters_Validate_WaveformSamplesOutOfRange_Exception()
         {
             var parameters = new WaveformParameters
             {
-                WaveformSamples = 3
+                WaveformSamples = 3,
             };
 
             var context = new ValidationContext(parameters);
@@ -32,7 +30,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
         {
             var parameters = new WaveformParameters
             {
-                WaveformSamples = -1
+                WaveformSamples = -1,
             };
 
             var expectedMessage = string.Format(
@@ -55,7 +53,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
         {
             var parameters = new WaveformParameters
             {
-                OffsetSamples = -1
+                OffsetSamples = -1,
             };
 
             var context = new ValidationContext(parameters);
@@ -67,7 +65,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
         {
             var parameters = new WaveformParameters
             {
-                OffsetSamples = -1
+                OffsetSamples = -1,
             };
 
             var expectedMessage = string.Format(
@@ -90,7 +88,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
         {
             var parameters = new WaveformParameters
             {
-                RepetitionsCount = -1
+                RepetitionsCount = -1,
             };
 
             var context = new ValidationContext(parameters);
@@ -102,7 +100,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
         {
             var parameters = new WaveformParameters
             {
-                RepetitionsCount = -1
+                RepetitionsCount = -1,
             };
 
             var expectedMessage = string.Format(
@@ -125,7 +123,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
         {
             var parameters = new WaveformParameters
             {
-                NoiseAmplitudeFraction = -0.1
+                NoiseAmplitudeFraction = -0.1,
             };
 
             var context = new ValidationContext(parameters);
@@ -137,7 +135,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
         {
             var parameters = new WaveformParameters
             {
-                NoiseAmplitudeFraction = 1.1
+                NoiseAmplitudeFraction = 1.1,
             };
 
             var expectedMessage = string.Format(
@@ -162,7 +160,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
                 WaveformSamples = -1,
                 OffsetSamples = -1,
                 RepetitionsCount = -1,
-                NoiseAmplitudeFraction = 1.1
+                NoiseAmplitudeFraction = 1.1,
             };
 
             var results = new List<ValidationResult>();
@@ -226,7 +224,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
                 RepetitionsCount = repetitionsCount,
                 NoiseAmplitudeFraction = noiseAmplitudeFraction,
                 NoiseUniformRandomGeneratorKind = noiseUniformRandomGeneratorKind,
-                NoiseUniformRandomGeneratorSeed = noiseUniformRandomGeneratorSeed
+                NoiseUniformRandomGeneratorSeed = noiseUniformRandomGeneratorSeed,
             };
 
             Assert.AreEqual(waveformSamples, parameters.WaveformSamples, "waveform samples");
@@ -240,7 +238,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
         [TestMethod]
         public void WaveformParameters_DeserializeFromJson_ValidInput_CorrectValidationResults()
         {
-            var json = @"{
+            const string json = @"{
 waveformSamples: 128,
 offsetSamples: 13,
 repetitionsCount: 2,

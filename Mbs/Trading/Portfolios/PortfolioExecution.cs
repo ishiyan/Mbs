@@ -2,6 +2,7 @@
 using Mbs.Trading.Currencies;
 using Mbs.Trading.Instruments;
 using Mbs.Trading.Orders;
+using Mbs.Trading.Orders.Enumerations;
 
 namespace Mbs.Trading.Portfolios
 {
@@ -10,6 +11,72 @@ namespace Mbs.Trading.Portfolios
     /// </summary>
     public class PortfolioExecution
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PortfolioExecution"/> class.
+        /// </summary>
+        /// <param name="singleOrderTicket">The associated single order ticket.</param>
+        /// <param name="singleOrderReport">The associated single order execution report.</param>
+        internal PortfolioExecution(ISingleOrderTicket singleOrderTicket, SingleOrderReport singleOrderReport)
+        {
+            OrderReportType type = singleOrderReport.ReportType;
+            if (type != OrderReportType.Filled && type != OrderReportType.PartiallyFilled)
+            {
+                throw new ArgumentException($"Expected Filled or PartiallyFilled order report type, got {type}.");
+            }
+
+            SingleOrderReport = singleOrderReport;
+            SingleOrderTicket = singleOrderTicket;
+            Instrument = singleOrderTicket.Order.Instrument;
+            Currency = Instrument.Currency;
+            DateTime = singleOrderReport.TransactionTime;
+            Price = singleOrderReport.LastPrice;
+            Quantity = singleOrderReport.LastQuantity;
+            Comment = singleOrderReport.Text;
+            Side = singleOrderTicket.Order.Side;
+            switch (Side)
+            {
+                case OrderSide.Buy:
+                case OrderSide.BuyMinus:
+                    Amount = Quantity;
+                    break;
+                case OrderSide.Sell:
+                case OrderSide.SellPlus:
+                case OrderSide.SellShort:
+                case OrderSide.SellShortExempt:
+                    Amount = -Quantity;
+                    break;
+                default:
+                    throw new ArgumentException($"Not supported order side: {Side}.");
+            }
+
+            // TODO: Is instrument.Margin an absolute value or a percentage?
+            Margin = Instrument.Margin * Quantity;
+            Value = Price * Quantity;
+            NetCashFlow = -Amount * Price;
+
+            double? factor = Instrument.Factor;
+            if (factor.HasValue)
+            {
+                double temp = factor.Value;
+                Value *= temp;
+                NetCashFlow *= temp;
+            }
+
+            Debt = Math.Abs(Margin) < double.Epsilon ? 0 : Value - Margin;
+
+            Commission = singleOrderReport.LastCommission;
+            if (Currency != singleOrderReport.CommissionCurrency && Commission > 0)
+            {
+                var converter = singleOrderTicket.Order.Account.CurrencyConverter;
+                if (converter != null)
+                {
+                    Commission = converter.Convert(Commission, singleOrderReport.CommissionCurrency, Currency);
+                }
+            }
+
+            CashFlow = NetCashFlow - Commission;
+        }
+
         /// <summary>
         /// Gets the single order ticket.
         /// </summary>
@@ -61,7 +128,7 @@ namespace Mbs.Trading.Portfolios
         public OrderSide Side { get; }
 
         /// <summary>
-        /// Gets the intsrument's currency.
+        /// Gets the instrument's currency.
         /// </summary>
         public CurrencyCode Currency { get; }
 
@@ -99,66 +166,5 @@ namespace Mbs.Trading.Portfolios
         /// Gets the execution cash flow in instrument's currency (net cash flow minus commission).
         /// </summary>
         public double CashFlow { get; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PortfolioExecution"/> class.
-        /// </summary>
-        /// <param name="singleOrderTicket">The associated single order ticket.</param>
-        /// <param name="singleOrderReport">The associated single order execution report.</param>
-        internal PortfolioExecution(ISingleOrderTicket singleOrderTicket, SingleOrderReport singleOrderReport)
-        {
-            OrderReportType type = singleOrderReport.ReportType;
-            if (type != OrderReportType.Filled && type != OrderReportType.PartiallyFilled)
-                throw new ArgumentException($"Expected Filled or PartiallyFilled order report type, got {type}.");
-            SingleOrderReport = singleOrderReport;
-            SingleOrderTicket = singleOrderTicket;
-            Instrument = singleOrderTicket.Order.Instrument;
-            Currency = Instrument.Currency;
-            DateTime = singleOrderReport.TransactionTime;
-            Price = singleOrderReport.LastPrice;
-            Quantity = singleOrderReport.LastQuantity;
-            Comment = singleOrderReport.Text;
-            Side = singleOrderTicket.Order.Side;
-            switch (Side)
-            {
-                case OrderSide.Buy:
-                case OrderSide.BuyMinus:
-                    Amount = Quantity;
-                    break;
-                case OrderSide.Sell:
-                case OrderSide.SellPlus:
-                case OrderSide.SellShort:
-                case OrderSide.SellShortExempt:
-                    Amount = -Quantity;
-                    break;
-                default:
-                    throw new ArgumentException($"Not supported order side: {Side}.");
-            }
-
-            // TODO: Is instrument.Margin an absolute value or a percentage?
-            Margin = Instrument.Margin * Quantity;
-            Value = Price * Quantity;
-            NetCashFlow = -Amount * Price;
-
-            double? factor = Instrument.Factor;
-            if (factor.HasValue)
-            {
-                double temp = factor.Value;
-                Value *= temp;
-                NetCashFlow *= temp;
-            }
-
-            Debt = Math.Abs(Margin) < double.Epsilon ? 0 : Value - Margin;
-
-            Commission = singleOrderReport.LastCommission;
-            if (Currency != singleOrderReport.CommissionCurrency && Commission > 0)
-            {
-                var converter = singleOrderTicket.Order.Account.CurrencyConverter;
-                if (converter != null)
-                    Commission = converter.Convert(Commission, singleOrderReport.CommissionCurrency, Currency);
-            }
-
-            CashFlow = NetCashFlow - Commission;
-        }
     }
 }

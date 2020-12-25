@@ -7,8 +7,6 @@ namespace Mbs.UnitTests.Trading.Data.Generators.FractionalBrownianMotion
     [TestClass]
     public class FractionalBrownianMotionDataGeneratorExtensionsTests
     {
-        // ReSharper disable InconsistentNaming
-
         [TestMethod]
         public async Task FractionalBrownianMotionDataGeneratorExtensions_GenerateAsync_Ohlcv_CorrectLength()
         {

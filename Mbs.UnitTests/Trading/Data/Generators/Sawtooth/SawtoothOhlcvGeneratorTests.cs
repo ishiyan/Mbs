@@ -7,8 +7,6 @@ namespace Mbs.UnitTests.Trading.Data.Generators.Sawtooth
     [TestClass]
     public class SawtoothOhlcvGeneratorTests
     {
-        // ReSharper disable InconsistentNaming
-
         [TestMethod]
         public void SawtoothOhlcvGenerator_Construction_DefaultConstructor_PropertyValuesCorrect()
         {

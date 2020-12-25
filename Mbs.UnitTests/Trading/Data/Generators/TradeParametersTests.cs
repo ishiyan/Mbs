@@ -11,8 +11,6 @@ namespace Mbs.UnitTests.Trading.Data.Generators
     [TestClass]
     public class TradeParametersTests
     {
-        // ReSharper disable InconsistentNaming
-
         [TestMethod]
         public void TradeParameters_Validate_ValidInput_CorrectValidationResults()
         {
@@ -31,7 +29,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
         {
             var parameters = new TradeParameters
             {
-                Volume = -1
+                Volume = -1,
             };
 
             var context = new ValidationContext(parameters);
@@ -43,7 +41,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
         {
             var parameters = new TradeParameters
             {
-                Volume = -1
+                Volume = -1,
             };
 
             var expectedMessage = string.Format(
@@ -75,7 +73,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
 
             var parameters = new TradeParameters()
             {
-                Volume = volume
+                Volume = volume,
             };
 
             Assert.AreEqual(volume, parameters.Volume, "volume");
@@ -84,7 +82,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
         [TestMethod]
         public void TradeParameters_DeserializeFromJson_ValidInput_CorrectValidationResults()
         {
-            var json = @"{
+            const string json = @"{
 volume: 123
 }";
 

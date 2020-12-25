@@ -1,5 +1,4 @@
 ﻿using Mbs.Api.ExampleProviders.Trading.Data.Generators.RepetitiveSample;
-using Mbs.Trading.Data;
 using Mbs.Trading.Data.Generators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -8,11 +7,10 @@ namespace Mbs.Api.UnitTests.ExampleProviders.Trading.Data.Generators.RepetitiveS
     [TestClass]
     public class RepetitiveSampleOhlcvGeneratorOutputExampleProviderTests
     {
-        // ReSharper disable InconsistentNaming
         [TestMethod]
         public void RepetitiveSampleOhlcvGeneratorOutputExampleProvider_GetExamples_CorrectValues()
         {
-            var example = (SyntheticDataGeneratorOutput<Ohlcv>) new RepetitiveSampleOhlcvGeneratorOutputExampleProvider().GetExamples();
+            var example = new RepetitiveSampleOhlcvGeneratorOutputExampleProvider().GetExamples();
 
             Assert.AreEqual(RepetitiveSampleOhlcvGeneratorOutputExampleProvider.Name, example.Name, "name");
             Assert.AreEqual(RepetitiveSampleOhlcvGeneratorOutputExampleProvider.Moniker, example.Moniker, "moniker");

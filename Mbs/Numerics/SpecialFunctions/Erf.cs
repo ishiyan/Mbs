@@ -125,8 +125,11 @@ namespace Mbs.Numerics
                 {
                     const double efx = 1.28379167095512586316e-01;
                     const double efx8 = 1.02703333676410069053e+00;
-                    if (ax < double.Epsilon * 16) // tiny
+                    if (ax < double.Epsilon * 16)
+                    {
                         return 0.125 * (8.0 * x + efx8 * x); // Avoid underflow.
+                    }
+
                     return x + efx * x;
                 }
 
@@ -176,7 +179,9 @@ namespace Mbs.Numerics
                 return x >= 0 ? 1d - tiny : tiny - 1d;
             }
 
+#pragma warning disable S1199 // Nested code blocks should not be used
             {
+#pragma warning restore S1199
                 // Rational approximation for 1.25 ≤ |x| < 6.0.
                 double r, s, z = 1d / (ax * ax);
                 if (ax < 1d / 0.35)
@@ -203,7 +208,7 @@ namespace Mbs.Numerics
                 }
                 else
                 {
-                    // Rational approximation for (1/0.35) ≤ |x| < 6.0.
+                    // Rational approximation for 1/0.35 ≤ |x| < 6.0.
                     const double r0 = -9.86494292470009928597e-03;
                     const double r1 = -7.99283237680523006574e-01;
                     const double r2 = -1.77579549177547519889e+01;
@@ -277,7 +282,10 @@ namespace Mbs.Numerics
             {
                 // Rational approximation for |x| < 0.84375.
                 if (ax < 13.8777878e-18)
+                {
                     return 1d - x;
+                }
+
                 const double p0 = 1.28379167095512558561e-01;
                 const double p1 = -3.25042107247001499370e-01;
                 const double p2 = -2.84817495755985104766e-02;
@@ -362,7 +370,10 @@ namespace Mbs.Numerics
                 {
                     // |x| >= 1/.35 ~ 2.857143
                     if (x < -6.0)
-                        return 2d - tiny; /* x < -6 */
+                    {
+                        return 2d - tiny;
+                    }
+
                     const double r0 = -9.86494292470009928597e-03;
                     const double r1 = -7.99283237680523006574e-01;
                     const double r2 = -1.77579549177547519889e+01;
@@ -428,15 +439,14 @@ namespace Mbs.Numerics
         public static double InverseErf(double y)
         {
             if (y > 1d || y < -1d)
+            {
                 return double.NaN;
+            }
 
             // ReSharper disable once CompareOfFloatsByEqualityOperator
-            if (y == 1d)
-                return double.PositiveInfinity;
-
-            // if (y < 0d)
-            //     return -InverseErf(-y);
-            return ErfOrErfc(1d - y, y);
+            return y == 1d
+                ? double.PositiveInfinity
+                : ErfOrErfc(1d - y, y);
         }
 
         /// <summary>
@@ -447,7 +457,10 @@ namespace Mbs.Numerics
         public static double InverseErfc(double y)
         {
             if (y < 0 || y > 2d)
+            {
                 return double.NaN;
+            }
+
             return ErfOrErfc(y, 1d - y);
         }
 
@@ -455,10 +468,9 @@ namespace Mbs.Numerics
         private static double ApproximateInverseErf(double y)
         {
             double x = Constants.SqrtPi * y / 2d;
-            double xx = x * x;
-            // ReSharper disable once IdentifierTypo
-            double xxxx = xx * xx;
-            double s = 1d + xx / 3d + 7d / 30d * xxxx + 127d / 630d * xxxx * xx;
+            double x2 = x * x;
+            double x4 = x2 * x2;
+            double s = 1d + x2 / 3d + 7d / 30d * x4 + 127d / 630d * x4 * x2;
             return x * s;
         }
 
@@ -484,7 +496,10 @@ namespace Mbs.Numerics
 
             d = 0.5 * x;
             if (x > 1d)
+            {
                 d = 1d - d;
+            }
+
             d = Math.Sqrt(-Math.Log(d));
             double num;
             if (d <= 5d)
@@ -516,7 +531,9 @@ namespace Mbs.Numerics
                 zp *= zz / k;
                 f += zp / (2 * k + 1);
                 if (f == fOld)
+                {
                     return f;
+                }
             }
 
             return Complex.NaN;

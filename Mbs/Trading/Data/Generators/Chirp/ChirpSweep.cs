@@ -33,6 +33,6 @@
         /// <summary>
         /// Logarithmic frequency chirp sweep.
         /// </summary>
-        LogarithmicFrequency
+        LogarithmicFrequency,
     }
 }

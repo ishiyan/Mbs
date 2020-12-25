@@ -24,8 +24,8 @@ namespace Mbs.Api.ExampleProviders.Trading.Data.Generators.MultiSinusoidal
                 Data = new[]
                 {
                     new Scalar(DefaultParameterValues.StartDate.Add(DefaultParameterValues.SessionEndTime), Price1),
-                    new Scalar(DefaultParameterValues.StartDate.AddDays(1).Add(DefaultParameterValues.SessionEndTime), Price2)
-                }
+                    new Scalar(DefaultParameterValues.StartDate.AddDays(1).Add(DefaultParameterValues.SessionEndTime), Price2),
+                },
             };
         }
     }

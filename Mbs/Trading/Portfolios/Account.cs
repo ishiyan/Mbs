@@ -5,14 +5,13 @@ using System.Threading;
 using Mbs.Trading.Currencies;
 using Mbs.Trading.Data;
 using Mbs.Trading.Environments;
-using Mbs.Trading.Time;
+using Mbs.Trading.Time.Timepieces;
 
 namespace Mbs.Trading.Portfolios
 {
     /// <summary>
     /// The account.
     /// </summary>
-    #pragma warning disable CA1724 // The type name Account conflicts in whole or in part with the namespace name 'Microsoft.AspNetCore.Identity.UI.V3.Pages.Account'. Change either name to eliminate the conflict.
     public sealed class Account : IAccount, IDisposable
     {
         private readonly ReaderWriterLockSlim listLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
@@ -26,178 +25,6 @@ namespace Mbs.Trading.Portfolios
 
         private Action<Account, AccountTransaction> transactionAdded;
         private Action<Account> accountChanged;
-
-        /// <inheritdoc/>
-        public IPortfolio Portfolio { get; }
-
-        /// <inheritdoc/>
-        public ICurrencyConverter CurrencyConverter { get; }
-
-        /// <inheritdoc/>
-        public ITimepiece Timepiece { get; }
-
-        /// <inheritdoc/>
-        public string Holder { get; set; }
-
-        /// <inheritdoc/>
-        public string Description { get; set; } = string.Empty;
-
-        /// <inheritdoc/>
-        public CurrencyCode Currency { get; }
-
-        /// <inheritdoc/>
-        public ReadOnlyCollection<AccountCurrencyPosition> CurrencyPositions
-        {
-            get
-            {
-                lock (currencyPositionsLock)
-                {
-                    return currencyPositions.AsReadOnly();
-                }
-            }
-        }
-
-        /// <inheritdoc/>
-        public ReadOnlyCollection<AccountTransaction> TransactionHistory
-        {
-            get
-            {
-                lock (transactionHistoryLock)
-                {
-                    return transactionHistory.AsReadOnly();
-                }
-            }
-        }
-
-        private void OnTransactionAdded(AccountTransaction accountTransaction)
-        {
-            lock (transactionAddedLock)
-            {
-                if (null != transactionAdded)
-                {
-                    var handlers = transactionAdded.GetInvocationList();
-                    foreach (Delegate handler in handlers)
-                    {
-                        var theHandler = handler as Action<Account, AccountTransaction>;
-                        theHandler?.Invoke(this, accountTransaction);
-                    }
-                }
-            }
-        }
-
-        /// <inheritdoc/>
-        public event Action<Account, AccountTransaction> TransactionAdded
-        {
-            add
-            {
-                lock (transactionAddedLock)
-                {
-                    transactionAdded += value;
-                }
-            }
-
-            remove
-            {
-                lock (transactionAddedLock)
-                {
-                    // ReSharper disable once DelegateSubtraction
-                    transactionAdded -= value;
-                }
-            }
-        }
-
-        private void OnChanged()
-        {
-            lock (accountChangedLock)
-            {
-                if (null != accountChanged)
-                {
-                    var handlers = accountChanged.GetInvocationList();
-                    foreach (Delegate handler in handlers)
-                    {
-                        var theHandler = handler as Action<Account>;
-                        theHandler?.Invoke(this);
-                    }
-                }
-            }
-        }
-
-        /// <inheritdoc/>
-        public event Action<Account> Changed
-        {
-            add
-            {
-                lock (accountChangedLock)
-                {
-                    accountChanged += value;
-                }
-            }
-
-            remove
-            {
-                lock (accountChangedLock)
-                {
-                    // ReSharper disable once DelegateSubtraction
-                    accountChanged -= value;
-                }
-            }
-        }
-
-        /// <inheritdoc/>
-        public double Balance()
-        {
-            lock (currencyPositionsLock)
-            {
-                return currencyPositions[0].Balance;
-            }
-        }
-
-        /// <inheritdoc/>
-        public double Balance(CurrencyCode currency)
-        {
-            lock (currencyPositionsLock)
-            {
-                if (currencyDictionary.TryGetValue(currency, out AccountCurrencyPosition position))
-                    return position.Balance;
-            }
-
-            return 0;
-        }
-
-        /// <inheritdoc/>
-        public double Value()
-        {
-            lock (currencyPositionsLock)
-            {
-                double sum = 0;
-                foreach (var position in currencyPositions)
-                    sum += CurrencyConverter.Convert(position.Balance, position.Currency, Currency);
-
-                return sum;
-            }
-        }
-
-        /// <inheritdoc/>
-        public double Value(DateTime dateTime)
-        {
-            using var account = new Account(Holder, Currency, 0d, Timepiece, CurrencyConverter, null /*dataPublisher*/);
-            lock (currencyPositionsLock)
-            {
-                lock (transactionHistoryLock)
-                {
-                    foreach (AccountTransaction transaction in transactionHistory)
-                    {
-                        if (transaction.DateTime <= dateTime)
-                            account.Add(transaction);
-                    }
-                }
-            }
-
-            double sum = 0;
-            foreach (var position in account.CurrencyPositions)
-                sum += CurrencyConverter.Convert(position.Balance, position.Currency, Currency);
-            return sum;
-        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Account"/> class.
@@ -246,44 +73,192 @@ namespace Mbs.Trading.Portfolios
             Timepiece = timepiece;
             CurrencyConverter = currencyConverter;
             if (Math.Abs(initialDeposit) > double.Epsilon)
+            {
                 Add(new AccountTransaction(timepiece.Time, initialDeposit, accountCurrency, "Initial deposit."), accountCurrency, initialDeposit);
+            }
+
             Portfolio = new Portfolio(this, dataPublisher);
         }
 
-        private void Add(AccountTransaction transaction, CurrencyCode currency, double amount)
+        /// <inheritdoc/>
+        public event Action<Account, AccountTransaction> TransactionAdded
         {
-            try////////////////////////////////////////
+            add
             {
-                listLock.EnterReadLock();
-
-                // return _list.Capacity;
-            }
-            finally
-            {
-                listLock.ExitReadLock();
+                lock (transactionAddedLock)
+                {
+                    transactionAdded += value;
+                }
             }
 
+            remove
+            {
+                lock (transactionAddedLock)
+                {
+                    // ReSharper disable once DelegateSubtraction
+                    transactionAdded -= value;
+                }
+            }
+        }
+
+        /// <inheritdoc/>
+        public event Action<Account> Changed
+        {
+            add
+            {
+                lock (accountChangedLock)
+                {
+                    accountChanged += value;
+                }
+            }
+
+            remove
+            {
+                lock (accountChangedLock)
+                {
+                    // ReSharper disable once DelegateSubtraction
+                    accountChanged -= value;
+                }
+            }
+        }
+
+        /// <inheritdoc/>
+        public IPortfolio Portfolio { get; }
+
+        /// <inheritdoc/>
+        public ICurrencyConverter CurrencyConverter { get; }
+
+        /// <inheritdoc/>
+        public ITimepiece Timepiece { get; }
+
+        /// <inheritdoc/>
+        public string Holder { get; set; }
+
+        /// <inheritdoc/>
+        public string Description { get; set; } = string.Empty;
+
+        /// <inheritdoc/>
+        public CurrencyCode Currency { get; }
+
+        /// <inheritdoc/>
+        public ReadOnlyCollection<AccountCurrencyPosition> CurrencyPositions
+        {
+            get
+            {
+                lock (currencyPositionsLock)
+                {
+                    return currencyPositions.AsReadOnly();
+                }
+            }
+        }
+
+        /// <inheritdoc/>
+        public ReadOnlyCollection<AccountTransaction> TransactionHistory
+        {
+            get
+            {
+                lock (transactionHistoryLock)
+                {
+                    return transactionHistory.AsReadOnly();
+                }
+            }
+        }
+
+        /// <inheritdoc/>
+        public double Balance()
+        {
+            lock (currencyPositionsLock)
+            {
+                return currencyPositions[0].Balance;
+            }
+        }
+
+        /// <inheritdoc/>
+        public double Balance(CurrencyCode currency)
+        {
+            lock (currencyPositionsLock)
+            {
+                if (currencyDictionary.TryGetValue(currency, out AccountCurrencyPosition position))
+                {
+                    return position.Balance;
+                }
+            }
+
+            return 0;
+        }
+
+        /// <inheritdoc/>
+        public double Value()
+        {
+            lock (currencyPositionsLock)
+            {
+                double sum = 0;
+                foreach (var position in currencyPositions)
+                {
+                    sum += CurrencyConverter.Convert(position.Balance, position.Currency, Currency);
+                }
+
+                return sum;
+            }
+        }
+
+        /// <inheritdoc/>
+        public double Value(DateTime dateTime)
+        {
+            using var account = new Account(Holder, Currency, 0d, Timepiece, CurrencyConverter, null /*dataPublisher*/);
             lock (currencyPositionsLock)
             {
                 lock (transactionHistoryLock)
                 {
-                    transactionHistory.Add(transaction);
-                }
-
-                if (!currencyDictionary.TryGetValue(currency, out AccountCurrencyPosition position))
-                {
-                    position = new AccountCurrencyPosition(currency, amount);
-                    currencyDictionary.Add(currency, position);
-                    currencyPositions.Add(position);
-                }
-                else
-                {
-                    position.Balance += amount;
+                    foreach (AccountTransaction transaction in transactionHistory)
+                    {
+                        if (transaction.DateTime <= dateTime)
+                        {
+                            account.Add(transaction);
+                        }
+                    }
                 }
             }
 
-            OnTransactionAdded(transaction);
-            OnChanged();
+            double sum = 0;
+            foreach (var position in account.CurrencyPositions)
+            {
+                sum += CurrencyConverter.Convert(position.Balance, position.Currency, Currency);
+            }
+
+            return sum;
+        }
+
+        /// <inheritdoc/>
+        public void Deposit(DateTime dateTime, double amount, CurrencyCode currency, string text)
+        {
+            Add(new AccountTransaction(dateTime, amount, currency, text), currency, amount);
+        }
+
+        /// <inheritdoc/>
+        public void Deposit(DateTime dateTime, double amount, string text)
+        {
+            Add(new AccountTransaction(dateTime, amount, Currency, text), Currency, amount);
+        }
+
+        /// <inheritdoc/>
+        public void Withdraw(DateTime dateTime, double amount, CurrencyCode currency, string text)
+        {
+            amount = -amount;
+            Add(new AccountTransaction(dateTime, amount, currency, text), currency, amount);
+        }
+
+        /// <inheritdoc/>
+        public void Withdraw(DateTime dateTime, double amount, string text)
+        {
+            amount = -amount;
+            Add(new AccountTransaction(dateTime, amount, Currency, text), Currency, amount);
+        }
+
+        /// <inheritdoc/>
+        public void Dispose()
+        {
+            Dispose(true);
         }
 
         /// <summary>
@@ -324,42 +299,69 @@ namespace Mbs.Trading.Portfolios
             }
         }
 
-        /// <inheritdoc/>
-        public void Deposit(DateTime dateTime, double amount, CurrencyCode currency, string text)
+        private void OnTransactionAdded(AccountTransaction accountTransaction)
         {
-            Add(new AccountTransaction(dateTime, amount, currency, text), currency, amount);
+            lock (transactionAddedLock)
+            {
+                if (transactionAdded != null)
+                {
+                    var handlers = transactionAdded.GetInvocationList();
+                    foreach (Delegate handler in handlers)
+                    {
+                        var theHandler = handler as Action<Account, AccountTransaction>;
+                        theHandler?.Invoke(this, accountTransaction);
+                    }
+                }
+            }
         }
 
-        /// <inheritdoc/>
-        public void Deposit(DateTime dateTime, double amount, string text)
+        private void OnChanged()
         {
-            Add(new AccountTransaction(dateTime, amount, Currency, text), Currency, amount);
+            lock (accountChangedLock)
+            {
+                if (accountChanged != null)
+                {
+                    var handlers = accountChanged.GetInvocationList();
+                    foreach (Delegate handler in handlers)
+                    {
+                        var theHandler = handler as Action<Account>;
+                        theHandler?.Invoke(this);
+                    }
+                }
+            }
         }
 
-        /// <inheritdoc/>
-        public void Withdraw(DateTime dateTime, double amount, CurrencyCode currency, string text)
+        private void Add(AccountTransaction transaction, CurrencyCode currency, double amount)
         {
-            amount = -amount;
-            Add(new AccountTransaction(dateTime, amount, currency, text), currency, amount);
-        }
+            lock (currencyPositionsLock)
+            {
+                lock (transactionHistoryLock)
+                {
+                    transactionHistory.Add(transaction);
+                }
 
-        /// <inheritdoc/>
-        public void Withdraw(DateTime dateTime, double amount, string text)
-        {
-            amount = -amount;
-            Add(new AccountTransaction(dateTime, amount, Currency, text), Currency, amount);
-        }
+                if (!currencyDictionary.TryGetValue(currency, out AccountCurrencyPosition position))
+                {
+                    position = new AccountCurrencyPosition(currency, amount);
+                    currencyDictionary.Add(currency, position);
+                    currencyPositions.Add(position);
+                }
+                else
+                {
+                    position.Balance += amount;
+                }
+            }
 
-        /// <inheritdoc/>
-        public void Dispose()
-        {
-            Dispose(true);
+            OnTransactionAdded(transaction);
+            OnChanged();
         }
 
         private void Dispose(bool disposing)
         {
             if (disposing)
+            {
                 listLock?.Dispose();
+            }
         }
     }
 }

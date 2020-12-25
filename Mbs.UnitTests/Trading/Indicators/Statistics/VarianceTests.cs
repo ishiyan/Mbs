@@ -1,17 +1,15 @@
 using System;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 using Mbs.Trading.Data;
 using Mbs.Trading.Indicators.Abstractions;
 using Mbs.Trading.Indicators.Statistics;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Mbs.UnitTests.Trading.Indicators.Statistics
 {
     [TestClass]
     public class VarianceTests
     {
-        #region Test data
         private const int Decimals = 13;
 
         /// <summary>
@@ -19,7 +17,7 @@ namespace Mbs.UnitTests.Trading.Indicators.Statistics
         /// </summary>
         private static readonly double[] VarianceInput =
         {
-            1, 2, 8, 4, 9, 6, 7, 13, 9, 10, 3, 12
+            1, 2, 8, 4, 9, 6, 7, 13, 9, 10, 3, 12,
         };
 
         /// <summary>
@@ -28,8 +26,8 @@ namespace Mbs.UnitTests.Trading.Indicators.Statistics
         private static readonly double[] PopulationVarianceExpected3 =
         {
             double.NaN, double.NaN,
-            9.55555555555556000, 6.22222222222222000, 4.66666666666667000, 4.22222222222222000,  1.55555555555556000,
-            9.55555555555556000, 6.22222222222222000, 2.88888888888889000, 9.55555555555556000, 14.88888888888890000
+            9.55555555555556000, 6.22222222222222000, 4.66666666666667000, 4.22222222222222000, 1.55555555555556000,
+            9.55555555555556000, 6.22222222222222000, 2.88888888888889000, 9.55555555555556000, 14.88888888888890000,
         };
 
         /// <summary>
@@ -38,8 +36,8 @@ namespace Mbs.UnitTests.Trading.Indicators.Statistics
         private static readonly double[] PopulationVarianceExpected5 =
         {
             double.NaN, double.NaN, double.NaN, double.NaN,
-            10.16000, 6.56000,  2.96000,  9.36000,
-             5.76000, 6.00000, 11.04000, 12.24000
+            10.16000, 6.56000, 2.96000, 9.36000,
+            5.76000, 6.00000, 11.04000, 12.24000,
         };
 
         /// <summary>
@@ -48,8 +46,8 @@ namespace Mbs.UnitTests.Trading.Indicators.Statistics
         private static readonly double[] SampleVarianceExpected3 =
         {
             double.NaN, double.NaN,
-            14.3333333333333000, 9.3333333333333400, 7.0000000000000000,  6.3333333333333400,  2.3333333333333300,
-            14.3333333333333000, 9.3333333333333400, 4.3333333333333400, 14.3333333333333000, 22.3333333333333000
+            14.3333333333333000, 9.3333333333333400, 7.0000000000000000, 6.3333333333333400, 2.3333333333333300,
+            14.3333333333333000, 9.3333333333333400, 4.3333333333333400, 14.3333333333333000, 22.3333333333333000,
         };
 
         /// <summary>
@@ -58,19 +56,14 @@ namespace Mbs.UnitTests.Trading.Indicators.Statistics
         private static readonly double[] SampleVarianceExpected5 =
         {
             double.NaN, double.NaN, double.NaN, double.NaN,
-            12.7000, 8.2000,  3.7000, 11.7000,
-             7.2000, 7.5000, 13.8000, 15.3000
+            12.7000, 8.2000, 3.7000, 11.7000,
+            7.2000, 7.5000, 13.8000, 15.3000,
         };
-        #endregion
 
         [TestMethod]
         public void Variance_Metadata_ValuesAreCorrect()
         {
-            var parameters = new Variance.Parameters()
-            {
-                Length = 7,
-                IsUnbiased = true
-            };
+            var parameters = new Variance.Parameters { Length = 7, IsUnbiased = true };
 
             var target = new Variance(parameters);
             var metadata = target.Metadata;
@@ -85,11 +78,7 @@ namespace Mbs.UnitTests.Trading.Indicators.Statistics
         [TestMethod]
         public void Variance_Metadata_SampleVariance_NameAndDescriptionAreCorrect()
         {
-            var parameters = new Variance.Parameters()
-            {
-                Length = 7,
-                IsUnbiased = true
-            };
+            var parameters = new Variance.Parameters { Length = 7, IsUnbiased = true };
 
             var target = new Variance(parameters);
             var metadata = target.Metadata;
@@ -101,11 +90,7 @@ namespace Mbs.UnitTests.Trading.Indicators.Statistics
         [TestMethod]
         public void Variance_Metadata_PopulationVariance_NameAndDescriptionAreCorrect()
         {
-            var parameters = new Variance.Parameters()
-            {
-                Length = 7,
-                IsUnbiased = false
-            };
+            var parameters = new Variance.Parameters { Length = 7, IsUnbiased = false };
 
             var target = new Variance(parameters);
             var metadata = target.Metadata;
@@ -121,11 +106,7 @@ namespace Mbs.UnitTests.Trading.Indicators.Statistics
             var scalar = new Scalar(DateTime.Now, 1d);
             int count = VarianceInput.Length;
 
-            var parameters = new Variance.Parameters()
-            {
-                Length = 3,
-                IsUnbiased = false
-            };
+            var parameters = new Variance.Parameters { Length = 3, IsUnbiased = false };
             var target = new Variance(parameters);
 
             for (int i = 0; i < 2; ++i)
@@ -174,11 +155,7 @@ namespace Mbs.UnitTests.Trading.Indicators.Statistics
                 scalarArray[i] = new Scalar { Time = DateTime.UtcNow, Value = VarianceInput[i] };
             }
 
-            var parameters = new Variance.Parameters()
-            {
-                Length = 3,
-                IsUnbiased = false
-            };
+            var parameters = new Variance.Parameters { Length = 3, IsUnbiased = false };
             var target = new Variance(parameters);
 
             var outputs = target.Update(scalarArray).ToList();
@@ -222,11 +199,7 @@ namespace Mbs.UnitTests.Trading.Indicators.Statistics
             var scalar = new Scalar(DateTime.Now, 1d);
             int count = VarianceInput.Length;
 
-            var parameters = new Variance.Parameters()
-            {
-                Length = 3,
-                IsUnbiased = true
-            };
+            var parameters = new Variance.Parameters { Length = 3, IsUnbiased = true };
             var target = new Variance(parameters);
 
             for (int i = 0; i < 2; ++i)
@@ -275,11 +248,7 @@ namespace Mbs.UnitTests.Trading.Indicators.Statistics
                 scalarArray[i] = new Scalar { Time = DateTime.UtcNow, Value = VarianceInput[i] };
             }
 
-            var parameters = new Variance.Parameters()
-            {
-                Length = 3,
-                IsUnbiased = true
-            };
+            var parameters = new Variance.Parameters { Length = 3, IsUnbiased = true };
             var target = new Variance(parameters);
 
             var outputs = target.Update(scalarArray).ToList();
@@ -322,11 +291,7 @@ namespace Mbs.UnitTests.Trading.Indicators.Statistics
             var scalar = new Scalar(DateTime.Now, 1d);
             int count = VarianceInput.Length;
 
-            var parameters = new Variance.Parameters()
-            {
-                Length = 3,
-                IsUnbiased = false
-            };
+            var parameters = new Variance.Parameters { Length = 3, IsUnbiased = false };
             var target = new Variance(parameters);
             var target2 = new Variance(parameters);
 
@@ -355,11 +320,7 @@ namespace Mbs.UnitTests.Trading.Indicators.Statistics
             var scalar = new Scalar(DateTime.Now, 1d);
             int count = VarianceInput.Length;
 
-            var parameters = new Variance.Parameters()
-            {
-                Length = 3,
-                IsUnbiased = false
-            };
+            var parameters = new Variance.Parameters { Length = 3, IsUnbiased = false };
             var target = new Variance(parameters);
 
             for (int i = 0; i < 2; ++i)
@@ -400,10 +361,7 @@ namespace Mbs.UnitTests.Trading.Indicators.Statistics
         [TestMethod]
         public void Variance_Constructor_CreatesInstance()
         {
-            var parameters = new Variance.Parameters
-            {
-                Length = 5
-            };
+            var parameters = new Variance.Parameters { Length = 5 };
 
             var target = new Variance(parameters);
 
@@ -414,10 +372,7 @@ namespace Mbs.UnitTests.Trading.Indicators.Statistics
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void Variance_Constructor_LengthIsNegative_ThrowsException()
         {
-            var parameters = new Variance.Parameters
-            {
-                Length = -1
-            };
+            var parameters = new Variance.Parameters { Length = -1 };
 
             var target = new Variance(parameters);
 
@@ -439,10 +394,7 @@ namespace Mbs.UnitTests.Trading.Indicators.Statistics
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void Variance_Constructor_LengthIsOne_ThrowsException()
         {
-            var parameters = new Variance.Parameters
-            {
-                Length = 1
-            };
+            var parameters = new Variance.Parameters { Length = 1 };
 
             var target = new Variance(parameters);
 

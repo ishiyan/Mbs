@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
-namespace Mbs.Trading.Instruments
+namespace Mbs.Trading.Instruments.Symbology
 {
     /// <summary>
     /// SEDOL (Stock Exchange Daily Official List) utilities.
@@ -27,7 +27,7 @@ namespace Mbs.Trading.Instruments
     /// characters and the trailing check digit. Vowels 'AEUIO' are never used.
     /// </para>
     /// <para>
-    /// ➌ User defined SEDOL codes begin with a leaing digit 9 followed by five alphanumeric characters and
+    /// ➌ User defined SEDOL codes begin with a leading digit 9 followed by five alphanumeric characters and
     /// the trailing check digit. The alphanumeric characters may be vowels. There will be no codes issued with
     /// 9 as the lead character. This allows the 9-series to be reserved for end user allocation.
     /// </para>
@@ -65,7 +65,9 @@ namespace Mbs.Trading.Instruments
         public static SedolValidationError SedolValidate(this string sedol)
         {
             if (string.IsNullOrWhiteSpace(sedol) || sedol.Length != Length)
+            {
                 return SedolValidationError.InvalidLength;
+            }
 
             char[] input = sedol.ToCharArray();
             bool isUserDefined = false;
@@ -77,7 +79,9 @@ namespace Mbs.Trading.Instruments
                 bool isDigit = c >= '0' && c <= '9';
                 bool isAlpha = c >= 'A' && c <= 'Z';
                 if (!isAlpha && !isDigit)
+                {
                     return SedolValidationError.HasNonAlphaNumerics;
+                }
 
                 // Now the character is alphanumeric.
                 if (i == 0)
@@ -87,25 +91,40 @@ namespace Mbs.Trading.Instruments
                 }
 
                 if (isOldStyle && !isDigit)
+                {
                     return SedolValidationError.OldStyleHasAlpha;
+                }
 
                 if (!isUserDefined && "AEUIO".IndexOf((char)c, StringComparison.Ordinal) >= 0)
+                {
                     return SedolValidationError.HasVowels;
+                }
 
                 if (isDigit)
+                {
                     c -= '0';
+                }
                 else
+                {
                     c += 10 - 'A';
+                }
+
                 sum += ApplyWeights(i, c);
             }
 
             sum = (10 - sum % 10) % 10;
             int checkDigit = input[ChecksumDigitIndex];
             if (checkDigit < '0' || checkDigit > '9')
+            {
                 return SedolValidationError.InvalidCheckDigit;
+            }
+
             checkDigit -= '0';
             if (sum != checkDigit)
+            {
                 return SedolValidationError.InvalidCheckDigit;
+            }
+
             return SedolValidationError.None;
         }
 
@@ -128,15 +147,23 @@ namespace Mbs.Trading.Instruments
         public static char SedolCalculateCheckDigit(this string sedol)
         {
             if (string.IsNullOrWhiteSpace(sedol) || sedol.Length < ChecksumDigitIndex)
+            {
                 return '0';
+            }
+
             int sum = 0;
             for (int i = 0; i < ChecksumDigitIndex; ++i)
             {
                 int c = char.ToUpper(sedol[i], CultureInfo.InvariantCulture);
                 if (c >= '0' && c <= '9')
+                {
                     c -= '0';
+                }
                 else
+                {
                     c += 10 - 'A';
+                }
+
                 sum += ApplyWeights(i, c);
             }
 

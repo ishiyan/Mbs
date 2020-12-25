@@ -6,22 +6,22 @@
     public class Metadata
     {
         /// <summary>
-        /// Identifies a single indicator output.
+        /// Gets or sets the identification of a single indicator output.
         /// </summary>
         public int Kind { get; set; }
 
         /// <summary>
-        /// A type of the output.
+        /// Gets or sets the type of an output.
         /// </summary>
         public IndicatorOutputType Type { get; set; }
 
         /// <summary>
-        /// Identifies an instance of the output.
+        /// Gets or sets the identification of an instance of an output.
         /// </summary>
         public string Name { get; set; }
 
         /// <summary>
-        /// Describes the output.
+        /// Gets or sets the description of an output.
         /// </summary>
         public string Description { get; set; }
     }

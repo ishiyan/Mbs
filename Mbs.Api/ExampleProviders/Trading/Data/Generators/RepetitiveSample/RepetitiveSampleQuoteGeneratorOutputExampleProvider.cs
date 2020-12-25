@@ -31,8 +31,8 @@ namespace Mbs.Api.ExampleProviders.Trading.Data.Generators.RepetitiveSample
                 Data = new[]
                 {
                     new Quote(DefaultParameterValues.StartDate.Add(DefaultParameterValues.SessionEndTime), BidPrice1, BidSize1, AskPrice1, AskSize1),
-                    new Quote(DefaultParameterValues.StartDate.AddDays(1).Add(DefaultParameterValues.SessionEndTime), BidPrice2, BidSize2, AskPrice2, AskSize2)
-                }
+                    new Quote(DefaultParameterValues.StartDate.AddDays(1).Add(DefaultParameterValues.SessionEndTime), BidPrice2, BidSize2, AskPrice2, AskSize2),
+                },
             };
         }
     }

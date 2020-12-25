@@ -8,27 +8,7 @@ namespace Mbs.Trading.Indicators.Abstractions
     public class Band
     {
         /// <summary>
-        /// The first value.
-        /// </summary>
-        public double FirstValue { get; } = double.NaN;
-
-        /// <summary>
-        /// The second value.
-        /// </summary>
-        public double SecondValue { get; } = double.NaN;
-
-        /// <summary>
-        /// The time stamp.
-        /// </summary>
-        public DateTime Time { get; }
-
-        /// <summary>
-        /// Indicates if this <see cref="Band"/> is not initialized.
-        /// </summary>
-        public bool IsEmpty => double.IsNaN(FirstValue) || double.IsNaN(SecondValue);
-
-        /// <summary>
-        /// Constructs a new instance of the <see cref="Band"/> class.
+        /// Initializes a new instance of the <see cref="Band"/> class.
         /// </summary>
         /// <param name="time">The time stamp of the <see cref="Band"/>.</param>
         /// <param name="firstValue">The first value of the <see cref="Band"/>.</param>
@@ -47,5 +27,25 @@ namespace Mbs.Trading.Indicators.Abstractions
                 SecondValue = secondValue;
             }
         }
+
+        /// <summary>
+        /// Gets the first value.
+        /// </summary>
+        public double FirstValue { get; } = double.NaN;
+
+        /// <summary>
+        /// Gets the second value.
+        /// </summary>
+        public double SecondValue { get; } = double.NaN;
+
+        /// <summary>
+        /// Gets the time stamp.
+        /// </summary>
+        public DateTime Time { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether this <see cref="Band"/> is not initialized.
+        /// </summary>
+        public bool IsEmpty => double.IsNaN(FirstValue) || double.IsNaN(SecondValue);
     }
 }

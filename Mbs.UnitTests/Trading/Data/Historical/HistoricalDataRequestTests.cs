@@ -12,14 +12,6 @@ namespace Mbs.UnitTests.Trading.Data.Historical
     [TestClass]
     public class HistoricalDataRequestTests
     {
-        private bool DoValidation(HistoricalDataRequest instance, out List<ValidationResult> validationResults)
-        {
-            validationResults = new List<ValidationResult>();
-            return Validator.TryValidateObject(instance, new ValidationContext(instance), validationResults, true);
-        }
-
-        // ReSharper disable InconsistentNaming
-
         [TestMethod]
         public void Construction_DefaultConstructor_CorrectDefaultValues()
         {
@@ -53,7 +45,7 @@ namespace Mbs.UnitTests.Trading.Data.Historical
             {
                 Instrument = null,
                 StartDate = new DateTime(2010, 1, 1),
-                EndDate = new DateTime(2009, 1, 1)
+                EndDate = new DateTime(2009, 1, 1),
             };
 
             var validated = DoValidation(instance, out List<ValidationResult> validationResults);
@@ -70,7 +62,7 @@ namespace Mbs.UnitTests.Trading.Data.Historical
             {
                 Instrument = new Instrument(),
                 StartDate = new DateTime(2010, 1, 1),
-                EndDate = new DateTime(2009, 1, 1)
+                EndDate = new DateTime(2009, 1, 1),
             };
 
             var validated = DoValidation(instance, out List<ValidationResult> validationResults);
@@ -92,6 +84,12 @@ namespace Mbs.UnitTests.Trading.Data.Historical
 
             Assert.IsTrue(validated);
             Assert.AreEqual(0, validationResults.Count);
+        }
+
+        private static bool DoValidation(HistoricalDataRequest instance, out List<ValidationResult> validationResults)
+        {
+            validationResults = new List<ValidationResult>();
+            return Validator.TryValidateObject(instance, new ValidationContext(instance), validationResults, true);
         }
     }
 }

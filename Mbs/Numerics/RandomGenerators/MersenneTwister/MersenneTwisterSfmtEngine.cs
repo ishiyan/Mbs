@@ -1,11 +1,10 @@
 ﻿using System.Runtime.CompilerServices;
 
-// ReSharper disable once CheckNamespace
-namespace Mbs.Numerics.Random
+namespace Mbs.Numerics.RandomGenerators.MersenneTwister
 {
     /// <summary>
     /// The SIMD-oriented Fast Mersenne Twister (SFMT) uniform pseudo-random number generator engine
-    /// is based upon information and the implementation presented on
+    /// is based upon information and the implementation presented on:
     /// <para />
     /// http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/SFMT/index.html.
     /// <para />
@@ -190,9 +189,103 @@ namespace Mbs.Numerics.Random
             parity = new[] { parity1, parity2, parity3, parity4 };
             this.seedArray = new uint[seedArray.Length];
             for (int index = 0; index < seedArray.Length; ++index)
+            {
                 this.seedArray[index] = (uint)seedArray[index];
+            }
+
             Init();
         }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="MersenneTwisterSfmtEngine"/> can be reset, so that it produces the same pseudo-random number sequence again.
+        /// </summary>
+        public override bool CanReset => true;
+
+        /// <summary>
+        /// Resets the <see cref="MersenneTwisterSfmtEngine"/>, so that it produces the same pseudo-random number sequence again.
+        /// </summary>
+        public override void Reset()
+        {
+            Init();
+        }
+
+        /// <summary>
+        /// A next random 32-bit unsigned integer ∊[<see cref="uint.MinValue"/>, <see cref="uint.MaxValue"/>].
+        /// </summary>
+        /// <returns>A next random 32-bit unsigned integer.</returns>
+        public override uint NextUInt()
+        {
+            if (idx >= stateSize32)
+            {
+                Regenerate();
+                idx = 0;
+            }
+
+            return sfmt[idx++];
+        }
+
+        /// <summary>
+        /// A double-precision floating point random number ∊[0.0, 1.0].
+        /// </summary>
+        /// <returns>A double-precision floating point random number.</returns>
+        public double NextDoubleInclusiveOne()
+        {
+            return Next53Bit(0, Inverse53BitsOf1S);
+        }
+
+        /// <summary>
+        /// A double-precision floating point random number ∊(0.0, 1.0).
+        /// </summary>
+        /// <returns>A double-precision floating point random number.</returns>
+        public double NextDoublePositive()
+        {
+            return Next53Bit(0.5, Inverse53BitsOf1S);
+        }
+
+        /// <summary>
+        /// A double-precision floating point random number ∊[0.0, 1.0).
+        /// </summary>
+        /// <returns>A double-precision floating point random number.</returns>
+        public override double NextDouble()
+        {
+            return Next53Bit(0, InverseOnePlus53BitsOf1S);
+        }
+
+        /// <summary>
+        /// A double-precision floating point random number ∊[0.0, <paramref name="maxValue"/>).
+        /// </summary>
+        /// <param name="maxValue">The exclusive upper bound of the random number to be generated. The <paramref name="maxValue"/> must be greater than or equal to 0.0.</param>
+        /// <returns>A double-precision floating point random number.</returns>
+        public override double NextDouble(double maxValue)
+        {
+            return Next53Bit(0, InverseOnePlus53BitsOf1S) * maxValue;
+        }
+
+        /// <summary>
+        /// A double-precision floating point random number ∊[<paramref name="minValue"/>, <paramref name="maxValue"/>).
+        /// </summary>
+        /// <param name="minValue">The inclusive lower bound of the random number to be generated. The range between <paramref name="minValue"/> and <paramref name="maxValue"/> must be less than or equal to <see cref="double.MaxValue"/>.</param>
+        /// <param name="maxValue">The exclusive upper bound of the random number to be generated. The <paramref name="maxValue"/> must be greater than or equal to <paramref name="minValue"/>. The range between <paramref name="minValue"/> and <paramref name="maxValue"/> must be less than or equal to <see cref="double.MaxValue"/>.</param>
+        /// <returns>A double-precision floating point random number.</returns>
+        public override double NextDouble(double minValue, double maxValue)
+        {
+            double range = maxValue - minValue;
+            return minValue + Next53Bit(0, InverseOnePlus53BitsOf1S) * range;
+        }
+
+#pragma warning disable SA1139 // Use literal suffix notation instead of casting
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static uint Func1(uint x)
+        {
+            return (x ^ (x >> 27)) * (uint)1664525UL;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static uint Func2(uint x)
+        {
+            return (x ^ (x >> 27)) * (uint)1566083941UL;
+        }
+#pragma warning restore SA1139
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void Init()
@@ -211,21 +304,38 @@ namespace Mbs.Numerics.Random
             {
                 int lag, count, i, j;
                 if (stateSize32 >= 623)
+                {
                     lag = 11;
+                }
                 else if (stateSize32 >= 68)
+                {
                     lag = 7;
+                }
                 else if (stateSize32 >= 39)
+                {
                     lag = 5;
+                }
                 else
+                {
                     lag = 3;
+                }
+
                 int mid = (stateSize32 - lag) / 2;
                 for (i = 0; i != stateSize32; ++i)
+                {
                     sfmt[i] = 0x8b8b8b8bU;
+                }
+
                 int length = seedArray.Length;
                 if (length + 1 > stateSize32)
+                {
                     count = length;
+                }
                 else
+                {
                     count = stateSize32 - 1;
+                }
+
                 uint r = Func1(sfmt[0] ^ sfmt[mid] ^ sfmt[stateSize32 - 1]);
                 sfmt[mid] += r;
                 r += (uint)length;
@@ -271,39 +381,10 @@ namespace Mbs.Numerics.Random
         }
 
         /// <summary>
-        /// Resets the <see cref="MersenneTwisterSfmtEngine"/>, so that it produces the same pseudo-random number sequence again.
-        /// </summary>
-        public override void Reset()
-        {
-            Init();
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether the <see cref="MersenneTwisterSfmtEngine"/> can be reset, so that it produces the same pseudo-random number sequence again.
-        /// </summary>
-        public override bool CanReset => true;
-
-#pragma warning disable SA1139 // Use literal suffix notation instead of casting
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static uint Func1(uint x)
-        {
-            return (x ^ (x >> 27)) * (uint)1664525UL;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static uint Func2(uint x)
-        {
-            return (x ^ (x >> 27)) * (uint)1566083941UL;
-        }
-#pragma warning restore SA1139 // Use literal suffix notation instead of casting
-
-#pragma warning disable SA1611 // Element parameters must be documented
-        /// <summary>
         /// Simulates the little endian SIMD 128-bit left shift.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        // ReSharper disable once IdentifierTypo
-        private void Lshift128(uint[] target, int source, int shift)
+        private void LeftShift128(uint[] target, int source, int shift)
         {
             ulong th = ((ulong)sfmt[source + 3] << 32) | sfmt[source + 2];
             ulong tl = ((ulong)sfmt[source + 1] << 32) | sfmt[source];
@@ -321,8 +402,7 @@ namespace Mbs.Numerics.Random
         /// Simulates the little endian SIMD 128-bit right shift.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        // ReSharper disable once IdentifierTypo
-        private void Rshift128(uint[] target, int source, int shift)
+        private void RightShift128(uint[] target, int source, int shift)
         {
             ulong th = ((ulong)sfmt[source + 3] << 32) | sfmt[source + 2];
             ulong tl = ((ulong)sfmt[source + 1] << 32) | sfmt[source];
@@ -335,15 +415,16 @@ namespace Mbs.Numerics.Random
             target[3] = (uint)(oh >> 32);
             target[2] = (uint)oh;
         }
-#pragma warning restore SA1611 // Element parameters must be documented
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void DoRecursion(int a, int b, int c, int d)
         {
-            Lshift128(tempX, a, sl2);
-            Rshift128(tempY, c, sr2);
+            LeftShift128(tempX, a, sl2);
+            RightShift128(tempY, c, sr2);
             for (int i = 0; i != 4; ++i)
+            {
                 sfmt[a + i] = sfmt[a + i] ^ tempX[i] ^ ((sfmt[b + i] >> sr1) & msk[i]) ^ tempY[i] ^ (sfmt[d + i] << sl1);
+            }
         }
 
         /// <summary>
@@ -370,7 +451,6 @@ namespace Mbs.Numerics.Random
             }
         }
 
-        // ReSharper disable once CommentTypo
         /// <summary>
         /// Certificate the period of 2ᵐᶱˣᵖ.
         /// </summary>
@@ -379,14 +459,22 @@ namespace Mbs.Numerics.Random
         {
             int inner = 0;
             for (int i = 0; i != 4; ++i)
+            {
                 inner ^= (int)(sfmt[i] & parity[i]);
+            }
+
             for (int i = 16; i > 0; i >>= 1)
+            {
                 inner ^= inner >> i;
+            }
+
             inner &= 1;
 
             // Check OK.
             if (inner == 1)
+            {
                 return;
+            }
 
             // Check NG, and modification.
             for (int i = 0; i != 4; ++i)
@@ -403,21 +491,6 @@ namespace Mbs.Numerics.Random
                     work <<= 1;
                 }
             }
-        }
-
-        /// <summary>
-        /// A next random 32-bit unsigned integer ∊[<see cref="uint.MinValue"/>, <see cref="uint.MaxValue"/>].
-        /// </summary>
-        /// <returns>A next random 32-bit unsigned integer.</returns>
-        public override uint NextUInt()
-        {
-            if (idx >= stateSize32)
-            {
-                Regenerate();
-                idx = 0;
-            }
-
-            return sfmt[idx++];
         }
 
         /// <summary>
@@ -454,58 +527,6 @@ namespace Mbs.Numerics.Random
             // Shift the 27 pseudo-random bits (a) over by 26 bits (* 67108864.0) and
             // add another pseudo-random 26 bits (+ b).
             return ((a * 67108864.0 + b) + translate) * scale;
-
-            // What about the following instead of the above? Is the multiply better?
-            // return BitConverter.Int64BitsToDouble((a << 26) + b));
-        }
-
-        /// <summary>
-        /// A double-precision floating point random number ∊[0.0, 1.0).
-        /// </summary>
-        /// <returns>A double-precision floating point random number.</returns>
-        public override double NextDouble()
-        {
-            return Next53Bit(0, InverseOnePlus53BitsOf1S);
-        }
-
-        /// <summary>
-        /// A double-precision floating point random number ∊[0.0, 1.0].
-        /// </summary>
-        /// <returns>A double-precision floating point random number.</returns>
-        public double NextDoubleInclusiveOne()
-        {
-            return Next53Bit(0, Inverse53BitsOf1S);
-        }
-
-        /// <summary>
-        /// A double-precision floating point random number ∊(0.0, 1.0).
-        /// </summary>
-        /// <returns>A double-precision floating point random number.</returns>
-        public double NextDoublePositive()
-        {
-            return Next53Bit(0.5, Inverse53BitsOf1S);
-        }
-
-        /// <summary>
-        /// A double-precision floating point random number ∊[0.0, <paramref name="maxValue"/>).
-        /// </summary>
-        /// <param name="maxValue">The exclusive upper bound of the random number to be generated. The <paramref name="maxValue"/> must be greater than or equal to 0.0.</param>
-        /// <returns>A double-precision floating point random number.</returns>
-        public override double NextDouble(double maxValue)
-        {
-            return Next53Bit(0, InverseOnePlus53BitsOf1S) * maxValue;
-        }
-
-        /// <summary>
-        /// A double-precision floating point random number ∊[<paramref name="minValue"/>, <paramref name="maxValue"/>).
-        /// </summary>
-        /// <param name="minValue">The inclusive lower bound of the random number to be generated. The range between <paramref name="minValue"/> and <paramref name="maxValue"/> must be less than or equal to <see cref="double.MaxValue"/>.</param>
-        /// <param name="maxValue">The exclusive upper bound of the random number to be generated. The <paramref name="maxValue"/> must be greater than or equal to <paramref name="minValue"/>. The range between <paramref name="minValue"/> and <paramref name="maxValue"/> must be less than or equal to <see cref="double.MaxValue"/>.</param>
-        /// <returns>A double-precision floating point random number.</returns>
-        public override double NextDouble(double minValue, double maxValue)
-        {
-            double range = maxValue - minValue;
-            return minValue + Next53Bit(0, InverseOnePlus53BitsOf1S) * range;
         }
     }
 }

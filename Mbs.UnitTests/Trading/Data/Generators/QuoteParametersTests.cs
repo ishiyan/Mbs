@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
 using Mbs.Trading.Data.Generators;
-using Mbs.Trading.Time;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 
@@ -13,8 +11,6 @@ namespace Mbs.UnitTests.Trading.Data.Generators
     [TestClass]
     public class QuoteParametersTests
     {
-        // ReSharper disable InconsistentNaming
-
         [TestMethod]
         public void QuoteParameters_Validate_ValidInput_CorrectValidationResults()
         {
@@ -33,7 +29,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
         {
             var parameters = new QuoteParameters
             {
-                SpreadFraction = -0.1
+                SpreadFraction = -0.1,
             };
 
             var context = new ValidationContext(parameters);
@@ -45,7 +41,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
         {
             var parameters = new QuoteParameters
             {
-                SpreadFraction = 1.1
+                SpreadFraction = 1.1,
             };
 
             var expectedMessage = string.Format(
@@ -68,7 +64,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
         {
             var parameters = new QuoteParameters
             {
-                AskSize = -11
+                AskSize = -11,
             };
 
             var context = new ValidationContext(parameters);
@@ -80,7 +76,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
         {
             var parameters = new QuoteParameters
             {
-                AskSize = -0.01
+                AskSize = -0.01,
             };
 
             var expectedMessage = string.Format(
@@ -103,7 +99,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
         {
             var parameters = new QuoteParameters
             {
-                BidSize = -11
+                BidSize = -11,
             };
 
             var context = new ValidationContext(parameters);
@@ -115,7 +111,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
         {
             var parameters = new QuoteParameters
             {
-                BidSize = -0.01
+                BidSize = -0.01,
             };
 
             var expectedMessage = string.Format(
@@ -153,7 +149,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
             {
                 SpreadFraction = spreadFraction,
                 AskSize = askSize,
-                BidSize = bidSize
+                BidSize = bidSize,
             };
 
             Assert.AreEqual(spreadFraction, parameters.SpreadFraction, "spread fraction");
@@ -164,7 +160,7 @@ namespace Mbs.UnitTests.Trading.Data.Generators
         [TestMethod]
         public void QuoteParameters_DeserializeFromJson_ValidInput_CorrectValidationResults()
         {
-            var json = @"{
+            const string json = @"{
 spreadFraction: 0.123,
 askSize: 11,
 bidSize: 12

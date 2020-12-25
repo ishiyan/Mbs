@@ -33,8 +33,8 @@ namespace Mbs.Api.ExampleProviders.Trading.Data.Generators.RepetitiveSample
                 Data = new[]
                 {
                     new Ohlcv(DefaultParameterValues.StartDate.Add(DefaultParameterValues.SessionEndTime), Open1, High1, Low1, Close1, Volume1),
-                    new Ohlcv(DefaultParameterValues.StartDate.AddDays(1).Add(DefaultParameterValues.SessionEndTime), Open2, High2, Low2,  Close2, Volume2)
-                }
+                    new Ohlcv(DefaultParameterValues.StartDate.AddDays(1).Add(DefaultParameterValues.SessionEndTime), Open2, High2, Low2,  Close2, Volume2),
+                },
             };
         }
     }

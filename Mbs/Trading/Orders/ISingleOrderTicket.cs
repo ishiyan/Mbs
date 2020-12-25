@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using Mbs.Trading.Orders.Enumerations;
 
 namespace Mbs.Trading.Orders
 {
@@ -8,6 +9,16 @@ namespace Mbs.Trading.Orders
     /// </summary>
     public interface ISingleOrderTicket
     {
+        /// <summary>
+        /// Notifies when a report has been received.
+        /// </summary>
+        event Action<ISingleOrderTicket, SingleOrderReport> OrderReport;
+
+        /// <summary>
+        /// Notifies when an order has been completed. This is called after the order has been moved to the terminal state.
+        /// </summary>
+        event Action<ISingleOrderTicket> OrderCompleted;
+
         /// <summary>
         /// Gets the underlying order for this ticket. If there were any successful order replacements, this will be the most recent version.
         /// </summary>
@@ -31,19 +42,17 @@ namespace Mbs.Trading.Orders
         /// <summary>
         /// Gets the price of the last fill.
         /// </summary>
-        double LastPrice { get; }
+        double LastFillPrice { get; }
 
         /// <summary>
         /// Gets the quantity bought/sold on the last fill.
         /// </summary>
-        double LastQuantity { get; }
+        double LastFillQuantity { get; }
 
-#pragma warning disable 1584, 1581, 1580
         /// <summary>
         /// Gets the quantity open for further execution.
-        /// If the order status is <see cref="OrderStatus.Canceled"/>, <see cref="OrderStatus.Expired"/> or <see cref="OrderStatus.Rejected"/> (in which case the order is no longer active) then this could be 0, otherwise <c>Order.Quantity - CumulativeQuantity</c>.
+        /// If the order status is <c>OrderStatus.Canceled</c>, <c>OrderStatus.Expired</c> or <c>OrderStatus.Rejected</c> (in which case the order is no longer active) then this could be 0, otherwise <c>Order.Quantity - CumulativeQuantity</c>.
         /// </summary>
-#pragma warning restore 1584, 1581, 1580
         double LeavesQuantity { get; }
 
         /// <summary>
@@ -59,23 +68,12 @@ namespace Mbs.Trading.Orders
         /// <summary>
         /// Gets the commission of the last fill.
         /// </summary>
-        double LastCommission { get; }
+        double LastFillCommission { get; }
 
         /// <summary>
         /// Gets the total commission.
         /// </summary>
         double CumulativeCommission { get; }
-
-        /// <summary>
-        /// Replaces a pending order. If the order has been completed (successfully or not), does nothing.
-        /// </summary>
-        /// <param name="replacementOrder">The replacement order.</param>
-        void Replace(SingleOrder replacementOrder);
-
-        /// <summary>
-        /// Cancels this order. If order has been already completed (successfully or not), does nothing.
-        /// </summary>
-        void Cancel();
 
         /// <summary>
         /// Gets the last order report, <c>null</c> if not any.
@@ -88,13 +86,14 @@ namespace Mbs.Trading.Orders
         ReadOnlyCollection<SingleOrderReport> Reports { get; }
 
         /// <summary>
-        /// Notifies when a report has been received.
+        /// Replaces a pending order. If the order has been completed (successfully or not), does nothing.
         /// </summary>
-        event Action<ISingleOrderTicket, SingleOrderReport> OrderReport;
+        /// <param name="replacementOrder">The replacement order.</param>
+        void Replace(SingleOrder replacementOrder);
 
         /// <summary>
-        /// Notifies when an order has been completed. This is called after the order has been moved to the terminal state.
+        /// Cancels this order. If order has been already completed (successfully or not), does nothing.
         /// </summary>
-        event Action<ISingleOrderTicket> OrderCompleted;
+        void Cancel();
     }
 }

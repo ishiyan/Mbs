@@ -19,10 +19,10 @@ namespace Mbs.Api.ExampleProviders.Trading.Data.Generators.RepetitiveSample
                     SessionEndTime = DefaultParameterValues.SessionEndTime,
                     StartDate = DefaultParameterValues.StartDate,
                     TimeGranularity = DefaultParameterValues.TimeGranularity,
-                    BusinessDayCalendar = DefaultParameterValues.BusinessDayCalendar
+                    BusinessDayCalendar = DefaultParameterValues.BusinessDayCalendar,
                 },
                 OffsetSamples = DefaultParameterValues.OffsetSamples,
-                RepetitionsCount = DefaultParameterValues.RepetitionsCount
+                RepetitionsCount = DefaultParameterValues.RepetitionsCount,
             };
         }
     }

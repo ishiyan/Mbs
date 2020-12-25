@@ -13,7 +13,7 @@ namespace Mbs.Api.ExampleProviders
             return new InternalError()
             {
                 StatusCode = StatusCodes.Status500InternalServerError,
-                Message = "An internal server error occurred. Not enough memory available."
+                Message = "An internal server error occurred. Not enough memory available.",
             };
         }
     }

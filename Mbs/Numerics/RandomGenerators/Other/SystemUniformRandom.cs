@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace Mbs.Numerics.Random
+namespace Mbs.Numerics.RandomGenerators.Other
 {
     /// <summary>
     /// The standard random number generator of the .NET framework.
@@ -12,7 +12,8 @@ namespace Mbs.Numerics.Random
         private System.Random random;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SystemUniformRandom"/> class using the current system tick count as a seed value.
+        /// Initializes a new instance of the <see cref="SystemUniformRandom"/> class
+        /// using the current system tick count as a seed value.
         /// </summary>
         public SystemUniformRandom()
             : this(Environment.TickCount)
@@ -20,7 +21,8 @@ namespace Mbs.Numerics.Random
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SystemUniformRandom"/> class using the specified seed value.
+        /// Initializes a new instance of the <see cref="SystemUniformRandom"/> class
+        /// using the specified seed value.
         /// </summary>
         /// <param name="seed">A seed value of the pseudo-random number sequence.</param>
         public SystemUniformRandom(int seed)
@@ -29,28 +31,20 @@ namespace Mbs.Numerics.Random
             Init();
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void Init()
-        {
-            random = new System.Random(seed);
-
-            // Reset helper variables used for generation of random bools.
-            BitBuffer = 0;
-            BitCount = 0;
-        }
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="SystemUniformRandom"/> can be reset,
+        /// so that it produces the same pseudo-random number sequence again.
+        /// </summary>
+        public override bool CanReset => true;
 
         /// <summary>
-        /// Resets the <see cref="SystemUniformRandom"/>, so that it produces the same pseudo-random number sequence again.
+        /// Resets the <see cref="SystemUniformRandom"/>,
+        /// so that it produces the same pseudo-random number sequence again.
         /// </summary>
         public override void Reset()
         {
             Init();
         }
-
-        /// <summary>
-        /// Gets a value indicating whether the <see cref="SystemUniformRandom"/> can be reset, so that it produces the same pseudo-random number sequence again.
-        /// </summary>
-        public override bool CanReset => true;
 
         /// <summary>
         /// A 32-bit random signed integer ∊[0, <see cref="int.MaxValue"/>).
@@ -129,6 +123,16 @@ namespace Mbs.Numerics.Random
         public override uint NextUInt()
         {
             return (uint)(random.NextDouble() * uint.MaxValue);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void Init()
+        {
+            random = new System.Random(seed);
+
+            // Reset helper variables used for generation of random booleans.
+            BitBuffer = 0;
+            BitCount = 0;
         }
     }
 }

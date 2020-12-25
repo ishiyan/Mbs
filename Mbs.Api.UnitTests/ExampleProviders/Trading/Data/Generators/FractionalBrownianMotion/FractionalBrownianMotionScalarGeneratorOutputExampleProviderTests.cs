@@ -1,5 +1,4 @@
 ﻿using Mbs.Api.ExampleProviders.Trading.Data.Generators.FractionalBrownianMotion;
-using Mbs.Trading.Data;
 using Mbs.Trading.Data.Generators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -8,11 +7,10 @@ namespace Mbs.Api.UnitTests.ExampleProviders.Trading.Data.Generators.FractionalB
     [TestClass]
     public class FractionalBrownianMotionScalarGeneratorOutputExampleProviderTests
     {
-        // ReSharper disable InconsistentNaming
         [TestMethod]
         public void FractionalBrownianMotionScalarGeneratorOutputExampleProvider_GetExamples_CorrectValues()
         {
-            var example = (SyntheticDataGeneratorOutput<Scalar>) new FractionalBrownianMotionScalarGeneratorOutputExampleProvider().GetExamples();
+            var example = new FractionalBrownianMotionScalarGeneratorOutputExampleProvider().GetExamples();
 
             Assert.AreEqual(FractionalBrownianMotionScalarGeneratorOutputExampleProvider.Name, example.Name, "name");
             Assert.AreEqual(FractionalBrownianMotionScalarGeneratorOutputExampleProvider.Moniker, example.Moniker, "moniker");

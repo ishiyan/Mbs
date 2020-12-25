@@ -1,22 +1,22 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace Mbs.Numerics.Random
+namespace Mbs.Numerics.RandomGenerators.Ziggurat
 {
     /// <summary>
-    /// This implementation is derived from the file 'rnorrexp.c' which accompanies this article
+    /// This implementation is derived from the file 'rnorrexp.c' which accompanies this article:
     /// <para/>
-    /// <para/>George Marsaglia and Wai Wan Tsang
-    /// <para/>The Ziggurat Method for Generating Random Variables,
-    /// <para/>Journal of Statistical Software, Vol 5, Iss 8, Oct 2000
-    /// <para/>http://www.jstatsoft.org/v05/i08
+    /// <para/>George Marsaglia and Wai Wan Tsang,
+    /// The Ziggurat Method for Generating Random Variables,
+    /// Journal of Statistical Software, Vol 5, Iss 8, Oct 2000,
+    /// http://www.jstatsoft.org/v05/i08.
     /// <para/>
-    /// as well as the comment article
+    /// as well as the comment article:
     /// <para/>
-    /// <para/>Philip H W Leong, Ganglie Zhang, Dong-U Lee, Wayne Luk, and John Villasenor,
-    /// <para/>A Comment on the Implementation of the Ziggurat method,
-    /// <para/>Journal of Statistical Software, Vol 12, Iss 7, Feb 2005
-    /// <para/>http://www.jstatsoft.org/v12/i07
+    /// Philip H W Leong, Ganglie Zhang, Dong-U Lee, Wayne Luk, and John Villasenor,
+    /// A Comment on the Implementation of the Ziggurat method,
+    /// Journal of Statistical Software, Vol 12, Iss 7, Feb 2005,
+    /// http://www.jstatsoft.org/v12/i07.
     /// <para/>
     /// The original code by Marsaglia and Tsang
     /// with modifications of Leong, Zhang et al (use of KISS instead of SHR3 as the internal uniform generator)
@@ -29,7 +29,6 @@ namespace Mbs.Numerics.Random
         private readonly double[] wn = new double[128];
         private readonly double[] fn = new double[128];
         private readonly uint seed;
-        private uint jz;
         private uint iz;
         private uint jsr = 123456789;
         private uint z = 362436069;
@@ -76,12 +75,14 @@ namespace Mbs.Numerics.Random
         }
 
         /// <summary>
-        /// Gets a value indicating whether the <see cref="ZigguratLeongZhangNormalRandom"/> can be reset, so that it produces the same pseudo-random number sequence again.
+        /// Gets a value indicating whether the <see cref="ZigguratLeongZhangNormalRandom"/> can be reset,
+        /// so that it produces the same pseudo-random number sequence again.
         /// </summary>
         public bool CanReset => true;
 
         /// <summary>
-        /// Resets the random number generator, so that it produces the same random number sequence again.
+        /// Resets the <see cref="ZigguratLeongZhangNormalRandom"/>,
+        /// so that it produces the same random number sequence again.
         /// </summary>
         public void Reset()
         {
@@ -153,13 +154,13 @@ namespace Mbs.Numerics.Random
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void Znew()
+        private void NewZ()
         {
             z = 36969 * (z & 65535) + (z >> 16);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void Wnew()
+        private void NewW()
         {
             w = 18000 * (w & 65535) + (w >> 16);
         }
@@ -167,15 +168,15 @@ namespace Mbs.Numerics.Random
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private uint Mwc()
         {
-            Znew();
-            Wnew();
+            NewZ();
+            NewW();
             return (z << 16) + w;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private uint Shr3()
         {
-            jz = jsr;
+            uint jz = jsr;
             jsr ^= jsr << 13;
             jsr ^= jsr >> 17;
             jsr ^= jsr << 5;
@@ -200,7 +201,7 @@ namespace Mbs.Numerics.Random
         {
             hz = (int)Kiss();
             iz = (uint)(hz & 127);
-            return Math.Abs(hz) < kn[iz] ? hz * wn[iz] : Nfix();
+            return Math.Abs(hz) < kn[iz] ? hz * wn[iz] : FixN();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -214,7 +215,7 @@ namespace Mbs.Numerics.Random
         /// </summary>
         /// <returns>The generated variate.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private double Nfix()
+        private double FixN()
         {
             // The start of the right tail.
             const double r = 3.442620;
@@ -237,13 +238,17 @@ namespace Mbs.Numerics.Random
 
                 // iz > 0, handle the wedges of other strips.
                 if (fn[iz] + Uni() * (fn[iz - 1] - fn[iz]) < Math.Exp(-0.5 * x * x))
+                {
                     return x;
+                }
 
                 // Initiate, try to exit the loop.
                 hz = (int)Shr3();
                 iz = (uint)(hz & 127);
                 if (Math.Abs(hz) < kn[iz])
+                {
                     return hz * wn[iz];
+                }
             }
         }
     }

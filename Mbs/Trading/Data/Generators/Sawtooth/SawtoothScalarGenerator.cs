@@ -1,6 +1,7 @@
 ﻿using System;
-using Mbs.Numerics.Random;
+using Mbs.Numerics.RandomGenerators;
 using Mbs.Trading.Time;
+using Mbs.Trading.Time.Conventions;
 
 namespace Mbs.Trading.Data.Generators.Sawtooth
 {
@@ -75,17 +76,17 @@ namespace Mbs.Trading.Data.Generators.Sawtooth
             Initialize();
         }
 
-        private void Initialize()
-        {
-            Name = WaveformName;
-        }
-
         /// <inheritdoc />
         public override Scalar GenerateNext()
         {
             Scalar scalar = base.GenerateNext();
             scalar.Value = CurrentSampleValue;
             return scalar;
+        }
+
+        private void Initialize()
+        {
+            Name = WaveformName;
         }
     }
 }

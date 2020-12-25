@@ -3,7 +3,7 @@ using Mbs.Trading.Brokers.Commissions;
 using Mbs.Trading.Brokers.Slippages;
 using Mbs.Trading.Currencies;
 using Mbs.Trading.Data;
-using Mbs.Trading.Time;
+using Mbs.Trading.Time.Timepieces;
 
 namespace Mbs.Trading.Environments
 {
@@ -28,7 +28,7 @@ namespace Mbs.Trading.Environments
         IBroker Broker { get; }
 
         /// <summary>
-        /// Gets a broker commision interface.
+        /// Gets a broker commission interface.
         /// </summary>
         ICommission Commission { get; }
 

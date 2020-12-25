@@ -74,6 +74,6 @@
         UnitedKingdom,
 
         /// <summary>United States.</summary>
-        UnitedStates
+        UnitedStates,
     }
 }

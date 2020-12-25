@@ -1,5 +1,4 @@
 ﻿using Mbs.Api.ExampleProviders.Trading.Data.Generators.Chirp;
-using Mbs.Trading.Data;
 using Mbs.Trading.Data.Generators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -8,11 +7,10 @@ namespace Mbs.Api.UnitTests.ExampleProviders.Trading.Data.Generators.Chirp
     [TestClass]
     public class ChirpQuoteGeneratorOutputExampleProviderTests
     {
-        // ReSharper disable InconsistentNaming
         [TestMethod]
         public void ChirpQuoteGeneratorOutputExampleProvider_GetExamples_CorrectValues()
         {
-            var example = (SyntheticDataGeneratorOutput<Quote>) new ChirpQuoteGeneratorOutputExampleProvider().GetExamples();
+            var example = new ChirpQuoteGeneratorOutputExampleProvider().GetExamples();
 
             Assert.AreEqual(ChirpQuoteGeneratorOutputExampleProvider.Name, example.Name, "name");
             Assert.AreEqual(ChirpQuoteGeneratorOutputExampleProvider.Moniker, example.Moniker, "moniker");

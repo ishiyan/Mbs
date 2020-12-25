@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Globalization;
-using Mbs.Numerics.Random;
+using Mbs.Numerics.RandomGenerators;
+using Mbs.Numerics.RandomGenerators.FractionalBrownianMotion;
 using Mbs.Trading.Time;
+using Mbs.Trading.Time.Conventions;
 
 namespace Mbs.Trading.Data.Generators.FractionalBrownianMotion
 {
@@ -14,26 +16,6 @@ namespace Mbs.Trading.Data.Generators.FractionalBrownianMotion
     public abstract class FractionalBrownianMotionDataGenerator<T> : WaveformDataGenerator<T>
         where T : TemporalEntity, new()
     {
-        /// <summary>
-        /// Gets the fractional Brownian motion algorithm.
-        /// </summary>
-        public FractionalBrownianMotionAlgorithm Algorithm { get; }
-
-        /// <summary>
-        /// Gets the amplitude of the fractional Brownian motion in sample units, should be positive.
-        /// </summary>
-        public double SampleAmplitude { get; }
-
-        /// <summary>
-        /// Gets the sample value corresponding to the minimum of the fractional Brownian motion, should be positive.
-        /// </summary>
-        public double SampleMinimum { get; }
-
-        /// <summary>
-        /// Gets the value of the Hurst exponent of the fractional Brownian motion; H∈[0, 1].
-        /// </summary>
-        public double HurstExponent { get; }
-
         private readonly double[] samples;
         private readonly INormalRandomGenerator normalRandomGenerator;
         private int index;
@@ -117,27 +99,33 @@ namespace Mbs.Trading.Data.Generators.FractionalBrownianMotion
             Initialize();
         }
 
-        private void Initialize()
+        /// <summary>
+        /// Gets the fractional Brownian motion algorithm.
+        /// </summary>
+        public FractionalBrownianMotionAlgorithm Algorithm { get; }
+
+        /// <summary>
+        /// Gets the amplitude of the fractional Brownian motion in sample units, should be positive.
+        /// </summary>
+        public double SampleAmplitude { get; }
+
+        /// <summary>
+        /// Gets the sample value corresponding to the minimum of the fractional Brownian motion, should be positive.
+        /// </summary>
+        public double SampleMinimum { get; }
+
+        /// <summary>
+        /// Gets the value of the Hurst exponent of the fractional Brownian motion; H∈[0, 1].
+        /// </summary>
+        public double HurstExponent { get; }
+
+        /// <inheritdoc />
+        public override void Reset()
         {
-            Moniker = string.Format(
-                CultureInfo.InvariantCulture,
-                "fBm({0}, l={1}, H={2:0.####}) ∙ {3:0.####} + {4:0.####}",
-                Algorithm,
-                WaveformSamples,
-                HurstExponent,
-                SampleAmplitude,
-                SampleMinimum);
-
-            const double delta = 0.00005;
-            if (HasNoise && NoiseAmplitudeFraction > delta)
-                Moniker = string.Format(CultureInfo.InvariantCulture, "{0} + noise(ρn={1:0.####})", Moniker, NoiseAmplitudeFraction);
-
-            if (OffsetSamples > 0)
-                Moniker = string.Format(CultureInfo.InvariantCulture, "{0}, off={1}", Moniker, OffsetSamples);
-
-            if (!IsRepetitionsInfinite)
-                Moniker = string.Format(CultureInfo.InvariantCulture, "{0}, rep={1}", Moniker, RepetitionsCount);
-
+            base.Reset();
+            index = 0;
+            isForward = true;
+            normalRandomGenerator.Reset();
             GenerateFbm();
         }
 
@@ -170,16 +158,6 @@ namespace Mbs.Trading.Data.Generators.FractionalBrownianMotion
             return samples[index];
         }
 
-        /// <inheritdoc />
-        public override void Reset()
-        {
-            base.Reset();
-            index = 0;
-            isForward = true;
-            normalRandomGenerator.Reset();
-            GenerateFbm();
-        }
-
         private void GenerateFbm()
         {
             FractionalBrownianMotionGenerator.Generate(Algorithm, normalRandomGenerator, WaveformSamples, samples, SampleAmplitude, HurstExponent, true);
@@ -189,15 +167,51 @@ namespace Mbs.Trading.Data.Generators.FractionalBrownianMotion
             foreach (double sample in samples)
             {
                 if (min > sample)
+                {
                     min = sample;
+                }
 
                 if (max < sample)
+                {
                     max = sample;
+                }
             }
 
             double delta = max - min;
             for (int i = 0; i < WaveformSamples; ++i)
+            {
                 samples[i] = SampleMinimum + SampleAmplitude * (samples[i] - min) / delta;
+            }
+        }
+
+        private void Initialize()
+        {
+            Moniker = string.Format(
+                CultureInfo.InvariantCulture,
+                "fBm({0}, l={1}, H={2:0.####}) ∙ {3:0.####} + {4:0.####}",
+                Algorithm,
+                WaveformSamples,
+                HurstExponent,
+                SampleAmplitude,
+                SampleMinimum);
+
+            const double delta = 0.00005;
+            if (HasNoise && NoiseAmplitudeFraction > delta)
+            {
+                Moniker = string.Format(CultureInfo.InvariantCulture, "{0} + noise(ρn={1:0.####})", Moniker, NoiseAmplitudeFraction);
+            }
+
+            if (OffsetSamples > 0)
+            {
+                Moniker = string.Format(CultureInfo.InvariantCulture, "{0}, off={1}", Moniker, OffsetSamples);
+            }
+
+            if (!IsRepetitionsInfinite)
+            {
+                Moniker = string.Format(CultureInfo.InvariantCulture, "{0}, rep={1}", Moniker, RepetitionsCount);
+            }
+
+            GenerateFbm();
         }
     }
 }

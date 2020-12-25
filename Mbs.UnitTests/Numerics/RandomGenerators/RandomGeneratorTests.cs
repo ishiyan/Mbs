@@ -1,5 +1,6 @@
 ﻿using System.Linq;
-using Mbs.Numerics.Random;
+using Mbs.Numerics.RandomGenerators;
+using Mbs.Numerics.RandomGenerators.Other;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static System.FormattableString;
 
@@ -11,8 +12,9 @@ namespace Mbs.UnitTests.Numerics.RandomGenerators
         private const int Seed = 12345;
         private const int Count = 5000;
 
+#pragma warning disable S2699 // Tests should include assertions
         [TestMethod]
-        public void RandomGenerator_NextDouble_GeneratedMany_MeanHasCorrectValue_()
+        public void RandomGenerator_NextDouble_GeneratedMany_MeanHasCorrectValue()
         {
             RandomGenerator gen = new SystemUniformRandom(Seed);
             double expected = 0.5;
@@ -24,7 +26,11 @@ namespace Mbs.UnitTests.Numerics.RandomGenerators
             }
 
             actual /= Count;
-            Doubles.AreEqual(expected / actual, 1, 1e-3, Invariant($"Mean value 1: actual={actual}, expected={expected}"));
+            Doubles.AreEqual(
+                1,
+                expected / actual,
+                1e-3,
+                Invariant($"Mean value 1: actual={actual}, expected={expected}"));
 
             expected = 4;
             actual = 0;
@@ -34,7 +40,11 @@ namespace Mbs.UnitTests.Numerics.RandomGenerators
             }
 
             actual /= Count;
-            Doubles.AreEqual(expected / actual, 1, 1e-2, Invariant($"Mean value 2: actual={actual}, expected={expected}"));
+            Doubles.AreEqual(
+                1,
+                expected / actual,
+                1e-2,
+                Invariant($"Mean value 2: actual={actual}, expected={expected}"));
 
             expected = 6;
             actual = 0;
@@ -44,11 +54,15 @@ namespace Mbs.UnitTests.Numerics.RandomGenerators
             }
 
             actual /= Count;
-            Doubles.AreEqual(expected / actual, 1, 1e-3, Invariant($"Mean value 3: actual={actual}, expected={expected}"));
+            Doubles.AreEqual(
+                1,
+                expected / actual,
+                1e-3,
+                Invariant($"Mean value 3: actual={actual}, expected={expected}"));
         }
 
         [TestMethod]
-        public void RandomGenerator_NextInt_GeneratedMany_MeanHasCorrectValue_()
+        public void RandomGenerator_NextInt_GeneratedMany_MeanHasCorrectValue()
         {
             RandomGenerator gen = new SystemUniformRandom(Seed);
 
@@ -60,7 +74,11 @@ namespace Mbs.UnitTests.Numerics.RandomGenerators
             }
 
             actual /= Count;
-            Doubles.AreEqual(expected / actual, 1, 1e-3, Invariant($"Mean value 1: actual={actual}, expected={expected}"));
+            Doubles.AreEqual(
+                1,
+                expected / actual,
+                1e-3,
+                Invariant($"Mean value 1: actual={actual}, expected={expected}"));
 
             expected = 400d;
             actual = 0d;
@@ -70,7 +88,11 @@ namespace Mbs.UnitTests.Numerics.RandomGenerators
             }
 
             actual /= Count;
-            Doubles.AreEqual(expected / actual, 1, 1e-2, Invariant($"Mean value 2: actual={actual}, expected={expected}"));
+            Doubles.AreEqual(
+                1,
+                expected / actual,
+                1e-2,
+                Invariant($"Mean value 2: actual={actual}, expected={expected}"));
 
             expected = 600d;
             actual = 0d;
@@ -80,30 +102,38 @@ namespace Mbs.UnitTests.Numerics.RandomGenerators
             }
 
             actual /= Count;
-            Doubles.AreEqual(expected / actual, 1, 1e-2, Invariant($"Mean value 3: actual={actual}, expected={expected}"));
+            Doubles.AreEqual(
+                1,
+                expected / actual,
+                1e-2,
+                Invariant($"Mean value 3: actual={actual}, expected={expected}"));
         }
 
         [TestMethod]
-        public void RandomGenerator_NextBoolean_GeneratedMany_MeanHasCorrectValue_()
+        public void RandomGenerator_NextBoolean_GeneratedMany_MeanHasCorrectValue()
         {
             RandomGenerator gen = new SystemUniformRandom(Seed);
 
-            double expected = Count / 2d;
+            const double expected = Count / 2d;
             double actual = 0;
             for (int i = 0; i < Count; ++i)
             {
                 actual += gen.NextBoolean() ? 1 : 0;
             }
 
-            Doubles.AreEqual(expected / actual, 1, 1e-1, Invariant($"Mean value: actual={actual}, expected={expected}"));
+            Doubles.AreEqual(
+                1,
+                expected / actual,
+                1e-1,
+                Invariant($"Mean value: actual={actual}, expected={expected}"));
         }
 
         [TestMethod]
-        public void RandomGenerator_NextBytes_GeneratedMany_MeanHasCorrectValue_()
+        public void RandomGenerator_NextBytes_GeneratedMany_MeanHasCorrectValue()
         {
             RandomGenerator gen = new SystemUniformRandom(Seed);
 
-            double expected = 128;
+            const double expected = 128;
             double actual = 0;
             var array = new byte[32];
 
@@ -114,8 +144,13 @@ namespace Mbs.UnitTests.Numerics.RandomGenerators
             }
 
             actual /= Count * 32;
-            Doubles.AreEqual(expected / actual, 1, 1e-2, Invariant($"Mean value: actual={actual}, expected={expected}"));
+            Doubles.AreEqual(
+                1,
+                expected / actual,
+                1e-2,
+                Invariant($"Mean value: actual={actual}, expected={expected}"));
         }
+#pragma warning restore S2699 // Tests should include assertions
 
         [TestMethod]
         public void RandomGenerator_Seed_SameSeed_SameValue()

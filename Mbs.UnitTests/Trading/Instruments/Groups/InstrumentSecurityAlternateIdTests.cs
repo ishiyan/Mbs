@@ -1,28 +1,19 @@
 ﻿using System;
 using System.Reflection;
 using Mbs.Trading.Instruments;
+using Mbs.Trading.Instruments.Groups;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Mbs.UnitTests.Trading.Instruments
+namespace Mbs.UnitTests.Trading.Instruments.Groups
 {
     [TestClass]
     public class InstrumentSecurityAlternateIdTests
     {
         private static readonly ConstructorInfo Ctor = typeof(InstrumentSecurityAlternateId).GetConstructor(
-            BindingFlags.Instance | BindingFlags.NonPublic, null,
-            new[] { typeof(string), typeof(InstrumentSecurityIdSource) }, null);
-
-        private static InstrumentSecurityAlternateId CreateInstance(string value, InstrumentSecurityIdSource source)
-        {
-            try
-            {
-                return Ctor.Invoke(new object[] { value, source }) as InstrumentSecurityAlternateId;
-            }
-            catch (TargetInvocationException e)
-            {
-                throw e.InnerException;
-            }
-        }
+            BindingFlags.Instance | BindingFlags.NonPublic,
+            null,
+            new[] { typeof(string), typeof(InstrumentSecurityIdSource) },
+            null);
 
         [TestMethod]
         public void InstrumentSecurityAlternateId_Constructor_WhenConstructed_GettersReturnCorrectValues()
@@ -47,6 +38,18 @@ namespace Mbs.UnitTests.Trading.Instruments
         public void InstrumentSecurityAlternateId_Constructor_WhenValueEmpty_Exception()
         {
             CreateInstance(string.Empty, InstrumentSecurityIdSource.ExchangeSymbol);
+        }
+
+        private static InstrumentSecurityAlternateId CreateInstance(string value, InstrumentSecurityIdSource source)
+        {
+            try
+            {
+                return Ctor.Invoke(new object[] { value, source }) as InstrumentSecurityAlternateId;
+            }
+            catch (TargetInvocationException e)
+            {
+                throw e.InnerException ?? e;
+            }
         }
     }
 }

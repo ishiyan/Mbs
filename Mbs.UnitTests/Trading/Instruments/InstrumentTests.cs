@@ -1,7 +1,7 @@
 ﻿using Mbs.Trading.Currencies;
 using Mbs.Trading.Instruments;
 using Mbs.Trading.Markets;
-using Mbs.Trading.Time;
+using Mbs.Trading.Time.Conventions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Mbs.UnitTests.Trading.Instruments

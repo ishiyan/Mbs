@@ -14,11 +14,10 @@ using Mbs.Api.ExampleProviders.Trading.Data.Generators.Square;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
-//using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Swashbuckle.AspNetCore.SwaggerUI;
-using Microsoft.OpenApi.Models;
 
 namespace Mbs.Api.Extensions.Swagger
 {
@@ -48,13 +47,15 @@ namespace Mbs.Api.Extensions.Swagger
                 options.ExampleFilters();
 
                 options.OrderActionsBy((apiDesc) => $"{apiDesc.RelativePath}_{apiDesc.HttpMethod}");
-                /* options.TagActionsBy(p => new List<string> { p.GroupName }); */
+                /* options.TagActionsBy(p => new List<string> { p.GroupName }) */
 
                 var basePath = AppContext.BaseDirectory;
                 options.IncludeXmlComments(CombinePath(basePath, "Mbs"));
                 options.IncludeXmlComments(CombinePath(basePath, "Mbs.Api"));
                 foreach (var file in additionalXmls)
+                {
                     options.IncludeXmlComments(CombinePath(basePath, file));
+                }
             });
 
             services.AddSwaggerExamplesFromAssemblyOf<MultiSinusoidalOhlcvGeneratorParametersExampleProvider>();
@@ -119,11 +120,13 @@ namespace Mbs.Api.Extensions.Swagger
                     Title = "mbs api",
                     Version = $"v{apiVersion}",
                     Description = "an api to access the mbs functionality",
+#pragma warning disable S1075 // URIs should not be hardcoded
                     TermsOfService = new Uri("https://choosealicense.com/no-permission/"),
+#pragma warning restore S1075
                     License = new OpenApiLicense
                     {
-                        Name = "no license is granted, only the copyright holder can use the api"
-                    }
+                        Name = "no license is granted, only the copyright holder can use the api",
+                    },
                 });
             }
         }
@@ -133,7 +136,9 @@ namespace Mbs.Api.Extensions.Swagger
             options.DocInclusionPredicate((docName, apiDesc) =>
             {
                 if (!apiDesc.TryGetMethodInfo(out MethodInfo methodInfo))
+                {
                     return false;
+                }
 
                 var declaringType = methodInfo.DeclaringType;
                 var versions = declaringType == null ?
@@ -152,7 +157,7 @@ namespace Mbs.Api.Extensions.Swagger
             var apiVersion = webApiAssembly.DefinedTypes
                 .Where(x => x.IsSubclassOf(typeof(ControllerBase)) && x.GetCustomAttributes<ApiVersionAttribute>().Any())
                 .Select(y => y.GetCustomAttribute<ApiVersionAttribute>())
-                .SelectMany(v => v.Versions)
+                .SelectMany(v => v?.Versions)
                 .Distinct()
                 .OrderBy(x => x);
 
@@ -163,7 +168,10 @@ namespace Mbs.Api.Extensions.Swagger
         {
             var filePath = Path.Combine(basePath, xmlFile + ".xml");
             if (!File.Exists(filePath))
+            {
                 throw new FileNotFoundException("Swagger XML documentation file is not found.", filePath);
+            }
+
             return filePath;
         }
     }

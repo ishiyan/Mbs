@@ -1,5 +1,6 @@
 ﻿using System;
 using Mbs.Trading.Currencies;
+using Mbs.Trading.Orders.Enumerations;
 
 namespace Mbs.Trading.Orders
 {
@@ -8,81 +9,6 @@ namespace Mbs.Trading.Orders
     /// </summary>
     public class SingleOrderReport
     {
-        /// <summary>
-        /// Gets the date and time when the business represented by this report occurred.
-        /// </summary>
-        public DateTime TransactionTime { get; }
-
-        /// <summary>
-        /// Gets the current state of an order as understood by the broker.
-        /// </summary>
-        public OrderStatus Status { get; }
-
-        /// <summary>
-        /// Gets an action of this report.
-        /// </summary>
-        public OrderReportType ReportType { get; }
-
-        /// <summary>
-        /// Gets the unique identifier of a report as assigned by the sell-side (exchange, ECN, etc.).
-        /// </summary>
-        public string ReportId { get; }
-
-        /// <summary>
-        /// Gets the text that accompany this report.
-        /// </summary>
-        public string Text { get; }
-
-        /// <summary>
-        /// Gets the replace source order. Filled when <see cref="ReportType"/> is <see cref="OrderReportType.Replaced"/> or <see cref="OrderReportType.ReplaceRejected"/>.
-        /// </summary>
-        public SingleOrder ReplaceSourceOrder { get; }
-
-        /// <summary>
-        /// Gets the replace target order. <see cref="ReportType"/> is <see cref="OrderReportType.Replaced"/> or <see cref="OrderReportType.ReplaceRejected"/>.
-        /// </summary>
-        public SingleOrder ReplaceTargetOrder { get; }
-
-        /// <summary>
-        /// Gets the price of this fill.
-        /// </summary>
-        public double LastPrice { get; }
-
-        /// <summary>
-        /// Gets the quantity bought/sold on the last fill.
-        /// </summary>
-        public double LastQuantity { get; }
-
-        /// <summary>
-        /// Gets the quantity open for further execution.
-        /// </summary>
-        public double LeavesQuantity { get; }
-
-        /// <summary>
-        /// Gets the total quantity filled.
-        /// </summary>
-        public double CumulativeQuantity { get; }
-
-        /// <summary>
-        /// Gets the average price.
-        /// </summary>
-        public double AveragePrice { get; }
-
-        /// <summary>
-        /// Gets the commission of this fill.
-        /// </summary>
-        public double LastCommission { get; }
-
-        /// <summary>
-        /// Gets the total commission.
-        /// </summary>
-        public double CumulativeCommission { get; }
-
-        /// <summary>
-        /// Gets the commission currency.
-        /// </summary>
-        public CurrencyCode CommissionCurrency { get; } = CurrencyCode.Xxx;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="SingleOrderReport"/> class.
         /// </summary>
@@ -223,5 +149,80 @@ namespace Mbs.Trading.Orders
             ReplaceSourceOrder = replaceSourceOrder;
             ReplaceTargetOrder = replaceTargetOrder;
         }
+
+        /// <summary>
+        /// Gets the date and time when the business represented by this report occurred.
+        /// </summary>
+        public DateTime TransactionTime { get; }
+
+        /// <summary>
+        /// Gets the current state of an order as understood by the broker.
+        /// </summary>
+        public OrderStatus Status { get; }
+
+        /// <summary>
+        /// Gets an action of this report.
+        /// </summary>
+        public OrderReportType ReportType { get; }
+
+        /// <summary>
+        /// Gets the unique identifier of a report as assigned by the sell-side (exchange, ECN, etc.).
+        /// </summary>
+        public string ReportId { get; }
+
+        /// <summary>
+        /// Gets the text that accompany this report.
+        /// </summary>
+        public string Text { get; }
+
+        /// <summary>
+        /// Gets the replace source order. Filled when <see cref="ReportType"/> is <see cref="OrderReportType.Replaced"/> or <see cref="OrderReportType.ReplaceRejected"/>.
+        /// </summary>
+        public SingleOrder ReplaceSourceOrder { get; }
+
+        /// <summary>
+        /// Gets the replace target order. <see cref="ReportType"/> is <see cref="OrderReportType.Replaced"/> or <see cref="OrderReportType.ReplaceRejected"/>.
+        /// </summary>
+        public SingleOrder ReplaceTargetOrder { get; }
+
+        /// <summary>
+        /// Gets the price of this fill.
+        /// </summary>
+        public double LastPrice { get; }
+
+        /// <summary>
+        /// Gets the quantity bought/sold on the last fill.
+        /// </summary>
+        public double LastQuantity { get; }
+
+        /// <summary>
+        /// Gets the quantity open for further execution.
+        /// </summary>
+        public double LeavesQuantity { get; }
+
+        /// <summary>
+        /// Gets the total quantity filled.
+        /// </summary>
+        public double CumulativeQuantity { get; }
+
+        /// <summary>
+        /// Gets the average price.
+        /// </summary>
+        public double AveragePrice { get; }
+
+        /// <summary>
+        /// Gets the commission of this fill.
+        /// </summary>
+        public double LastCommission { get; }
+
+        /// <summary>
+        /// Gets the total commission.
+        /// </summary>
+        public double CumulativeCommission { get; }
+
+        /// <summary>
+        /// Gets the commission currency.
+        /// </summary>
+        public CurrencyCode CommissionCurrency { get; } = CurrencyCode.Xxx;
     }
 }

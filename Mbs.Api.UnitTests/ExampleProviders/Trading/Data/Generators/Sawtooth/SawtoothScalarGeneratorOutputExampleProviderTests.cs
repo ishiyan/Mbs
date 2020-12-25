@@ -1,5 +1,4 @@
 ﻿using Mbs.Api.ExampleProviders.Trading.Data.Generators.Sawtooth;
-using Mbs.Trading.Data;
 using Mbs.Trading.Data.Generators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -8,11 +7,10 @@ namespace Mbs.Api.UnitTests.ExampleProviders.Trading.Data.Generators.Sawtooth
     [TestClass]
     public class SawtoothScalarGeneratorOutputExampleProviderTests
     {
-        // ReSharper disable InconsistentNaming
         [TestMethod]
         public void SawtoothScalarGeneratorOutputExampleProvider_GetExamples_CorrectValues()
         {
-            var example = (SyntheticDataGeneratorOutput<Scalar>) new SawtoothScalarGeneratorOutputExampleProvider().GetExamples();
+            var example = new SawtoothScalarGeneratorOutputExampleProvider().GetExamples();
 
             Assert.AreEqual(SawtoothScalarGeneratorOutputExampleProvider.Name, example.Name, "name");
             Assert.AreEqual(SawtoothScalarGeneratorOutputExampleProvider.Moniker, example.Moniker, "moniker");

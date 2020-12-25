@@ -7,8 +7,6 @@ namespace Mbs.UnitTests.Trading.Data.Generators.Sawtooth
     [TestClass]
     public class SawtoothDataGeneratorExtensionsTests
     {
-        // ReSharper disable InconsistentNaming
-
         [TestMethod]
         public async Task SawtoothDataGeneratorExtensions_GenerateAsync_Ohlcv_CorrectLength()
         {

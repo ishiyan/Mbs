@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
+// ReSharper disable once CheckNamespace
 namespace Mbs.Numerics
 {
     /// <summary>
@@ -9,8 +10,32 @@ namespace Mbs.Numerics
     public static partial class SpecialFunctions
     {
         /// <summary>
-        /// The dilogarathm function, Li₂(x), also called Spence's function.
-        /// The function gets is name from the similiarity of this series to the expansion of ln(1-x), the
+        /// Bernoulli numbers; these are coefficients in the log expansion for the di-log log series.
+        /// </summary>
+        private static readonly double[] Dc =
+        {
+            1.0,
+            1.0 / 6.0,
+            -1.0 / 30.0,
+            1.0 / 42.0,
+            -1.0 / 30.0,
+            5.0 / 66.0,
+            -691.0 / 2730.0,
+            7.0 / 6.0,
+            -3617.0 / 510.0,
+            43867.0 / 798.0,
+            -174611.0 / 330.0,
+            854513.0 / 138.0,
+            -236364091.0 / 2730.0,
+            -236364091.0 / 2730.0,
+            8553103.0 / 6.0,
+            -23749461029.0 / 870.0,
+            8615841276005.0 / 14322.0,
+        };
+
+        /// <summary>
+        /// The di-logarithm function, Li₂(x), also called Spence's function.
+        /// The function gets is name from the similarity of this series to the expansion of ln(1-x), the
         /// difference being that the integer in the denominator is raised to the second power.
         /// <para />
         /// Li₂(x) is real for -∞; &lt; x ≤ 1; for values outside this range, use the complex version.
@@ -21,7 +46,10 @@ namespace Mbs.Numerics
         public static double DiLog(double x)
         {
             if (x > 1d)
+            {
                 return double.NaN;
+            }
+
             if (x > 0.7)
             {
                 // Use series near 1.
@@ -46,7 +74,7 @@ namespace Mbs.Numerics
         }
 
         /// <summary>
-        /// Computes the complex dilogarithm function, also called Spence's function.
+        /// Computes the complex di-logarithm function, also called Spence's function.
         /// </summary>
         /// <param name="z">The complex argument.</param>
         /// <returns>The value Li<sub>2</sub>(z).</returns>
@@ -63,7 +91,7 @@ namespace Mbs.Numerics
             }
             else
             {
-                // Inside the unit disk...
+                // Inside the unit disk.
                 if (a0 < 0.75)
                 {
                     // Close to 0, use the expansion about zero.
@@ -98,7 +126,10 @@ namespace Mbs.Numerics
             }
 
             if (z.Real > 1d && Math.Sign(f.Imag) != Math.Sign(z.Imag))
+            {
                 f = f.Conjugate;
+            }
+
             return f;
         }
 
@@ -106,7 +137,7 @@ namespace Mbs.Numerics
         private static double DiLogSeries0(double x)
         {
             // Series definition of DiLog Li₂(x) = ∑˚˚ᵢ₌₁(xⁱ/i²).
-            // This converges relably to full accuracy within a few tens of iterations below x~1/2; by x~1 it no longer converges.
+            // This converges reliably to full accuracy within a few tens of iterations below x~1/2; by x~1 it no longer converges.
             double xx = x;
             double f = xx;
             for (int k = 2; k < IterationLimit; ++k)
@@ -115,7 +146,9 @@ namespace Mbs.Numerics
                 xx *= x;
                 f += xx / (k * k);
                 if (Math.Abs(f - fOld) < double.Epsilon)
+                {
                     return f;
+                }
             }
 
             return double.NaN;
@@ -132,7 +165,9 @@ namespace Mbs.Numerics
                 zz *= z;
                 f += zz / (k * k);
                 if (f == fOld)
+                {
                     return f;
+                }
             }
 
             return Complex.NaN;
@@ -143,7 +178,10 @@ namespace Mbs.Numerics
         {
             double f = Constants.Pi * Constants.Pi / 6d;
             if (Math.Abs(e) < double.Epsilon)
+            {
                 return f;
+            }
+
             double l = Math.Log(e);
             double ek = 1d;
             for (int k = 1; k < IterationLimit; ++k)
@@ -153,7 +191,9 @@ namespace Mbs.Numerics
                 double df = ek * (l - 1d / k) / k;
                 f += df;
                 if (Math.Abs(f - fOld) < double.Epsilon)
+                {
                     return f;
+                }
             }
 
             return double.NaN;
@@ -164,7 +204,10 @@ namespace Mbs.Numerics
         {
             Complex f = Constants.Pi * Constants.Pi / 6d;
             if (e == 0d)
+            {
                 return f;
+            }
+
             Complex l = Complex.Log(e);
             Complex ek = 1d;
             for (int k = 1; k < IterationLimit; ++k)
@@ -174,35 +217,13 @@ namespace Mbs.Numerics
                 Complex df = ek * (l - 1d / k) / k;
                 f += df;
                 if (f == fOld)
+                {
                     return f;
+                }
             }
 
             return Complex.NaN;
         }
-
-        /// <summary>
-        /// Bernoulli numbers; these are coefficients in the log expansion for the dilog log series.
-        /// </summary>
-        private static readonly double[] Dc =
-        {
-            1.0,
-            1.0 / 6.0,
-            -1.0 / 30.0,
-            1.0 / 42.0,
-            -1.0 / 30.0,
-            5.0 / 66.0,
-            -691.0 / 2730.0,
-            7.0 / 6.0,
-            -3617.0 / 510.0,
-            43867.0 / 798.0,
-            -174611.0 / 330.0,
-            854513.0 / 138.0,
-            -236364091.0 / 2730.0,
-            -236364091.0 / 2730.0,
-            8553103.0 / 6.0,
-            -23749461029.0 / 870.0,
-            8615841276005.0 / 14322.0
-        };
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static Complex DiLogLogSeries(Complex z)
@@ -217,7 +238,9 @@ namespace Mbs.Numerics
                 p *= ln2 / (2 * k + 1) / (2 * k);
                 f += (-Dc[k] / (2 * k)) * p;
                 if (f == fOld)
+                {
                     return f;
+                }
             }
 
             return Complex.NaN;

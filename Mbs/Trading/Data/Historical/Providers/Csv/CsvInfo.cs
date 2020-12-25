@@ -1,6 +1,7 @@
 ﻿using System;
 using Mbs.Trading.Time;
 
+// ReSharper disable once CheckNamespace
 namespace Mbs.Trading.Data.Historical
 {
     /// <summary>
@@ -78,62 +79,7 @@ namespace Mbs.Trading.Data.Historical
         /// </summary>
         public const string DefaultSeparatorCharacter = ";";
 
-        /// <summary>
-        /// Gets the time granularity of the CSV data.
-        /// </summary>
-        public TimeGranularity TimeGranularity { get; }
-
-        /// <summary>
-        /// Gets the date and time format of all CSV data rows.
-        /// </summary>
-        public string DateTimeFormat { get; }
-
-        /// <summary>
-        /// Gets the CSV data type.
-        /// </summary>
-        public CsvDataType DataType { get; }
-
-        /// <summary>
-        /// Gets the CSV column separator character string.
-        /// </summary>
-        public string SeparatorCharacter { get; }
-
-        /// <summary>
-        /// Gets the CSV row comment character. Should be in the very first position in a row.
-        /// </summary>
-        public char CommentCharacter { get; }
-
-        /// <summary>
-        /// Gets a value indicating whether CSV data rows may be commented out.
-        /// </summary>
-        public bool HasCommentCharacter { get; }
-
-        /// <summary>
-        /// Gets a value indicating whether CSV data rows have volume part.
-        /// </summary>
-        public bool HasVolume { get; }
-
-        /// <summary>
-        /// Gets a value indicating whether CSV data rows have highest and lowest price parts.
-        /// </summary>
-        public bool HasHighLow { get; }
-
-        /// <summary>
-        /// Gets if data are adjusted. Null if unknown.
-        /// </summary>
-        public bool? IsAdjustedData { get; }
-
         private readonly string keySuffix;
-
-        /// <summary>
-        /// Gets the path to the CSV file.
-        /// </summary>
-        public string FilePath { get; internal set; }
-
-        /// <summary>
-        /// Gets the key.
-        /// </summary>
-        internal string Key => string.Concat(FilePath.ToUpperInvariant(), keySuffix);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CsvInfo"/> class.
@@ -288,22 +234,67 @@ namespace Mbs.Trading.Data.Historical
             keySuffix = GenerateKeySuffix();
         }
 
-        private string GenerateKeySuffix()
-        {
-            const string underscore = "_";
-            return string.Concat(
-                underscore,
-                DataType.ToString().ToUpperInvariant(),
-                underscore,
-                TimeGranularity.ToString().ToUpperInvariant(),
-                underscore,
-                IsAdjustedData.HasValue ? (IsAdjustedData.Value ? "adj" : "nadj") : string.Empty);
-        }
+        /// <summary>
+        /// Gets the time granularity of the CSV data.
+        /// </summary>
+        public TimeGranularity TimeGranularity { get; }
+
+        /// <summary>
+        /// Gets the date and time format of all CSV data rows.
+        /// </summary>
+        public string DateTimeFormat { get; }
+
+        /// <summary>
+        /// Gets the CSV data type.
+        /// </summary>
+        public CsvDataType DataType { get; }
+
+        /// <summary>
+        /// Gets the CSV column separator character string.
+        /// </summary>
+        public string SeparatorCharacter { get; }
+
+        /// <summary>
+        /// Gets the CSV row comment character. Should be in the very first position in a row.
+        /// </summary>
+        public char CommentCharacter { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether CSV data rows may be commented out.
+        /// </summary>
+        public bool HasCommentCharacter { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether CSV data rows have volume part.
+        /// </summary>
+        public bool HasVolume { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether CSV data rows have highest and lowest price parts.
+        /// </summary>
+        public bool HasHighLow { get; }
+
+        /// <summary>
+        /// Gets if data are adjusted. Null if unknown.
+        /// </summary>
+        public bool? IsAdjustedData { get; }
+
+        /// <summary>
+        /// Gets the path to the CSV file.
+        /// </summary>
+        public string FilePath { get; internal set; }
+
+        /// <summary>
+        /// Gets the key.
+        /// </summary>
+        internal string Key => string.Concat(FilePath.ToUpperInvariant(), keySuffix);
 
         private static TimeGranularity ParseTimeGranularity(string timeGranularity)
         {
             if (Enum.TryParse(timeGranularity, true, out TimeGranularity converted))
+            {
                 return converted;
+            }
 
             throw new ArgumentException($"invalid time granularity \"{timeGranularity}\"", nameof(timeGranularity));
         }
@@ -341,12 +332,35 @@ namespace Mbs.Trading.Data.Historical
             {
                 string value = isAdjusted.ToUpperInvariant();
                 if (value.Equals("true", StringComparison.OrdinalIgnoreCase))
+                {
                     return true;
+                }
+
                 if (value.Equals("false", StringComparison.OrdinalIgnoreCase))
+                {
                     return false;
+                }
             }
 
             return null;
+        }
+
+        private string GenerateKeySuffix()
+        {
+            const string underscore = "_";
+            var adjustment = string.Empty;
+            if (IsAdjustedData.HasValue)
+            {
+                adjustment = IsAdjustedData.Value ? "adj" : "nadj";
+            }
+
+            return string.Concat(
+                underscore,
+                DataType.ToString().ToUpperInvariant(),
+                underscore,
+                TimeGranularity.ToString().ToUpperInvariant(),
+                underscore,
+                adjustment);
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Linq;
 using Mbs.Trading.Time;
 
+// ReSharper disable once CheckNamespace
 namespace Mbs.Trading.Data.Historical
 {
     /// <summary>
@@ -109,11 +110,13 @@ namespace Mbs.Trading.Data.Historical
                 {
                     TimeGranularity timeGranularity = csv.TimeGranularity;
                     if (timeGranularity == desiredGranularity)
-                        return csv;
-                    if (timeGranularity < desiredGranularity)
                     {
-                        if (AggregatingConverter.CanAggregate(timeGranularity, desiredGranularity))
-                            return csv;
+                        return csv;
+                    }
+
+                    if (timeGranularity < desiredGranularity && AggregatingConverter.CanAggregate(timeGranularity, desiredGranularity))
+                    {
+                        return csv;
                     }
                 }
             }
@@ -134,11 +137,13 @@ namespace Mbs.Trading.Data.Historical
                 {
                     TimeGranularity timeGranularity = csv.TimeGranularity;
                     if (timeGranularity == desiredGranularity)
-                        return csv;
-                    if (timeGranularity < desiredGranularity)
                     {
-                        if (AggregatingConverter.CanAggregate(timeGranularity, desiredGranularity))
-                            return csv;
+                        return csv;
+                    }
+
+                    if (timeGranularity < desiredGranularity && AggregatingConverter.CanAggregate(timeGranularity, desiredGranularity))
+                    {
+                        return csv;
                     }
                 }
             }
@@ -159,11 +164,13 @@ namespace Mbs.Trading.Data.Historical
                 {
                     TimeGranularity timeGranularity = csv.TimeGranularity;
                     if (timeGranularity == desiredGranularity)
-                        return csv;
-                    if (timeGranularity < desiredGranularity)
                     {
-                        if (AggregatingConverter.CanAggregate(timeGranularity, desiredGranularity))
-                            return csv;
+                        return csv;
+                    }
+
+                    if (timeGranularity < desiredGranularity && AggregatingConverter.CanAggregate(timeGranularity, desiredGranularity))
+                    {
+                        return csv;
                     }
                 }
             }

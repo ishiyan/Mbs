@@ -1,6 +1,7 @@
 ﻿using System;
-using Mbs.Numerics.Random;
+using Mbs.Numerics.RandomGenerators;
 using Mbs.Trading.Time;
+using Mbs.Trading.Time.Conventions;
 
 namespace Mbs.Trading.Data.Generators
 {
@@ -11,48 +12,8 @@ namespace Mbs.Trading.Data.Generators
     public abstract class WaveformDataGenerator<T> : TemporalDataGenerator<T>
         where T : TemporalEntity, new()
     {
-        /// <summary>
-        /// Gets the amplitude of the noise as a fraction of the signal.
-        /// </summary>
-        public double NoiseAmplitudeFraction { get; }
-
-        /// <summary>
-        /// Gets a value indicating whether if generator mixes the noise with the signal.
-        /// </summary>
-        public bool HasNoise { get; }
-
-        /// <summary>
-        /// Gets the number of samples before the very first waveform. The value of zero means the waveform starts immediately.
-        /// </summary>
-        public int OffsetSamples { get; }
-
-        /// <summary>
-        /// Gets the number of repetitions of the waveform. The value of zero means infinite.
-        /// </summary>
-        public int RepetitionsCount { get; }
-
-        /// <summary>
-        /// Gets a value indicating whether the number of repetitions of the waveform is infinite.
-        /// </summary>
-        public bool IsRepetitionsInfinite { get; }
-
         private readonly IRandomGenerator noiseRandomGenerator;
         private int currentRepetition;
-
-        /// <summary>
-        /// Gets the number of samples in the waveform.
-        /// </summary>
-        protected int WaveformSamples { get; }
-
-        /// <summary>
-        /// Gets the current sample number within the waveform, [1, waveform length].
-        /// </summary>
-        protected int CurrentSampleIndex { get; private set; }
-
-        /// <summary>
-        /// Gets the current sample value.
-        /// </summary>
-        protected double CurrentSampleValue { get; private set; } = double.NaN;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WaveformDataGenerator{T}"/> class.
@@ -112,21 +73,102 @@ namespace Mbs.Trading.Data.Generators
         {
             WaveformSamples = waveformSamples;
             if (offsetSamples < 0)
+            {
                 offsetSamples = 0;
+            }
+
             OffsetSamples = offsetSamples;
             CurrentSampleIndex = -offsetSamples;
 
             if (repetitionsCount < 0)
+            {
                 repetitionsCount = 0;
+            }
+
             RepetitionsCount = repetitionsCount;
             IsRepetitionsInfinite = repetitionsCount < 1;
 
             if (noiseAmplitudeFraction < 0)
+            {
                 noiseAmplitudeFraction = -noiseAmplitudeFraction;
+            }
+
             NoiseAmplitudeFraction = noiseAmplitudeFraction;
             this.noiseRandomGenerator = noiseRandomGenerator;
-            HasNoise = null != noiseRandomGenerator && noiseAmplitudeFraction > double.Epsilon;
+            HasNoise = noiseRandomGenerator != null && noiseAmplitudeFraction > double.Epsilon;
         }
+
+        /// <summary>
+        /// Gets the amplitude of the noise as a fraction of the signal.
+        /// </summary>
+        public double NoiseAmplitudeFraction { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether if generator mixes the noise with the signal.
+        /// </summary>
+        public bool HasNoise { get; }
+
+        /// <summary>
+        /// Gets the number of samples before the very first waveform. The value of zero means the waveform starts immediately.
+        /// </summary>
+        public int OffsetSamples { get; }
+
+        /// <summary>
+        /// Gets the number of repetitions of the waveform. The value of zero means infinite.
+        /// </summary>
+        public int RepetitionsCount { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the number of repetitions of the waveform is infinite.
+        /// </summary>
+        public bool IsRepetitionsInfinite { get; }
+
+        /// <summary>
+        /// Gets the number of samples in the waveform.
+        /// </summary>
+        protected int WaveformSamples { get; }
+
+        /// <summary>
+        /// Gets the current sample number within the waveform, [1, waveform length].
+        /// </summary>
+        protected int CurrentSampleIndex { get; private set; }
+
+        /// <summary>
+        /// Gets the current sample value.
+        /// </summary>
+        protected double CurrentSampleValue { get; private set; } = double.NaN;
+
+        /// <inheritdoc />
+        public override T GenerateNext()
+        {
+            CurrentSampleValue = NextValue();
+            return new T { Time = NextTime() };
+        }
+
+        /// <inheritdoc />
+        public override void Reset()
+        {
+            base.Reset();
+            CurrentSampleValue = double.NaN;
+            CurrentSampleIndex = -OffsetSamples;
+            currentRepetition = 0;
+            if (HasNoise && noiseRandomGenerator.CanReset)
+            {
+                noiseRandomGenerator.Reset();
+            }
+        }
+
+        /// <summary>
+        /// Generates a new sample.
+        /// </summary>
+        /// <returns>A new generated sample.</returns>
+        protected abstract double NextSample();
+
+        /// <summary>
+        /// Generates samples before the first waveform sample and after the last waveform sample.
+        /// </summary>
+        /// <returns>A new generated sample.</returns>
+        protected abstract double OutOfWaveformSample();
 
         /// <summary>
         /// Adds a noise to a given sample.
@@ -144,25 +186,6 @@ namespace Mbs.Trading.Data.Generators
             return sample;
         }
 
-        /// <summary>
-        /// Generates a new sample.
-        /// </summary>
-        /// <returns>A new generated sample.</returns>
-        protected abstract double NextSample();
-
-        /// <summary>
-        /// Generates samples before the first waveform sample and after the last waveform sample.
-        /// </summary>
-        /// <returns>A new generated sample.</returns>
-        protected abstract double OutOfWaveformSample();
-
-        /// <inheritdoc />
-        public override T GenerateNext()
-        {
-            CurrentSampleValue = NextValue();
-            return new T { Time = NextTime() };
-        }
-
         private double NextValue()
         {
             if (CurrentSampleIndex < 0)
@@ -174,7 +197,10 @@ namespace Mbs.Trading.Data.Generators
             if (!IsRepetitionsInfinite)
             {
                 if (RepetitionsCount <= currentRepetition)
+                {
                     return AddNoise(OutOfWaveformSample());
+                }
+
                 ++CurrentSampleIndex;
                 double sample = NextSample();
                 if (CurrentSampleIndex == WaveformSamples)
@@ -190,20 +216,12 @@ namespace Mbs.Trading.Data.Generators
                 ++CurrentSampleIndex;
                 double sample = NextSample();
                 if (CurrentSampleIndex == WaveformSamples)
+                {
                     CurrentSampleIndex = 0;
+                }
+
                 return AddNoise(sample);
             }
-        }
-
-        /// <inheritdoc />
-        public override void Reset()
-        {
-            base.Reset();
-            CurrentSampleValue = double.NaN;
-            CurrentSampleIndex = -OffsetSamples;
-            currentRepetition = 0;
-            if (HasNoise && noiseRandomGenerator.CanReset)
-                noiseRandomGenerator.Reset();
         }
     }
 }

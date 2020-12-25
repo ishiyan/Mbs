@@ -2,14 +2,43 @@
 using System.Globalization;
 using Microsoft.Extensions.Logging;
 
-// ReSharper disable once CheckNamespace
-namespace Mbs
+namespace Mbs.Utilities
 {
     /// <summary>
     /// A simple wrapper over the <see cref="ILogger"/>.
     /// </summary>
     public static class Log
     {
+        private static readonly Action<ILogger, string, int, string, Exception> DailyOhlcvBarsDownloadedAction =
+            LoggerMessage.Define<string, int, string>(
+                LogLevel.Information,
+                new EventId(1, nameof(DailyOhlcvBarsDownloaded)),
+                "{Entity} downloaded {Count} ohlcv bars from '{Uri}'");
+
+        private static readonly Action<ILogger, string, string, Exception> DownloadingAction =
+            LoggerMessage.Define<string, string>(
+                LogLevel.Information,
+                new EventId(2, nameof(Downloading)),
+                "{Entity} downloading '{Uri}'");
+
+        private static readonly Action<ILogger, string, string, Exception> DownloadFailedAction =
+            LoggerMessage.Define<string, string>(
+                LogLevel.Error,
+                new EventId(3, nameof(DownloadFailed)),
+                "{Entity} failed to download '{Uri}'");
+
+        private static readonly Action<ILogger, string, Exception> NoDataDownloadedSkippingAction =
+            LoggerMessage.Define<string>(
+                LogLevel.Error,
+                new EventId(4, nameof(NoDataDownloadedSkipping)),
+                "{Entity} no data downloaded, skipping");
+
+        private static readonly Action<ILogger, string, Exception> ExceptionHasBeenThrownAction =
+            LoggerMessage.Define<string>(
+                LogLevel.Error,
+                new EventId(5, nameof(ExceptionHasBeenThrown)),
+                "{Entity} has thrown an exception");
+
         private static ILogger logger;
         private static ILoggerFactory loggerFactory;
 
@@ -41,92 +70,6 @@ namespace Mbs
             logger = log;
         }
 
-        private static readonly Action<ILogger, string, int, string, Exception> DailyOhlcvBarsDownloadedAction =
-            LoggerMessage.Define<string, int, string>(
-                LogLevel.Information,
-                new EventId(1, nameof(DailyOhlcvBarsDownloaded)),
-                "{Entity} downloaded {Count} ohlcv bars from '{Uri}'");
-
-        /// <summary>
-        /// Logs that daily ohlcv bars data have been downloaded.
-        /// </summary>
-        /// <param name="entity">The identification of the down-loader class.</param>
-        /// <param name="count">The number of downloaded daily ohlcv bars.</param>
-        /// <param name="uri">The full request uri.</param>
-        internal static void DailyOhlcvBarsDownloaded(string entity, int count, string uri)
-        {
-            if (logger != null)
-                DailyOhlcvBarsDownloadedAction(logger, entity, count, uri, null);
-        }
-
-        private static readonly Action<ILogger, string, string, Exception> DownloadingAction =
-            LoggerMessage.Define<string, string>(
-                LogLevel.Information,
-                new EventId(2, nameof(Downloading)),
-                "{Entity} downloading '{Uri}'");
-
-        /// <summary>
-        /// Logs that a download has been started.
-        /// </summary>
-        /// <param name="entity">The identification of the down-loader class.</param>
-        /// <param name="uri">The full request uri.</param>
-        internal static void Downloading(string entity, string uri)
-        {
-            if (logger != null)
-                DownloadingAction(logger, entity, uri, null);
-        }
-
-        private static readonly Action<ILogger, string, string, Exception> DownloadFailedAction =
-            LoggerMessage.Define<string, string>(
-                LogLevel.Error,
-                new EventId(3, nameof(DownloadFailed)),
-                "{Entity} failed to download '{Uri}'");
-
-        /// <summary>
-        /// Logs that a download has been failed.
-        /// </summary>
-        /// <param name="entity">The identification of the down-loader class.</param>
-        /// <param name="uri">The full request uri.</param>
-        /// <param name="exception">The captured exception</param>
-        internal static void DownloadFailed(string entity, string uri, Exception exception = null)
-        {
-            if (logger != null)
-                DownloadFailedAction(logger, entity, uri, exception);
-        }
-
-        private static readonly Action<ILogger, string, Exception> NoDataDownloadedSkippingAction =
-            LoggerMessage.Define<string>(
-                LogLevel.Error,
-                new EventId(4, nameof(NoDataDownloadedSkipping)),
-                "{Entity} no data downloaded, skipping");
-
-        /// <summary>
-        /// Logs that the downloaded data is empty.
-        /// </summary>
-        /// <param name="entity">The identification of the down-loader class.</param>
-        internal static void NoDataDownloadedSkipping(string entity)
-        {
-            if (logger != null)
-                NoDataDownloadedSkippingAction(logger, entity, null);
-        }
-
-        private static readonly Action<ILogger, string, Exception> ExceptionHasBeenThrownAction =
-            LoggerMessage.Define<string>(
-                LogLevel.Error,
-                new EventId(5, nameof(ExceptionHasBeenThrown)),
-                "{Entity} has thrown an exception");
-
-        /// <summary>
-        /// Logs that an exception has been thrown.
-        /// </summary>
-        /// <param name="entity">The identification of the class.</param>
-        /// <param name="exception">The thrown exception.</param>
-        internal static void ExceptionHasBeenThrown(string entity, Exception exception)
-        {
-            if (logger != null)
-                ExceptionHasBeenThrownAction(logger, entity, exception);
-        }
-
         /// <summary>
         /// Writes a message with a <see cref="LogLevel.Debug"/> level and an optional exception.
         /// The message is enriched with a managed thread id and a date-time stamp.
@@ -136,9 +79,13 @@ namespace Mbs
         public static void Debug(string message, Exception exception = null)
         {
             if (exception == null)
+            {
                 logger?.LogDebug(message);
+            }
             else
+            {
                 logger?.LogDebug(message, exception);
+            }
         }
 
         /// <summary>
@@ -150,9 +97,13 @@ namespace Mbs
         public static void Trace(string message, Exception exception = null)
         {
             if (exception == null)
+            {
                 logger?.LogTrace(message);
+            }
             else
+            {
                 logger?.LogTrace(message, exception);
+            }
         }
 
         /// <summary>
@@ -164,9 +115,13 @@ namespace Mbs
         public static void Information(string message, Exception exception = null)
         {
             if (exception == null)
+            {
                 logger?.LogInformation(message);
+            }
             else
+            {
                 logger?.LogInformation(message, exception);
+            }
         }
 
         /// <summary>
@@ -178,9 +133,13 @@ namespace Mbs
         public static void Warning(string message, Exception exception = null)
         {
             if (exception == null)
+            {
                 logger?.LogWarning(message);
+            }
             else
+            {
                 logger?.LogWarning(message, exception);
+            }
         }
 
         /// <summary>
@@ -192,9 +151,13 @@ namespace Mbs
         public static void Error(string message, Exception exception = null)
         {
             if (exception == null)
+            {
                 logger?.LogError(message);
+            }
             else
+            {
                 logger?.LogError(message, exception);
+            }
         }
 
         /// <summary>
@@ -218,7 +181,9 @@ namespace Mbs
         public static void ErrorIf(bool condition, string format, params object[] args)
         {
             if (condition)
+            {
                 Error(format, args);
+            }
         }
 
         /// <summary>
@@ -230,9 +195,79 @@ namespace Mbs
         public static void Critical(string message, Exception exception = null)
         {
             if (exception == null)
+            {
                 logger?.LogCritical(message);
+            }
             else
+            {
                 logger?.LogCritical(message, exception);
+            }
+        }
+
+        /// <summary>
+        /// Logs that daily ohlcv bars data have been downloaded.
+        /// </summary>
+        /// <param name="entity">The identification of the down-loader class.</param>
+        /// <param name="count">The number of downloaded daily ohlcv bars.</param>
+        /// <param name="uri">The full request uri.</param>
+        internal static void DailyOhlcvBarsDownloaded(string entity, int count, string uri)
+        {
+            if (logger != null)
+            {
+                DailyOhlcvBarsDownloadedAction(logger, entity, count, uri, null);
+            }
+        }
+
+        /// <summary>
+        /// Logs that a download has been started.
+        /// </summary>
+        /// <param name="entity">The identification of the down-loader class.</param>
+        /// <param name="uri">The full request uri.</param>
+        internal static void Downloading(string entity, string uri)
+        {
+            if (logger != null)
+            {
+                DownloadingAction(logger, entity, uri, null);
+            }
+        }
+
+        /// <summary>
+        /// Logs that a download has been failed.
+        /// </summary>
+        /// <param name="entity">The identification of the down-loader class.</param>
+        /// <param name="uri">The full request uri.</param>
+        /// <param name="exception">The captured exception.</param>
+        internal static void DownloadFailed(string entity, string uri, Exception exception = null)
+        {
+            if (logger != null)
+            {
+                DownloadFailedAction(logger, entity, uri, exception);
+            }
+        }
+
+        /// <summary>
+        /// Logs that the downloaded data is empty.
+        /// </summary>
+        /// <param name="entity">The identification of the down-loader class.</param>
+        internal static void NoDataDownloadedSkipping(string entity)
+        {
+            if (logger != null)
+            {
+                NoDataDownloadedSkippingAction(logger, entity, null);
+            }
+        }
+
+        /// <summary>
+        /// Logs that an exception has been thrown.
+        /// </summary>
+        /// <param name="entity">The identification of the class.</param>
+        /// <param name="exception">The thrown exception.</param>
+        internal static void ExceptionHasBeenThrown(string entity, Exception exception)
+        {
+            if (logger != null)
+            {
+                ExceptionHasBeenThrownAction(logger, entity, exception);
+            }
         }
     }
 }

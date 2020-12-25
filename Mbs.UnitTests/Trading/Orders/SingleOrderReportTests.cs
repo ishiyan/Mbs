@@ -1,6 +1,7 @@
 ﻿using System;
 using Mbs.Trading.Currencies;
 using Mbs.Trading.Orders;
+using Mbs.Trading.Orders.Enumerations;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Mbs.UnitTests.Trading.Orders

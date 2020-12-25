@@ -1,5 +1,4 @@
 ﻿using Mbs.Api.ExampleProviders.Trading.Data.Generators.Square;
-using Mbs.Trading.Data;
 using Mbs.Trading.Data.Generators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -8,11 +7,10 @@ namespace Mbs.Api.UnitTests.ExampleProviders.Trading.Data.Generators.Square
     [TestClass]
     public class SquareTradeGeneratorOutputExampleProviderTests
     {
-        // ReSharper disable InconsistentNaming
         [TestMethod]
         public void SquareTradeGeneratorOutputExampleProvider_GetExamples_CorrectValues()
         {
-            var example = (SyntheticDataGeneratorOutput<Trade>) new SquareTradeGeneratorOutputExampleProvider().GetExamples();
+            var example = new SquareTradeGeneratorOutputExampleProvider().GetExamples();
 
             Assert.AreEqual(SquareTradeGeneratorOutputExampleProvider.Name, example.Name, "name");
             Assert.AreEqual(SquareTradeGeneratorOutputExampleProvider.Moniker, example.Moniker, "moniker");

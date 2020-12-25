@@ -31,8 +31,8 @@ namespace Mbs.Api.ExampleProviders.Trading.Data.Generators.Chirp
                 Data = new[]
                 {
                     new Ohlcv(DefaultParameterValues.StartDate.Add(DefaultParameterValues.SessionEndTime), Open1, High1, Low1, Close1, DefaultParameterValues.CandlestickVolume),
-                    new Ohlcv(DefaultParameterValues.StartDate.AddDays(1).Add(DefaultParameterValues.SessionEndTime), Open2, High2, Low2, Close2, DefaultParameterValues.CandlestickVolume)
-                }
+                    new Ohlcv(DefaultParameterValues.StartDate.AddDays(1).Add(DefaultParameterValues.SessionEndTime), Open2, High2, Low2, Close2, DefaultParameterValues.CandlestickVolume),
+                },
             };
         }
     }

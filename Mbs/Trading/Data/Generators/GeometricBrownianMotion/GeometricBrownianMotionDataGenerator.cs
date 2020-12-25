@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Globalization;
-using Mbs.Numerics.Random;
+using Mbs.Numerics.RandomGenerators;
 using Mbs.Trading.Time;
+using Mbs.Trading.Time.Conventions;
 
 // https://github.com/crodriguezvega/geometric-brownian-motion/blob/master/src/ViewModels/ViewModel.cs
 namespace Mbs.Trading.Data.Generators.GeometricBrownianMotion
@@ -15,26 +16,6 @@ namespace Mbs.Trading.Data.Generators.GeometricBrownianMotion
     public abstract class GeometricBrownianMotionDataGenerator<T> : WaveformDataGenerator<T>
         where T : TemporalEntity, new()
     {
-        /// <summary>
-        /// Gets the amplitude of the geometric Brownian motion in sample units, should be positive.
-        /// </summary>
-        public double SampleAmplitude { get; }
-
-        /// <summary>
-        /// Gets the sample value corresponding to the minimum of the geometric Brownian motion, should be positive.
-        /// </summary>
-        public double SampleMinimum { get; }
-
-        /// <summary>
-        /// Gets the value of the drift, μ, of the geometric Brownian motion.
-        /// </summary>
-        public double Drift { get; }
-
-        /// <summary>
-        /// Gets the value of the volatility, σ, of the geometric Brownian motion.
-        /// </summary>
-        public double Volatility { get; }
-
         private readonly INormalRandomGenerator normalRandomGenerator;
         private readonly double[] samples;
         private readonly double factor1;
@@ -130,28 +111,33 @@ namespace Mbs.Trading.Data.Generators.GeometricBrownianMotion
             Initialize();
         }
 
-        private void Initialize()
+        /// <summary>
+        /// Gets the amplitude of the geometric Brownian motion in sample units, should be positive.
+        /// </summary>
+        public double SampleAmplitude { get; }
+
+        /// <summary>
+        /// Gets the sample value corresponding to the minimum of the geometric Brownian motion, should be positive.
+        /// </summary>
+        public double SampleMinimum { get; }
+
+        /// <summary>
+        /// Gets the value of the drift, μ, of the geometric Brownian motion.
+        /// </summary>
+        public double Drift { get; }
+
+        /// <summary>
+        /// Gets the value of the volatility, σ, of the geometric Brownian motion.
+        /// </summary>
+        public double Volatility { get; }
+
+        /// <inheritdoc />
+        public override void Reset()
         {
-            Moniker = string.Format(
-                CultureInfo.InvariantCulture,
-                "gBm(l={0}, μ={1:0.####}, σ={2:0.####}) ∙ {3:0.####} + {4:0.####}",
-                WaveformSamples,
-                Drift,
-                Volatility,
-                SampleAmplitude,
-                SampleMinimum);
-
-            const double delta = 0.00005;
-            if (HasNoise && NoiseAmplitudeFraction > delta)
-                Moniker = string.Format(CultureInfo.InvariantCulture, "{0} + noise(ρn={1:0.####})", Moniker, NoiseAmplitudeFraction);
-
-            if (OffsetSamples > 0)
-                Moniker = string.Format(CultureInfo.InvariantCulture, "{0}, off={1}", Moniker, OffsetSamples);
-
-            if (!IsRepetitionsInfinite)
-                Moniker = string.Format(CultureInfo.InvariantCulture, "{0}, rep={1}", Moniker, RepetitionsCount);
-
-            GenerateGbm();
+            base.Reset();
+            index = 0;
+            isForward = true;
+            normalRandomGenerator.Reset();
         }
 
         /// <inheritdoc />
@@ -183,16 +169,6 @@ namespace Mbs.Trading.Data.Generators.GeometricBrownianMotion
             return samples[index];
         }
 
-        /// <inheritdoc />
-        public override void Reset()
-        {
-            base.Reset();
-            index = 0;
-            isForward = true;
-            normalRandomGenerator.Reset();
-            /* GenerateGbm(); */
-        }
-
         private void GenerateGbm()
         {
             double min = double.MaxValue;
@@ -206,15 +182,51 @@ namespace Mbs.Trading.Data.Generators.GeometricBrownianMotion
                 samples[i] = sample;
 
                 if (min > sample)
+                {
                     min = sample;
+                }
 
                 if (max < sample)
+                {
                     max = sample;
+                }
             }
 
             double delta = max - min;
             for (int i = 0; i < WaveformSamples; ++i)
+            {
                 samples[i] = SampleMinimum + SampleAmplitude * (samples[i] - min) / delta;
+            }
+        }
+
+        private void Initialize()
+        {
+            Moniker = string.Format(
+                CultureInfo.InvariantCulture,
+                "gBm(l={0}, μ={1:0.####}, σ={2:0.####}) ∙ {3:0.####} + {4:0.####}",
+                WaveformSamples,
+                Drift,
+                Volatility,
+                SampleAmplitude,
+                SampleMinimum);
+
+            const double delta = 0.00005;
+            if (HasNoise && NoiseAmplitudeFraction > delta)
+            {
+                Moniker = string.Format(CultureInfo.InvariantCulture, "{0} + noise(ρn={1:0.####})", Moniker, NoiseAmplitudeFraction);
+            }
+
+            if (OffsetSamples > 0)
+            {
+                Moniker = string.Format(CultureInfo.InvariantCulture, "{0}, off={1}", Moniker, OffsetSamples);
+            }
+
+            if (!IsRepetitionsInfinite)
+            {
+                Moniker = string.Format(CultureInfo.InvariantCulture, "{0}, rep={1}", Moniker, RepetitionsCount);
+            }
+
+            GenerateGbm();
         }
     }
 }

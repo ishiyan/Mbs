@@ -6,7 +6,6 @@
     <Configurations>Debug;Release</Configurations>
     <Platforms>x64</Platforms>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <LangVersion>latest</LangVersion>
 
     <AssemblyName>Mbs.Benchmarks</AssemblyName>
     <RootNamespace>Mbs.Benchmarks</RootNamespace>

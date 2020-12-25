@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>EuronextEndofdayJsonParsing.EuronextEndofdayJsonParsingBenchmark.EuronextEndofdayJsonParser-20201225-190908</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; text-align: right; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet=v0.12.1, OS=Windows 10.0.17134.1792 (1803/April2018Update/Redstone4)
+Intel Core i7-8850H CPU 2.60GHz (Coffee Lake), 1 CPU, 12 logical and 6 physical cores
+.NET Core SDK=5.0.101
+  [Host]     : .NET Core 5.0.1 (CoreCLR 5.0.120.57516, CoreFX 5.0.120.57516), X64 RyuJIT
+  DefaultJob : .NET Core 5.0.1 (CoreCLR 5.0.120.57516, CoreFX 5.0.120.57516), X64 RyuJIT
+</code></pre>
+<pre><code></code></pre>
+
+<table>
+<thead><tr><th>  Method</th><th>Mean</th><th>Error</th><th>StdDev</th><th>Median</th><th>Gen 0</th><th>Gen 1</th><th>Gen 2</th><th>Allocated</th>
+</tr>
+</thead><tbody><tr><td>UsingSubstring</td><td>366.542 ms</td><td>6.8551 ms</td><td>11.2631 ms</td><td>365.038 ms</td><td>339000.0000</td><td>336000.0000</td><td>336000.0000</td><td>1789202.05 KB</td>
+</tr><tr><td>UsingSpan</td><td>2.984 ms</td><td>0.0596 ms</td><td>0.1134 ms</td><td>2.929 ms</td><td>164.0625</td><td>31.2500</td><td>-</td><td>758.73 KB</td>
+</tr></tbody></table>
+</body>
+</html>

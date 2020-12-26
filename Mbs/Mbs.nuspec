@@ -1,27 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
+    <!-- required attributes -->
     <id>Mbs</id>
     <version>1.0.1</version>
     <description>Mbs library</description>
     <authors>Mbrane</authors>
-    <owners>Mbrane</owners>
-    <copyright>Copyright © 2020 Mbrane. All rights reserved.</copyright>
-    <projectUrl>http://www.angular.io</projectUrl>
-    <icon>icon.png</icon>
+    <!-- optional attributes -->
+    <license type="expression">MIT</license>
+    <copyright>Copyright © 2021 Mbrane. All rights reserved.</copyright>
+    <projectUrl>https://github.com/ishiyan</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <icon>Icon.png</icon>
     <developmentDependency>false</developmentDependency>
-    <releaseNotes>Release notes</releaseNotes>
     <tags>mbrane mbs</tags>
-    <!-- dependencies>
-      <dependency id="Microsoft.AspNetCore.All" version="2.2.0" />
-    </dependencies -->
+    <!-- content -->
+    <dependencies>
+      <group targetFramework="net5.0">
+        <dependency id="Microsoft.Extensions.Logging" version="5.0.0" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
   </metadata>
   <files>
-    <file src="mb.png" target="icon.png" />
-    <file src="bin\Release\published\Mbs.dll" target="lib\netcoreapp3.1\Mbs.dll" />
-    <file src="bin\Release\published\Mbs.pdb" target="lib\netcoreapp3.1\Mbs.pdb" />
-    <file src="bin\Release\published\Mbs.xml" target="lib\netcoreapp3.1\Mbs.xml" />
-    <file src="bin\Release\published\Mbs.deps.json" target="lib\netcoreapp3.1\Mbs.deps.json" />
+    <file src="mb.png" target="Icon.png" />
+    <file src="bin\x64\Release\net5.0\published\Mbs.dll" target="lib\net5.0\Mbs.dll" />
+    <file src="bin\x64\Release\net5.0\published\Mbs.pdb" target="lib\net5.0\Mbs.pdb" />
+    <file src="bin\x64\Release\net5.0\published\Mbs.xml" target="lib\net5.0\Mbs.xml" />
   </files>
 </package>

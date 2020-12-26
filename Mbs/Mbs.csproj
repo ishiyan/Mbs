@@ -12,11 +12,11 @@
     <Description>Mbs library</Description>
     <Authors>Mbrane</Authors>
     <Company>Mbrane</Company>
-    <copyright>Copyright (c) 2020 Mbrane. All rights reserved.</copyright>
+    <copyright>Copyright (c) 2021 Mbrane. All rights reserved.</copyright>
+    <Version>1.0.1</Version>
     <AssemblyVersion>1.0.1</AssemblyVersion>
     <FileVersion>1.0.1.1</FileVersion>
     <NuspecFile>Mbs.nuspec</NuspecFile>
-    <PackageIcon>icon.png</PackageIcon>
 
     <NoWarn>1591</NoWarn>
     <SonarQubeExclude>false</SonarQubeExclude>

@@ -55,6 +55,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mbs.Examples", "Mbs.Example
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{5B3C2188-6003-40CD-B740-96C587AFAF1D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Numerics", "Numerics", "{5B3C2188-6003-40CD-B740-96C587AFAF1E}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EuronextHistoricalInstrumentData", "Mbs.Examples\Data\EuronextHistoricalInstrumentData\EuronextHistoricalInstrumentData.csproj", "{859FC1B2-4FDF-4452-8003-457BDB4FD00A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EuronextLiveInstrumentMonitor", "Mbs.Examples\Data\EuronextLiveInstrumentMonitor\EuronextLiveInstrumentMonitor.csproj", "{EDCDB350-93AA-49C7-BEEB-A27A00C92643}"
@@ -62,6 +64,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CsvHistoricalInstrumentData", "Mbs.Examples\Data\CsvHistoricalInstrumentData\CsvHistoricalInstrumentData.csproj", "{73B7C4C9-C868-4B38-A806-981C9DB42BDC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Timeline", "Mbs.Examples\Data\Timeline\Timeline.csproj", "{21A21F38-8F54-4178-ADF2-1DE6652D0126}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DomainColoring", "Mbs.Examples\Numerics\DomainColoring\DomainColoring.csproj", "{32A21A38-8F14-4172-AEF2-8DE6652D0371}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -117,16 +121,22 @@ Global
 		{21A21F38-8F54-4178-ADF2-1DE6652D0126}.Debug|x64.Build.0 = Debug|x64
 		{21A21F38-8F54-4178-ADF2-1DE6652D0126}.Release|x64.ActiveCfg = Release|x64
 		{21A21F38-8F54-4178-ADF2-1DE6652D0126}.Release|x64.Build.0 = Release|x64
+		{32A21A38-8F14-4172-AEF2-8DE6652D0371}.Debug|x64.ActiveCfg = Debug|x64
+		{32A21A38-8F14-4172-AEF2-8DE6652D0371}.Debug|x64.Build.0 = Debug|x64
+		{32A21A38-8F14-4172-AEF2-8DE6652D0371}.Release|x64.ActiveCfg = Release|x64
+		{32A21A38-8F14-4172-AEF2-8DE6652D0371}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{5B3C2188-6003-40CD-B740-96C587AFAF1D} = {F0282F9F-B6C0-447B-BFB3-9FC888F6BA67}
+		{5B3C2188-6003-40CD-B740-96C587AFAF1E} = {F0282F9F-B6C0-447B-BFB3-9FC888F6BA67}
 		{859FC1B2-4FDF-4452-8003-457BDB4FD00A} = {5B3C2188-6003-40CD-B740-96C587AFAF1D}
 		{EDCDB350-93AA-49C7-BEEB-A27A00C92643} = {5B3C2188-6003-40CD-B740-96C587AFAF1D}
 		{73B7C4C9-C868-4B38-A806-981C9DB42BDC} = {5B3C2188-6003-40CD-B740-96C587AFAF1D}
 		{21A21F38-8F54-4178-ADF2-1DE6652D0126} = {5B3C2188-6003-40CD-B740-96C587AFAF1D}
+		{32A21A38-8F14-4172-AEF2-8DE6652D0371} = {5B3C2188-6003-40CD-B740-96C587AFAF1E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B829D410-3E79-442A-AB82-B38D9F3578AE}

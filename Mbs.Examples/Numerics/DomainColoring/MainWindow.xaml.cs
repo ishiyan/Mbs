@@ -1,4 +1,12 @@
-﻿using System;
+﻿// #define TRACE_EVENTS
+#if TRACE_EVENTS
+#define TRACE_MOUSE_EVENTS
+#define TRACE_MANIPULATION_EVENTS
+#endif
+using System;
+#if TRACE_MOUSE_EVENTS || TRACE_MANIPULATION_EVENTS
+using System.Diagnostics;
+#endif
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -11,7 +19,6 @@ using System.Windows.Media.Imaging;
 using DomainColoring.ColorMaps;
 using DomainColoring.ComplexFunctions;
 using Mbs.Numerics;
-#pragma warning disable S125 // Sections of code should not be commented out
 
 // ReSharper disable once RedundantExtendsListEntry
 namespace DomainColoring
@@ -21,6 +28,20 @@ namespace DomainColoring
     /// </summary>
     public partial class MainWindow : Window
     {
+        /// <summary>
+        /// Horizontal scroll step as a fraction of the current image width.
+        /// </summary>
+        private const double HorizontalScrollStepFraction = 0.1;
+
+        /// <summary>
+        /// Vertical scroll step as a fraction of the current image height.
+        /// </summary>
+        private const double VerticalScrollStepFraction = 0.1;
+
+        private const double ZoomFactor = 1.25;
+        private const int InitialMapIndex = 0;
+        private const int InitialFunctionIndex = 0;
+
         private static readonly ColorMap[] Maps = PredefinedColorMaps.Get().ToArray();
         private static readonly ComplexFunction[] Functions = PredefinedComplexFunctions.Get().ToArray();
 
@@ -30,11 +51,16 @@ namespace DomainColoring
         private ComplexFunction currentFunction;
         private Point ptOrigin;
         private Point ptScale;
-        private bool block;
+        private Point ptMouseDragStart;
+        private Cursor cursorCaptured;
+        private bool isMouseCaptured;
+        private CancellationTokenSource cancellationTokenSource;
 
         public MainWindow()
         {
+            Functions[InitialFunctionIndex].Reset();
             InitializeComponent();
+
             foreach (ColorMap c in Maps)
             {
                 ColorMapComboBox.Items.Add(c.Label);
@@ -52,21 +78,20 @@ namespace DomainColoring
                 }
             }
 
-            const int initialMapIndex = 0;
-            const int initialFunctionIndex = 0;
+            currentMap = Maps[InitialMapIndex];
+            currentFunction = Functions[InitialFunctionIndex];
 
-            currentMap = Maps[initialMapIndex];
-            currentFunction = Functions[initialFunctionIndex];
-
-            ColorMapComboBox.SelectedIndex = initialMapIndex;
-            FunctionComboBox.SelectedIndex = initialFunctionIndex;
+            ColorMapComboBox.SelectedIndex = InitialMapIndex;
+            FunctionComboBox.SelectedIndex = InitialFunctionIndex;
         }
 
-        private void FunctionChanged(object sender, SelectionChangedEventArgs e)
+        private void FunctionChanged(object unused, SelectionChangedEventArgs e)
         {
+            e.Handled = true;
             ComplexFunction f = Functions[FunctionComboBox.SelectedIndex];
             if (f != currentFunction)
             {
+                f.Reset();
                 currentFunction = f;
                 if (currentMap != null)
                 {
@@ -75,8 +100,9 @@ namespace DomainColoring
             }
         }
 
-        private void ColorMapChanged(object sender, SelectionChangedEventArgs e)
+        private void ColorMapChanged(object unused, SelectionChangedEventArgs e)
         {
+            e.Handled = true;
             ColorMap m = Maps[ColorMapComboBox.SelectedIndex];
             if (m != currentMap)
             {
@@ -98,185 +124,460 @@ namespace DomainColoring
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void ImageMouseLeave(object sender, MouseEventArgs e)
-        {
-            // CoordinateTextBlock.Text = string.Empty;
-            CoordinateTextBlock.Text = "Mouse Leave";
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void ImageMouseMove(object sender, MouseEventArgs e)
-        {
-            /*Point pt = e.GetPosition(Image);
-                        double xMin, yMax, scaleX, scaleY;
-                        lock (imageLock)
-                        {
-                            xMin = ptOrigin.X;
-                            yMax = ptOrigin.Y;
-                            scaleX = ptScale.X;
-                            scaleY = ptScale.Y;
-                        }
-
-                        var z = new Complex(xMin + scaleX * pt.X, yMax - scaleY * pt.Y);
-                        const string fmt = "g4";
-                        if (currentFunction == null)
-                        {
-                            CoordinateTextBlock.Text = string.Concat("z = ", z.ToString(fmt, CultureInfo.InvariantCulture.NumberFormat));
-                        }
-                        else
-                        {
-                            Complex fz = currentFunction.Function(z);
-                            CoordinateTextBlock.Text = string.Concat(
-                                "f(",
-                                z.ToString(fmt, CultureInfo.InvariantCulture.NumberFormat),
-                                ") = ",
-                                fz.ToString(fmt, CultureInfo.InvariantCulture.NumberFormat));
-                        }*/
-            CoordinateTextBlock.Text = $"Mouse Move: left {e.LeftButton}, right {e.LeftButton}, point: {e.MouseDevice.GetPosition(Image)}";
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void Render(double width, double height)
         {
-            if (block || currentFunction == null || currentMap == null)
+            if (currentFunction == null || currentMap == null)
             {
                 return;
             }
 
-            Cursor = Cursors.Wait;
             Func<Complex, Complex> f = currentFunction.Function;
             Func<Complex, int> m = currentMap.Function;
-            int w = (int)width, h = (int)height;
-            double xMin, yMax, scaleX, scaleY;
-            if (w > h)
+            lock (imageLock)
             {
-                yMax = currentFunction.ImMax;
-                scaleY = (yMax - currentFunction.ImMin) / h;
-                scaleX = (currentFunction.ReMax - currentFunction.ReMin) / h;
-                xMin = currentFunction.ReMin - scaleX * (w - h) / 2;
+                int w = (int)width, h = (int)height;
+                double xMin, yMax, scaleX, scaleY;
+                if (width > height)
+                {
+                    yMax = currentFunction.CurrentImMax;
+                    scaleY = (yMax - currentFunction.CurrentImMin) / height;
+                    scaleX = (currentFunction.CurrentReMax - currentFunction.CurrentReMin) / height;
+                    xMin = currentFunction.CurrentReMin - scaleX * (width - height) / 2;
+                }
+                else
+                {
+                    xMin = currentFunction.CurrentReMin;
+                    scaleX = (currentFunction.CurrentReMax - xMin) / width;
+                    scaleY = (currentFunction.CurrentImMax - currentFunction.CurrentImMin) / width;
+                    yMax = currentFunction.CurrentImMax + scaleY * (height - width) / 2;
+                }
+
+                if (cancellationTokenSource != null)
+                {
+                    if (!cancellationTokenSource.IsCancellationRequested)
+                    {
+                        cancellationTokenSource.Cancel();
+                    }
+
+                    cancellationTokenSource.Dispose();
+                    cancellationTokenSource = null;
+                }
+
+                cancellationTokenSource = new CancellationTokenSource();
+                Task.Factory.StartNew(() =>
+                {
+                    var cancellationToken = cancellationTokenSource.Token;
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        return;
+                    }
+
+                    var bitmap = new WriteableBitmap(w, h, 96, 96, PixelFormats.Bgra32, null);
+                    var pixels = new int[h * w];
+
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        return;
+                    }
+
+                    Parallel.For(0, h, y =>
+                    {
+                        double im = yMax - scaleY * y;
+                        int i = y * w;
+                        for (int x = 0; x < w; x++)
+                        {
+                            if (cancellationToken.IsCancellationRequested)
+                            {
+                                return;
+                            }
+
+                            var z = new Complex(xMin + x * scaleX, im);
+                            int color;
+                            try
+                            {
+                                Complex fz = f(z);
+                                color = m(fz);
+                            }
+                            catch
+                            {
+                                color = 0;
+                            }
+
+                            pixels[i++] = color;
+                        }
+                    });
+
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        return;
+                    }
+
+                    bitmap.WritePixels(new Int32Rect(0, 0, w, h), pixels, w * 4, 0, 0);
+                    bitmap.Freeze();
+
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        return;
+                    }
+
+                    Dispatcher.Invoke((ThreadStart)(() =>
+                    {
+                        if (cancellationToken.IsCancellationRequested)
+                        {
+                            return;
+                        }
+
+                        lock (imageLock)
+                        {
+                            Image.Source = bitmap;
+                            ptOrigin.X = xMin;
+                            ptOrigin.Y = yMax;
+                            ptScale.X = scaleX;
+                            ptScale.Y = scaleY;
+
+                            if (cancellationTokenSource != null)
+                            {
+                                cancellationTokenSource.Dispose();
+                                cancellationTokenSource = null;
+                            }
+                        }
+                    }));
+                });
             }
-            else if (w < h)
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void ImageManipulationStarting(object sender, ManipulationStartingEventArgs e)
+        {
+            e.Handled = true;
+#if TRACE_MANIPULATION_EVENTS
+            string pivot = e.Pivot == null
+                ? "null"
+                : $"center {e.Pivot.Center} radius {e.Pivot.Radius}";
+
+            Trace.WriteLine($"Manipulation Starting: mode {e.Mode}, pivot {pivot}, singleTouch {e.IsSingleTouchEnabled}");
+#endif
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void ImageManipulationDelta(object sender, ManipulationDeltaEventArgs e)
+        {
+            e.Handled = true;
+#if TRACE_MANIPULATION_EVENTS
+            static string PrintVec(Vector v)
             {
-                xMin = currentFunction.ReMin;
-                scaleX = (currentFunction.ReMax - xMin) / w;
-                scaleY = (currentFunction.ImMax - currentFunction.ImMin) / w;
-                yMax = currentFunction.ImMax + scaleY * (h - w) / 2;
+                return $"{{translation L {v.Length}, L2 {v.LengthSquared}, X {v.X}, Y {v.Y}}}";
+            }
+
+            string delta = e.DeltaManipulation == null
+                ? "null"
+                : $"[translation {PrintVec(e.DeltaManipulation.Translation)}, scale {PrintVec(e.DeltaManipulation.Scale)}, expansion {PrintVec(e.DeltaManipulation.Expansion)}, rotation {e.DeltaManipulation.Rotation}]";
+
+            string cumulative = e.CumulativeManipulation == null
+                ? "null"
+                : $"[translation {PrintVec(e.CumulativeManipulation.Translation)}, scale {PrintVec(e.CumulativeManipulation.Scale)}, expansion {PrintVec(e.CumulativeManipulation.Expansion)}, rotation {e.CumulativeManipulation.Rotation}]";
+
+            string origin = $"[X {e.ManipulationOrigin.X}, Y {e.ManipulationOrigin.Y}]";
+
+            string velocities = e.Velocities == null
+                ? "null"
+                : $"[linear {e.Velocities.LinearVelocity}, expansion {e.Velocities.ExpansionVelocity}, angular {e.Velocities.AngularVelocity}]";
+
+            Trace.WriteLine($"Manipulation Delta: origin {origin}, cumulative {cumulative}, delta {delta}, velocities {velocities}, isInertial {e.IsInertial}");
+#endif
+            if (currentFunction == null)
+            {
+                return;
+            }
+
+            double dx = e.DeltaManipulation?.Translation.X ?? default;
+            double dy = e.DeltaManipulation?.Translation.Y ?? default;
+            double ex = e.DeltaManipulation?.Expansion.X ?? default;
+            double ey = e.DeltaManipulation?.Expansion.Y ?? default;
+
+            if (Math.Abs(dx) < double.Epsilon && Math.Abs(dy) < double.Epsilon &&
+                Math.Abs(ex) < double.Epsilon && Math.Abs(ey) < double.Epsilon)
+            {
+                return;
+            }
+
+            lock (imageLock)
+            {
+                dx *= ptScale.X;
+                ex *= ptScale.X;
+                dy *= ptScale.Y;
+                ey *= ptScale.Y;
+                ex /= 2;
+                ey /= 2;
+                currentFunction.CurrentReMin -= dx - ex;
+                currentFunction.CurrentReMax -= dx + ex;
+                currentFunction.CurrentImMin += dy + ey;
+                currentFunction.CurrentImMax += dy - ey;
+            }
+
+            Render(Rect.ActualWidth, Rect.ActualHeight);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void ImageInertiaStarting(object sender, ManipulationInertiaStartingEventArgs e)
+        {
+            e.Handled = true;
+#if TRACE_MANIPULATION_EVENTS
+            static string PrintVec(Vector v)
+            {
+                return $"{{translation L {v.Length}, L2 {v.LengthSquared}, X {v.X}, Y {v.Y}}}";
+            }
+
+            string origin = $"[X {e.ManipulationOrigin.X}, Y {e.ManipulationOrigin.Y}]";
+
+            string velocities = e.InitialVelocities == null
+                ? "null"
+                : $"[linear {e.InitialVelocities.LinearVelocity}, expansion {e.InitialVelocities.ExpansionVelocity}, angular {e.InitialVelocities.AngularVelocity}]";
+
+            string translation = e.TranslationBehavior == null
+                ? "null"
+                : $"[deceleration {e.TranslationBehavior.DesiredDeceleration}, displacement {e.TranslationBehavior.DesiredDisplacement}, velocities {PrintVec(e.TranslationBehavior.InitialVelocity)}]";
+
+            string expansion = e.ExpansionBehavior == null
+                ? "null"
+                : $"[deceleration {e.ExpansionBehavior.DesiredDeceleration}, radius {e.ExpansionBehavior.InitialRadius}, velocities {PrintVec(e.ExpansionBehavior.InitialVelocity)}, expansions {PrintVec(e.ExpansionBehavior.DesiredExpansion)}]";
+
+            string rotation = e.RotationBehavior == null
+                ? "null"
+                : $"[deceleration {e.RotationBehavior.DesiredDeceleration}, velocity {e.RotationBehavior.InitialVelocity}, rotation {e.RotationBehavior.DesiredRotation}]";
+
+            Trace.WriteLine($"Inertia Starting: origin {origin}, velocities {velocities}, translation {translation}, expansion {expansion}, rotation {rotation}");
+#endif
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void ImageMouseDown(object unused, MouseButtonEventArgs e)
+        {
+            e.Handled = true;
+            var pt = e.GetPosition(Image);
+#if TRACE_MOUSE_EVENTS
+            Trace.WriteLine($"Mouse Down: {e.ChangedButton}, clicks {e.ClickCount}, point [X {pt.X}, Y {pt.Y}]");
+#endif
+            if (e.ClickCount < 2)
+            {
+                if (!isMouseCaptured && Image.CaptureMouse())
+                {
+                    isMouseCaptured = true;
+                    cursorCaptured = Image.Cursor;
+                    ptMouseDragStart = pt;
+                    Image.Cursor = Cursors.ScrollAll;
+                }
             }
             else
             {
-                xMin = currentFunction.ReMin;
-                scaleX = (currentFunction.ReMax - xMin) / w;
-                yMax = currentFunction.ImMax;
-                scaleY = (yMax - currentFunction.ImMin) / w;
+                if (e.ChangedButton == MouseButton.Left)
+                {
+                    Zoom(1 / ZoomFactor);
+                }
+                else if (e.ChangedButton == MouseButton.Right)
+                {
+                    Zoom(ZoomFactor);
+                }
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void ImageMouseUp(object unused, MouseButtonEventArgs e)
+        {
+            e.Handled = true;
+#if TRACE_MOUSE_EVENTS
+            var pt = e.GetPosition(Image);
+            Trace.WriteLine($"Mouse Up: {e.ChangedButton}, clicks {e.ClickCount}, point [X {pt.X}, Y {pt.Y}]");
+#endif
+            if (isMouseCaptured)
+            {
+                isMouseCaptured = false;
+                Image.Cursor = cursorCaptured;
+                Image.ReleaseMouseCapture();
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void ImageMouseMove(object unused, MouseEventArgs e)
+        {
+            e.Handled = true;
+            Point pt = e.GetPosition(Image);
+#if TRACE_MOUSE_EVENTS
+            Trace.WriteLine($"Mouse Move: buttons [left {e.LeftButton}, right {e.LeftButton}], point [X {pt.X}, Y {pt.Y}]");
+#endif
+
+            if (currentFunction == null)
+            {
+                return;
             }
 
-            Task.Factory.StartNew(() =>
+            if (isMouseCaptured)
             {
-                var bitmap = new WriteableBitmap(w, h, 96, 96, PixelFormats.Bgra32, null);
-                var pixels = new int[h * w];
-
-                Parallel.For(0, h, y =>
+                double dx = pt.X - ptMouseDragStart.X;
+                double dy = pt.Y - ptMouseDragStart.Y;
+                if (Math.Abs(dx) < double.Epsilon && Math.Abs(dy) < double.Epsilon)
                 {
-                    double im = yMax - scaleY * y;
-                    int i = y * w;
-                    for (int x = 0; x < w; x++)
-                    {
-                        var z = new Complex(xMin + x * scaleX, im);
-                        int color;
-                        try
-                        {
-                            Complex fz = f(z);
-                            color = m(fz);
-                        }
-                        catch
-                        {
-                            color = 0;
-                        }
+                    return;
+                }
 
-                        pixels[i++] = color;
-                    }
-                });
-                bitmap.WritePixels(new Int32Rect(0, 0, w, h), pixels, w * 4, 0, 0);
-                bitmap.Freeze();
-                Dispatcher.Invoke((ThreadStart)(() =>
+                ptMouseDragStart = pt;
+                lock (imageLock)
                 {
-                    lock (imageLock)
-                    {
-                        Image.Source = bitmap;
-                        ptOrigin.X = xMin;
-                        ptOrigin.Y = yMax;
-                        ptScale.X = scaleX;
-                        ptScale.Y = scaleY;
-                        block = false;
-                        Cursor = Cursors.Arrow;
-                    }
-                }));
-            });
+                    dx *= ptScale.X;
+                    dy *= ptScale.Y;
+                    currentFunction.CurrentReMin -= dx;
+                    currentFunction.CurrentReMax -= dx;
+                    currentFunction.CurrentImMin += dy;
+                    currentFunction.CurrentImMax += dy;
+                }
+
+                Render(Rect.ActualWidth, Rect.ActualHeight);
+            }
+
+            double real, imag;
+            lock (imageLock)
+            {
+                real = ptOrigin.X + ptScale.X * pt.X;
+                imag = ptOrigin.Y - ptScale.Y * pt.Y;
+            }
+
+            var z = new Complex(real, imag);
+            try
+            {
+                const string fmt = "g4";
+                Complex fz = currentFunction.Function(z);
+                CoordinateTextBlock.Text = $"f({z.ToString(fmt)}) = {fz.ToString(fmt)}";
+            }
+            catch
+            {
+                CoordinateTextBlock.Text = string.Empty;
+            }
         }
 
-        private void ImageManipulationStarting(object sender, ManipulationStartingEventArgs e)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void ImageMouseLeave(object unused, MouseEventArgs e)
         {
-            CoordinateTextBlock.Text = $"Manipulation Starting: mode {e.Mode}, pivot center {e.Pivot.Center} radius {e.Pivot.Radius}, singleTouch {e.IsSingleTouchEnabled}";
+            e.Handled = true;
+            CoordinateTextBlock.Text = string.Empty;
+#if TRACE_MOUSE_EVENTS
+            var pt = e.GetPosition(Image);
+            Trace.WriteLine($"Mouse Leave: buttons [left {e.LeftButton}, right {e.RightButton}], point [X {pt.X}, Y {pt.Y}]");
+#endif
         }
 
-        private void ImageManipulationDelta(object sender, ManipulationDeltaEventArgs e)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void ImageMouseWheel(object unused, MouseWheelEventArgs e)
         {
-            CoordinateTextBlock.Text = "Manipulation Delta";
+            e.Handled = true;
+#if TRACE_MOUSE_EVENTS
+            var pt = e.GetPosition(Image);
+            Trace.WriteLine($"Mouse Wheel: left {e.LeftButton}, right {e.RightButton}, delta {e.Delta}, point [X {pt.X}, Y {pt.Y}]");
+#endif
+
+            double factor = e.Delta > 0 ? 1 / ZoomFactor : ZoomFactor;
+            Zoom(factor);
         }
 
-        private void ImageInertiaStarting(object sender, ManipulationInertiaStartingEventArgs e)
+        private void ImageReset(object unused1, RoutedEventArgs unused2)
         {
-            CoordinateTextBlock.Text = "Inertia Starting";
+            if (currentFunction == null)
+            {
+                return;
+            }
+
+            lock (imageLock)
+            {
+                currentFunction.Reset();
+            }
+
+            Render(Rect.ActualWidth, Rect.ActualHeight);
         }
 
-        private void ImageMouseDown(object sender, MouseButtonEventArgs e)
+        private void ImageLeft(object unused1, RoutedEventArgs unused2)
         {
-            CoordinateTextBlock.Text = $"Mouse Down: {e.ChangedButton}, clicks {e.ClickCount}, point {e.MouseDevice.GetPosition(Image)}";
+            ScrollHorizontal(-HorizontalScrollStepFraction);
         }
 
-        private void ImageMouseUp(object sender, MouseButtonEventArgs e)
+        private void ImageUp(object unused1, RoutedEventArgs unused2)
         {
-            CoordinateTextBlock.Text = $"Mouse Up: {e.ChangedButton}, clicks {e.ClickCount}, point {e.MouseDevice.GetPosition(Image)}";
+            ScrollVertical(-VerticalScrollStepFraction);
         }
 
-        private void Image_OnMouseWheel(object sender, MouseWheelEventArgs e)
+        private void ImageDown(object unused1, RoutedEventArgs unused2)
         {
-            CoordinateTextBlock.Text = $"Mouse Wheel: left {e.LeftButton}, right {e.RightButton}, delta {e.Delta}, point {e.MouseDevice.GetPosition(Image)}";
+            ScrollVertical(VerticalScrollStepFraction);
         }
 
-        private void ImageReset(object sender, RoutedEventArgs e)
+        private void ImageRight(object unused1, RoutedEventArgs unused2)
         {
-            // Implement.
+            ScrollHorizontal(HorizontalScrollStepFraction);
         }
 
-        private void ImageDown(object sender, RoutedEventArgs e)
+        private void ImageZoomOut(object unused1, RoutedEventArgs unused2)
         {
-            // Implement.
+            Zoom(ZoomFactor);
         }
 
-        private void ImageRight(object sender, RoutedEventArgs e)
+        private void ImageZoomIn(object unused1, RoutedEventArgs unused2)
         {
-            // Implement.
+            Zoom(1 / ZoomFactor);
         }
 
-        private void ImageLeft(object sender, RoutedEventArgs e)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void ScrollVertical(double ratio)
         {
-            // Implement.
+            if (currentFunction == null)
+            {
+                return;
+            }
+
+            ratio *= Rect.ActualHeight;
+            lock (imageLock)
+            {
+                double dy = ptScale.Y * ratio;
+                currentFunction.CurrentImMin += dy;
+                currentFunction.CurrentImMax += dy;
+            }
+
+            Render(Rect.ActualWidth, Rect.ActualHeight);
         }
 
-        private void ImageUp(object sender, RoutedEventArgs e)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void ScrollHorizontal(double ratio)
         {
-            // Implement.
+            if (currentFunction == null)
+            {
+                return;
+            }
+
+            ratio *= Rect.ActualWidth;
+            lock (imageLock)
+            {
+                double dy = ptScale.Y * ratio;
+                currentFunction.CurrentReMin -= dy;
+                currentFunction.CurrentReMax -= dy;
+            }
+
+            Render(Rect.ActualWidth, Rect.ActualHeight);
         }
 
-        private void ImageZoomOut(object sender, RoutedEventArgs e)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void Zoom(double factor)
         {
-            // Implement.
-        }
+            if (currentFunction == null)
+            {
+                return;
+            }
 
-        private void ImageZoomIn(object sender, RoutedEventArgs e)
-        {
-            // Implement.
+            lock (imageLock)
+            {
+                currentFunction.CurrentReMin *= factor;
+                currentFunction.CurrentReMax *= factor;
+                currentFunction.CurrentImMin *= factor;
+                currentFunction.CurrentImMax *= factor;
+            }
+
+            Render(Rect.ActualWidth, Rect.ActualHeight);
         }
     }
 }

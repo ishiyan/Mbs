@@ -1,0 +1,162 @@
+﻿<!-- ReSharper disable once CommentTypo -->
+<ResourceDictionary x:Class="DomainColoring.ComplexFunctions.TeX.Equations_Hyperbolic" 
+                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/DomainColoring;component/ComplexFunctions/TeX/Equations.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+
+    <!-- Hyperbolic: sinh\ z^{n} -->
+
+    <Viewbox x:Key="Hyperbolic|SinhZ1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="12">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|SinhZ2" Style="{StaticResource EqViewbox}" x:Shared="False" Height="16">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|SinhZ3" Style="{StaticResource EqViewbox}" x:Shared="False" Height="16">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|SinhZ4" Style="{StaticResource EqViewbox}" x:Shared="False" Height="16">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|SinhZ5" Style="{StaticResource EqViewbox}" x:Shared="False" Height="16">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|SinhZ6" Style="{StaticResource EqViewbox}" x:Shared="False" Height="16">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|SinhZ7" Style="{StaticResource EqViewbox}" x:Shared="False" Height="16">
+    </Viewbox>
+
+    <!-- Hyperbolic: sinh\ \frac{1}{z^{n}} -->
+
+    <Viewbox x:Key="Hyperbolic|Sinh1Z1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|Sinh1Z2" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|Sinh1Z3" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|Sinh1Z4" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|Sinh1Z5" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|Sinh1Z6" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|Sinh1Z7" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <!-- Hyperbolic: sinh\ \frac{1}{z^{n}+1} -->
+
+    <Viewbox x:Key="Hyperbolic|Sinh1Z1P1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|Sinh1Z2P1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|Sinh1Z3P1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|Sinh1Z4P1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|Sinh1Z5P1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|Sinh1Z6P1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|Sinh1Z7P1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <!-- Hyperbolic: sinh^{n}\ z -->
+
+    <Viewbox x:Key="Hyperbolic|Sinh2Z1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="16">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|Sinh3Z1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="16">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|Sinh4Z1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="16">
+    </Viewbox>
+
+    <!-- Hyperbolic: sinh^{n}\ \frac{1}{z} -->
+
+    <Viewbox x:Key="Hyperbolic|Sinh21Z1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|Sinh31Z1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|Sinh41Z1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <!-- Hyperbolic: sinh^{n}\ \frac{1}{z^2+1} -->
+
+    <Viewbox x:Key="Hyperbolic|Sinh21Z2P1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|Sinh31Z2P1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|Sinh41Z2P1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <!-- Hyperbolic: cosh\ z^{n} -->
+
+    <Viewbox x:Key="Hyperbolic|CoshZ1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="8">
+    </Viewbox>
+
+    <!-- Hyperbolic: cosh\ \frac{1}{z^{n}} -->
+
+    <Viewbox x:Key="Hyperbolic|Cosh1Z1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <!-- Hyperbolic: tanh\ z^{n} -->
+
+    <Viewbox x:Key="Hyperbolic|TanhZ1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="11">
+    </Viewbox>
+
+    <!-- Hyperbolic: tanh\ \frac{1}{z^{n}} -->
+
+    <Viewbox x:Key="Hyperbolic|Tanh1Z1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <!-- Hyperbolic: coth\ z^{n} -->
+
+    <Viewbox x:Key="Hyperbolic|CothZ1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="12">
+    </Viewbox>
+
+    <!-- Hyperbolic: coth\ \frac{1}{z^{n}} -->
+
+    <Viewbox x:Key="Hyperbolic|Coth1Z1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <!-- Hyperbolic: sech\ z^{n} -->
+
+    <Viewbox x:Key="Hyperbolic|SechZ1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="8">
+    </Viewbox>
+
+    <!-- Hyperbolic: sech\ \frac{1}{z^{n}} -->
+
+    <Viewbox x:Key="Hyperbolic|Sech1Z1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <!-- Hyperbolic: csch\ z^{n} -->
+
+    <Viewbox x:Key="Hyperbolic|CschZ1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="8">
+    </Viewbox>
+
+    <!-- Hyperbolic: csch\ \frac{1}{z^{n}} -->
+
+    <Viewbox x:Key="Hyperbolic|Csch1Z1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+</ResourceDictionary>

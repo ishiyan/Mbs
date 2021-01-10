@@ -610,22 +610,22 @@ namespace Mbs.UnitTests.Numerics
         public void Complex_Cosec_Matlab_Conformance()
         {
             var number = new Complex(0.1, 0.3);
-            Complex target = number.Cosec();
+            Complex target = number.Csc();
             Assert.AreEqual(1.016167538541131, target.Real, 1e-15, "#1 real");
             Assert.AreEqual(-2.950350204850528, target.Imag, 1e-15, "#1 imag");
 
             number = new Complex(-0.1, 1.5);
-            target = number.Cosec();
+            target = number.Csc();
             Assert.AreEqual(-0.051685639257015, target.Real, 1e-15, "#2 real");
             Assert.AreEqual(-0.466271181632630, target.Imag, 1e-15, "#2 imag");
 
             number = new Complex(-0.5, -0.3);
-            target = number.Cosec();
+            target = number.Csc();
             Assert.AreEqual(-1.553598232470387, target.Real, 1e-15, "#3 real");
             Assert.AreEqual(0.828447184874691, target.Imag, 1e-15, "#3 imag");
 
             number = new Complex(0.5, -1.2);
-            target = number.Cosec();
+            target = number.Csc();
             Assert.AreEqual(0.346077725103826, target.Real, 1e-15, "#4 real");
             Assert.AreEqual(0.528112712793212, target.Imag, 1e-15, "#4 imag");
 
@@ -784,27 +784,27 @@ namespace Mbs.UnitTests.Numerics
         public void Complex_Acosec_Matlab_Conformance()
         {
             var number = new Complex(0.1, 0.3);
-            Complex target = number.Acosec();
+            Complex target = number.Acsc();
             Assert.AreEqual(0.307603649530711, target.Real, 1e-15, "#1 real");
             Assert.AreEqual(-1.864161544157883, target.Imag, 1e-15, "#1 imag");
 
             number = new Complex(-0.1, 1.5);
-            target = number.Acosec();
+            target = number.Acsc();
             Assert.AreEqual(-0.036867185074306, target.Real, 1e-15, "#2 real");
             Assert.AreEqual(-0.623065008994206, target.Imag, 1e-15, "#2 imag");
 
             number = new Complex(-0.5, -0.3);
-            target = number.Acosec();
+            target = number.Acsc();
             Assert.AreEqual(-0.947077300710628, target.Real, 1e-15, "#3 real");
             Assert.AreEqual(1.200699546128141, target.Imag, 1e-15, "#3 imag");
 
             number = new Complex(0.5, -1.2);
-            target = number.Acosec();
+            target = number.Acsc();
             Assert.AreEqual(0.241152594809211, target.Real, 1e-15, "#4 real");
             Assert.AreEqual(0.678053948499639, target.Imag, 1e-15, "#4 imag");
 
             // Static
-            target = Complex.Acosec(number);
+            target = Complex.Acsc(number);
             Assert.AreEqual(0.241152594809211, target.Real, 1e-15, "#5 real");
             Assert.AreEqual(0.678053948499639, target.Imag, 1e-15, "#5 imag");
         }
@@ -958,27 +958,27 @@ namespace Mbs.UnitTests.Numerics
         public void Complex_Cosech_Matlab_Conformance()
         {
             var number = new Complex(0.1, 0.3);
-            Complex target = number.Cosech();
+            Complex target = number.Csch();
             Assert.AreEqual(0.982821247207556, target.Real, 1e-15, "#1 real");
             Assert.AreEqual(-3.050349711478128, target.Imag, 1e-15, "#1 imag");
 
             number = new Complex(-0.1, 1.5);
-            target = number.Cosech();
+            target = number.Csch();
             Assert.AreEqual(-0.007050056448563, target.Real, 1e-15, "#2 real");
             Assert.AreEqual(-0.997469719407415, target.Imag, 1e-15, "#2 imag");
 
             number = new Complex(-0.5, -0.3);
-            target = number.Cosech();
+            target = number.Csch();
             Assert.AreEqual(-1.387181647643423, target.Real, 1e-15, "#3 real");
             Assert.AreEqual(0.928564459613600, target.Imag, 1e-15, "#3 imag");
 
             number = new Complex(0.5, -1.2);
-            target = number.Cosech();
+            target = number.Csch();
             Assert.AreEqual(0.165599691781259, target.Real, 1e-15, "#4 real");
             Assert.AreEqual(0.921730580972834, target.Imag, 1e-15, "#4 imag");
 
             // Static
-            target = Complex.Cosech(number);
+            target = Complex.Csch(number);
             Assert.AreEqual(0.165599691781259, target.Real, 1e-15, "#5 real");
             Assert.AreEqual(0.921730580972834, target.Imag, 1e-15, "#5 imag");
         }
@@ -1132,27 +1132,27 @@ namespace Mbs.UnitTests.Numerics
         public void Complex_Acosech_Matlab_Conformance()
         {
             var number = new Complex(0.1, 0.3);
-            Complex target = number.Acosech();
+            Complex target = number.Acsch();
             Assert.AreEqual(1.824198702193883, target.Real, 1e-15, "#1 real");
             Assert.AreEqual(-1.233095217529344, target.Imag, 1e-15, "#1 imag");
 
             number = new Complex(-0.1, 1.5);
-            target = number.Acosech();
+            target = number.Acsch();
             Assert.AreEqual(-0.059040931232830, target.Real, 1e-15, "#2 real");
             Assert.AreEqual(-0.724233722076607, target.Imag, 1e-15, "#2 imag");
 
             number = new Complex(-0.5, -0.3);
-            target = number.Acosech();
+            target = number.Acsch();
             Assert.AreEqual(-1.276772226623233, target.Real, 1e-15, "#3 real");
             Assert.AreEqual(0.474289102065753, target.Imag, 1e-15, "#3 imag");
 
             number = new Complex(0.5, -1.2);
-            target = number.Acosech();
+            target = number.Acsch();
             Assert.AreEqual(0.384546338338748, target.Real, 1e-15, "#4 real");
             Assert.AreEqual(0.721631195207434, target.Imag, 1e-15, "#4 imag");
 
             // Static
-            target = Complex.Acosech(number);
+            target = Complex.Acsch(number);
             Assert.AreEqual(0.384546338338748, target.Real, 1e-15, "#5 real");
             Assert.AreEqual(0.721631195207434, target.Imag, 1e-15, "#5 imag");
         }

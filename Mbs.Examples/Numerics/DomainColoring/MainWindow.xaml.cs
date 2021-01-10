@@ -18,6 +18,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using DomainColoring.ColorMaps;
 using DomainColoring.ComplexFunctions;
+using DomainColoring.ComplexFunctions.Predefined;
 using Mbs.Numerics;
 
 // ReSharper disable once RedundantExtendsListEntry
@@ -40,14 +41,17 @@ namespace DomainColoring
 
         private const double ZoomFactor = 1.25;
         private const int InitialMapIndex = 0;
+        private const int InitialCategoryIndex = 0;
         private const int InitialFunctionIndex = 0;
 
         private static readonly ColorMap[] Maps = PredefinedColorMaps.Get().ToArray();
-        private static readonly ComplexFunction[] Functions = PredefinedComplexFunctions.Get().ToArray();
+        private static readonly Category[] Categories = Functions.GetCategories().ToArray();
 
         private readonly object imageLock = new object();
 
+        private ComplexFunction[] functions;
         private ColorMap currentMap;
+        private Category currentCategory;
         private ComplexFunction currentFunction;
         private Point ptOrigin;
         private Point ptScale;
@@ -58,7 +62,6 @@ namespace DomainColoring
 
         public MainWindow()
         {
-            Functions[InitialFunctionIndex].Reset();
             InitializeComponent();
 
             foreach (ColorMap c in Maps)
@@ -66,29 +69,48 @@ namespace DomainColoring
                 ColorMapComboBox.Items.Add(c.Label);
             }
 
-            foreach (ComplexFunction f in Functions)
+            foreach (Category c in Categories)
             {
-                if (f.Function == null)
-                {
-                    FunctionComboBox.Items.Add(new Separator());
-                }
-                else
-                {
-                    FunctionComboBox.Items.Add(f.Label);
-                }
+                CategoryComboBox.Items.Add(c.Label);
             }
 
-            currentMap = Maps[InitialMapIndex];
-            currentFunction = Functions[InitialFunctionIndex];
-
+            CategoryComboBox.SelectedIndex = InitialCategoryIndex;
             ColorMapComboBox.SelectedIndex = InitialMapIndex;
-            FunctionComboBox.SelectedIndex = InitialFunctionIndex;
+        }
+
+        private void CategoryChanged(object unused, SelectionChangedEventArgs e)
+        {
+            e.Handled = true;
+            Category c = Categories[CategoryComboBox.SelectedIndex];
+            if (c != currentCategory)
+            {
+                currentCategory = c;
+                functions = c.Functions.ToArray();
+                FunctionComboBox.Items.Clear();
+                foreach (ComplexFunction f in functions)
+                {
+                    if (f.Function == null)
+                    {
+                        FunctionComboBox.Items.Add(new Separator());
+                    }
+                    else
+                    {
+                        var equation = f.TexKey != null
+                            ? (Viewbox)Resources[f.TexKey]
+                            : null;
+                        FunctionComboBox.Items.Add(equation != null ? (object)equation : f.Label);
+                    }
+                }
+
+                FunctionComboBox.SelectedIndex = InitialFunctionIndex;
+            }
         }
 
         private void FunctionChanged(object unused, SelectionChangedEventArgs e)
         {
             e.Handled = true;
-            ComplexFunction f = Functions[FunctionComboBox.SelectedIndex];
+            int i = FunctionComboBox.SelectedIndex < InitialFunctionIndex ? 0 : FunctionComboBox.SelectedIndex;
+            ComplexFunction f = functions[i];
             if (f != currentFunction)
             {
                 f.Reset();
@@ -126,7 +148,7 @@ namespace DomainColoring
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void Render(double width, double height)
         {
-            if (currentFunction == null || currentMap == null)
+            if (currentFunction == null || currentMap == null || width == 0 || height == 0)
             {
                 return;
             }

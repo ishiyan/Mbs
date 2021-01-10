@@ -1,0 +1,161 @@
+﻿<ResourceDictionary x:Class="DomainColoring.ComplexFunctions.TeX.Equations_Trigonometric_Inverse" 
+                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/DomainColoring;component/ComplexFunctions/TeX/Equations.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+
+    <!-- Trigonometric: arcsin\ z^{n} -->
+
+    <Viewbox x:Key="Trigonometric|AsinZ1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="12">
+    </Viewbox>
+
+    <Viewbox x:Key="Trigonometric|AsinZ2" Style="{StaticResource EqViewbox}" x:Shared="False" Height="16">
+    </Viewbox>
+
+    <Viewbox x:Key="Trigonometric|AsinZ3" Style="{StaticResource EqViewbox}" x:Shared="False" Height="16">
+    </Viewbox>
+
+    <Viewbox x:Key="Trigonometric|AsinZ4" Style="{StaticResource EqViewbox}" x:Shared="False" Height="16">
+    </Viewbox>
+
+    <Viewbox x:Key="Trigonometric|AsinZ5" Style="{StaticResource EqViewbox}" x:Shared="False" Height="16">
+    </Viewbox>
+
+    <Viewbox x:Key="Trigonometric|AsinZ6" Style="{StaticResource EqViewbox}" x:Shared="False" Height="16">
+    </Viewbox>
+
+    <Viewbox x:Key="Trigonometric|AsinZ7" Style="{StaticResource EqViewbox}" x:Shared="False" Height="16">
+    </Viewbox>
+
+    <!-- Trigonometric: arcsin\ \frac{1}{z^{n}} -->
+
+    <Viewbox x:Key="Trigonometric|Asin1Z1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Trigonometric|Asin1Z2" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Trigonometric|Asin1Z3" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Trigonometric|Asin1Z4" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Trigonometric|Asin1Z5" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Trigonometric|Asin1Z6" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Trigonometric|Asin1Z7" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <!-- Trigonometric: arcsin\ \frac{1}{z^{n}+1} -->
+
+    <Viewbox x:Key="Trigonometric|Asin1Z1P1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Trigonometric|Asin1Z2P1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Trigonometric|Asin1Z3P1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Trigonometric|Asin1Z4P1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Trigonometric|Asin1Z5P1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Trigonometric|Asin1Z6P1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Trigonometric|Asin1Z7P1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <!-- Trigonometric: arcsin^{n}\ z -->
+
+    <Viewbox x:Key="Trigonometric|Asin2Z1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="16">
+    </Viewbox>
+
+    <Viewbox x:Key="Trigonometric|Asin3Z1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="16">
+    </Viewbox>
+
+    <Viewbox x:Key="Trigonometric|Asin4Z1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="16">
+    </Viewbox>
+
+    <!-- Trigonometric: arcsin^{n}\ \frac{1}{z} -->
+
+    <Viewbox x:Key="Trigonometric|Asin21Z1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Trigonometric|Asin31Z1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Trigonometric|Asin41Z1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <!-- Trigonometric: arcsin^{n}\ \frac{1}{z^2+1} -->
+
+    <Viewbox x:Key="Trigonometric|Asin21Z2P1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Trigonometric|Asin31Z2P1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Trigonometric|Asin41Z2P1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <!-- Trigonometric: arccos\ z^{n} -->
+
+    <Viewbox x:Key="Trigonometric|AcosZ1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="8">
+    </Viewbox>
+
+    <!-- Trigonometric: arccos\ \frac{1}{z^{n}} -->
+
+    <Viewbox x:Key="Trigonometric|Acos1Z1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <!-- Trigonometric: arctan\ z^{n} -->
+
+    <Viewbox x:Key="Trigonometric|AtanZ1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="11">
+    </Viewbox>
+
+    <!-- Trigonometric: arctan\ \frac{1}{z^{n}} -->
+
+    <Viewbox x:Key="Trigonometric|Atan1Z1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <!-- Trigonometric: arccot\ z^{n} -->
+
+    <Viewbox x:Key="Trigonometric|AcotZ1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="12">
+    </Viewbox>
+
+    <!-- Trigonometric: arccot\ \frac{1}{z^{n}} -->
+
+    <Viewbox x:Key="Trigonometric|Acot1Z1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <!-- Trigonometric: arcsec\ z^{n} -->
+
+    <Viewbox x:Key="Trigonometric|AsecZ1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="8">
+    </Viewbox>
+
+    <!-- Trigonometric: arcsec\ \frac{1}{z^{n}} -->
+
+    <Viewbox x:Key="Trigonometric|Asec1Z1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <!-- Trigonometric: arccsc\ z^{n} -->
+
+    <Viewbox x:Key="Trigonometric|AcscZ1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="8">
+    </Viewbox>
+
+    <!-- Trigonometric: arccsc\ \frac{1}{z^{n}} -->
+
+    <Viewbox x:Key="Trigonometric|Acsc1Z1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+</ResourceDictionary>

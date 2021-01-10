@@ -1,0 +1,18 @@
+﻿<ResourceDictionary x:Class="DomainColoring.ComplexFunctions.TeX.Equations" 
+                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Common styles. -->
+    <Style x:Key="EqPath" TargetType="{x:Type Path}">
+        <Setter Property="StrokeThickness" Value="0" />
+        <Setter Property="Fill" Value="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Foreground}" />
+        <Setter Property="Stroke" Value="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Foreground}" />
+    </Style>
+    <Style x:Key="EqViewbox" TargetType="{x:Type Viewbox}">
+        <Setter Property="Stretch" Value="Uniform" />
+        <Setter Property="Height" Value="40" />
+        <Setter Property="Width" Value="Auto" />
+        <Setter Property="Margin" Value="0" />
+    </Style>
+
+</ResourceDictionary>

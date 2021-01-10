@@ -1,0 +1,161 @@
+﻿<ResourceDictionary x:Class="DomainColoring.ComplexFunctions.TeX.Equations_Hyperbolic_Inverse" 
+                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/DomainColoring;component/ComplexFunctions/TeX/Equations.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+
+    <!-- Hyperbolic: arcsinh\ z^{n} -->
+
+    <Viewbox x:Key="Hyperbolic|AsinhZ1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="12">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|AsinhZ2" Style="{StaticResource EqViewbox}" x:Shared="False" Height="16">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|AsinhZ3" Style="{StaticResource EqViewbox}" x:Shared="False" Height="16">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|AsinhZ4" Style="{StaticResource EqViewbox}" x:Shared="False" Height="16">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|AsinhZ5" Style="{StaticResource EqViewbox}" x:Shared="False" Height="16">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|AsinhZ6" Style="{StaticResource EqViewbox}" x:Shared="False" Height="16">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|AsinhZ7" Style="{StaticResource EqViewbox}" x:Shared="False" Height="16">
+    </Viewbox>
+
+    <!-- Hyperbolic: arcsinh\ \frac{1}{z^{n}} -->
+
+    <Viewbox x:Key="Hyperbolic|Asinh1Z1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|Asinh1Z2" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|Asinh1Z3" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|Asinh1Z4" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|Asinh1Z5" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|Asinh1Z6" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|Asinh1Z7" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <!-- Hyperbolic: arcsinh\ \frac{1}{z^{n}+1} -->
+
+    <Viewbox x:Key="Hyperbolic|Asinh1Z1P1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|Asinh1Z2P1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|Asinh1Z3P1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|Asinh1Z4P1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|Asinh1Z5P1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|Asinh1Z6P1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|Asinh1Z7P1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <!-- Hyperbolic: arcsinh^{n}\ z -->
+
+    <Viewbox x:Key="Hyperbolic|Asinh2Z1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="16">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|Asinh3Z1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="16">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|Asinh4Z1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="16">
+    </Viewbox>
+
+    <!-- Hyperbolic: arcsinh^{n}\ \frac{1}{z} -->
+
+    <Viewbox x:Key="Hyperbolic|Asinh21Z1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|Asinh31Z1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|Asinh41Z1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <!-- Hyperbolic: arcsinh^{n}\ \frac{1}{z^2+1} -->
+
+    <Viewbox x:Key="Hyperbolic|Asinh21Z2P1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|Asinh31Z2P1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <Viewbox x:Key="Hyperbolic|Asinh41Z2P1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <!-- Hyperbolic: arccosh\ z^{n} -->
+
+    <Viewbox x:Key="Hyperbolic|AcoshZ1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="8">
+    </Viewbox>
+
+    <!-- Hyperbolic: arccosh\ \frac{1}{z^{n}} -->
+
+    <Viewbox x:Key="Hyperbolic|Acosh1Z1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <!-- Hyperbolic: arctanh\ z^{n} -->
+
+    <Viewbox x:Key="Hyperbolic|AtanhZ1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="11">
+    </Viewbox>
+
+    <!-- Hyperbolic: arctanh\ \frac{1}{z^{n}} -->
+
+    <Viewbox x:Key="Hyperbolic|Atanh1Z1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <!-- Hyperbolic: arccoth\ z^{n} -->
+
+    <Viewbox x:Key="Hyperbolic|AcothZ1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="12">
+    </Viewbox>
+
+    <!-- Hyperbolic: arccoth\ \frac{1}{z^{n}} -->
+
+    <Viewbox x:Key="Hyperbolic|Acoth1Z1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <!-- Hyperbolic: arcsech\ z^{n} -->
+
+    <Viewbox x:Key="Hyperbolic|AsechZ1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="8">
+    </Viewbox>
+
+    <!-- Hyperbolic: arcsech\ \frac{1}{z^{n}} -->
+
+    <Viewbox x:Key="Hyperbolic|Asech1Z1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+    <!-- Hyperbolic: arccsch\ z^{n} -->
+
+    <Viewbox x:Key="Hyperbolic|AcschZ1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="8">
+    </Viewbox>
+
+    <!-- Hyperbolic: arccsch\ \frac{1}{z^{n}} -->
+
+    <Viewbox x:Key="Hyperbolic|Acsch1Z1" Style="{StaticResource EqViewbox}" x:Shared="False" Height="38">
+    </Viewbox>
+
+</ResourceDictionary>

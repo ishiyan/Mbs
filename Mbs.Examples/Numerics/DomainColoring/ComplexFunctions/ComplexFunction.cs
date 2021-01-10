@@ -7,6 +7,8 @@ namespace DomainColoring.ComplexFunctions
     {
         public string Label { get; set; }
 
+        public string TexKey { get; set; }
+
         public Func<Complex, Complex> Function { get; set; }
 
         public double ReMin { get; set; } = -Constants.Pi;

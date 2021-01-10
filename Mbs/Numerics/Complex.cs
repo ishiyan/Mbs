@@ -960,9 +960,9 @@ namespace Mbs.Numerics
         /// </summary>
         /// <param name="number">A complex number.</param>
         /// <returns>The cosecant of the specified complex number.</returns>
-        public static Complex Cosec(Complex number)
+        public static Complex Csc(Complex number)
         {
-            return number.Cosec();
+            return number.Csc();
         }
 
         /// <summary>
@@ -1020,9 +1020,9 @@ namespace Mbs.Numerics
         /// </summary>
         /// <param name="number">A complex number.</param>
         /// <returns>The arcus cosecant of the specified complex number.</returns>
-        public static Complex Acosec(Complex number)
+        public static Complex Acsc(Complex number)
         {
-            return number.Acosec();
+            return number.Acsc();
         }
 
         /// <summary>
@@ -1080,9 +1080,9 @@ namespace Mbs.Numerics
         /// </summary>
         /// <param name="number">A complex number.</param>
         /// <returns>The hyperbolic  of the specified complex number.</returns>
-        public static Complex Cosech(Complex number)
+        public static Complex Csch(Complex number)
         {
-            return number.Cosech();
+            return number.Csch();
         }
 
         /// <summary>
@@ -1140,9 +1140,9 @@ namespace Mbs.Numerics
         /// </summary>
         /// <param name="number">A complex number.</param>
         /// <returns>The inverse hyperbolic  of the specified complex number.</returns>
-        public static Complex Acosech(Complex number)
+        public static Complex Acsch(Complex number)
         {
-            return number.Acosech();
+            return number.Acsch();
         }
 
         /// <summary>
@@ -1353,7 +1353,7 @@ namespace Mbs.Numerics
         /// The cosecant of this complex number.
         /// </summary>
         /// <returns>The cosecant of the complex number.</returns>
-        public Complex Cosec()
+        public Complex Csc()
         {
             if (IsReal)
             {
@@ -1425,7 +1425,7 @@ namespace Mbs.Numerics
         /// The arcus cosecant of this complex number.
         /// </summary>
         /// <returns>The arcus cosecant of the complex number.</returns>
-        public Complex Acosec()
+        public Complex Acsc()
         {
             Complex inv = 1 / this;
 
@@ -1511,7 +1511,7 @@ namespace Mbs.Numerics
         /// The hyperbolic cosecant of this complex number.
         /// </summary>
         /// <returns>The hyperbolic cosecant of the complex number.</returns>
-        public Complex Cosech()
+        public Complex Csch()
         {
             if (IsReal)
             {
@@ -1572,7 +1572,7 @@ namespace Mbs.Numerics
         /// The inverse hyperbolic cosecant of this complex number.
         /// </summary>
         /// <returns>The inverse hyperbolic cosecant of the complex number.</returns>
-        public Complex Acosech()
+        public Complex Acsch()
         {
             Complex inv = 1d / this;
             return (inv + (inv.Square() + 1d).Sqrt()).Log();

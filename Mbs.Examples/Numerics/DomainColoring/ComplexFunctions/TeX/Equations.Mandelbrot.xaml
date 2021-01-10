@@ -1,0 +1,14 @@
+﻿<ResourceDictionary x:Class="DomainColoring.ComplexFunctions.TeX.Equations_Mandelbrot" 
+                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/DomainColoring;component/ComplexFunctions/TeX/Equations.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+
+    <!-- Mandelbrot: z\mapsto z^2+c -->
+
+    <Viewbox x:Key="Mandelbrot|999" Style="{StaticResource EqViewbox}" x:Shared="False" Height="16">
+    </Viewbox>
+
+</ResourceDictionary>

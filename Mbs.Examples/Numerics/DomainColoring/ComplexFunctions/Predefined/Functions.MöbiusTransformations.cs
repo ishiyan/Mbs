@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Windows.Controls.Primitives;
 using Mbs.Numerics;
 
 namespace DomainColoring.ComplexFunctions.Predefined
@@ -8,8 +9,28 @@ namespace DomainColoring.ComplexFunctions.Predefined
     /// </summary>
     internal static partial class Functions
     {
-        // https://en.wikipedia.org/wiki/Möbius_transformation
         public static IEnumerable<ComplexFunction> GetMöbiusTransformations()
+        {
+            const double tStart = 0;
+            const double tEnd = 80;
+            const double dStart = 0.001;
+            const double dEnd = 0.999;
+            const double ratio = (dEnd - dStart) / (tEnd - tStart);
+
+            for (double t = tStart; t < tEnd;)
+            {
+                double c = t;
+                t += dStart + ratio * (t - tStart);
+                yield return new ComplexFunction
+                {
+                    Label = $"t = {c}", Function = z => MöbiusTransform(z, c),
+                    ReMin = -C2Pi, ReMax = C2Pi, ImMin = -C2Pi, ImMax = C2Pi,
+                };
+            }
+        }
+
+        // https://en.wikipedia.org/wiki/Möbius_transformation
+        public static IEnumerable<ComplexFunction> GetMöbiusTransformations0()
         {
             return new[]
             {

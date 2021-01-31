@@ -15,7 +15,7 @@ namespace DomainColoring.ComplexFunctions.Predefined
 
         // private const double C1Pi4 = Constants.PiOver4
         private const double C3Pi4 = Constants.PiOver4 * 3;
-        private const double C2Pi = Constants.TwoPi;
+        private const double C2Pi = Constants.TwoPi * 10;
         private const double C10Pi = Constants.Pi * 10;
 
         private static readonly ComplexFunction Separator = new ComplexFunction();

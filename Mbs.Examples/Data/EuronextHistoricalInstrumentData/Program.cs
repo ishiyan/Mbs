@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using Mbs.Trading.Data.Historical;
+using Mbs.Trading.Data.Historical.Providers.Euronext;
 using Mbs.Utilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

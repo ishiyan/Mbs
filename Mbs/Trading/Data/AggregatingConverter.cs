@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Mbs.Trading.Data.Entities;
 using Mbs.Trading.Holidays;
 using Mbs.Trading.Time;
 

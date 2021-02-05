@@ -1,4 +1,5 @@
 ﻿using Mbs.Trading.Data;
+using Mbs.Trading.Data.Entities;
 using Mbs.Trading.Data.Generators;
 using Mbs.Trading.Data.Generators.Square;
 using Swashbuckle.AspNetCore.Filters;

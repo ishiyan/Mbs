@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Mbs.Api.Services.Trading.Data.Historical;
 using Mbs.Trading.Data;
+using Mbs.Trading.Data.Entities;
 using Mbs.Trading.Data.Historical;
 
 namespace Mbs.Api.Host.IntegrationTests

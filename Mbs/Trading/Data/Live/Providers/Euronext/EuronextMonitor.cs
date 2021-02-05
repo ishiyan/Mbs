@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading;
+using Mbs.Trading.Data.Entities;
 using Mbs.Trading.Holidays;
 using Mbs.Trading.Instruments;
 using Mbs.Trading.Time;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Mbs.Trading.Data;
+using Mbs.Trading.Data.Entities;
 using Mbs.Trading.Indicators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

@@ -3,7 +3,7 @@ using Mbs.Trading.Instruments;
 using Mbs.Trading.Markets;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Mbs.UnitTests.Trading.Data.Live
+namespace Mbs.UnitTests.Trading.Data.Live.Providers.Euronext
 {
     [TestClass]
     public class EuronextMonitorTests

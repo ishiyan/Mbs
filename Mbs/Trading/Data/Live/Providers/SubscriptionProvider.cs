@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading;
+using Mbs.Trading.Data.Entities;
 using Mbs.Trading.Instruments;
 using Mbs.Trading.Time;
 #pragma warning disable SA1401 // Fields should be private

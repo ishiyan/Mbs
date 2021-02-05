@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-// ReSharper disable once CheckNamespace
-namespace Mbs.Trading.Data
+namespace Mbs.Trading.Data.Entities
 {
     /// <summary>
     /// A trade (price and volume) entity.

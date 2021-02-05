@@ -6,12 +6,12 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Xml;
+using Mbs.Trading.Data.Entities;
 using Mbs.Trading.Instruments;
 using Mbs.Trading.Time;
 using Mbs.Utilities;
 
-// ReSharper disable once CheckNamespace
-namespace Mbs.Trading.Data.Historical
+namespace Mbs.Trading.Data.Historical.Providers.Csv
 {
     /// <summary>
     /// Csv data repository utilities.

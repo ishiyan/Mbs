@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using Mbs.Numerics.RandomGenerators;
+using Mbs.Trading.Data.Entities;
 using Mbs.Trading.Time;
 using Mbs.Trading.Time.Conventions;
 

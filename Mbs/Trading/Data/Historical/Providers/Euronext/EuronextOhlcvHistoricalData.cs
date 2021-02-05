@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Mbs.Trading.Data.Entities;
 using Mbs.Trading.Time;
 
-// ReSharper disable once CheckNamespace
-namespace Mbs.Trading.Data.Historical
+namespace Mbs.Trading.Data.Historical.Providers.Euronext
 {
     /// <summary>
     /// Provides an access to the Euronext online endofday historical data.
@@ -49,6 +49,11 @@ namespace Mbs.Trading.Data.Historical
                 TimeGranularity.Year1 => list.AggregateYears(startDate, endDate, 1),
                 _ => list.Range(startDate, endDate)
             };
+        }
+
+        public IAsyncEnumerable<Ohlcv> FetchAsyncE(HistoricalDataRequest historicalDataRequest)
+        {
+            throw new NotImplementedException();
         }
     }
 }

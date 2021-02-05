@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using Mbs.Trading.Data;
+using Mbs.Trading.Data.Entities;
 using Mbs.Utilities;
 
 // ReSharper disable once CheckNamespace

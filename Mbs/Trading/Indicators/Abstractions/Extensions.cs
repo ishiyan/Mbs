@@ -1,4 +1,5 @@
 ﻿using Mbs.Trading.Data;
+using Mbs.Trading.Data.Entities;
 
 namespace Mbs.Trading.Indicators.Abstractions
 {

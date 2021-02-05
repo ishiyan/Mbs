@@ -1,5 +1,6 @@
 ﻿using System;
 using Mbs.Trading.Data;
+using Mbs.Trading.Data.Entities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Mbs.UnitTests.Trading.Data.Entities

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Mbs.Trading.Data;
+using Mbs.Trading.Data.Entities;
 
 namespace Mbs.Trading.Portfolios
 {

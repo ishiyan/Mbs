@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-// ReSharper disable once CheckNamespace
-namespace Mbs.Trading.Data
+namespace Mbs.Trading.Data.Entities
 {
     /// <summary>
     /// A price quote (bid/ask price and size pair).

@@ -1,5 +1,4 @@
-﻿// ReSharper disable once CheckNamespace
-namespace Mbs.Trading.Data.Historical
+﻿namespace Mbs.Trading.Data.Historical.Providers.Csv
 {
     /// <summary>
     /// Actions used to select a date range while enumerating entities.

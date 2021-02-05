@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using Mbs.Trading.Data.Entities;
 using Mbs.Trading.Time;
 using Mbs.Trading.Time.Conventions;
 

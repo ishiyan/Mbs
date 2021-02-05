@@ -630,7 +630,7 @@ namespace Mbs.UnitTests.Numerics
             Assert.AreEqual(0.528112712793212, target.Imag, 1e-15, "#4 imag");
 
             // Static
-            target = Complex.Cosec(number);
+            target = Complex.Csc(number);
             Assert.AreEqual(0.346077725103826, target.Real, 1e-15, "#5 real");
             Assert.AreEqual(0.528112712793212, target.Imag, 1e-15, "#5 imag");
         }

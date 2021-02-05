@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Mbs.Trading.Data.Entities;
 
 namespace Mbs.Trading.Data.Generators
 {

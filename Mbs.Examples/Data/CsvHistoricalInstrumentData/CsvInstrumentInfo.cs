@@ -1,5 +1,6 @@
 using Mbs.Trading.Currencies;
 using Mbs.Trading.Data.Historical;
+using Mbs.Trading.Data.Historical.Providers.Csv;
 using Mbs.Trading.Instruments;
 using Mbs.Trading.Markets;
 using Mbs.Trading.Time;

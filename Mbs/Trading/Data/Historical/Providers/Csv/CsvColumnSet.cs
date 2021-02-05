@@ -1,5 +1,4 @@
-﻿// ReSharper disable once CheckNamespace
-namespace Mbs.Trading.Data.Historical
+﻿namespace Mbs.Trading.Data.Historical.Providers.Csv
 {
     /// <summary>
     /// Identifies column sets in a CSV file.

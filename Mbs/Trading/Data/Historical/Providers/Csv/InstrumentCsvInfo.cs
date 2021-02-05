@@ -2,8 +2,7 @@
 using System.Linq;
 using Mbs.Trading.Time;
 
-// ReSharper disable once CheckNamespace
-namespace Mbs.Trading.Data.Historical
+namespace Mbs.Trading.Data.Historical.Providers.Csv
 {
     /// <summary>
     /// Encapsulates information about CSV files related to the same instrument.

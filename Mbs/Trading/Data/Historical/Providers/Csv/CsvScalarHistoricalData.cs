@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Mbs.Trading.Data.Entities;
 using Mbs.Trading.Time;
 using Mbs.Utilities;
 
-// ReSharper disable once CheckNamespace
-namespace Mbs.Trading.Data.Historical
+namespace Mbs.Trading.Data.Historical.Providers.Csv
 {
     /// <summary>
     /// Provides an access to the historical scalar data stored in CSV files as an enumerable scalar time series.
@@ -25,6 +25,11 @@ namespace Mbs.Trading.Data.Historical
         public async Task<IEnumerable<Scalar>> FetchAsync(HistoricalDataRequest historicalDataRequest)
         {
             return await Task.Run(() => Fetch(historicalDataRequest));
+        }
+
+        public IAsyncEnumerable<Scalar> FetchAsyncE(HistoricalDataRequest historicalDataRequest)
+        {
+            throw new NotImplementedException();
         }
 
         private IEnumerable<Scalar> Fetch(HistoricalDataRequest historicalDataRequest)

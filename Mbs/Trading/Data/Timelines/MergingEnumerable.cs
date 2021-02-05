@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Mbs.Trading.Data.Entities;
 using Mbs.Trading.Time;
 
 namespace Mbs.Trading.Data.Timelines

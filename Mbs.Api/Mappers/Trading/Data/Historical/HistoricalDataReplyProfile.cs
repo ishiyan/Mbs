@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using AutoMapper;
 using Mbs.Api.Models.Trading.Data.Historical;
 using Mbs.Trading.Data;
+using Mbs.Trading.Data.Entities;
 using Mbs.Trading.Data.Historical;
 
 namespace Mbs.Api.Mappers.Trading.Data.Historical

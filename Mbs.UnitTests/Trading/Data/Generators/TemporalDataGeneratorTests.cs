@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Mbs.Trading.Data;
+using Mbs.Trading.Data.Entities;
 using Mbs.Trading.Data.Generators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

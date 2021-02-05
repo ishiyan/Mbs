@@ -11,6 +11,7 @@ using Mbs.Api.Mappers.Trading.Data.Historical;
 using Mbs.Api.Models.Trading.Data.Historical;
 using Mbs.Api.Services.Trading.Data.Historical;
 using Mbs.Trading.Data;
+using Mbs.Trading.Data.Entities;
 using Mbs.Trading.Data.Historical;
 using Mbs.Trading.Instruments;
 using Microsoft.AspNetCore.Http;

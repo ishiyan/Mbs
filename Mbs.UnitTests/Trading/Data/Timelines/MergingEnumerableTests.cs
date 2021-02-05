@@ -1,4 +1,5 @@
 ﻿using Mbs.Trading.Data;
+using Mbs.Trading.Data.Entities;
 using Mbs.Trading.Data.Timelines;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

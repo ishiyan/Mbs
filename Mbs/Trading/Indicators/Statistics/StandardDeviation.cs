@@ -1,5 +1,6 @@
 ﻿using System;
 using Mbs.Trading.Data;
+using Mbs.Trading.Data.Entities;
 using Mbs.Trading.Indicators.Abstractions;
 using static System.FormattableString;
 

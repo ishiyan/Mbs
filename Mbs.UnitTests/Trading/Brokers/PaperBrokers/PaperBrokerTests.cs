@@ -7,6 +7,7 @@ using Mbs.Trading.Brokers.Commissions;
 using Mbs.Trading.Brokers.PaperBrokers;
 using Mbs.Trading.Currencies;
 using Mbs.Trading.Data;
+using Mbs.Trading.Data.Entities;
 using Mbs.Trading.Data.Historical;
 using Mbs.Trading.Data.Timelines;
 using Mbs.Trading.Instruments;
@@ -1166,6 +1167,11 @@ namespace Mbs.UnitTests.Trading.Brokers.PaperBrokers
             public async Task<IEnumerable<T>> FetchAsync(HistoricalDataRequest historicalDataRequest)
             {
                 return await Task.Run(() => list);
+            }
+
+            public IAsyncEnumerable<T> FetchAsyncE(HistoricalDataRequest historicalDataRequest)
+            {
+                throw new NotImplementedException();
             }
         }
     }

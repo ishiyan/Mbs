@@ -5,6 +5,7 @@ using Mbs.Api.ExampleProviders.Trading.Data.Generators.Sinusoidal;
 using Mbs.Api.Extensions.ExceptionHandling;
 using Mbs.Api.Extensions.Swagger;
 using Mbs.Trading.Data;
+using Mbs.Trading.Data.Entities;
 using Mbs.Trading.Data.Generators;
 using Mbs.Trading.Data.Generators.Sinusoidal;
 using Microsoft.AspNetCore.Http;

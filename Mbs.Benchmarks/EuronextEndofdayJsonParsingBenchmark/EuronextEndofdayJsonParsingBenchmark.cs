@@ -2,6 +2,7 @@
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
 using Mbs.Trading.Data;
+using Mbs.Trading.Data.Entities;
 
 namespace EuronextEndofdayJsonParsing
 {

@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using Mbs.Numerics;
 using Mbs.Numerics.RandomGenerators.FractionalBrownianMotion;
+using Mbs.Trading.Data.Entities;
 using Mbs.Utilities;
 
 namespace Mbs.Trading.Data.Generators.FractionalBrownianMotion

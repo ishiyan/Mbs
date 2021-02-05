@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Threading;
 using Mbs.Trading.Brokers.Commissions;
 using Mbs.Trading.Data;
+using Mbs.Trading.Data.Entities;
 using Mbs.Trading.Data.Live;
 using Mbs.Trading.Instruments;
 using Mbs.Trading.Orders;

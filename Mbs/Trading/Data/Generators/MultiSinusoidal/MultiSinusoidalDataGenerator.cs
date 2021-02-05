@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using Mbs.Numerics;
 using Mbs.Numerics.RandomGenerators;
+using Mbs.Trading.Data.Entities;
 using Mbs.Trading.Time;
 using Mbs.Trading.Time.Conventions;
 

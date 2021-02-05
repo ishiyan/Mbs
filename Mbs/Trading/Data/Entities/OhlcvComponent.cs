@@ -1,5 +1,4 @@
-﻿// ReSharper disable once CheckNamespace
-namespace Mbs.Trading.Data
+﻿namespace Mbs.Trading.Data.Entities
 {
     /// <summary>
     /// An ohlcv component.
@@ -27,17 +26,17 @@ namespace Mbs.Trading.Data
         LowestPrice,
 
         /// <summary>
-        /// The median price, calculated as (low + hight)/2.
+        /// The median price, calculated as (low + high)/2.
         /// </summary>
         MedianPrice,
 
         /// <summary>
-        /// The typical price, calculated as (low + hight + close)/3.
+        /// The typical price, calculated as (low + high + close)/3.
         /// </summary>
         TypicalPrice,
 
         /// <summary>
-        /// The weighted price, calculated as (low + hight + open + close)/4.
+        /// The weighted price, calculated as (low + high + open + close)/4.
         /// </summary>
         WeightedPrice,
 

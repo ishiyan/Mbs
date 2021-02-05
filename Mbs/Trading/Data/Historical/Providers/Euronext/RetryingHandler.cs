@@ -4,8 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Mbs.Utilities;
 
-// ReSharper disable once CheckNamespace
-namespace Mbs.Trading.Data.Historical
+namespace Mbs.Trading.Data.Historical.Providers.Euronext
 {
     /// <summary>
     /// Retries download up to <see cref="Retries"/> times waiting <see cref="TimeoutSeconds"/> each attempt.

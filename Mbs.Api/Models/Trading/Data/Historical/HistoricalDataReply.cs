@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Mbs.Trading.Data;
+using Mbs.Trading.Data.Entities;
 
 namespace Mbs.Api.Models.Trading.Data.Historical
 {

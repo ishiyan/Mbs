@@ -10,15 +10,16 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Mbs.Trading.Data;
+using Mbs.Trading.Data.Entities;
 using Mbs.Trading.Data.Historical;
+using Mbs.Trading.Data.Historical.Providers.Euronext;
 using Mbs.Trading.Instruments;
 using Mbs.Trading.Markets;
 using Mbs.Trading.Time;
 using Mbs.Utilities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Mbs.UnitTests.Trading.Data.Historical.Providers
+namespace Mbs.UnitTests.Trading.Data.Historical.Providers.Euronext
 {
     [TestClass]
     public class EuronextHistoricalDataTests

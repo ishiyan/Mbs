@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Mbs.Trading.Data.Entities;
 using Mbs.Trading.Time;
 using Mbs.Utilities;
 
-// ReSharper disable once CheckNamespace
-namespace Mbs.Trading.Data.Historical
+namespace Mbs.Trading.Data.Historical.Providers.Csv
 {
     /// <summary>
     /// Provides an access to the intraday historical quote time series stored in CSV files as an enumerable quote time series.
@@ -24,6 +24,11 @@ namespace Mbs.Trading.Data.Historical
         public async Task<IEnumerable<Quote>> FetchAsync(HistoricalDataRequest historicalDataRequest)
         {
             return await Task.Run(() => Fetch(historicalDataRequest));
+        }
+
+        public IAsyncEnumerable<Quote> FetchAsyncE(HistoricalDataRequest historicalDataRequest)
+        {
+            throw new System.NotImplementedException();
         }
 
         private IEnumerable<Quote> Fetch(HistoricalDataRequest historicalDataRequest)

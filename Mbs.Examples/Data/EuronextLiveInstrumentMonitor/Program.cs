@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Mbs.Trading.Data;
+using Mbs.Trading.Data.Entities;
 using Mbs.Trading.Data.Live;
 using Mbs.Trading.Instruments;
 using Mbs.Utilities;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using Mbs.Trading.Data;
+using Mbs.Trading.Data.Entities;
 using Mbs.Trading.Data.Live;
 using Mbs.Trading.Instruments;
 using Mbs.Trading.Time;

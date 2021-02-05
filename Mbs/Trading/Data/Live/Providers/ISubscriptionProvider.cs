@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using Mbs.Trading.Data.Entities;
 using Mbs.Trading.Instruments;
 using Mbs.Trading.Time;
 

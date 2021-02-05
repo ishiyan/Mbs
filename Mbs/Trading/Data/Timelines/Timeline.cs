@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
+using Mbs.Trading.Data.Entities;
 using Mbs.Trading.Data.Historical;
 using Mbs.Trading.Data.Live;
 using Mbs.Trading.Instruments;

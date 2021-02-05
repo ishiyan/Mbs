@@ -5,11 +5,11 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Mbs.Trading.Data.Historical;
+using Mbs.Trading.Data.Historical.Providers.Euronext;
 using Mbs.Utilities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Mbs.UnitTests.Trading.Data.Historical.Providers
+namespace Mbs.UnitTests.Trading.Data.Historical.Providers.Euronext
 {
     [TestClass]
     public class RetryingHandlerTests

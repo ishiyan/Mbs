@@ -6,6 +6,7 @@ using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Mbs.Trading.Data;
+using Mbs.Trading.Data.Entities;
 using Mbs.Trading.Indicators.Abstractions;
 using Mbs.Trading.Indicators.GeraldGoertzel;
 using Mbs.Trading.Indicators.JohnBollinger;

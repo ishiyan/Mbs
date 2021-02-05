@@ -2,6 +2,7 @@
 using System.Globalization;
 using Mbs.Numerics.RandomGenerators;
 using Mbs.Numerics.RandomGenerators.FractionalBrownianMotion;
+using Mbs.Trading.Data.Entities;
 using Mbs.Trading.Time;
 using Mbs.Trading.Time.Conventions;
 

@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Mbs.Trading.Data;
+using Mbs.Trading.Data.Entities;
 using Mbs.Trading.Indicators.Abstractions;
 using Mbs.Trading.Indicators.Statistics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

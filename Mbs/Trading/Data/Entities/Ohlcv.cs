@@ -3,8 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using Mbs.Utilities;
 
-// ReSharper disable once CheckNamespace
-namespace Mbs.Trading.Data
+namespace Mbs.Trading.Data.Entities
 {
     /// <summary>
     /// An [open, high, low, close, volume] bar.

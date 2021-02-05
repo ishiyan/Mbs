@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Mbs.Trading.Currencies;
 using Mbs.Trading.Data;
+using Mbs.Trading.Data.Entities;
 using Mbs.Trading.Instruments;
 using Mbs.Trading.Portfolios.Enumerations;
 

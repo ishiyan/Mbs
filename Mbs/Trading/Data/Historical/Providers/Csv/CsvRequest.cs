@@ -1,6 +1,6 @@
 using System;
 
-namespace Mbs.Trading.Data.Historical
+namespace Mbs.Trading.Data.Historical.Providers.Csv
 {
     internal class CsvRequest
     {

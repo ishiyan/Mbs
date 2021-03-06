@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Mbs.Trading.Data.Entities;
 using Mbs.Trading.Time;
@@ -7,55 +9,47 @@ using Mbs.Utilities;
 namespace Mbs.Trading.Data.Historical.Providers.Csv
 {
     /// <summary>
-    /// Provides an access to the intraday historical trade time series stored in CSV files as an enumerable trade time series.
+    /// Provides an access to the intraday historical <see cref="Trade"/> time series stored in CSV files as an async enumerable trade time series.
     /// </summary>
     public sealed class CsvTradeHistoricalData : IHistoricalData<Trade>
     {
         /// <inheritdoc />
-        public string Provider => CsvRepository.Provider;
+        public string Provider => CsvHistoricalData.Provider;
 
-        /// <summary>
-        /// Given a historical data request, creates an interface to enumerate the trade time series.
-        /// <para />
-        /// To enumerate the all available data, pass the <c>DateTime.MinValue</c> as a begin time and <c>DateTime.MaxValue</c> as an end time.
-        /// </summary>
-        /// <param name="historicalDataRequest">The historical data request.</param>
-        /// <returns>An enumerable interface.</returns>
-        public async Task<IEnumerable<Trade>> FetchAsync(HistoricalDataRequest historicalDataRequest)
+        public async Task<IEnumerable<Trade>> FetchAsyncE(HistoricalDataRequest historicalDataRequest)
         {
-            return await Task.Run(() => Fetch(historicalDataRequest));
+            return await Task.Run(() => new List<Trade>());
         }
 
-        public IAsyncEnumerable<Trade> FetchAsyncE(HistoricalDataRequest historicalDataRequest)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        private IEnumerable<Trade> Fetch(HistoricalDataRequest historicalDataRequest)
+        /// <inheritdoc />
+        public async IAsyncEnumerable<Trade> FetchAsync(HistoricalDataRequest historicalDataRequest, [EnumeratorCancellation] CancellationToken cancellationToken)
         {
             const string trade = "trade";
             if (historicalDataRequest.TimeGranularity.Equals(TimeGranularity.Aperiodic))
             {
-                InstrumentCsvInfo instrumentCsvInfo = CsvRepository.InstrumentInfo(historicalDataRequest.Instrument);
+                InstrumentCsvInfo instrumentCsvInfo = CsvHistoricalData.InstrumentInfo(historicalDataRequest.Instrument);
                 if (instrumentCsvInfo == null)
                 {
-                    return new List<Trade>();
+                    yield break;
                 }
 
                 CsvInfo csvInfo = instrumentCsvInfo.GetFirstData(CsvDataType.Trade);
                 if (csvInfo == null)
                 {
-                    Log.Error(CsvRepository.InstrumentHasNoData(trade));
-                    return new List<Trade>();
+                    Log.Error(CsvHistoricalData.InstrumentHasNoData(trade));
+                    yield break;
                 }
 
                 historicalDataRequest.IsDataAdjusted = csvInfo.IsAdjustedData;
-                var csvRequest = new CsvRequest { StartDate = historicalDataRequest.StartDate, EndDate = historicalDataRequest.EndDate };
-                return CsvRepository.EnumerateTradeAsync(csvInfo, csvRequest);
+                var csvRequest = new CsvRequest { StartDateTime = historicalDataRequest.StartDate, EndDateTime = historicalDataRequest.EndDate };
+
+                await foreach (var t in CsvHistoricalData.EnumerateTradeAsync(csvInfo, csvRequest, cancellationToken))
+                {
+                    yield return t;
+                }
             }
 
-            Log.Error(CsvRepository.TimeGranularityNotSupported(historicalDataRequest.TimeGranularity, trade));
-            return new List<Trade>();
+            Log.Error(CsvHistoricalData.TimeGranularityNotSupported(historicalDataRequest.TimeGranularity, trade));
         }
     }
 }

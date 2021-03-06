@@ -1,11 +1,13 @@
 ﻿using System;
+using System.Buffers;
 using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.IO.Pipelines;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
-using System.Xml;
 using Mbs.Trading.Data.Entities;
 using Mbs.Trading.Instruments;
 using Mbs.Trading.Time;
@@ -16,126 +18,17 @@ namespace Mbs.Trading.Data.Historical.Providers.Csv
     /// <summary>
     /// Csv data repository utilities.
     /// </summary>
-    public static class CsvRepository
+    public static class CsvHistoricalData
     {
         /// <summary>
         /// The data provider name.
         /// </summary>
         internal const string Provider = "Csv";
 
-        private const string Prefix = "CsvRepository";
-        private const string InstrumentElement = "instrument";
-        private const string MicAttribute = "mic";
-        private const string SymbolAttribute = "symbol";
-        private const string IsinAttribute = "isin";
-        private const string FileAttribute = "file";
-        private const string Underscore = "_";
-        private const string CsvColumnIndicesAttribute = "csvColumnIndices";
-        private const string CsvDateTimeFormatAttribute = "csvDateTimeFormat";
-        private const string CsvTimeGranularityAttribute = "csvTimeGranularity";
-        private const string CsvSeparatorCharacterAttribute = "csvSeparatorChar";
-        private const string CsvCommentCharacterAttribute = "csvCommentChar";
-        private const string CsvIsAdjustedDataAttribute = "csvIsAdjusted";
+        private const string Prefix = "CsvHistoricalData";
 
-        private static readonly object RepositoryPathLock = new object();
-        private static readonly object RepositoryIndexFileLock = new object();
         private static readonly object CacheDictionaryLock = new object();
         private static readonly Dictionary<string, InstrumentCsvInfo> InfoCacheDictionary = new Dictionary<string, InstrumentCsvInfo>();
-        private static readonly Dictionary<string, List<Ohlcv>> OhlcvCacheDictionary = new Dictionary<string, List<Ohlcv>>();
-        private static readonly Dictionary<string, List<Scalar>> ScalarCacheDictionary = new Dictionary<string, List<Scalar>>();
-        private static readonly Dictionary<string, List<Trade>> TradeCacheDictionary = new Dictionary<string, List<Trade>>();
-        private static readonly Dictionary<string, List<Quote>> QuoteCacheDictionary = new Dictionary<string, List<Quote>>();
-
-        private static readonly string DirectorySeparator = Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture);
-        private static readonly string AltDirectorySeparator = Path.AltDirectorySeparatorChar.ToString(CultureInfo.InvariantCulture);
-
-        /// <summary>
-        /// An instance of the xml reader settings suitable to read repository index files.
-        /// </summary>
-        private static readonly XmlReaderSettings XmlReaderSettings = CreateXmlReaderSettings();
-
-        private static string repositoryPath;
-        private static string repositoryIndexFile;
-        private static long cacheInstruments;
-
-        /// <summary>
-        /// Gets or sets a path to the repository directory. Ends with the directory separator character.
-        /// </summary>
-        public static string RepositoryPath
-        {
-            get
-            {
-                lock (RepositoryPathLock)
-                {
-                    return repositoryPath;
-                }
-            }
-
-            set
-            {
-                lock (RepositoryPathLock)
-                {
-                    repositoryPath = value;
-                    if (string.IsNullOrWhiteSpace(value))
-                    {
-                        return;
-                    }
-
-                    if (!value.EndsWith(DirectorySeparator, StringComparison.Ordinal) &&
-                        !value.EndsWith(AltDirectorySeparator, StringComparison.Ordinal))
-                    {
-                        repositoryPath = string.Concat(value, DirectorySeparator);
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets a path to the repository index file.
-        /// </summary>
-        public static string RepositoryIndexFile
-        {
-            get
-            {
-                lock (RepositoryIndexFileLock)
-                {
-                    return repositoryIndexFile;
-                }
-            }
-
-            set
-            {
-                lock (RepositoryIndexFileLock)
-                {
-                    repositoryIndexFile = value;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether CSV data will be cached.
-        /// </summary>
-        public static bool IsDataCache
-        {
-            get => Interlocked.Read(ref cacheInstruments) != 0L;
-
-            set => Interlocked.Exchange(ref cacheInstruments, value ? 1L : 0L);
-        }
-
-        /// <summary>
-        /// Clears the data cache.
-        /// </summary>
-        public static void ClearDataCache()
-        {
-            lock (CacheDictionaryLock)
-            {
-                InfoCacheDictionary.Clear();
-                OhlcvCacheDictionary.Clear();
-                ScalarCacheDictionary.Clear();
-                TradeCacheDictionary.Clear();
-                QuoteCacheDictionary.Clear();
-            }
-        }
 
         /// <summary>
         /// Adds an instrument with an associated csv info to the repository.
@@ -145,38 +38,16 @@ namespace Mbs.Trading.Data.Historical.Providers.Csv
         public static void Add(Instrument instrument, CsvInfo csvInfo)
         {
             string file = csvInfo.FilePath;
-            if (string.IsNullOrWhiteSpace(file))
+            if (string.IsNullOrWhiteSpace(file) || !File.Exists(file))
             {
+                Log.Error(FileDoesNotExist(file));
                 return;
             }
 
-            if (!File.Exists(file))
-            {
-                if (!Path.IsPathRooted(file))
-                {
-                    lock (RepositoryPathLock)
-                    {
-                        if (!string.IsNullOrWhiteSpace(repositoryPath))
-                        {
-                            file = Path.Combine(repositoryPath, file);
-                        }
-                    }
-
-                    file = Path.GetFullPath(file);
-                }
-
-                if (!File.Exists(file))
-                {
-                    Log.Error(FileDoesNotExist(file));
-                    return;
-                }
-            }
-
-            csvInfo.FilePath = file;
             string key = Key(instrument);
             lock (CacheDictionaryLock)
             {
-                if (!InfoCacheDictionary.TryGetValue(key, out InstrumentCsvInfo instrumentCsvInfo))
+                if (!InfoCacheDictionary.TryGetValue(key, out var instrumentCsvInfo))
                 {
                     instrumentCsvInfo = new InstrumentCsvInfo();
                     InfoCacheDictionary.Add(key, instrumentCsvInfo);
@@ -193,10 +64,11 @@ namespace Mbs.Trading.Data.Historical.Providers.Csv
         /// <returns>The CSV info or null if not found.</returns>
         internal static InstrumentCsvInfo InstrumentInfo(Instrument instrument)
         {
-            InstrumentCsvInfo instrumentInfo = FindInstrument(instrument);
+            string key = Key(instrument);
+            var instrumentInfo = FindInstrument(key);
             if (instrumentInfo == null)
             {
-                Log.Error(MissingInstrument(instrument));
+                Log.Error(MissingInstrument(key));
             }
 
             return instrumentInfo;
@@ -239,6 +111,54 @@ namespace Mbs.Trading.Data.Historical.Providers.Csv
                 }
 
                 yield return enumerator.Current;
+            }
+        }
+
+        internal static async IAsyncEnumerable<Ohlcv> EnumerateOhlcvAsyncE(CsvInfo csvInfo, CsvRequest csvRequest, [EnumeratorCancellation] CancellationToken cancellationToken)
+        {
+            var hasEndofdayClosingTime = csvRequest.EndofdayClosingTime.HasValue;
+            var info = new Info(csvInfo, csvRequest);
+            long lineNumber = 0;
+
+            await using var fileStream = File.OpenRead(csvInfo.FilePath);
+            var pipeReader = PipeReader.Create(fileStream);
+            while (true)
+            {
+                ReadResult read = await pipeReader.ReadAsync(cancellationToken);
+                ReadOnlySequence<byte> buffer = read.Buffer;
+                while (TryReadSequence(ref buffer, out ReadOnlySequence<byte> sequence))
+                {
+                    ++lineNumber;
+                    var errorMessage = ProcessSequence(sequence, info, out Ohlcv ohlcv);
+                    if (errorMessage == null)
+                    {
+                        if (ohlcv != null)
+                        {
+                            if (hasEndofdayClosingTime)
+                            {
+                                ohlcv.Time = ohlcv.Time.Date.Add(csvRequest.EndofdayClosingTime.Value);
+                            }
+
+                            yield return ohlcv;
+                        }
+                    }
+                    else if (errorMessage.Length == 0)
+                    {
+                        yield break;
+                    }
+                    else
+                    {
+                        errorMessage = $"{Prefix}: file {csvInfo.FilePath}, line {lineNumber}: {errorMessage}, aborted";
+                        Log.Error(errorMessage);
+                        throw new AggregateException(errorMessage);
+                    }
+                }
+
+                pipeReader.AdvanceTo(buffer.Start, buffer.End);
+                if (read.IsCompleted)
+                {
+                    yield break;
+                }
             }
         }
 
@@ -393,153 +313,17 @@ namespace Mbs.Trading.Data.Historical.Providers.Csv
             return $"{Prefix}: the specified instrument has no {name} data";
         }
 
-        private static XmlReaderSettings CreateXmlReaderSettings()
-        {
-            return new XmlReaderSettings
-            {
-                CheckCharacters = false,
-                CloseInput = true,
-                ConformanceLevel = ConformanceLevel.Auto,
-                IgnoreComments = true,
-                IgnoreProcessingInstructions = true,
-                IgnoreWhitespace = true,
-                ValidationType = ValidationType.None,
-            };
-        }
-
-        private static CsvInfo FindInRepository(string key)
-        {
-            string indexFile;
-            lock (RepositoryIndexFileLock)
-            {
-                indexFile = repositoryIndexFile;
-            }
-
-            if (string.IsNullOrWhiteSpace(indexFile))
-            {
-                return null;
-            }
-
-            CsvInfo csvInfo = null;
-            try
-            {
-                using XmlReader xmlReader = XmlReader.Create(indexFile, XmlReaderSettings);
-                var xmlLineInfo = (IXmlLineInfo)xmlReader;
-                while (xmlReader.Read())
-                {
-                    if (xmlReader.NodeType == XmlNodeType.Element &&
-                        xmlReader.LocalName == InstrumentElement)
-                    {
-                        string symbol = xmlReader.GetAttribute(SymbolAttribute);
-                        if (string.IsNullOrEmpty(symbol))
-                        {
-                            Log.Error(MissingAttribute(SymbolAttribute, indexFile, xmlLineInfo.LineNumber));
-                            continue;
-                        }
-
-                        string isin = xmlReader.GetAttribute(IsinAttribute);
-                        string mic = xmlReader.GetAttribute(MicAttribute);
-                        string key2 = Key(mic, symbol, isin);
-                        if (key != key2)
-                        {
-                            continue;
-                        }
-
-                        string file = xmlReader.GetAttribute(FileAttribute);
-                        if (string.IsNullOrEmpty(file))
-                        {
-                            Log.Error(MissingAttribute(FileAttribute, indexFile, xmlLineInfo.LineNumber));
-                            continue;
-                        }
-
-                        if (!Path.IsPathRooted(file))
-                        {
-                            lock (RepositoryPathLock)
-                            {
-                                if (!string.IsNullOrWhiteSpace(repositoryPath))
-                                {
-                                    file = Path.Combine(repositoryPath, file);
-                                }
-                            }
-                        }
-
-                        file = Path.GetFullPath(file);
-                        if (!File.Exists(file))
-                        {
-                            Log.Error(FileDoesNotExist(file, indexFile, xmlLineInfo.LineNumber));
-                            break;
-                        }
-
-                        string csvColumnIndices = xmlReader.GetAttribute(CsvColumnIndicesAttribute);
-                        if (string.IsNullOrWhiteSpace(csvColumnIndices))
-                        {
-                            Log.Error(MissingAttribute(CsvColumnIndicesAttribute, indexFile, xmlLineInfo.LineNumber));
-                            break;
-                        }
-
-                        string csvDateTimeFormat = xmlReader.GetAttribute(CsvDateTimeFormatAttribute);
-                        if (string.IsNullOrWhiteSpace(csvDateTimeFormat))
-                        {
-                            Log.Error(MissingAttribute(CsvDateTimeFormatAttribute, indexFile, xmlLineInfo.LineNumber));
-                            break;
-                        }
-
-                        string csvTimeGranularity = xmlReader.GetAttribute(CsvTimeGranularityAttribute);
-                        if (string.IsNullOrWhiteSpace(csvTimeGranularity))
-                        {
-                            Log.Error(MissingAttribute(CsvTimeGranularityAttribute, indexFile, xmlLineInfo.LineNumber));
-                            break;
-                        }
-
-                        string csvSeparatorCharacter = xmlReader.GetAttribute(CsvSeparatorCharacterAttribute);
-                        if (string.IsNullOrWhiteSpace(csvSeparatorCharacter))
-                        {
-                            Log.Error(MissingAttribute(CsvSeparatorCharacterAttribute, indexFile, xmlLineInfo.LineNumber));
-                            break;
-                        }
-
-                        string csvCommentCharacter = xmlReader.GetAttribute(CsvCommentCharacterAttribute);
-                        if (string.IsNullOrWhiteSpace(csvCommentCharacter))
-                        {
-                            Log.Error(MissingAttribute(CsvCommentCharacterAttribute, indexFile, xmlLineInfo.LineNumber));
-                            break;
-                        }
-
-                        string csvIsAdjustedData = xmlReader.GetAttribute(CsvIsAdjustedDataAttribute);
-                        csvInfo = new CsvInfo(
-                            file,
-                            csvColumnIndices,
-                            csvDateTimeFormat,
-                            csvTimeGranularity,
-                            csvSeparatorCharacter,
-                            csvCommentCharacter,
-                            csvIsAdjustedData);
-                        break;
-                    }
-                }
-            }
-            catch (XmlException e)
-            {
-                Log.Error($"{Prefix}: file {indexFile} XmlException: {e.Message}");
-                csvInfo = null;
-            }
-            catch (IOException e)
-            {
-                Log.Error($"{Prefix}: file {indexFile} IOException: {e.Message}");
-                csvInfo = null;
-            }
-
-            return csvInfo;
-        }
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining & MethodImplOptions.AggressiveOptimization & MethodImplOptions.InternalCall)]
         private static string Key(string mic, string symbol, string isin)
         {
-            mic = mic == null ? string.Empty : mic.ToUpperInvariant();
-            symbol = symbol == null ? string.Empty : symbol.ToUpperInvariant();
-            isin = isin == null ? string.Empty : isin.ToUpperInvariant();
-            return string.Concat(mic, Underscore, isin, Underscore, symbol);
+            isin = isin?.ToUpperInvariant() ?? string.Empty;
+            symbol = symbol?.ToUpperInvariant() ?? string.Empty;
+            mic = mic?.ToUpperInvariant() ?? string.Empty;
+
+            return string.Concat(symbol, "-", isin, "@", mic);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining & MethodImplOptions.AggressiveOptimization & MethodImplOptions.InternalCall)]
         private static string Key(Instrument instrument)
         {
             return Key(
@@ -548,35 +332,18 @@ namespace Mbs.Trading.Data.Historical.Providers.Csv
                 instrument.GetSecurityIdAs(InstrumentSecurityIdSource.Isin));
         }
 
-        private static InstrumentCsvInfo FindInstrument(Instrument instrument)
+        [MethodImpl(MethodImplOptions.AggressiveInlining & MethodImplOptions.AggressiveOptimization & MethodImplOptions.InternalCall)]
+        private static InstrumentCsvInfo FindInstrument(string key)
         {
-            string key = Key(instrument);
             lock (CacheDictionaryLock)
             {
-                if (InfoCacheDictionary.TryGetValue(key, out InstrumentCsvInfo instrumentCsvInfo))
-                {
-                    return instrumentCsvInfo;
-                }
+                return InfoCacheDictionary.TryGetValue(key, out var instrumentCsvInfo)
+                    ? instrumentCsvInfo
+                    : null;
             }
-
-            CsvInfo csvInfo = FindInRepository(key);
-            if (csvInfo == null)
-            {
-                return null;
-            }
-
-            Add(instrument, csvInfo);
-            lock (CacheDictionaryLock)
-            {
-                if (InfoCacheDictionary.TryGetValue(key, out InstrumentCsvInfo instrumentCsvInfo))
-                {
-                    return instrumentCsvInfo;
-                }
-            }
-
-            return null;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining & MethodImplOptions.AggressiveOptimization & MethodImplOptions.InternalCall)]
         private static IEnumerable<Ohlcv> EnumerateOhlcvFileAsync(CsvInfo csvInfo, CsvRequest csvRequest, CancellationToken cancellationToken)
         {
             bool hasVolume = csvInfo.HasVolume;
@@ -623,6 +390,7 @@ namespace Mbs.Trading.Data.Historical.Providers.Csv
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining & MethodImplOptions.AggressiveOptimization & MethodImplOptions.InternalCall)]
         private static string ParseOhlcvSpan(CsvInfo csvInfo, CsvRequest csvRequest, string line, string delimiter, bool hasVolume, bool hasHighLow, out Ohlcv ohlcv, out CsvEnumerationAction action)
         {
             ohlcv = null;
@@ -647,13 +415,13 @@ namespace Mbs.Trading.Data.Historical.Providers.Csv
                 dateTime = dateTime.Date.Add(csvRequest.EndofdayClosingTime.Value);
             }
 
-            if (dateTime < csvRequest.StartDate)
+            if (dateTime < csvRequest.StartDateTime)
             {
                 action = CsvEnumerationAction.Skip;
                 return null;
             }
 
-            if (dateTime > csvRequest.EndDate)
+            if (dateTime > csvRequest.EndDateTime)
             {
                 action = CsvEnumerationAction.Break;
                 return null;
@@ -745,6 +513,7 @@ namespace Mbs.Trading.Data.Historical.Providers.Csv
             return null;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining & MethodImplOptions.AggressiveOptimization & MethodImplOptions.InternalCall)]
         private static IEnumerable<Scalar> EnumerateScalarFileAsync(CsvInfo csvInfo, CsvRequest csvRequest, CancellationToken cancellationToken)
         {
             char commentChar = csvInfo.CommentCharacter;
@@ -789,6 +558,7 @@ namespace Mbs.Trading.Data.Historical.Providers.Csv
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining & MethodImplOptions.AggressiveOptimization & MethodImplOptions.InternalCall)]
         private static string ParseScalarSpan(CsvInfo csvInfo, CsvRequest csvRequest, string line, string delimiter, out Scalar scalar, out CsvEnumerationAction action)
         {
             scalar = null;
@@ -813,13 +583,13 @@ namespace Mbs.Trading.Data.Historical.Providers.Csv
                 dateTime = dateTime.Date.Add(csvRequest.EndofdayClosingTime.Value);
             }
 
-            if (dateTime < csvRequest.StartDate)
+            if (dateTime < csvRequest.StartDateTime)
             {
                 action = CsvEnumerationAction.Skip;
                 return null;
             }
 
-            if (dateTime > csvRequest.EndDate)
+            if (dateTime > csvRequest.EndDateTime)
             {
                 action = CsvEnumerationAction.Break;
                 return null;
@@ -837,6 +607,7 @@ namespace Mbs.Trading.Data.Historical.Providers.Csv
             return null;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining & MethodImplOptions.AggressiveOptimization & MethodImplOptions.InternalCall)]
         private static IEnumerable<Trade> EnumerateTradeFileAsync(CsvInfo csvInfo, CsvRequest csvRequest, CancellationToken cancellationToken)
         {
             bool hasVolume = csvInfo.HasVolume;
@@ -882,6 +653,7 @@ namespace Mbs.Trading.Data.Historical.Providers.Csv
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining & MethodImplOptions.AggressiveOptimization & MethodImplOptions.InternalCall)]
         private static string ParseTradeSpan(CsvInfo csvInfo, CsvRequest csvRequest, string line, string delimiter, bool hasVolume, out Trade trade, out CsvEnumerationAction action)
         {
             trade = null;
@@ -901,13 +673,13 @@ namespace Mbs.Trading.Data.Historical.Providers.Csv
                 return InvalidDateTimePart(span);
             }
 
-            if (dateTime < csvRequest.StartDate)
+            if (dateTime < csvRequest.StartDateTime)
             {
                 action = CsvEnumerationAction.Skip;
                 return null;
             }
 
-            if (dateTime > csvRequest.EndDate)
+            if (dateTime > csvRequest.EndDateTime)
             {
                 action = CsvEnumerationAction.Break;
                 return null;
@@ -954,6 +726,7 @@ namespace Mbs.Trading.Data.Historical.Providers.Csv
             return null;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining & MethodImplOptions.AggressiveOptimization & MethodImplOptions.InternalCall)]
         private static IEnumerable<Quote> EnumerateQuoteFileAsync(CsvInfo csvInfo, CsvRequest csvRequest, CancellationToken cancellationToken)
         {
             bool hasVolume = csvInfo.HasVolume;
@@ -999,6 +772,7 @@ namespace Mbs.Trading.Data.Historical.Providers.Csv
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining & MethodImplOptions.AggressiveOptimization & MethodImplOptions.InternalCall)]
         private static string ParseQuoteSpan(CsvInfo csvInfo, CsvRequest csvRequest, string line, string delimiter, bool hasVolume, out Quote quote, out CsvEnumerationAction action)
         {
             quote = null;
@@ -1023,13 +797,13 @@ namespace Mbs.Trading.Data.Historical.Providers.Csv
                 dateTime = dateTime.Date.Add(csvRequest.EndofdayClosingTime.Value);
             }
 
-            if (dateTime < csvRequest.StartDate)
+            if (dateTime < csvRequest.StartDateTime)
             {
                 action = CsvEnumerationAction.Skip;
                 return null;
             }
 
-            if (dateTime > csvRequest.EndDate)
+            if (dateTime > csvRequest.EndDateTime)
             {
                 action = CsvEnumerationAction.Break;
                 return null;
@@ -1098,14 +872,493 @@ namespace Mbs.Trading.Data.Historical.Providers.Csv
             return null;
         }
 
-        private static string MissingAttribute(string attribute, string file, int line)
+        [MethodImpl(MethodImplOptions.AggressiveInlining & MethodImplOptions.AggressiveOptimization)]
+        private static bool TryReadSequence(ref ReadOnlySequence<byte> buffer, out ReadOnlySequence<byte> sequence)
         {
-            return $"{Prefix}: missing {attribute} attribute, file: {file}, line: {line}";
+            var position = buffer.PositionOf((byte)'\n');
+            if (position == null)
+            {
+                sequence = default;
+                return false;
+            }
+
+            sequence = buffer.Slice(0, position.Value);
+            buffer = buffer.Slice(buffer.GetPosition(1, position.Value));
+            return true;
         }
 
-        private static string FileDoesNotExist(string csvFile, string file, int line)
+        [MethodImpl(MethodImplOptions.AggressiveInlining & MethodImplOptions.AggressiveOptimization)]
+        private static string ProcessSequence(ReadOnlySequence<byte> sequence, Info info, out Ohlcv ohlcv)
         {
-            return $"{Prefix}: file {csvFile} does not exist, file: {file}, line: {line}";
+            if (sequence.IsSingleSegment)
+            {
+                return Parse(sequence.FirstSpan, info, out ohlcv);
+            }
+
+            const int lengthLimit = 5120;
+            var length = sequence.Length;
+            if (length < lengthLimit)
+            {
+                Span<byte> span = stackalloc byte[(int)sequence.Length];
+                sequence.CopyTo(span);
+                return Parse(span, info, out ohlcv);
+            }
+
+            var buffer = ArrayPool<byte>.Shared.Rent((int)length);
+            sequence.CopyTo(buffer);
+            var errorCode = Parse(buffer, info, out ohlcv);
+            ArrayPool<byte>.Shared.Return(buffer);
+            return errorCode;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining & MethodImplOptions.AggressiveOptimization)]
+        private static string ProcessSequence(ReadOnlySequence<byte> sequence, Info info, out Scalar scalar)
+        {
+            if (sequence.IsSingleSegment)
+            {
+                return Parse(sequence.FirstSpan, info, out scalar);
+            }
+
+            const int lengthLimit = 5120;
+            var length = sequence.Length;
+            if (length < lengthLimit)
+            {
+                Span<byte> span = stackalloc byte[(int)sequence.Length];
+                sequence.CopyTo(span);
+                return Parse(span, info, out scalar);
+            }
+
+            var buffer = ArrayPool<byte>.Shared.Rent((int)length);
+            sequence.CopyTo(buffer);
+            var errorCode = Parse(buffer, info, out scalar);
+            ArrayPool<byte>.Shared.Return(buffer);
+            return errorCode;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining & MethodImplOptions.AggressiveOptimization)]
+        private static string ProcessSequence(ReadOnlySequence<byte> sequence, Info info, out Trade trade)
+        {
+            if (sequence.IsSingleSegment)
+            {
+                return Parse(sequence.FirstSpan, info, out trade);
+            }
+
+            const int lengthLimit = 5120;
+            var length = sequence.Length;
+            if (length < lengthLimit)
+            {
+                Span<byte> span = stackalloc byte[(int)sequence.Length];
+                sequence.CopyTo(span);
+                return Parse(span, info, out trade);
+            }
+
+            var buffer = ArrayPool<byte>.Shared.Rent((int)length);
+            sequence.CopyTo(buffer);
+            var errorCode = Parse(buffer, info, out trade);
+            ArrayPool<byte>.Shared.Return(buffer);
+            return errorCode;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining & MethodImplOptions.AggressiveOptimization)]
+        private static string ProcessSequence(ReadOnlySequence<byte> sequence, Info info, out Quote quote)
+        {
+            if (sequence.IsSingleSegment)
+            {
+                return Parse(sequence.FirstSpan, info, out quote);
+            }
+
+            const int lengthLimit = 5120;
+            var length = sequence.Length;
+            if (length < lengthLimit)
+            {
+                Span<byte> span = stackalloc byte[(int)sequence.Length];
+                sequence.CopyTo(span);
+                return Parse(span, info, out quote);
+            }
+
+            var buffer = ArrayPool<byte>.Shared.Rent((int)length);
+            sequence.CopyTo(buffer);
+            var errorCode = Parse(buffer, info, out quote);
+            ArrayPool<byte>.Shared.Return(buffer);
+            return errorCode;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining & MethodImplOptions.AggressiveOptimization)]
+        private static ReadOnlySpan<byte> ParseChunk(byte delimiter, ref ReadOnlySpan<byte> span, ref int scanned, ref int position)
+        {
+            scanned += position + 1;
+
+            position = span[scanned..].IndexOf(delimiter);
+            if (position < 0)
+            {
+                var sp = span[scanned..];
+                position = sp.Length;
+
+                // The last chunk in a line might be terminated by the '\r'.
+                return (!sp.IsEmpty && sp[^1] == (byte)'\r')
+                    ? sp[..^1]
+                    : sp;
+            }
+
+            return span.Slice(scanned, position);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining & MethodImplOptions.AggressiveOptimization & MethodImplOptions.InternalCall)]
+        private static string Parse(ReadOnlySpan<byte> bytes, Info info, out Ohlcv ohlcv)
+        {
+            ohlcv = null;
+
+            // Empty line might contain '\r'.
+            if (bytes.Length < 2 || bytes[0] == info.Comment)
+            {
+                return null;
+            }
+
+            int scanned = -1;
+            int position = 0;
+
+            var span = ParseChunk(info.Delimiter, ref bytes, ref scanned, ref position);
+            string errorMessage = TryParseDateTime(span, info.TimeFormat, out DateTime dateTime, bytes);
+            if (errorMessage != null)
+            {
+                return errorMessage;
+            }
+
+            if (dateTime < info.StartDateInclusive)
+            {
+                return null;
+            }
+
+            if (dateTime > info.EndDateInclusive)
+            {
+                return string.Empty;
+            }
+
+            span = ParseChunk(info.Delimiter, ref bytes, ref scanned, ref position);
+            errorMessage = TryParseDouble(span, "opening price", out double open, bytes);
+            if (errorMessage != null)
+            {
+                return errorMessage;
+            }
+
+            double high, low, close, volume;
+            if (info.HasHighLow)
+            {
+                span = ParseChunk(info.Delimiter, ref bytes, ref scanned, ref position);
+                errorMessage = TryParseDouble(span, "highest price", out high, bytes);
+                if (errorMessage != null)
+                {
+                    return errorMessage;
+                }
+
+                span = ParseChunk(info.Delimiter, ref bytes, ref scanned, ref position);
+                errorMessage = TryParseDouble(span, "lowest price", out low, bytes);
+                if (errorMessage != null)
+                {
+                    return errorMessage;
+                }
+
+                span = ParseChunk(info.Delimiter, ref bytes, ref scanned, ref position);
+                errorMessage = TryParseDouble(span, "closing price", out close, bytes);
+                if (errorMessage != null)
+                {
+                    return errorMessage;
+                }
+            }
+            else
+            {
+                span = ParseChunk(info.Delimiter, ref bytes, ref scanned, ref position);
+                errorMessage = TryParseDouble(span, "closing price", out close, bytes);
+                if (errorMessage != null)
+                {
+                    return errorMessage;
+                }
+
+                high = Math.Max(open, close);
+                low = Math.Min(open, close);
+            }
+
+            if (info.HasVolume)
+            {
+                span = ParseChunk(info.Delimiter, ref bytes, ref scanned, ref position);
+                errorMessage = TryParseDouble(span, "volume", out volume, bytes);
+                if (errorMessage != null)
+                {
+                    return errorMessage;
+                }
+            }
+            else
+            {
+                volume = 0;
+            }
+
+            ohlcv = new Ohlcv(dateTime, open, high, low, close, volume);
+            return null;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining & MethodImplOptions.AggressiveOptimization & MethodImplOptions.InternalCall)]
+        private static string Parse(ReadOnlySpan<byte> bytes, Info info, out Scalar scalar)
+        {
+            scalar = null;
+
+            // Empty line might contain '\r'.
+            if (bytes.Length < 2 || bytes[0] == info.Comment)
+            {
+                return null;
+            }
+
+            int scanned = -1;
+            int position = 0;
+
+            var span = ParseChunk(info.Delimiter, ref bytes, ref scanned, ref position);
+            string errorMessage = TryParseDateTime(span, info.TimeFormat, out DateTime dateTime, bytes);
+            if (errorMessage != null)
+            {
+                return errorMessage;
+            }
+
+            if (dateTime < info.StartDateInclusive)
+            {
+                return null;
+            }
+
+            if (dateTime > info.EndDateInclusive)
+            {
+                return string.Empty;
+            }
+
+            span = ParseChunk(info.Delimiter, ref bytes, ref scanned, ref position);
+            errorMessage = TryParseDouble(span, "scalar", out double value, bytes);
+            if (errorMessage != null)
+            {
+                return errorMessage;
+            }
+
+            scalar = new Scalar(dateTime, value);
+            return null;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining & MethodImplOptions.AggressiveOptimization & MethodImplOptions.InternalCall)]
+        private static string Parse(ReadOnlySpan<byte> bytes, Info info, out Trade trade)
+        {
+            trade = null;
+
+            // Empty line might contain '\r'.
+            if (bytes.Length < 2 || bytes[0] == info.Comment)
+            {
+                return null;
+            }
+
+            int scanned = -1;
+            int position = 0;
+
+            var span = ParseChunk(info.Delimiter, ref bytes, ref scanned, ref position);
+            string errorMessage = TryParseDateTime(span, info.TimeFormat, out DateTime dateTime, bytes);
+            if (errorMessage != null)
+            {
+                return errorMessage;
+            }
+
+            if (dateTime < info.StartDateInclusive)
+            {
+                return null;
+            }
+
+            if (dateTime > info.EndDateInclusive)
+            {
+                return string.Empty;
+            }
+
+            span = ParseChunk(info.Delimiter, ref bytes, ref scanned, ref position);
+            errorMessage = TryParseDouble(span, "price", out double price, bytes);
+            if (errorMessage != null)
+            {
+                return errorMessage;
+            }
+
+            double volume;
+            if (info.HasVolume)
+            {
+                span = ParseChunk(info.Delimiter, ref bytes, ref scanned, ref position);
+                errorMessage = TryParseDouble(span, "volume", out volume, bytes);
+                if (errorMessage != null)
+                {
+                    return errorMessage;
+                }
+            }
+            else
+            {
+                volume = 0;
+            }
+
+            trade = new Trade(dateTime, price, volume);
+            return null;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining & MethodImplOptions.AggressiveOptimization & MethodImplOptions.InternalCall)]
+        private static string Parse(ReadOnlySpan<byte> bytes, Info info, out Quote quote)
+        {
+            quote = null;
+
+            // Empty line might contain '\r'.
+            if (bytes.Length < 2 || bytes[0] == info.Comment)
+            {
+                return null;
+            }
+
+            int scanned = -1;
+            int position = 0;
+
+            var span = ParseChunk(info.Delimiter, ref bytes, ref scanned, ref position);
+            string errorMessage = TryParseDateTime(span, info.TimeFormat, out DateTime dateTime, bytes);
+            if (errorMessage != null)
+            {
+                return errorMessage;
+            }
+
+            if (dateTime < info.StartDateInclusive)
+            {
+                return null;
+            }
+
+            if (dateTime > info.EndDateInclusive)
+            {
+                return string.Empty;
+            }
+
+            span = ParseChunk(info.Delimiter, ref bytes, ref scanned, ref position);
+            errorMessage = TryParseDouble(span, "ask price", out double askPrice, bytes);
+            if (errorMessage != null)
+            {
+                return errorMessage;
+            }
+
+            span = ParseChunk(info.Delimiter, ref bytes, ref scanned, ref position);
+            errorMessage = TryParseDouble(span, "bid price", out double bidPrice, bytes);
+            if (errorMessage != null)
+            {
+                return errorMessage;
+            }
+
+            double askSize, bidSize;
+            if (info.HasVolume)
+            {
+                span = ParseChunk(info.Delimiter, ref bytes, ref scanned, ref position);
+                errorMessage = TryParseDouble(span, "ask size", out askSize, bytes);
+                if (errorMessage != null)
+                {
+                    return errorMessage;
+                }
+
+                span = ParseChunk(info.Delimiter, ref bytes, ref scanned, ref position);
+                errorMessage = TryParseDouble(span, "bid size", out bidSize, bytes);
+                if (errorMessage != null)
+                {
+                    return errorMessage;
+                }
+            }
+            else
+            {
+                askSize = 0;
+                bidSize = 0;
+            }
+
+            quote = new Quote(dateTime, bidPrice, bidSize, askPrice, askSize);
+            return null;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining & MethodImplOptions.AggressiveOptimization)]
+        private static string TryParseDateTime(ReadOnlySpan<byte> span, string timeFormat, out DateTime dateTime, ReadOnlySpan<byte> line)
+        {
+            if (!span.IsEmpty)
+            {
+                Span<char> chars = stackalloc char[span.Length];
+                Encoding.UTF8.GetChars(span, chars);
+                if (DateTime.TryParseExact(chars, timeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
+                {
+                    return null;
+                }
+            }
+
+            dateTime = new DateTime(0L);
+            return $"Invalid date-time [{timeFormat}] part [{ByteSpanToString(span)}] in [{ByteSpanToString(line)}]";
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining & MethodImplOptions.AggressiveOptimization)]
+        private static string TryParseDouble(ReadOnlySpan<byte> span, string what, out double value, ReadOnlySpan<byte> line)
+        {
+            // 18.g29 => 18
+            // if (!span.IsEmpty && Utf8Parser.TryParse(span, out value, out _, 'f')) return null
+            if (!span.IsEmpty && (value = ParsePositiveDouble(span)) >= 0)
+            {
+                return null;
+            }
+
+            value = ParsePositiveDouble(span);
+            return value < 0 ? $"Invalid {what} part [{ByteSpanToString(span)}] in [{ByteSpanToString(line)}]" : null;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining & MethodImplOptions.AggressiveOptimization)]
+        private static double ParsePositiveDouble(ReadOnlySpan<byte> span)
+        {
+            if (span.IsEmpty)
+            {
+                return -1;
+            }
+
+            double v = 0;
+            double factor = 1;
+            bool pointSeen = false;
+
+            foreach (var b in span)
+            {
+                if (b == (byte)'-')
+                {
+                    if (span[0] != b)
+                    {
+                        return -1;
+                    }
+
+                    factor *= -1;
+                    continue;
+                }
+
+                if (b == (byte)'.')
+                {
+                    if (pointSeen)
+                    {
+                        return -1;
+                    }
+
+                    pointSeen = true;
+                    continue;
+                }
+
+                if (b < (byte)'0' || b > (byte)'9')
+                {
+                    return -1;
+                }
+
+                v = v * 10 + b - (byte)'0';
+                if (pointSeen)
+                {
+                    factor /= 10;
+                }
+            }
+
+            return v * factor;
+        }
+
+        private static string ByteSpanToString(ReadOnlySpan<byte> span)
+        {
+            if (span.IsEmpty)
+            {
+                return string.Empty;
+            }
+
+            Span<char> chars = stackalloc char[span.Length];
+            Encoding.UTF8.GetChars(span, chars);
+            return chars.ToString();
         }
 
         private static string FileDoesNotExist(string csvFile)
@@ -1113,9 +1366,9 @@ namespace Mbs.Trading.Data.Historical.Providers.Csv
             return $"{Prefix}: file {csvFile} does not exist";
         }
 
-        private static string MissingInstrument(Instrument instrument)
+        private static string MissingInstrument(string key)
         {
-            return $"{Prefix}: failed to find instrument {instrument?.Symbol}-{instrument?.SecurityId}@{instrument?.Exchange.Mic}";
+            return $"{Prefix}: failed to find instrument {key}";
         }
 
         private static string ErrorReadingFile(string file)
@@ -1141,6 +1394,34 @@ namespace Mbs.Trading.Data.Historical.Providers.Csv
         private static string InvalidPart(string name, ReadOnlySpan<char> span, ReadOnlySpan<char> currentSpan)
         {
             return $"Invalid {name} [{span.ToString()}] in [{currentSpan.ToString()}]";
+        }
+
+        private class Info
+        {
+            public Info(CsvInfo csvInfo, CsvRequest csvRequest)
+            {
+                Comment = csvInfo.HasCommentCharacter ? (byte)csvInfo.CommentCharacter : (byte)0;
+                Delimiter = (byte)csvInfo.SeparatorCharacter[0];
+                TimeFormat = csvInfo.DateTimeFormat ?? CsvInfo.DefaultDateTimeFormat;
+                StartDateInclusive = csvRequest.StartDateTime;
+                EndDateInclusive = csvRequest.EndDateTime;
+                HasVolume = csvInfo.HasVolume;
+                HasHighLow = csvInfo.HasHighLow;
+            }
+
+            public byte Comment { get; }
+
+            public byte Delimiter { get; }
+
+            public string TimeFormat { get; }
+
+            public DateTime StartDateInclusive { get; }
+
+            public DateTime EndDateInclusive { get; }
+
+            public bool HasVolume { get; }
+
+            public bool HasHighLow { get; }
         }
     }
 }

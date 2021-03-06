@@ -281,7 +281,7 @@ namespace Mbs.Trading.Data.Historical.Providers.Csv
         /// <summary>
         /// Gets the path to the CSV file.
         /// </summary>
-        public string FilePath { get; internal set; }
+        public string FilePath { get; }
 
         /// <summary>
         /// Gets the key.

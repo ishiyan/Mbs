@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Mbs.Trading.Brokers.Commissions;
@@ -1164,14 +1165,14 @@ namespace Mbs.UnitTests.Trading.Brokers.PaperBrokers
 
             public string Provider => "Mock";
 
-            public async Task<IEnumerable<T>> FetchAsync(HistoricalDataRequest historicalDataRequest)
+            public async Task<IEnumerable<T>> FetchAsyncE(HistoricalDataRequest historicalDataRequest)
             {
                 return await Task.Run(() => list);
             }
 
-            public IAsyncEnumerable<T> FetchAsyncE(HistoricalDataRequest historicalDataRequest)
+            public async IAsyncEnumerable<T> FetchAsync(HistoricalDataRequest historicalDataRequest, [EnumeratorCancellation] CancellationToken cancellationToken)
             {
-                throw new NotImplementedException();
+                yield break;
             }
         }
     }

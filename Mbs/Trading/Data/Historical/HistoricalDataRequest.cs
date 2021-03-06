@@ -108,8 +108,8 @@ namespace Mbs.Trading.Data.Historical
             if (EndDate <= StartDate)
             {
                 yield return new ValidationResult(
-                    "The EndDate should be greater than the StartDate.",
-                    new[] { "StartDate", "EndDate" });
+                    "The EndDateTime should be greater than the StartDateTime.",
+                    new[] { "StartDateTime", "EndDateTime" });
             }
         }
     }

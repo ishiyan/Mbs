@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Mbs.Trading.Data.Entities;
 using Mbs.Trading.Time;
@@ -8,39 +10,28 @@ using Mbs.Utilities;
 namespace Mbs.Trading.Data.Historical.Providers.Csv
 {
     /// <summary>
-    /// Provides an access to the historical ohlcv data stored in CSV files as an enumerable ohlcv time series.
+    /// Provides an access to the historical <see cref="Ohlcv"/> data stored in CSV files as an async enumerable ohlcv time series.
     /// </summary>
     public sealed class CsvOhlcvHistoricalData : IHistoricalData<Ohlcv>
     {
         /// <inheritdoc />
-        public string Provider => CsvRepository.Provider;
+        public string Provider => CsvHistoricalData.Provider;
 
-        /// <summary>
-        /// Given a historical data request, creates an interface to enumerate the ohlcv time series.
-        /// <para />
-        /// To enumerate the all available data, pass the <c>DateTime.MinValue</c> as a begin time and <c>DateTime.MaxValue</c> as an end time in the time series specification.
-        /// </summary>
-        /// <param name="historicalDataRequest">The historical data request.</param>
-        /// <returns>An enumerable interface.</returns>
-        public async Task<IEnumerable<Ohlcv>> FetchAsync(HistoricalDataRequest historicalDataRequest)
+        public async Task<IEnumerable<Ohlcv>> FetchAsyncE(HistoricalDataRequest historicalDataRequest)
         {
-            return await Task.Run(() => Fetch(historicalDataRequest));
+            return await Task.Run(() => new List<Ohlcv>());
         }
 
-        public IAsyncEnumerable<Ohlcv> FetchAsyncE(HistoricalDataRequest historicalDataRequest)
+        /// <inheritdoc />
+        public async IAsyncEnumerable<Ohlcv> FetchAsync(HistoricalDataRequest historicalDataRequest, [EnumeratorCancellation] CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
-        }
-
-        private IEnumerable<Ohlcv> Fetch(HistoricalDataRequest historicalDataRequest)
-        {
-            InstrumentCsvInfo instrumentCsvInfo = CsvRepository.InstrumentInfo(historicalDataRequest.Instrument);
+            InstrumentCsvInfo instrumentCsvInfo = CsvHistoricalData.InstrumentInfo(historicalDataRequest.Instrument);
             if (instrumentCsvInfo == null)
             {
-                return new List<Ohlcv>();
+                yield break;
             }
 
-            var csvRequest = new CsvRequest { StartDate = historicalDataRequest.StartDate, EndDate = historicalDataRequest.EndDate };
+            var csvRequest = new CsvRequest { StartDateTime = historicalDataRequest.StartDate, EndDateTime = historicalDataRequest.EndDate };
             TimeGranularity timeGranularity = historicalDataRequest.TimeGranularity;
             bool isEndofday = timeGranularity.IsEndofday();
             Func<TemporalEntity, int, DateTime> thresholdDateTime = AggregatingConverter.SelectThresholdDateTime(timeGranularity);
@@ -56,7 +47,12 @@ namespace Mbs.Trading.Data.Historical.Providers.Csv
                         csvRequest.EndofdayClosingTime = historicalDataRequest.EndofdayClosingTime;
                     }
 
-                    return CsvRepository.EnumerateOhlcvAsync(csvInfo, csvRequest);
+                    await foreach (var ohlcv in CsvHistoricalData.EnumerateOhlcvAsync(csvInfo, csvRequest, cancellationToken))
+                    {
+                        yield return ohlcv;
+                    }
+
+                    yield break;
                 }
 
                 csvInfo = instrumentCsvInfo.GetAggregateAdjustedOhlcvData(timeGranularity);
@@ -68,8 +64,15 @@ namespace Mbs.Trading.Data.Historical.Providers.Csv
                         csvRequest.EndofdayClosingTime = historicalDataRequest.EndofdayClosingTime;
                     }
 
-                    var enumerable = CsvRepository.EnumerateOhlcvAsync(csvInfo, csvRequest);
-                    return AggregatingConverter.Aggregate(enumerable, timeGranularity, thresholdDateTime);
+                    await foreach (var ohlcv in AggregatingConverter.AggregateAsync(
+                        CsvHistoricalData.EnumerateOhlcvAsync(csvInfo, csvRequest, cancellationToken),
+                        timeGranularity,
+                        thresholdDateTime).WithCancellation(cancellationToken))
+                    {
+                        yield return ohlcv;
+                    }
+
+                    yield break;
                 }
             }
 
@@ -84,7 +87,12 @@ namespace Mbs.Trading.Data.Historical.Providers.Csv
                         csvRequest.EndofdayClosingTime = historicalDataRequest.EndofdayClosingTime;
                     }
 
-                    return CsvRepository.EnumerateOhlcvAsync(csvInfo, csvRequest);
+                    await foreach (var ohlcv in CsvHistoricalData.EnumerateOhlcvAsync(csvInfo, csvRequest, cancellationToken))
+                    {
+                        yield return ohlcv;
+                    }
+
+                    yield break;
                 }
 
                 csvInfo = instrumentCsvInfo.GetAggregateOhlcvData(timeGranularity);
@@ -96,8 +104,15 @@ namespace Mbs.Trading.Data.Historical.Providers.Csv
                         csvRequest.EndofdayClosingTime = historicalDataRequest.EndofdayClosingTime;
                     }
 
-                    var enumerable = CsvRepository.EnumerateOhlcvAsync(csvInfo, csvRequest);
-                    return AggregatingConverter.Aggregate(enumerable, timeGranularity, thresholdDateTime);
+                    await foreach (var ohlcv in AggregatingConverter.AggregateAsync(
+                        CsvHistoricalData.EnumerateOhlcvAsync(csvInfo, csvRequest, cancellationToken),
+                        timeGranularity,
+                        thresholdDateTime).WithCancellation(cancellationToken))
+                    {
+                        yield return ohlcv;
+                    }
+
+                    yield break;
                 }
             }
 
@@ -108,8 +123,16 @@ namespace Mbs.Trading.Data.Historical.Providers.Csv
                 if (csvInfo != null)
                 {
                     historicalDataRequest.IsDataAdjusted = csvInfo.IsAdjustedData;
-                    var enumerable = CsvRepository.EnumerateTradeAsync(csvInfo, csvRequest);
-                    return AggregatingConverter.Aggregate(enumerable, timeGranularity, thresholdDateTime);
+
+                    await foreach (var ohlcv in AggregatingConverter.AggregateAsync(
+                        CsvHistoricalData.EnumerateTradeAsync(csvInfo, csvRequest, cancellationToken),
+                        timeGranularity,
+                        thresholdDateTime).WithCancellation(cancellationToken))
+                    {
+                        yield return ohlcv;
+                    }
+
+                    yield break;
                 }
             }
 
@@ -124,8 +147,14 @@ namespace Mbs.Trading.Data.Historical.Providers.Csv
                         csvRequest.EndofdayClosingTime = historicalDataRequest.EndofdayClosingTime;
                     }
 
-                    var enumerable = CsvRepository.EnumerateScalarAsync(csvInfo, csvRequest);
-                    return AggregatingConverter.ConvertToOhlcv(enumerable);
+                    await foreach (var ohlcv in AggregatingConverter.ConvertToOhlcvAsync(
+                        CsvHistoricalData.EnumerateScalarAsync(csvInfo, csvRequest, cancellationToken))
+                        .WithCancellation(cancellationToken))
+                    {
+                        yield return ohlcv;
+                    }
+
+                    yield break;
                 }
 
                 csvInfo = instrumentCsvInfo.GetAggregateScalarData(timeGranularity);
@@ -137,13 +166,19 @@ namespace Mbs.Trading.Data.Historical.Providers.Csv
                         csvRequest.EndofdayClosingTime = historicalDataRequest.EndofdayClosingTime;
                     }
 
-                    var enumerable = CsvRepository.EnumerateScalarAsync(csvInfo, csvRequest);
-                    return AggregatingConverter.Aggregate(enumerable, timeGranularity, thresholdDateTime);
+                    await foreach (var ohlcv in AggregatingConverter.AggregateAsync(
+                        CsvHistoricalData.EnumerateScalarAsync(csvInfo, csvRequest, cancellationToken),
+                        timeGranularity,
+                        thresholdDateTime).WithCancellation(cancellationToken))
+                    {
+                        yield return ohlcv;
+                    }
+
+                    yield break;
                 }
             }
 
-            Log.Error(CsvRepository.CannotComposeGranularity(timeGranularity));
-            return new List<Ohlcv>();
+            Log.Error(CsvHistoricalData.CannotComposeGranularity(timeGranularity));
         }
     }
 }

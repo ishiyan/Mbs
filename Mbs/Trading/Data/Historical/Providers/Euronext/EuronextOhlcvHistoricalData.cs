@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Mbs.Trading.Data.Entities;
 using Mbs.Trading.Time;
@@ -15,7 +17,13 @@ namespace Mbs.Trading.Data.Historical.Providers.Euronext
         public string Provider => EuronextHistoricalData.Provider;
 
         /// <inheritdoc />
-        public async Task<IEnumerable<Ohlcv>> FetchAsync(HistoricalDataRequest historicalDataRequest)
+        public async IAsyncEnumerable<Ohlcv> FetchAsync(HistoricalDataRequest historicalDataRequest, [EnumeratorCancellation] CancellationToken cancellationToken)
+        {
+            yield break;
+        }
+
+        /// <inheritdoc />
+        public async Task<IEnumerable<Ohlcv>> FetchAsyncE(HistoricalDataRequest historicalDataRequest)
         {
             List<Ohlcv> list = await EuronextHistoricalData.FetchAsync(historicalDataRequest);
             int count = list.Count;
@@ -51,7 +59,7 @@ namespace Mbs.Trading.Data.Historical.Providers.Euronext
             };
         }
 
-        public IAsyncEnumerable<Ohlcv> FetchAsyncE(HistoricalDataRequest historicalDataRequest)
+        public IAsyncEnumerable<Ohlcv> FetchAsync(HistoricalDataRequest historicalDataRequest)
         {
             throw new NotImplementedException();
         }

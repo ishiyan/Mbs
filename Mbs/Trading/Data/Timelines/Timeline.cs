@@ -881,7 +881,7 @@ namespace Mbs.Trading.Data.Timelines
                     }
 
                     Topic topic = Topic;
-                    IEnumerable<T> enumerableT = parent.historicalData.FetchAsync(
+                    IEnumerable<T> enumerableT = parent.historicalData.FetchAsyncE(
                         new HistoricalDataRequest(topic.Instrument, parent.timeline.BeginTime, parent.timeline.EndTime, topic.TimeGranularity)).GetAwaiter().GetResult();
                     IEnumerable<TemporalEntity> enumerable = enumerableT;
 

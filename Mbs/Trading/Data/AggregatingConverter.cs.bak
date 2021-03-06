@@ -727,32 +727,6 @@ namespace Mbs.Trading.Data
         }
 
         /// <summary>
-        /// Converts the <see cref="Scalar"/> async enumerable to the <see cref="Ohlcv"/> async enumerable.
-        /// </summary>
-        /// <param name="enumerable">The async enumerable to convert from.</param>
-        /// <returns>The converted async enumerable.</returns>
-        internal static async IAsyncEnumerable<Ohlcv> ConvertToOhlcvAsync(IAsyncEnumerable<Scalar> enumerable)
-        {
-            await foreach (var o in enumerable)
-            {
-                yield return Ohlcv.CloneAggregation(o);
-            }
-        }
-
-        /// <summary>
-        /// Converts the <see cref="Trade"/> async enumerable to the <see cref="Ohlcv"/> async enumerable.
-        /// </summary>
-        /// <param name="enumerable">The async enumerable to convert from.</param>
-        /// <returns>The converted async enumerable.</returns>
-        internal static async IAsyncEnumerable<Ohlcv> ConvertToOhlcvAsync(IAsyncEnumerable<Trade> enumerable)
-        {
-            await foreach (var o in enumerable)
-            {
-                yield return Ohlcv.CloneAggregation(o);
-            }
-        }
-
-        /// <summary>
         /// Converts the <see cref="Scalar"/> enumerable to the <see cref="Ohlcv"/> enumerable.
         /// </summary>
         /// <param name="enumerable">The enumerable to convert from.</param>
@@ -767,284 +741,6 @@ namespace Mbs.Trading.Data
         /// <returns>The converted enumerable.</returns>
         internal static IEnumerable<Ohlcv> ConvertToOhlcv(IEnumerable<Trade> enumerable)
             => enumerable.Select(Ohlcv.CloneAggregation);
-
-        /// <summary>
-        /// Aggregates the <see cref="Ohlcv"/> async enumerable to the given time granularity.
-        /// </summary>
-        /// <param name="enumerable">The async enumerable to aggregate.</param>
-        /// <param name="timeGranularity">The time granularity.</param>
-        /// <param name="thresholdDateTime">The threshold date and time.</param>
-        /// <returns>The aggregated async enumerable.</returns>
-        internal static async IAsyncEnumerable<Ohlcv> AggregateAsync(
-            IAsyncEnumerable<Ohlcv> enumerable,
-            TimeGranularity timeGranularity,
-            Func<TemporalEntity, int, DateTime> thresholdDateTime)
-        {
-            int numberOfUnits = timeGranularity.NumberOfUnits();
-            Ohlcv ohlcv = null;
-            if (thresholdDateTime == null)
-            {
-                int current = 0;
-                await foreach (var o in enumerable)
-                {
-                    if (ohlcv == null)
-                    {
-                        ohlcv = new Ohlcv(o.Time, o.Open, o.High, o.Low, o.Close, o.Volume);
-                    }
-                    else
-                    {
-                        ohlcv.Aggregate(o);
-                    }
-
-                    if (++current == numberOfUnits)
-                    {
-                        yield return ohlcv;
-                        current = 0;
-                        ohlcv = null;
-                    }
-                }
-            }
-            else
-            {
-                var dateTime = DateTime.MinValue;
-                await foreach (var o in enumerable)
-                {
-                    if (dateTime > o.Time)
-                    {
-                        if (ohlcv == null)
-                        {
-                            ohlcv = new Ohlcv(o.Time, o.Open, o.High, o.Low, o.Close, o.Volume);
-                        }
-                        else
-                        {
-                            ohlcv.Aggregate(o);
-                        }
-                    }
-                    else
-                    {
-                        if (ohlcv != null)
-                        {
-                            yield return ohlcv;
-                        }
-
-                        ohlcv = new Ohlcv(o.Time, o.Open, o.High, o.Low, o.Close, o.Volume);
-                        dateTime = thresholdDateTime(o, numberOfUnits);
-                    }
-                }
-            }
-
-            if (ohlcv != null)
-            {
-                yield return ohlcv;
-            }
-        }
-
-        /// <summary>
-        /// Aggregates the <see cref="Scalar"/> async enumerable to the given time granularity
-        /// and converts it to the <see cref="Ohlcv"/> async enumerable.
-        /// </summary>
-        /// <param name="enumerable">The async enumerable to aggregate.</param>
-        /// <param name="timeGranularity">The time granularity.</param>
-        /// <param name="thresholdDateTime">The threshold date and time.</param>
-        /// <returns>The aggregated and converted async enumerable.</returns>
-        internal static async IAsyncEnumerable<Ohlcv> AggregateAsync(
-            IAsyncEnumerable<Scalar> enumerable,
-            TimeGranularity timeGranularity,
-            Func<TemporalEntity, int, DateTime> thresholdDateTime)
-        {
-            int numberOfUnits = timeGranularity.NumberOfUnits();
-            Ohlcv ohlcv = null;
-            if (thresholdDateTime == null)
-            {
-                int current = 0;
-                await foreach (var scalar in enumerable)
-                {
-                    if (ohlcv == null)
-                    {
-                        ohlcv = Ohlcv.CloneAggregation(scalar);
-                    }
-                    else
-                    {
-                        ohlcv.Aggregate(scalar);
-                    }
-
-                    if (++current == numberOfUnits)
-                    {
-                        yield return ohlcv;
-                        current = 0;
-                        ohlcv = null;
-                    }
-                }
-            }
-            else
-            {
-                var dateTime = DateTime.MinValue;
-                await foreach (var scalar in enumerable)
-                {
-                    if (dateTime > scalar.Time)
-                    {
-                        if (ohlcv == null)
-                        {
-                            ohlcv = Ohlcv.CloneAggregation(scalar);
-                        }
-                        else
-                        {
-                            ohlcv.Aggregate(scalar);
-                        }
-                    }
-                    else
-                    {
-                        if (ohlcv != null)
-                        {
-                            yield return ohlcv;
-                        }
-
-                        ohlcv = Ohlcv.CloneAggregation(scalar);
-                        dateTime = thresholdDateTime(scalar, numberOfUnits);
-                    }
-                }
-            }
-
-            if (ohlcv != null)
-            {
-                yield return ohlcv;
-            }
-        }
-
-        /// <summary>
-        /// Aggregates the <see cref="Trade"/> async enumerable to the given time granularity
-        /// and converts it to the <see cref="Ohlcv"/> async enumerable.
-        /// </summary>
-        /// <param name="enumerable">The async enumerable to aggregate.</param>
-        /// <param name="timeGranularity">The time granularity.</param>
-        /// <param name="thresholdDateTime">The threshold date and time.</param>
-        /// <returns>The aggregated and converted async enumerable.</returns>
-        internal static async IAsyncEnumerable<Ohlcv> AggregateAsync(
-            IAsyncEnumerable<Trade> enumerable,
-            TimeGranularity timeGranularity,
-            Func<TemporalEntity, int, DateTime> thresholdDateTime)
-        {
-            int numberOfUnits = timeGranularity.NumberOfUnits();
-            Ohlcv ohlcv = null;
-            if (thresholdDateTime == null)
-            {
-                int current = 0;
-                await foreach (var trade in enumerable)
-                {
-                    if (ohlcv == null)
-                    {
-                        ohlcv = Ohlcv.CloneAggregation(trade);
-                    }
-                    else
-                    {
-                        ohlcv.Aggregate(trade);
-                    }
-
-                    if (++current == numberOfUnits)
-                    {
-                        yield return ohlcv;
-                        current = 0;
-                        ohlcv = null;
-                    }
-                }
-            }
-            else
-            {
-                var dateTime = DateTime.MinValue;
-                await foreach (var trade in enumerable)
-                {
-                    if (dateTime > trade.Time)
-                    {
-                        if (ohlcv == null)
-                        {
-                            ohlcv = Ohlcv.CloneAggregation(trade);
-                        }
-                        else
-                        {
-                            ohlcv.Aggregate(trade);
-                        }
-                    }
-                    else
-                    {
-                        if (ohlcv != null)
-                        {
-                            yield return ohlcv;
-                        }
-
-                        ohlcv = Ohlcv.CloneAggregation(trade);
-                        dateTime = thresholdDateTime(trade, numberOfUnits);
-                    }
-                }
-            }
-
-            if (ohlcv != null)
-            {
-                yield return ohlcv;
-            }
-        }
-
-        /// <summary>
-        /// Aggregates the <see cref="Scalar"/> async enumerable.
-        /// </summary>
-        /// <param name="enumerable">The async enumerable to aggregate.</param>
-        /// <param name="count">The count.</param>
-        /// <param name="thresholdDateTime">The threshold date and time.</param>
-        /// <returns>The aggregated async enumerable.</returns>
-        internal static async IAsyncEnumerable<Scalar> AggregateScalarAsync(
-            IAsyncEnumerable<Scalar> enumerable,
-            int count,
-            Func<TemporalEntity, int, DateTime> thresholdDateTime)
-        {
-            var aggregator = new ScalarAggregator();
-            if (thresholdDateTime == null)
-            {
-                int current = 0;
-                await foreach (var scalar in enumerable)
-                {
-                    if (current++ == 0)
-                    {
-                        aggregator.Aggregate(scalar);
-                    }
-                    else
-                    {
-                        if (current > count)
-                        {
-                            current = 0;
-                            yield return aggregator.Emit();
-                        }
-                        else
-                        {
-                            aggregator.Aggregate(scalar);
-                        }
-                    }
-                }
-            }
-            else
-            {
-                var dateTime = DateTime.MinValue;
-                await foreach (var scalar in enumerable)
-                {
-                    if (dateTime > scalar.Time)
-                    {
-                        aggregator.Aggregate(scalar);
-                    }
-                    else
-                    {
-                        if (!aggregator.IsEmpty)
-                        {
-                            yield return aggregator.Emit(/*dateTime or endOfDayTime*/);
-                        }
-
-                        dateTime = thresholdDateTime(scalar, count);
-                    }
-                }
-            }
-
-            if (aggregator.IsNotEmpty)
-            {
-                yield return aggregator.Emit(/*dateTime or endOfDayTime*/);
-            }
-        }
 
         /// <summary>
         /// Aggregates the <see cref="Ohlcv"/> enumerable to the given time granularity.
@@ -1258,6 +954,69 @@ namespace Mbs.Trading.Data
             if (ohlcv != null)
             {
                 yield return ohlcv;
+            }
+        }
+
+        /// <summary>
+        /// Aggregates the <see cref="Scalar"/> enumerable.
+        /// </summary>
+        /// <param name="enumerable">The enumerable to aggregate.</param>
+        /// <param name="count">The count.</param>
+        /// <param name="thresholdDateTime">The threshold date and time.</param>
+        /// <returns>The aggregated and converted enumerable.</returns>
+        internal static IEnumerable<Scalar> Aggregate(
+            IEnumerable<Scalar> enumerable,
+            int count,
+            Func<TemporalEntity, int, DateTime> thresholdDateTime)
+        {
+            var aggregator = new ScalarAggregator();
+            if (thresholdDateTime == null)
+            {
+                int current = 0;
+                foreach (var scalar in enumerable)
+                {
+                    if (current++ == 0)
+                    {
+                        aggregator.Aggregate(scalar);
+                    }
+                    else
+                    {
+                        if (current > count)
+                        {
+                            current = 0;
+                            yield return aggregator.Emit();
+                        }
+                        else
+                        {
+                            aggregator.Aggregate(scalar);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                var dateTime = DateTime.MinValue;
+                foreach (var scalar in enumerable)
+                {
+                    if (dateTime > scalar.Time)
+                    {
+                        aggregator.Aggregate(scalar);
+                    }
+                    else
+                    {
+                        if (!aggregator.IsEmpty)
+                        {
+                            yield return aggregator.Emit(/*dateTime or endOfDayTime*/);
+                        }
+
+                        dateTime = thresholdDateTime(scalar, count);
+                    }
+                }
+            }
+
+            if (aggregator.IsNotEmpty)
+            {
+                yield return aggregator.Emit(/*dateTime or endOfDayTime*/);
             }
         }
 

@@ -233,7 +233,7 @@ namespace Mbs.Api.UnitTests.Controllers.Trading.Data.Historical
                 result.Details
                     .ElementAt(0)
                     .Message
-                    .Contains("EndDate should be greater than the StartDate", StringComparison.Ordinal),
+                    .Contains("EndDateTime should be greater than the StartDateTime", StringComparison.Ordinal),
                 "result.Details should have correct value");
         }
 

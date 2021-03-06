@@ -13,11 +13,11 @@ namespace Mbs.Trading.Data.Historical.Providers.Csv
         /// <summary>
         /// Gets or sets the date and time of the first element of the time series.
         /// </summary>
-        public DateTime StartDate { get; set; }
+        public DateTime StartDateTime { get; set; }
 
         /// <summary>
         /// Gets or sets the date and time of the last element of the time series.
         /// </summary>
-        public DateTime EndDate { get; set; }
+        public DateTime EndDateTime { get; set; }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Mbs.Trading.Data.Entities;
 using Mbs.Trading.Time;
@@ -8,45 +10,34 @@ using Mbs.Utilities;
 namespace Mbs.Trading.Data.Historical.Providers.Csv
 {
     /// <summary>
-    /// Provides an access to the historical scalar data stored in CSV files as an enumerable scalar time series.
+    /// Provides an access to the historical <see cref="Scalar"/> data stored in CSV files as an async enumerable scalar time series.
     /// </summary>
     public sealed class CsvScalarHistoricalData : IHistoricalData<Scalar>
     {
         /// <inheritdoc />
-        public string Provider => CsvRepository.Provider;
+        public string Provider => CsvHistoricalData.Provider;
 
-        /// <summary>
-        /// Given a historical data request, creates an interface to enumerate the scalar time series.
-        /// <para />
-        /// To enumerate the all available data, pass the <c>DateTime.MinValue</c> as a begin time and <c>DateTime.MaxValue</c> as an end time in the time series specification.
-        /// </summary>
-        /// <param name="historicalDataRequest">The historical data request.</param>
-        /// <returns>An enumerable interface.</returns>
-        public async Task<IEnumerable<Scalar>> FetchAsync(HistoricalDataRequest historicalDataRequest)
+        public async Task<IEnumerable<Scalar>> FetchAsyncE(HistoricalDataRequest historicalDataRequest)
         {
-            return await Task.Run(() => Fetch(historicalDataRequest));
+            return await Task.Run(() => new List<Scalar>());
         }
 
-        public IAsyncEnumerable<Scalar> FetchAsyncE(HistoricalDataRequest historicalDataRequest)
+        /// <inheritdoc />
+        public async IAsyncEnumerable<Scalar> FetchAsync(HistoricalDataRequest historicalDataRequest, [EnumeratorCancellation] CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
-        }
-
-        private IEnumerable<Scalar> Fetch(HistoricalDataRequest historicalDataRequest)
-        {
-            InstrumentCsvInfo instrumentCsvInfo = CsvRepository.InstrumentInfo(historicalDataRequest.Instrument);
+            InstrumentCsvInfo instrumentCsvInfo = CsvHistoricalData.InstrumentInfo(historicalDataRequest.Instrument);
             if (instrumentCsvInfo == null)
             {
-                return new List<Scalar>();
+                yield break;
             }
 
             if (!instrumentCsvInfo.HasScalarData)
             {
-                Log.Error(CsvRepository.InstrumentHasNoData("scalar"));
-                return new List<Scalar>();
+                Log.Error(CsvHistoricalData.InstrumentHasNoData("scalar"));
+                yield break;
             }
 
-            var csvRequest = new CsvRequest { StartDate = historicalDataRequest.StartDate, EndDate = historicalDataRequest.EndDate };
+            var csvRequest = new CsvRequest { StartDateTime = historicalDataRequest.StartDate, EndDateTime = historicalDataRequest.EndDate };
             TimeGranularity timeGranularity = historicalDataRequest.TimeGranularity;
             bool isEndofday = timeGranularity.IsEndofday();
             CsvInfo csvInfo = instrumentCsvInfo.GetMatchingData(CsvDataType.Scalar, timeGranularity);
@@ -58,7 +49,12 @@ namespace Mbs.Trading.Data.Historical.Providers.Csv
                     csvRequest.EndofdayClosingTime = historicalDataRequest.EndofdayClosingTime;
                 }
 
-                return CsvRepository.EnumerateScalarAsync(csvInfo, csvRequest);
+                await foreach (var s in CsvHistoricalData.EnumerateScalarAsync(csvInfo, csvRequest, cancellationToken))
+                {
+                    yield return s;
+                }
+
+                yield break;
             }
 
             csvInfo = instrumentCsvInfo.GetAggregateScalarData(timeGranularity);
@@ -104,12 +100,18 @@ namespace Mbs.Trading.Data.Historical.Providers.Csv
                     csvRequest.EndofdayClosingTime = historicalDataRequest.EndofdayClosingTime;
                 }
 
-                IEnumerable<Scalar> enumerable = CsvRepository.EnumerateScalarAsync(csvInfo, csvRequest);
-                return AggregatingConverter.Aggregate(enumerable, timeGranularity.NumberOfUnits(), thresholdDateTime);
+                await foreach (var s in AggregatingConverter.AggregateScalarAsync(
+                    CsvHistoricalData.EnumerateScalarAsync(csvInfo, csvRequest, cancellationToken),
+                    timeGranularity.NumberOfUnits(),
+                    thresholdDateTime).WithCancellation(cancellationToken))
+                {
+                    yield return s;
+                }
+
+                yield break;
             }
 
-            Log.Error(CsvRepository.CannotComposeGranularity(timeGranularity));
-            return new List<Scalar>();
+            Log.Error(CsvHistoricalData.CannotComposeGranularity(timeGranularity));
         }
     }
 }

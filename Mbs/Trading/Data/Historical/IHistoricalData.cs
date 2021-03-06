@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Mbs.Trading.Data.Entities;
 
@@ -21,22 +23,23 @@ namespace Mbs.Trading.Data.Historical
         /// An enumerable interface to enumerate a series of historical data events in the temporal order.
         /// </summary>
         /// <remarks>
-        /// To enumerate the all available data, pass the <see cref="DateTime.MinValue"/> as a begin time and the
+        /// To enumerate the all available data, pass the <see cref="DateTime.MinValue"/> as a start time and the
         /// <see cref="DateTime.MaxValue"/> as an end time in the <see cref="HistoricalDataRequest"/>.
         /// </remarks>
         /// <param name="historicalDataRequest">A historical data series specification.</param>
         /// <returns>An enumerable interface.</returns>
-        Task<IEnumerable<T>> FetchAsync(HistoricalDataRequest historicalDataRequest);
+        Task<IEnumerable<T>> FetchAsyncE(HistoricalDataRequest historicalDataRequest);
 
         /// <summary>
-        /// An enumerable interface to enumerate a series of historical data events asynchronously in the temporal order.
+        /// An async enumerable interface to enumerate a series of historical data events asynchronously in a temporal order.
         /// </summary>
         /// <remarks>
-        /// To enumerate the all available data, pass the <see cref="DateTime.MinValue"/> as a begin time and the
+        /// To enumerate the all available data, pass the <see cref="DateTime.MinValue"/> as a start time and the
         /// <see cref="DateTime.MaxValue"/> as an end time in the <see cref="HistoricalDataRequest"/>.
         /// </remarks>
         /// <param name="historicalDataRequest">A historical data series specification.</param>
+        /// <param name="cancellationToken">A cancellation token.</param>
         /// <returns>An async enumerable interface.</returns>
-        IAsyncEnumerable<T> FetchAsyncE(HistoricalDataRequest historicalDataRequest);
+        IAsyncEnumerable<T> FetchAsync(HistoricalDataRequest historicalDataRequest, CancellationToken cancellationToken);
     }
 }

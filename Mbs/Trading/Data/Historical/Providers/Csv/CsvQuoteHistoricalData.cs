@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Mbs.Trading.Data.Entities;
 using Mbs.Trading.Time;
@@ -7,55 +9,49 @@ using Mbs.Utilities;
 namespace Mbs.Trading.Data.Historical.Providers.Csv
 {
     /// <summary>
-    /// Provides an access to the intraday historical quote time series stored in CSV files as an enumerable quote time series.
+    /// Provides an access to the intraday historical <see cref="Quote"/> time series stored in CSV files as an enumerable quote time series.
     /// </summary>
     public sealed class CsvQuoteHistoricalData : IHistoricalData<Quote>
     {
         /// <inheritdoc />
-        public string Provider => CsvRepository.Provider;
+        public string Provider => CsvHistoricalData.Provider;
 
-        /// <summary>
-        /// Given a historical data request, creates an interface to enumerate the quote time series.
-        /// <para />
-        /// To enumerate the all available data, pass the <c>DateTime.MinValue</c> as a begin time and <c>DateTime.MaxValue</c> as an end time.
-        /// </summary>
-        /// <param name="historicalDataRequest">The historical data request.</param>
-        /// <returns>An enumerable interface.</returns>
-        public async Task<IEnumerable<Quote>> FetchAsync(HistoricalDataRequest historicalDataRequest)
+        public async Task<IEnumerable<Quote>> FetchAsyncE(HistoricalDataRequest historicalDataRequest)
         {
-            return await Task.Run(() => Fetch(historicalDataRequest));
+            return await Task.Run(() => new List<Quote>());
         }
 
-        public IAsyncEnumerable<Quote> FetchAsyncE(HistoricalDataRequest historicalDataRequest)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        private IEnumerable<Quote> Fetch(HistoricalDataRequest historicalDataRequest)
+        /// <inheritdoc />
+        public async IAsyncEnumerable<Quote> FetchAsync(HistoricalDataRequest historicalDataRequest, [EnumeratorCancellation] CancellationToken cancellationToken)
         {
             const string quote = "quote";
             if (historicalDataRequest.TimeGranularity.Equals(TimeGranularity.Aperiodic))
             {
-                InstrumentCsvInfo instrumentCsvInfo = CsvRepository.InstrumentInfo(historicalDataRequest.Instrument);
+                InstrumentCsvInfo instrumentCsvInfo = CsvHistoricalData.InstrumentInfo(historicalDataRequest.Instrument);
                 if (instrumentCsvInfo == null)
                 {
-                    return new List<Quote>();
+                    yield break;
                 }
 
                 CsvInfo csvInfo = instrumentCsvInfo.GetFirstData(CsvDataType.Quote);
                 if (csvInfo == null)
                 {
-                    Log.Error(CsvRepository.InstrumentHasNoData(quote));
-                    return new List<Quote>();
+                    Log.Error(CsvHistoricalData.InstrumentHasNoData(quote));
+                    yield break;
                 }
 
                 historicalDataRequest.IsDataAdjusted = csvInfo.IsAdjustedData;
-                var csvRequest = new CsvRequest { StartDate = historicalDataRequest.StartDate, EndDate = historicalDataRequest.EndDate };
-                return CsvRepository.EnumerateQuoteAsync(csvInfo, csvRequest);
+                var csvRequest = new CsvRequest { StartDateTime = historicalDataRequest.StartDate, EndDateTime = historicalDataRequest.EndDate };
+
+                await foreach (var q in CsvHistoricalData.EnumerateQuoteAsync(csvInfo, csvRequest, cancellationToken))
+                {
+                    yield return q;
+                }
+
+                yield break;
             }
 
-            Log.Error(CsvRepository.TimeGranularityNotSupported(historicalDataRequest.TimeGranularity, quote));
-            return new List<Quote>();
+            Log.Error(CsvHistoricalData.TimeGranularityNotSupported(historicalDataRequest.TimeGranularity, quote));
         }
     }
 }

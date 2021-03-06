@@ -63,13 +63,13 @@ namespace CsvHistoricalInstrumentData
             var logger = serviceProvider.GetService<ILogger<Program>>();
             var configuration = serviceProvider.GetService<IConfiguration>();
 
-            CsvRepository.IsDataCache = configuration.GetValue<bool>("IsDataCached");
-            CsvRepository.RepositoryPath = configuration.GetValue<string>("RepositoryPath");
+            //CsvHistoricalData.IsDataCache = configuration.GetValue<bool>("IsDataCached");
+            //CsvHistoricalData.RepositoryPath = configuration.GetValue<string>("RepositoryPath");
 
             var csvInstrumentInfos = configuration.GetSection("CsvInstrumentInfos").Get<CsvInstrumentInfo[]>();
             foreach (var csv in csvInstrumentInfos)
             {
-                CsvRepository.Add(csv.Instrument, csv.CsvInfo);
+                CsvHistoricalData.Add(csv.Instrument, csv.CsvInfo);
             }
 
             var instrumentHistoricalDataRequests = configuration.GetSection("InstrumentHistoricalDataRequests").Get<InstrumentHistoricalDataRequest[]>();
@@ -81,7 +81,7 @@ namespace CsvHistoricalInstrumentData
 
                 if (entityType == typeof(Ohlcv))
                 {
-                    var enumerable = await csvOhlcvHistoricalData.FetchAsync(hdr);
+                    var enumerable = await csvOhlcvHistoricalData.FetchAsyncE(hdr);
                     foreach (var e in enumerable)
                     {
                         if (e != null)
@@ -93,7 +93,7 @@ namespace CsvHistoricalInstrumentData
                 }
                 else if (entityType == typeof(Trade))
                 {
-                    var enumerable = await csvTradeHistoricalData.FetchAsync(hdr);
+                    var enumerable = await csvTradeHistoricalData.FetchAsyncE(hdr);
                     foreach (var e in enumerable)
                     {
                         Console.WriteLine(
@@ -102,7 +102,7 @@ namespace CsvHistoricalInstrumentData
                 }
                 else if (entityType == typeof(Quote))
                 {
-                    var enumerable = await csvQuoteHistoricalData.FetchAsync(hdr);
+                    var enumerable = await csvQuoteHistoricalData.FetchAsyncE(hdr);
                     foreach (var e in enumerable)
                     {
                         Console.WriteLine(
@@ -111,7 +111,7 @@ namespace CsvHistoricalInstrumentData
                 }
                 else if (entityType == typeof(Scalar))
                 {
-                    var enumerable = await csvScalarHistoricalData.FetchAsync(hdr);
+                    var enumerable = await csvScalarHistoricalData.FetchAsyncE(hdr);
                     foreach (var e in enumerable)
                     {
                         Console.WriteLine(

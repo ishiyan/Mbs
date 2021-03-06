@@ -15,7 +15,7 @@ namespace Mbs.Api.Services.Trading.Data.Historical
         /// <inheritdoc/>
         public async Task<IEnumerable<Ohlcv>> FetchOhlcvAsync(HistoricalDataRequest historicalDataRequest)
         {
-            return await EuronextOhlcvHistoricalData.FetchAsync(historicalDataRequest).ConfigureAwait(false);
+            return await EuronextOhlcvHistoricalData.FetchAsyncE(historicalDataRequest).ConfigureAwait(false);
         }
     }
 }

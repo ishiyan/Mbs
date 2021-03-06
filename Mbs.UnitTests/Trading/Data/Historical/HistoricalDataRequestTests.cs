@@ -69,10 +69,10 @@ namespace Mbs.UnitTests.Trading.Data.Historical
 
             Assert.IsFalse(validated);
             Assert.AreEqual(1, validationResults.Count);
-            Assert.IsTrue(validationResults[0].ErrorMessage.Contains("EndDate should be greater than the StartDate"));
+            Assert.IsTrue(validationResults[0].ErrorMessage.Contains("EndDateTime should be greater than the StartDateTime"));
             Assert.AreEqual(2, validationResults[0].MemberNames.Count());
-            Assert.IsTrue(validationResults[0].MemberNames.ElementAt(0).Contains("StartDate"));
-            Assert.IsTrue(validationResults[0].MemberNames.ElementAt(1).Contains("EndDate"));
+            Assert.IsTrue(validationResults[0].MemberNames.ElementAt(0).Contains("StartDateTime"));
+            Assert.IsTrue(validationResults[0].MemberNames.ElementAt(1).Contains("EndDateTime"));
         }
 
         [TestMethod]

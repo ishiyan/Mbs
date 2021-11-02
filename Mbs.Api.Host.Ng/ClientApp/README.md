@@ -61,6 +61,34 @@ https://docs.microsoft.com/en-us/aspnet/core/tutorials/dotnet-watch?view=aspnetc
 15. https://github.com/KaTeX/KaTeX/releases
 
 # MathJax in CLI project
+
+Version 3 support: add the following to the `node_modules\@types\mathjax\index.d.ts`:
+
+```ts
+declare namespace MathJax {
+  export const Hub: Hub;
+  export const Ajax: Ajax;
+  export const Message: Message;
+  export const HTML: HTML;
+  export const Callback: Callback;
+  export const Localization: Localization;
+  export const InputJax: InputJax;
+  export const OutputJax: OutputJax;
+  //
+  // Mathjax@3 surrpot -----------
+  //
+  export const typeset: () => any;
+  export const typesetPromise: () => any;
+  export const startup: Startup;
+
+  export interface Startup {
+    promise: any;
+  }
+  //
+  // -----------------------------------
+  //
+```
+
 1. Create a new project
 
 2. Install MathJax and types

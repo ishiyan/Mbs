@@ -2,7 +2,6 @@ import { ModuleWithProviders, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { MathJaxDirective } from './math-jax.directive';
-import { MathJaxService } from './math-jax.service';
 import { ModuleConfiguration } from './module-configuration';
 import { MathJaxComponent } from './math-jax.component';
 
@@ -15,69 +14,68 @@ import { MathJaxComponent } from './math-jax.component';
   exports: [MathJaxDirective, MathJaxComponent]
 })
 export class MathJaxModule {
-  constructor(service: MathJaxService, moduleConfig?: ModuleConfiguration) {
-    service.init();
-
-    /** Define the **function string** to be inserted into the mathjax configuration script block. */
-    const mathJaxHubConfig = (() => {
-      MathJax.Hub.Config({
-        skipStartupTypeset: true,
-        messageStyle: 'none',
-        tex2jax: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']],
-          displayMath: [['$$', '$$'], ['\\[', '\\]']],
-          processEscapes: true,
-          ignoreClass: 'tex2jax_ignore|dno',
-          preview: 'none'
-        }
-      });
-      // @ts-ignore
-      MathJax.Hub.Register.StartupHook('End', () => {
-        window.mathJaxHub$.next();
-        window.mathJaxHub$.complete();
-      });
-    }).toString();
-
+  constructor(moduleConfig?: ModuleConfiguration) {
     if (moduleConfig) {
-      // Insert the MathJax configuration script into the Head element.
-      const script = document.createElement('script') as HTMLScriptElement;
-      script.type = 'text/x-mathjax-config';
-      script.text = `(${mathJaxHubConfig})();`;
-      document.getElementsByTagName('head')[0].appendChild(script);
-
-      // Insert the script block to load the MathJax library.
-      const script2 = document.createElement('script') as HTMLScriptElement;
-      script2.type = 'text/javascript';
-      if (moduleConfig.online) {
-       script2.src = `https://cdnjs.cloudflare.com/ajax/libs/mathjax/${moduleConfig.version}/MathJax.js?config=${moduleConfig.config}`;
-      } else {
-        script2.src = `assets/mathjax/MathJax.js?config=${moduleConfig.config}`;
-      }
-      script2.async = true;
-      document.getElementsByTagName('head')[0].appendChild(script2);
+      // Insert the MathJax configuration and loader scripts into the Head element.
+      MathJaxModule.insertMathJax(moduleConfig);
     }
   }
 
   /** Configure the module for the root module. */
   public static forRoot(moduleConfiguration: ModuleConfiguration = {
-    version: '2.7.7',
-    config: 'TeX-AMS_HTML',
+    // '3' mens the latest '3.x.x' version, use '3.2.0' for the specific one.
+    version: '3',
+    config: 'tex-svg',
     online: true
   }): ModuleWithProviders<MathJaxModule> {
     return {
       ngModule: MathJaxModule,
       providers: [
         { provide: ModuleConfiguration, useValue: moduleConfiguration },
-        { provide: MathJaxService, useClass: MathJaxService },
       ]
     };
   }
 
   /** Configure the module for a child module. */
-  /** Configure the module for a child module. */
-public static forChild(): ModuleWithProviders<MathJaxModule> {
+  public static forChild(): ModuleWithProviders<MathJaxModule> {
     return {
-        ngModule: MathJaxModule
+      ngModule: MathJaxModule
     };
-}
+  }
+
+  private static insertMathJax(moduleConfig: ModuleConfiguration) {
+    const tagId = 'MathJax-script';
+    const isScript = document.getElementById(tagId);
+    if (isScript) {
+      return;
+    }
+
+    // Make sure configuration is always before the loader script.
+    const config = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        packages: ['base', 'require', 'ams']
+      },
+      svg: { fontCache: 'global' },
+    };
+
+    let script = document.createElement('script') as HTMLScriptElement;
+    script.type = 'text/javascript';
+    script.text = `MathJax = ${JSON.stringify(config)}`;
+    document.getElementsByTagName('head')[0].appendChild(script);
+
+    // The loader script.
+    script = document.createElement('script') as HTMLScriptElement;
+    script.id = tagId;
+    script.type = 'text/javascript';
+    script.async = true;
+    if (moduleConfig.online) {
+      script.src = `https://cdn.jsdelivr.net/npm/mathjax@${moduleConfig.version}/es5/${moduleConfig.config}.js`;
+    } else {
+      script.src = `assets/mathjax/es5/${moduleConfig.config}.js`;
+    }
+
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
 }

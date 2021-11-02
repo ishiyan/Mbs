@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, OnChanges, ViewChild } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
 import { MathJaxDirective } from './math-jax.directive';
 
 @Component({
@@ -12,10 +12,9 @@ export class MathJaxComponent implements OnChanges {
   @ViewChild(MathJaxDirective)
   mathJaxDirective: MathJaxDirective;
 
-  ngOnChanges(changes: any): void {
+  ngOnChanges(changes: SimpleChanges): void {
     if (this.mathJaxDirective) {
-      this.mathJaxDirective.element.innerHTML = this.expression;
-      this.mathJaxDirective.typeset();
+      this.mathJaxDirective.typeset(this.expression);
     }
   }
 }

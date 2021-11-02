@@ -59,6 +59,52 @@ https://docs.microsoft.com/en-us/aspnet/core/tutorials/dotnet-watch?view=aspnetc
 13. https://github.com/Kcnarf/d3-voronoi-treemap/releases
 14. https://github.com/Kcnarf/d3-voronoi-map/releases
 15. https://github.com/KaTeX/KaTeX/releases
+16. https://github.com/jossef/material-design-icons-iconfont/releases, icons themselves https://jossef.github.io/material-design-icons-iconfont/
+
+# KaTeX 0.15.1 fix
+
+New versions of `katex` package produce `Error: export 'render' (imported as 'render') was not found in 'katex' (possible exports: default` when compiling.
+
+The workaround is to delete the following `exports` block in the `node_modules\katex\package.json`:
+
+```json
+{
+  "name": "katex",
+  "version": "0.15.1",
+  "description": "Fast math typesetting for the web.",
+  "main": "dist/katex.js",
+  /* ------------------- */
+  /*"exports": {
+    ".": {
+      "require": "./dist/katex.js",
+      "import": "./dist/katex.mjs"
+    },
+    "./contrib/auto-render": {
+      "require": "./dist/contrib/auto-render.js",
+      "import": "./dist/contrib/auto-render.mjs"
+    },
+    "./contrib/mhchem": {
+      "require": "./dist/contrib/mhchem.js",
+      "import": "./dist/contrib/mhchem.mjs"
+    },
+    "./contrib/copy-tex": {
+      "require": "./dist/contrib/copy-tex.js",
+      "import": "./dist/contrib/copy-tex.mjs"
+    },
+    "./contrib/mathtex-script-type": {
+      "require": "./dist/contrib/mathtex-script-type.js",
+      "import": "./dist/contrib/mathtex-script-type.mjs"
+    },
+    "./contrib/render-a11y-string": {
+      "require": "./dist/contrib/render-a11y-string.js",
+      "import": "./dist/contrib/render-a11y-string.mjs"
+    },
+    "./*": "./*"
+  },*/
+  /* ------------------- */
+  /* ... */
+}
+``` 
 
 # MathJax in CLI project
 

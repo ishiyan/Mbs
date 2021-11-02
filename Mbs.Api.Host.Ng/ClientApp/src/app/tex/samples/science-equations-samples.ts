@@ -247,8 +247,9 @@ export const scienceEquationsSamples: Sample[] =
       code: 'e = \\mathop {\\lim }\\limits_{n \\to \\infty } \\left( {1 + \\frac{1}{n}} \\right)^n'
     },
     {
+      
       name: 'Statistics: Gaussian normal distribution',
-      code: 'P(x) = \\frac{1}{{\\sigma \\sqrt {2\\pi } }}e^{{{ - \\left( {x - \\mu } \\right)^2 } \\mathord{\\left/\n {\\vphantom {{ - \\left( {x - \\mu } \\right)^2 } {2\\sigma ^2 }}} \\right.\n \\kern{-\\nulldelimiterspace}} {2\\sigma ^2 }}}' // tslint:disable-line
+      code: 'P(x) = \\frac{1}{{\\sigma \\sqrt {2\\pi } }}e^{{{ - \\left( {x - \\mu } \\right)^2 } \\mathord{\\left/ \n {\\vphantom {{ - \\left( {x - \\mu } \\right)^2 } {2\sigma ^2 }}} \\right. \n \\kern0pt} {2\\sigma ^2 }}}' // tslint:disable-line
     },
     {
       name: 'Statistics: Poisson distribution',
@@ -276,7 +277,7 @@ export const scienceEquationsSamples: Sample[] =
     },
     {
       name: 'Statistics: Fisher skewness',
-      code: '\\gamma _1  = \\frac{{\\mu _3 }}{{\\mu _2 ^{{3 \\mathord{\\left/\n {\\vphantom {3 2}} \\right.\n \\kern{-\\nulldelimiterspace}} 2}} }} = \\frac{{\\mu _3 }}{{\\sigma ^3 }}' // tslint:disable-line
+      code: '\\gamma _1  = \\frac{{\\mu _3 }}{{\\mu _2 ^{{3 \\mathord{\\left/ \n {\\vphantom {3 2}} \\right.\n \\kern0pt} 2}} }} = \\frac{{\\mu _3 }}{{\\sigma ^3 }}' // tslint:disable-line
     },
     {
       name: 'Statistics: standard deviation',

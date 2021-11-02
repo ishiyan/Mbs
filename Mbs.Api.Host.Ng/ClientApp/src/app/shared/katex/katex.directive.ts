@@ -1,5 +1,5 @@
 import { Directive, ElementRef, EventEmitter, Input, Output, OnChanges, } from '@angular/core';
-import * as katex from 'katex';
+import { KatexOptions } from 'katex';
 
 import { KatexService } from './katex.service';
 
@@ -8,7 +8,7 @@ import { KatexService } from './katex.service';
 })
 export class KatexDirective implements OnChanges {
   @Input() mbKatex: string;
-  @Input() options: katex.KatexOptions;
+  @Input() options: KatexOptions;
   @Output() hasError = new EventEmitter<any>();
 
   constructor(private element: ElementRef, private katexService: KatexService) { }

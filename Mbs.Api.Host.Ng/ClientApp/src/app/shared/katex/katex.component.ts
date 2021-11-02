@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import * as katex from 'katex';
+import { KatexOptions } from 'katex';
 
 @Component({
   selector: 'mb-katex',
@@ -8,7 +8,7 @@ import * as katex from 'katex';
 })
 export class KatexComponent {
   @Input() expression: string;
-  @Input() options?: katex.KatexOptions;
+  @Input() options?: KatexOptions;
   @Output() hasError = new EventEmitter<any>();
 
   public outputError(error: any): void {

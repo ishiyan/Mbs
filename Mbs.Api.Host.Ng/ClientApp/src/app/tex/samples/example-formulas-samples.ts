@@ -100,7 +100,7 @@ export const exampleFormulasSamples: Sample[] =
     },
     {
       name: '25',
-      code: '\frac{\\partial^2 \\phi}{\\partial x \\partial y} = \\frac{\\partial^2 \\phi}{\\partial y \\partial x}'
+      code: '\\frac{\\partial^2 \\phi}{\\partial x \\partial y} = \\frac{\\partial^2 \\phi}{\\partial y \\partial x}'
     },
     {
       name: '26',

@@ -61,6 +61,13 @@ https://docs.microsoft.com/en-us/aspnet/core/tutorials/dotnet-watch?view=aspnetc
 15. https://github.com/KaTeX/KaTeX/releases
 16. https://github.com/jossef/material-design-icons-iconfont/releases, icons themselves https://jossef.github.io/material-design-icons-iconfont/
 
+# Opt-out ng usage analytics
+
+```bash
+ng config --global cli.analyticsSharing undefined
+ng analytics off off
+```
+
 # KaTeX 0.15.1 fix
 
 New versions of `katex` package produce `Error: export 'render' (imported as 'render') was not found in 'katex' (possible exports: default` when compiling.
@@ -73,8 +80,8 @@ The workaround is to delete the following `exports` block in the `node_modules\k
   "version": "0.15.1",
   "description": "Fast math typesetting for the web.",
   "main": "dist/katex.js",
-  /* ------------------- */
-  /*"exports": {
+  /* ------- DELETE FROM HERE ------------ */
+  "exports": {
     ".": {
       "require": "./dist/katex.js",
       "import": "./dist/katex.mjs"
@@ -100,8 +107,8 @@ The workaround is to delete the following `exports` block in the `node_modules\k
       "import": "./dist/contrib/render-a11y-string.mjs"
     },
     "./*": "./*"
-  },*/
-  /* ------------------- */
+  },
+  /* ------- DELETE TO HERE ------------ */
   /* ... */
 }
 ``` 

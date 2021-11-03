@@ -65,8 +65,8 @@
     <SpaRoot>ClientApp/</SpaRoot>
     <NodeModules>node_modules</NodeModules>
     <Ng>node_modules/.bin/ng</Ng>
-    <MathJax>$(SpaRoot)node_modules/mathjax</MathJax>
-    <MathJaxAssets>$(SpaRoot)src/assets/mathjax</MathJaxAssets>
+    <MathJax>$(SpaRoot)node_modules/mathjax/es5</MathJax>
+    <MathJaxAssets>$(SpaRoot)src/assets/mathjax/es5</MathJaxAssets>
     <AllowNgBuild>true</AllowNgBuild>
     <AllowNgClean>false</AllowNgClean>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules/**</DefaultItemExcludes>
@@ -92,25 +92,15 @@
     <Message Text="------ Finished installation of npm packages ------" Importance="high" />
   </Target>
 
-  <Target Name="CopyMathJax" BeforeTargets="BeforeBuild" AfterTargets="NpmInstall" Condition="!Exists('$(MathJaxAssets)/MathJax.js')">
+  <Target Name="CopyMathJax" BeforeTargets="BeforeBuild" AfterTargets="NpmInstall" Condition="!Exists('$(MathJaxAssets)')">
     <Message Text="------ Started removing mathjax assets ------" Importance="high" />
     <!-- RemoveDir Directories="$(MathJaxAssets)" ContinueOnError="true" / -->
     <Message Text="------ Finished removing mathjax assets ------" Importance="high" />
     <Message Text="------ Started copying mathjax assets ------" Importance="high" />
     <!-- ItemGroup>
-      <MathJaxFiles Include="$(MathJax)/MathJax.js" />
-      <MathJaxConfigFiles Include="$(MathJax)/config/**/*" />
-      <MathJaxExtensionsFiles Include="$(MathJax)/extensions/**/*" />
-      <MathJaxJaxFiles Include="$(MathJax)/jax/**/*" />
-      <MathJaxLocalizationFiles Include="$(MathJax)/localization/**/*" />
-      <MathJaxFontsFiles Include="$(MathJax)/fonts/**/*" />
+      <MathJaxFiles Include="$(MathJax)/**/*" />
     </ItemGroup>
-    <Copy SourceFiles="@(MathJaxFiles)" DestinationFolder="$(MathJaxAssets)" />
-    <Copy SourceFiles="@(MathJaxConfigFiles)" DestinationFolder="$(MathJaxAssets)/config/%(RecursiveDir)" />
-    <Copy SourceFiles="@(MathJaxExtensionsFiles)" DestinationFolder="$(MathJaxAssets)/extensions/%(RecursiveDir)" />
-    <Copy SourceFiles="@(MathJaxJaxFiles)" DestinationFolder="$(MathJaxAssets)/jax/%(RecursiveDir)" />
-    <Copy SourceFiles="@(MathJaxLocalizationFiles)" DestinationFolder="$(MathJaxAssets)/localization/%(RecursiveDir)" />
-    <Copy SourceFiles="@(MathJaxFontsFiles)" DestinationFolder="$(MathJaxAssets)/fonts/%(RecursiveDir)" / -->
+    <Copy SourceFiles="@(MathJaxFiles)" DestinationFolder="$(MathJaxAssets)" / -->
     <Message Text="------ Finished copying mathjax assets ------" Importance="high" />
   </Target>
 
@@ -124,7 +114,7 @@
   <Target Name="NgBuildProd" BeforeTargets="Build" Condition="$(AllowNgBuild) And '$(Configuration)' == 'Release'">
     <Message Text="------ Starting ng cli production build ------" Importance="high" />
     <Exec Command="$(Ng) --version" WorkingDirectory="$(SpaRoot)" />
-    <Exec Command="$(Ng) build --prod=true --aot=true --optimization=true --build-optimizer=true --extract-licenses=true --common-chunk=true" WorkingDirectory="$(SpaRoot)" />
+    <Exec Command="$(Ng) build --configuration production --aot=true --optimization=true --build-optimizer=true --subresource-integrity=true --extract-licenses=true --common-chunk=true" WorkingDirectory="$(SpaRoot)" />
     <Message Text="------ Finished ng cli production build ------" Importance="high" />
   </Target>
 

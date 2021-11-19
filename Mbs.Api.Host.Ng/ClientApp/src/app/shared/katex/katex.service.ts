@@ -8,7 +8,7 @@ export class KatexService {
     return render(expression, element.nativeElement, options);
   }
 
-  renderToString(expression: string, options?: katex.KatexOptions): string {
+  renderToString(expression: string, options?: KatexOptions): string {
     return renderToString(expression, options);
   }
 }

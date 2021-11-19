@@ -1,49 +1,60 @@
-#Naming and styling
-We follow Angular naming conventions (https://github.com/angular/angular/blob/master/docs/NAMING.md),
-TypeScript coding guidelines (https://github.com/Microsoft/TypeScript/wiki/Coding-guidelines) and
-Angular coding style guide (https://angular.io/guide/styleguide).
+# Notes
 
-#Azure
-https://mbrane.visualstudio.com/IvanShiyan/_build?definitionId=10&_a=summary
-https://portal.azure.com/#@ivanshiyanalex.onmicrosoft.com/dashboard/private/5441bbe8-b3a7-4a41-a3b3-2932b0798271
+## Naming and styling
 
-#Material colors
-https://material.io/tools/color/#!/?view.left=0&view.right=0&primary.color=3F51B5&secondary.color=9E9E9E
+Follow Angular [naming conventions](https://github.com/angular/angular/blob/master/docs/NAMING.md),
+TypeScript [coding guidelines](https://github.com/Microsoft/TypeScript/wiki/Coding-guidelines) and
+Angular [coding style guide](https://angular.io/guide/styleguide).
 
-#Material icons
-https://material.io/tools/icons/?search=fill&icon=remove_red_eye&style=baseline
-https://materialdesignicons.com/
+## Azure
 
-#D3
-https://github.com/glouwa/d3-hypertree/tree/master/src
-https://bl.ocks.org/mbostock/3035090
+- https://mbrane.visualstudio.com/IvanShiyan/_build?definitionId=10&_a=summary
+- https://portal.azure.com/#@ivanshiyanalex.onmicrosoft.com/dashboard/private/5441bbe8-b3a7-4a41-a3b3-2932b0798271
 
-#hexagons
-https://www.redblobgames.com/grids/hexagons/
-https://github.com/d3/d3-plugins/blob/master/hexbin/hexbin.js
-https://www.visualcinnamon.com/2013/07/self-organizing-maps-creating-hexagonal.html
-https://www.superdatascience.com/blogs/the-ultimate-guide-to-self-organizing-maps-soms
+## Material colors
 
-#Save to PNG
-https://stackoverflow.com/questions/36303964/save-d3-chart-as-image
-http://bl.ocks.org/Rokotyan/0556f8facbaf344507cdc45dc3622177
+- https://material.io/tools/color/#!/?view.left=0&view.right=0&primary.color=3F51B5&secondary.color=9E9E9E
 
-#Misc
-https://github.com/manfredsteyer/angular-oauth2-oidc
-https://manfredsteyer.github.io/angular-oauth2-oidc/docs/additional-documentation/callback-after-login.html
-https://connect2id.com/learn/openid-connect
-http://docs.iatec.com/projects/auth/en/latest/misc/2_credentials.html
-https://damienbod.com/2017/06/16/angular-oidc-oauth2-client-with-google-identity-platform/
-https://openid.net/specs/openid-connect-implicit-1_0.html
-https://openid.net/specs/openid-connect-basic-1_0.html
-https://developers.google.com/identity/protocols/OpenIDConnect
-https://developer.humanbrainproject.eu/docs/projects/HBP%20Identity%20Management/1.2/developer-manual/introduction.html
-https://github.com/JasonGT/CodingFlowBuildingSpaSeries/releases/tag/v1.0
-http://www.codingflow.net/building-single-page-applications-on-asp-net-core-2-1-with-angular-6-part-1-getting-started/
-https://docs.microsoft.com/en-us/aspnet/core/client-side/spa/angular?view=aspnetcore-2.1&tabs=visual-studio
-https://docs.microsoft.com/en-us/aspnet/core/tutorials/dotnet-watch?view=aspnetcore-2.1
+## Material icons
 
-# Updates
+- https://material.io/tools/icons/?search=fill&icon=remove_red_eye&style=baseline
+- https://materialdesignicons.com/
+
+## D3
+
+- https://github.com/glouwa/d3-hypertree/tree/master/src
+- https://bl.ocks.org/mbostock/3035090
+
+## hexagons
+
+- https://www.redblobgames.com/grids/hexagons/
+- https://github.com/d3/d3-plugins/blob/master/hexbin/hexbin.js
+- https://www.visualcinnamon.com/2013/07/self-organizing-maps-creating-hexagonal.html
+- https://www.superdatascience.com/blogs/the-ultimate-guide-to-self-organizing-maps-soms
+
+## Save to PNG
+
+- https://stackoverflow.com/questions/36303964/save-d3-chart-as-image
+- http://bl.ocks.org/Rokotyan/0556f8facbaf344507cdc45dc3622177
+
+## Misc
+
+- https://github.com/manfredsteyer/angular-oauth2-oidc
+- https://manfredsteyer.github.io/angular-oauth2-oidc/docs/additional-documentation/callback-after-login.html
+- https://connect2id.com/learn/openid-connect
+- http://docs.iatec.com/projects/auth/en/latest/misc/2_credentials.html
+- https://damienbod.com/2017/06/16/angular-oidc-oauth2-client-with-google-identity-platform/
+- https://openid.net/specs/openid-connect-implicit-1_0.html
+- https://openid.net/specs/openid-connect-basic-1_0.html
+- https://developers.google.com/identity/protocols/OpenIDConnect
+- https://developer.humanbrainproject.eu/docs/projects/HBP%20Identity%20Management/1.2/developer-manual/introduction.html
+- https://github.com/JasonGT/CodingFlowBuildingSpaSeries/releases/tag/v1.0
+- http://www.codingflow.net/building-single-page-applications-on-asp-net-core-2-1-with-angular-6-part-1-getting-started/
+- https://docs.microsoft.com/en-us/aspnet/core/client-side/spa/angular?view=aspnetcore-2.1&tabs=visual-studio
+- https://docs.microsoft.com/en-us/aspnet/core/tutorials/dotnet-watch?view=aspnetcore-2.1
+
+## Updates
+
 1. https://github.com/angular/angular-cli/releases
 2. https://github.com/angular/angular/blob/master/CHANGELOG.md, https://github.com/angular/angular/blob/master/docs/RELEASE_SCHEDULE.md
 3. https://github.com/angular/material2/blob/master/CHANGELOG.md
@@ -61,16 +72,18 @@ https://docs.microsoft.com/en-us/aspnet/core/tutorials/dotnet-watch?view=aspnetc
 15. https://github.com/KaTeX/KaTeX/releases
 16. https://github.com/jossef/material-design-icons-iconfont/releases, icons themselves https://jossef.github.io/material-design-icons-iconfont/
 
-# Opt-out ng usage analytics
+## Opt-out ng usage analytics
 
 ```bash
 ng config --global cli.analyticsSharing undefined
 ng analytics off off
 ```
 
-# KaTeX 0.15.1 fix
+## KaTeX 0.15.1 fix
 
-New versions of `katex` package produce `Error: export 'render' (imported as 'render') was not found in 'katex' (possible exports: default` when compiling.
+Or delete `"@types/katex": "0.11.1",` from `package.json` untill newer version.
+
+New versions of `katex` package produce `Error: export 'render' (imported as 'render') was not found in 'katex' (possible exports: default)` when compiling.
 
 The workaround is to delete the following `exports` block in the `node_modules\katex\package.json`:
 
@@ -111,9 +124,9 @@ The workaround is to delete the following `exports` block in the `node_modules\k
   /* ------- DELETE TO HERE ------------ */
   /* ... */
 }
-``` 
+```
 
-# MathJax in CLI project
+## MathJax in CLI project
 
 Version 3 support: add the following to the `node_modules\@types\mathjax\index.d.ts`:
 
@@ -142,20 +155,22 @@ declare namespace MathJax {
   //
 ```
 
-1. Create a new project
+- 1. Create a new project
+- 2. Install MathJax and types
 
-2. Install MathJax and types
 ```shell
 npm install mathjax@latest --save
 npm -i @types/mathjax --only=dev
 ```
 
-3. Add script to the `angular-cli.json`
+- 3. Add script to the `angular-cli.json`
+
 ```json
 "scripts": ["../node_modules/mathjax/MathJax.js"],
-``` 
+```
 
-4. Add to the `index/html`
+- 4. Add to the `index/html`
+
 ```html
 <head>
 ...
@@ -175,12 +190,14 @@ Or the following if you want to serve it offline:
 </head>
 ```
 
-5. Add to `tsconfig.app.json` and `tsconfig.spec.json`
+- 5. Add to `tsconfig.app.json` and `tsconfig.spec.json`
+
 ```json
 "types": ["MathJax"]
 ```
 
-6. Add a new file `mathjax.directive.ts` to the `app` folder
+- 6. Add a new file `mathjax.directive.ts` to the `app` folder
+
 ```typescript
 import {Directive, ElementRef, Input, OnChanges, OnInit} from '@angular/core';
 @Directive({
@@ -201,7 +218,8 @@ export class MathJaxDirective implements OnInit, OnChanges {
 }
 ```
 
-7. Add to `app.module.ts`
+- 7. Add to `app.module.ts`
+
 ```typescript
 ...
 import { MathJaxDirective } from './mathjax.directive';
@@ -212,7 +230,8 @@ declarations: [
  ],
 ```
 
-8. Update `app.component.ts` to
+- 8. Update `app.component.ts` to
+
 ```typescript
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { MathJaxDirective } from './mathjax.directive';
@@ -238,7 +257,8 @@ export class AppComponent implements OnInit, OnChanges {
 }
 ```
 
-9. Update `app.component.html` to
+- 9. Update `app.component.html` to
+
 ```html
 <h1 appMathJax [MathJax]="formulae">{{formulae}}</h1>
 <h1 appMathJax [MathJax]="fractionString">{{fractionString}}</h1>
@@ -263,8 +283,10 @@ export class AppComponent implements OnInit, OnChanges {
 <span appMathJax [MathJax]="txt.value"></span>
 ```
 
-10. (Optional) Create batch files to copy mathjax to the assets folder
+- 10. (Optional) Create batch files to copy mathjax to the assets folder
+
 copy_mathjax_to_assets.bat
+
 ```shell
 @echo off
 set source_folder=node_modules\mathjax
@@ -278,7 +300,9 @@ xcopy /S /Q /G /R /Y /I "%source_folder%\jax" "%target_folder%\jax"
 xcopy /S /Q /G /R /Y /I "%source_folder%\localization" "%target_folder%\localization"
 xcopy /S /Q /G /R /Y /I "%source_folder%\fonts" "%target_folder%\fonts"
 ```
+
 link_mathjax_to_assets.cmd
+
 ```shell
 @echo off
 set source_folder=node_modules\mathjax
@@ -292,20 +316,23 @@ mklink /J "%target_folder%\jax" "%source_folder%\jax"
 mklink /J "%target_folder%\localization" "%source_folder%\localization"
 mklink /J "%target_folder%\fonts" "%source_folder%\fonts"
 ```
+
 delete_mathjax_from_assets.cmd
+
 ```shell
 @echo off
 set target_folder=src\assets\mathjax
 rmdir /S /Q "%target_folder%"
 ```
 
-# Using D3 in NgCli
+## Using D3 in NgCli
 
 ```shell
 npm install -prod d3@latest @types/d3@latest
-
 ```
+
 add to `src/typings.d.ts`
+
 ```typescript
 declare module 'd3' {
   export * from 'd3-array';
@@ -342,46 +369,49 @@ declare module 'd3' {
 
 ```
 
-# Using Material Design icons
+## Using Material Design icons
 
 ```shell
 npm install -prod material-design-icons@latest
 ```
+
 You can use it in two ways.
 
 First one. Add to the `head` section of the `index.html`:
+
 ```html
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons&display=outlined" rel="stylesheet">
 ```
 
 Second one. Add to the `styles.scss`:
+
 ```scss
 @import '~material-design-icons/iconfont/material-icons.css';
 ```
 
-# Using up-to-date Material Design icons font
+## Using up-to-date Material Design icons font
 
 The original Google package described above is not up-to-date and misses many icons.
 You can use a font-replacement package which has up-to-date fonts.
 
 This font has only regular, not outline and rounded flavours. 
+
 ```shell
 npm install -prod material-design-icons-iconfont@latest
 ```
 
 Add to the `styles.scss`:
+
 ```scss
 $material-design-icons-font-directory-path: '~material-design-icons-iconfont/dist/fonts/';
 @import '~material-design-icons-iconfont/src/material-design-icons';
 ```
 
-# typescript warnings
+## Typescript warnings
+
 ```shell
 ng set warnings.typescriptMismatch=false
 ```
-
-
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.6.4.
 
 ## Development server
 

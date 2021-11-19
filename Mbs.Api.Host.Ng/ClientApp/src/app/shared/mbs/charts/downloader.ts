@@ -1,3 +1,12 @@
+// TypeScript versions 4.4.3 and higher:
+// Error TS2339: Property 'msSaveBlob' does not exist on type 'Navigator'.
+// Use declaration merging to add it back to the 'Navigator'.
+declare global {
+  interface Navigator {
+      msSaveBlob?: (blob: any, defaultName?: string) => boolean
+  }
+}
+
 export class Downloader {
 
   public static download(blob: Blob, filename: string): void {
@@ -42,7 +51,7 @@ export class Downloader {
     const svgns = 'http://www.w3.org/2000/svg';
     svgNativeElement = svgNativeElement.cloneNode(true);
     const fragment = window.location.href + '#';
-    const walker = document.createTreeWalker(svgNativeElement, NodeFilter.SHOW_ELEMENT, null, false);
+    const walker = document.createTreeWalker(svgNativeElement, NodeFilter.SHOW_ELEMENT, null/*, false*/); // Needed for InternetExplorer.
     while (walker.nextNode()) {
       const currentNode: any = walker.currentNode;
       for (const attr of currentNode.attributes) {

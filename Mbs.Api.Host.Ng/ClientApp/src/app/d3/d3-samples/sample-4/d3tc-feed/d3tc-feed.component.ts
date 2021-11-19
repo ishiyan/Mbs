@@ -78,9 +78,9 @@ export class D3tcFeedComponent implements OnInit {
           // eslint-disable-next-line @typescript-eslint/no-shadow
           // @ts-ignore
           const selection = d3.select(this);
-          selection.select('g.x.axis').call(xAxis);
-          selection.select('g.y.axis').call(yAxis);
-          selection.select('g.volume.axis').call(volumeAxis);
+          selection.select('g.x.axis').call(xAxis as any);
+          selection.select('g.y.axis').call(yAxis as any);
+          selection.select('g.volume.axis').call(volumeAxis as any);
           selection.select('g.candlestick').datum(dat).call(ohlc);
           selection.select('g.volume').datum(dat).call(volume);
           svg.select('g.crosshair.ohlc').call(crosshair);

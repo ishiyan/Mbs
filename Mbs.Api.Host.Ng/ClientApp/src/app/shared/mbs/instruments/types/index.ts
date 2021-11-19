@@ -41,7 +41,7 @@ export class Index {
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
-    // tslint:disable:no-string-literal
+    /* eslint-disable @typescript-eslint/dot-notation */
     data['Currency'] = this.currency;
     data['Kind'] = this.kind;
     data['Family'] = this.family;
@@ -51,7 +51,7 @@ export class Index {
     data['Icb'] = this.icb;
     data['BaseDate'] = this.baseDate;
     data['BaseLevel'] = this.baseLevel;
-    // tslint:enable:no-string-literal
+    /* eslint-enable @typescript-eslint/dot-notation */
     return data;
   }
 }

@@ -1,4 +1,4 @@
-// tslint:disable:max-line-length
+/* eslint-disable max-len */
 
 export const testDataMeta: object[] = [
   {
@@ -4808,4 +4808,4 @@ export const testDataOutputs: object[] = [
     ]
   }
 ];
-// tslint:enable:
+/* eslint-enable */

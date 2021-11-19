@@ -1,5 +1,5 @@
 // This code is automatically generated. Do not edit!
-// tslint:disable:max-line-length
+/* eslint-disable max-len */
 
 import { IcbTaxonomy, IcbRank, IcbLevel } from './icb-taxonomy';
 

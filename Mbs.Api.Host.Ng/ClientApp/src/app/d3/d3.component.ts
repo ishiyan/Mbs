@@ -16,6 +16,27 @@ export class D3Component {
   public treeControl = new NestedTreeControl<D3Sample>(node => node.children);
   public dataSource = new MatTreeNestedDataSource<D3Sample>();
 
+  constructor(router: Router) {
+    const routeUrl = router.routerState.snapshot.url;
+    for (const node of treeNodes) {
+      const n = D3Component.findEqual(node, routeUrl);
+      if (n) {
+        this.sample = n;
+        break;
+      }
+    }
+    if (!this.sample) {
+      for (const node of treeNodes) {
+        const n = D3Component.findFirst(node);
+        if (n) {
+          this.sample = n;
+          break;
+        }
+      }
+    }
+    this.dataSource.data = treeNodes;
+  }
+
   private static findEqual(node: D3Sample, routeUrl: string): D3Sample | undefined {
     if (node.route) {
       const url = '/d3/' + node.route;
@@ -50,25 +71,4 @@ export class D3Component {
   }
 
   public hasChild = (_: number, node: D3Sample) => !!node.children && node.children.length > 0;
-
-  constructor(router: Router) {
-    const routeUrl = router.routerState.snapshot.url;
-    for (const node of treeNodes) {
-      const n = D3Component.findEqual(node, routeUrl);
-      if (n) {
-        this.sample = n;
-        break;
-      }
-    }
-    if (!this.sample) {
-      for (const node of treeNodes) {
-        const n = D3Component.findFirst(node);
-        if (n) {
-          this.sample = n;
-          break;
-        }
-      }
-    }
-    this.dataSource.data = treeNodes;
-  }
 }

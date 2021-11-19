@@ -15,9 +15,9 @@ import { WaveformParametersComponent } from './data/generators/waveform-paramete
 import { OhlcvParametersComponent } from './data/generators/ohlcv-parameters.component';
 import { QuoteParametersComponent } from './data/generators/quote-parameters.component';
 import { TradeParametersComponent } from './data/generators/trade-parameters.component';
-// tslint:disable-next-line: max-line-length
+// eslint-disable-next-line max-len
 import { FractionalBrownianMotionParametersComponent } from './data/generators/fractional-brownian-motion/fractional-brownian-motion-parameters.component';
-// tslint:disable-next-line: max-line-length
+// eslint-disable-next-line max-len
 import { GeometricBrownianMotionParametersComponent } from './data/generators/geometric-brownian-motion/geometric-brownian-motion-parameters.component';
 import { ChirpParametersComponent } from './data/generators/chirp/chirp-parameters.component';
 import { SawtoothParametersComponent } from './data/generators/sawtooth/sawtooth-parameters.component';

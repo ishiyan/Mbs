@@ -29,13 +29,13 @@ export class Fund {
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
-    // tslint:disable:no-string-literal
+    /* eslint-disable @typescript-eslint/dot-notation */
     data['Currency'] = this.currency;
     data['TradingMode'] = this.tradingMode;
     data['Cfi'] = this.cfi;
     data['Issuer'] = this.issuer;
     data['SharesOutstanding'] = this.sharesOutstanding;
-    // tslint:enable:no-string-literal
+    /* eslint-enable @typescript-eslint/dot-notation */
     return data;
   }
 }

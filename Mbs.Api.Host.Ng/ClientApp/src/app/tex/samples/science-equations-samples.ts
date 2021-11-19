@@ -12,11 +12,11 @@ export const scienceEquationsSamples: Sample[] =
     },
     {
       name: 'Signal processing: Fourier transform: discrete-time Fourier transform of a constant',
-      code: 'a \\Leftrightarrow 2\\pi a\\sum\\limits_{k =  - \\infty }^\\infty  {\\delta (\\omega  + 2\\pi k)} ,( - \\infty  < n < \\infty )' // tslint:disable-line
+      code: 'a \\Leftrightarrow 2\\pi a\\sum\\limits_{k =  - \\infty }^\\infty  {\\delta (\\omega  + 2\\pi k)} ,( - \\infty  < n < \\infty )' // eslint-disable-line
     },
     {
       name: 'Signal processing: Fourier transform: discrete-time Fourier transform of unit step function',
-      code: 'u(n) \\Leftrightarrow \\frac{1}{{(1 - e^{ - j\\omega } )}} + \\sum\\limits_{k =  - \\infty }^\\infty  {\\pi \\delta (\\omega  + 2\\pi k)}' // tslint:disable-line
+      code: 'u(n) \\Leftrightarrow \\frac{1}{{(1 - e^{ - j\\omega } )}} + \\sum\\limits_{k =  - \\infty }^\\infty  {\\pi \\delta (\\omega  + 2\\pi k)}' // eslint-disable-line
     },
     {
       name: 'Signal processing: Fourier transform: discrete-time Fourier transform of unit step function and exponential',
@@ -28,15 +28,15 @@ export const scienceEquationsSamples: Sample[] =
     },
     {
       name: 'Signal processing: Fourier transform: discrete-time Fourier transform of complex exponential',
-      code: 'e^{j\\omega _o n}  \\Leftrightarrow 2\\pi \\sum\\limits_{k =  - \\infty }^\\infty  {\\delta (\\omega  - \\omega _o  + 2\\pi k)}' // tslint:disable-line
+      code: 'e^{j\\omega _o n}  \\Leftrightarrow 2\\pi \\sum\\limits_{k =  - \\infty }^\\infty  {\\delta (\\omega  - \\omega _o  + 2\\pi k)}' // eslint-disable-line
     },
     {
       name: 'Signal processing: Fourier transform: discrete-time Fourier transform of a sinc sequence',
-      code: '\\frac{{\\sin (\\omega _c n)}}{n} \\Leftrightarrow X(e^{j\\omega } ) = \\left\\{ {\\begin{array}{*{20}c}   {1,\\left| \\omega  \\right| \\le \\omega _c }  \\\\   {0,\\omega _c  < \\left| \\omega  \\right| \\le \\omega _c }  \\\\\\end{array}} \\right.' // tslint:disable-line
+      code: '\\frac{{\\sin (\\omega _c n)}}{n} \\Leftrightarrow X(e^{j\\omega } ) = \\left\\{ {\\begin{array}{*{20}c}   {1,\\left| \\omega  \\right| \\le \\omega _c }  \\\\   {0,\\omega _c  < \\left| \\omega  \\right| \\le \\omega _c }  \\\\\\end{array}} \\right.' // eslint-disable-line
     },
     {
       name: 'Signal processing: Fourier transform: discrete-time Fourier transform of a boxcar sequence',
-      code: 'x(n) = \\left\\{ {\\begin{array}{*{20}c}\n   {1,0 \\le n \\le N - 1}  \\\\\n   {0,{\\rm{otherwise}}}  \\\\\n\\end{array} \\Leftrightarrow } \\right.\\frac{{\\sin (\\omega N/2)}}{{\\sin (\\omega /2)}}e^{ - j\\omega (N - 1)/2}' // tslint:disable-line
+      code: 'x(n) = \\left\\{ {\\begin{array}{*{20}c}\n   {1,0 \\le n \\le N - 1}  \\\\\n   {0,{\\rm{otherwise}}}  \\\\\n\\end{array} \\Leftrightarrow } \\right.\\frac{{\\sin (\\omega N/2)}}{{\\sin (\\omega /2)}}e^{ - j\\omega (N - 1)/2}' // eslint-disable-line
     },
     {
       name: 'Signal processing: Fourier transform: discrete-time Fourier linearity theorem',
@@ -68,15 +68,15 @@ export const scienceEquationsSamples: Sample[] =
     },
     {
       name: 'Signal processing: Fourier transform: discrete-time Fourier windowing, modulation, frequency convolution property',
-      code: 'x(n)y(n) \\Leftrightarrow \\frac{1}{{2\\pi }}\\int\\limits_{ - \\pi }^\\pi  {X(e^{j\\theta } )Y(e^{j(\\omega  - \\theta )} )d\\theta }' // tslint:disable-line
+      code: 'x(n)y(n) \\Leftrightarrow \\frac{1}{{2\\pi }}\\int\\limits_{ - \\pi }^\\pi  {X(e^{j\\theta } )Y(e^{j(\\omega  - \\theta )} )d\\theta }' // eslint-disable-line
     },
     {
       name: 'Signal processing: Fourier transform: discrete-time Fourier transform - Parseval\'s theorem',
-      code: '\\sum\\limits_{n =  - \\infty }^\\infty  {\\left| {x(n)} \\right|^2 }  = \\frac{1}{{2\\pi }}\\int\\limits_{ - \\pi }^\\pi  {\\left| {X(e^{j\\omega } )} \\right|^2 d\\omega }' // tslint:disable-line
+      code: '\\sum\\limits_{n =  - \\infty }^\\infty  {\\left| {x(n)} \\right|^2 }  = \\frac{1}{{2\\pi }}\\int\\limits_{ - \\pi }^\\pi  {\\left| {X(e^{j\\omega } )} \\right|^2 d\\omega }' // eslint-disable-line
     },
     {
       name: 'Signal processing: Fourier transform: discrete-time Fourier transform - Parseval\'s theorem',
-      code: '\\sum\\limits_{n =  - \\infty }^\\infty  {x(n)y^* (n)}  = \\frac{1}{{2\\pi }}\\int\\limits_{ - \\pi }^\\pi  {X(e^{j\\omega } )Y^* (e^{j\\omega } )d\\omega }' // tslint:disable-line
+      code: '\\sum\\limits_{n =  - \\infty }^\\infty  {x(n)y^* (n)}  = \\frac{1}{{2\\pi }}\\int\\limits_{ - \\pi }^\\pi  {X(e^{j\\omega } )Y^* (e^{j\\omega } )d\\omega }' // eslint-disable-line
     },
     {
       name: 'Signal processing: Laplace transform: Laplace transform of Kroeneker delta function',
@@ -143,11 +143,11 @@ export const scienceEquationsSamples: Sample[] =
       code: 'tx(t)u(t) \\Leftrightarrow \\frac{{ - dX(s)}}{{ds}}'
     },
     {
-      name: 'Signal Processing: Laplace transform: Laplace transform time domain linear convolution (s domain multiplication) property', // tslint:disable-line
+      name: 'Signal Processing: Laplace transform: Laplace transform time domain linear convolution (s domain multiplication) property', // eslint-disable-line
       code: '\\int\\limits_0^\\infty  {x_1 (\\tau )x_2 (t - \\tau )d\\tau }  \\Leftrightarrow X_1 (s)X_2 (s)'
     },
     {
-      name: 'Signal Processing: Laplace transform: Laplace transform final value theorem (valid if poles of sX(s) are in left half of s plane)', // tslint:disable-line
+      name: 'Signal Processing: Laplace transform: Laplace transform final value theorem (valid if poles of sX(s) are in left half of s plane)', // eslint-disable-line
       code: 'x(\\infty ) = \\mathop {\\lim }\\limits_{s \\to 0} sX(s)'
     },
     {
@@ -176,7 +176,7 @@ export const scienceEquationsSamples: Sample[] =
     },
     {
       name: 'Signal processing: Z-transform: Z-transform involving the unit step function',
-      code: 'n^2 u(n) \\Leftrightarrow \\frac{{z\\left( {z + 1} \\right)}}{{\\left( {z - 1} \\right)^3 }},\\left| z \\right| > 1' // tslint:disable-line
+      code: 'n^2 u(n) \\Leftrightarrow \\frac{{z\\left( {z + 1} \\right)}}{{\\left( {z - 1} \\right)^3 }},\\left| z \\right| > 1' // eslint-disable-line
     },
     {
       name: 'Signal processing: Z-transform: Z-transform involving the unit step function and an exponential',
@@ -188,11 +188,11 @@ export const scienceEquationsSamples: Sample[] =
     },
     {
       name: 'Signal processing: Z-transform: Z-transform involving the unit step function and an exponential',
-      code: 'n^2 a^n u(n) \\Leftrightarrow \\frac{{az(z + a)}}{{\\left( {z - a} \\right)^3 }},\\left| z \\right| > \\left| a \\right|' // tslint:disable-line
+      code: 'n^2 a^n u(n) \\Leftrightarrow \\frac{{az(z + a)}}{{\\left( {z - a} \\right)^3 }},\\left| z \\right| > \\left| a \\right|' // eslint-disable-line
     },
     {
       name: 'Signal processing: Z-transform: Z-transform involving the unit step function and an exponential',
-      code: 'n^3 a^n u(n) \\Leftrightarrow \\frac{{az(z^2  + 4az + a^2 )}}{{\\left( {z - a} \\right)^4 }},\\left| z \\right| > \\left| a \\right|' // tslint:disable-line
+      code: 'n^3 a^n u(n) \\Leftrightarrow \\frac{{az(z^2  + 4az + a^2 )}}{{\\left( {z - a} \\right)^4 }},\\left| z \\right| > \\left| a \\right|' // eslint-disable-line
     },
     {
       name: 'Signal processing: Z-transform: Z-transform time domain convolution (z domain multiplication) property',
@@ -216,14 +216,14 @@ export const scienceEquationsSamples: Sample[] =
     },
     {
       name: 'Signal processing: Z-transform: Z-transform time domain multiplication (z domain convolution) property',
-      code: 'h(n)x(n) \\Leftrightarrow \\frac{1}{{2\\pi j}}\\oint_C {H\\left( v \\right)X\\left( {z/v} \\right)\\mathop v\\nolimits^{ - 1} dv}' // tslint:disable-line
+      code: 'h(n)x(n) \\Leftrightarrow \\frac{1}{{2\\pi j}}\\oint_C {H\\left( v \\right)X\\left( {z/v} \\right)\\mathop v\\nolimits^{ - 1} dv}' // eslint-disable-line
     },
     {
       name: 'Signal processing: Z-transform: Z-transform initial value theorem',
       code: 'x\\left( {0^ -  } \\right) = \\mathop {\\lim }\\limits_{z \\to \\infty } X\\left( z \\right)'
     },
     {
-      name: 'Signal processing: Z-transform: Z-transform final value theorem; valid only if polues of (z-1)X(z) are inside the unit circle', // tslint:disable-line
+      name: 'Signal processing: Z-transform: Z-transform final value theorem; valid only if polues of (z-1)X(z) are inside the unit circle', // eslint-disable-line
       code: 'x\\left( \\infty  \\right) = \\mathop {\\lim }\\limits_{z \\to 1} \\left( {z - 1} \\right)X\\left( z \\right)'
     },
     {
@@ -232,11 +232,11 @@ export const scienceEquationsSamples: Sample[] =
     },
     {
       name: 'Statistics: binomial coefficient',
-      code: '\\left( {\\begin{array}{*{20}c}\n   n  \\\\\n   k  \\\\\n\\end{array}} \\right) = \\frac{{n!}}{{k!\\left( {n - k} \\right)!}}' // tslint:disable-line
+      code: '\\left( {\\begin{array}{*{20}c}\n   n  \\\\\n   k  \\\\\n\\end{array}} \\right) = \\frac{{n!}}{{k!\\left( {n - k} \\right)!}}' // eslint-disable-line
     },
     {
       name: 'Statistics: binomial equation',
-      code: 'y = \\frac{{n!}}{{k!\\left( {n - k} \\right)!}}p^k q^{n - k}  = \\left( {\\begin{array}{*{20}c}\n   n  \\\\\n   k  \\\\\n\\end{array}} \\right)p^k q^{n - k}' // tslint:disable-line
+      code: 'y = \\frac{{n!}}{{k!\\left( {n - k} \\right)!}}p^k q^{n - k}  = \\left( {\\begin{array}{*{20}c}\n   n  \\\\\n   k  \\\\\n\\end{array}} \\right)p^k q^{n - k}' // eslint-disable-line
     },
     {
       name: 'Statistics: standard normal distribution',
@@ -247,9 +247,8 @@ export const scienceEquationsSamples: Sample[] =
       code: 'e = \\mathop {\\lim }\\limits_{n \\to \\infty } \\left( {1 + \\frac{1}{n}} \\right)^n'
     },
     {
-      
       name: 'Statistics: Gaussian normal distribution',
-      code: 'P(x) = \\frac{1}{{\\sigma \\sqrt {2\\pi } }}e^{{{ - \\left( {x - \\mu } \\right)^2 } \\mathord{\\left/ \n {\\vphantom {{ - \\left( {x - \\mu } \\right)^2 } {2\sigma ^2 }}} \\right. \n \\kern0pt} {2\\sigma ^2 }}}' // tslint:disable-line
+      code: 'P(x) = \\frac{1}{{\\sigma \\sqrt {2\\pi } }}e^{{{ - \\left( {x - \\mu } \\right)^2 } \\mathord{\\left/ \n {\\vphantom {{ - \\left( {x - \\mu } \\right)^2 } {2\sigma ^2 }}} \\right. \n \\kern0pt} {2\\sigma ^2 }}}' // eslint-disable-line
     },
     {
       name: 'Statistics: Poisson distribution',
@@ -277,7 +276,7 @@ export const scienceEquationsSamples: Sample[] =
     },
     {
       name: 'Statistics: Fisher skewness',
-      code: '\\gamma _1  = \\frac{{\\mu _3 }}{{\\mu _2 ^{{3 \\mathord{\\left/ \n {\\vphantom {3 2}} \\right.\n \\kern0pt} 2}} }} = \\frac{{\\mu _3 }}{{\\sigma ^3 }}' // tslint:disable-line
+      code: '\\gamma _1  = \\frac{{\\mu _3 }}{{\\mu _2 ^{{3 \\mathord{\\left/ \n {\\vphantom {3 2}} \\right.\n \\kern0pt} 2}} }} = \\frac{{\\mu _3 }}{{\\sigma ^3 }}' // eslint-disable-line
     },
     {
       name: 'Statistics: standard deviation',
@@ -365,7 +364,7 @@ export const scienceEquationsSamples: Sample[] =
     },
     {
       name: 'Calculus: integration: integral of secant',
-      code: '\\int {\\sec (ax)} dx = \\frac{1}{a}\\ln \\left| {\\tan \\left( {\\frac{{ax}}{2} + \\frac{\\pi }{4}} \\right)} \\right| + c' // tslint:disable-line
+      code: '\\int {\\sec (ax)} dx = \\frac{1}{a}\\ln \\left| {\\tan \\left( {\\frac{{ax}}{2} + \\frac{\\pi }{4}} \\right)} \\right| + c' // eslint-disable-line
     },
     {
       name: 'Calculus: integration: fundamental theorem of integrals of derivatives',
@@ -381,7 +380,7 @@ export const scienceEquationsSamples: Sample[] =
     },
     {
       name: 'Calculus: limits: L\'Hopital\'s rule',
-      code: '\\mathop {\\lim }\\limits_{x \\to c} \\frac{{f\\left( x \\right)}}{{g\\left( x \\right)}} = \\mathop {\\lim }\\limits_{x \\to c} \\frac{{f\'\\left( x \\right)}}{{g\'\\left( x \\right)}}' // tslint:disable-line
+      code: '\\mathop {\\lim }\\limits_{x \\to c} \\frac{{f\\left( x \\right)}}{{g\\left( x \\right)}} = \\mathop {\\lim }\\limits_{x \\to c} \\frac{{f\'\\left( x \\right)}}{{g\'\\left( x \\right)}}' // eslint-disable-line
     },
     {
       name: 'Calculus: limits: limit of one over X to the Nth power',
@@ -401,7 +400,7 @@ export const scienceEquationsSamples: Sample[] =
     },
     {
       name: 'Calculus: limits: L\'Hopital\'s rule',
-      code: '\\lim_{x\\to 0}{\\frac{e^x-1}{2x}}\n \\overset{\\left[\\frac{0}{0}\\right]}{\\underset{\\mathrm{H}}{=}}\n \\lim_{x\\to 0}{\\frac{e^x}{2}}={\\frac{1}{2}}' // tslint:disable-line
+      code: '\\lim_{x\\to 0}{\\frac{e^x-1}{2x}}\n \\overset{\\left[\\frac{0}{0}\\right]}{\\underset{\\mathrm{H}}{=}}\n \\lim_{x\\to 0}{\\frac{e^x}{2}}={\\frac{1}{2}}' // eslint-disable-line
     },
     {
       name: 'Calculus: series: cosine definition as an infinite series',
@@ -409,7 +408,7 @@ export const scienceEquationsSamples: Sample[] =
     },
     {
       name: 'Calculus: series: sine definition as an infinite series',
-      code: '\\sin x = \\sum\\limits_{n = 1}^\\infty  {\\frac{{\\left( { - 1} \\right)^{n - 1} x^{2n - 1} }}{{\\left( {2n - 1} \\right)!}}}' // tslint:disable-line
+      code: '\\sin x = \\sum\\limits_{n = 1}^\\infty  {\\frac{{\\left( { - 1} \\right)^{n - 1} x^{2n - 1} }}{{\\left( {2n - 1} \\right)!}}}' // eslint-disable-line
     },
     {
       name: 'Calculus: series: arithmetic series - sequential integers',
@@ -457,7 +456,7 @@ export const scienceEquationsSamples: Sample[] =
     },
     {
       name: 'Algebra: polynomials: quadratic formula',
-      code: '\\begin{array}{*{20}c}\n   {x = \\frac{{ - b \\pm \\sqrt {b^2  - 4ac} }}{{2a}}} & {{\\rm{when}}} & {ax^2  + bx + c = 0}  \\\\\n\\end{array}' // tslint:disable-line
+      code: '\\begin{array}{*{20}c}\n   {x = \\frac{{ - b \\pm \\sqrt {b^2  - 4ac} }}{{2a}}} & {{\\rm{when}}} & {ax^2  + bx + c = 0}  \\\\\n\\end{array}' // eslint-disable-line
     },
     {
       name: 'Algebra: powers: addition of exponents',
@@ -513,7 +512,7 @@ export const scienceEquationsSamples: Sample[] =
     },
     {
       name: 'Algebra: logarithms: logarithm base conversion',
-      code: '\\log _b \\left( x \\right) = \\log _b \\left( c \\right)\\log _c \\left( x \\right) = \\frac{{\\log _c \\left( x \\right)}}{{\\log _c \\left( b \\right)}}' // tslint:disable-line
+      code: '\\log _b \\left( x \\right) = \\log _b \\left( c \\right)\\log _c \\left( x \\right) = \\frac{{\\log _c \\left( x \\right)}}{{\\log _c \\left( b \\right)}}' // eslint-disable-line
     },
     {
       name: 'Algebra: surds: multiplication',
@@ -597,43 +596,43 @@ export const scienceEquationsSamples: Sample[] =
     },
     {
       name: 'Trigonometry: sum and difference of angles identity - sine',
-      code: '\\sin \\left( {\\theta _1  \\pm \\theta _2 } \\right) = \\sin \\theta _1 \\cos \\theta _2  \\pm \\cos \\theta _1 \\sin \\theta _2' // tslint:disable-line
+      code: '\\sin \\left( {\\theta _1  \\pm \\theta _2 } \\right) = \\sin \\theta _1 \\cos \\theta _2  \\pm \\cos \\theta _1 \\sin \\theta _2' // eslint-disable-line
     },
     {
       name: 'Trigonometry: sum and difference of angles identity - cosine',
-      code: '\\cos \\left( {\\theta _1  \\pm \\theta _2 } \\right) = \\cos \\theta _1 \\cos \\theta _2  \\mp \\sin \\theta _1 \\sin \\theta _2' // tslint:disable-line
+      code: '\\cos \\left( {\\theta _1  \\pm \\theta _2 } \\right) = \\cos \\theta _1 \\cos \\theta _2  \\mp \\sin \\theta _1 \\sin \\theta _2' // eslint-disable-line
     },
     {
       name: 'Trigonometry: sum and difference of angles identity - tangent',
-      code: '\\tan \\left( {\\theta _1  \\pm \\theta _2 } \\right) = \\frac{{\\tan \\theta _1  \\pm \\tan \\theta _2 }}{{1 \\mp \\tan \\theta _1 \\tan \\theta _2 }}' // tslint:disable-line
+      code: '\\tan \\left( {\\theta _1  \\pm \\theta _2 } \\right) = \\frac{{\\tan \\theta _1  \\pm \\tan \\theta _2 }}{{1 \\mp \\tan \\theta _1 \\tan \\theta _2 }}' // eslint-disable-line
     },
     {
       name: 'Trigonometry: superposition of sine of angles',
-      code: '\\sin \\theta _1  \\pm \\sin \\theta _2  = 2\\sin \\left( {\\frac{{\\theta _1  \\pm \\theta _2 }}{2}} \\right)\\cos \\left( {\\frac{{\\theta _1  \\mp \\theta _2 }}{2}} \\right)' // tslint:disable-line
+      code: '\\sin \\theta _1  \\pm \\sin \\theta _2  = 2\\sin \\left( {\\frac{{\\theta _1  \\pm \\theta _2 }}{2}} \\right)\\cos \\left( {\\frac{{\\theta _1  \\mp \\theta _2 }}{2}} \\right)' // eslint-disable-line
     },
     {
       name: 'Trigonometry: addition of cosine of angles',
-      code: '\\cos \\theta _1  + \\cos \\theta _2  = 2\\cos \\left( {\\frac{{\\theta _1  + \\theta _2 }}{2}} \\right)\\cos \\left( {\\frac{{\\theta _1  - \\theta _2 }}{2}} \\right)' // tslint:disable-line
+      code: '\\cos \\theta _1  + \\cos \\theta _2  = 2\\cos \\left( {\\frac{{\\theta _1  + \\theta _2 }}{2}} \\right)\\cos \\left( {\\frac{{\\theta _1  - \\theta _2 }}{2}} \\right)' // eslint-disable-line
     },
     {
       name: 'Trigonometry: subtraction of cosine of angles',
-      code: '\\cos \\theta _1  - \\cos \\theta _2  =  - 2\\sin \\left( {\\frac{{\\theta _1  + \\theta _2 }}{2}} \\right)\\sin \\left( {\\frac{{\\theta _1  - \\theta _2 }}{2}} \\right)' // tslint:disable-line
+      code: '\\cos \\theta _1  - \\cos \\theta _2  =  - 2\\sin \\left( {\\frac{{\\theta _1  + \\theta _2 }}{2}} \\right)\\sin \\left( {\\frac{{\\theta _1  - \\theta _2 }}{2}} \\right)' // eslint-disable-line
     },
     {
       name: 'Geometry: coordinate systems: Cartesian to polar coordinates (2-D)',
-      code: '\\begin{array}{*{20}c}\n   {x = r\\cos \\theta } & {r = \\sqrt {x^2  + y^2 } }  \\\\\n   {y = r\\sin \\theta } & {\\theta  = \\tan ^{ - 1} \\left( {\\frac{y}{x}} \\right)}  \\\\\n\\end{array}' // tslint:disable-line
+      code: '\\begin{array}{*{20}c}\n   {x = r\\cos \\theta } & {r = \\sqrt {x^2  + y^2 } }  \\\\\n   {y = r\\sin \\theta } & {\\theta  = \\tan ^{ - 1} \\left( {\\frac{y}{x}} \\right)}  \\\\\n\\end{array}' // eslint-disable-line
     },
     {
       name: 'Geometry: coordinate systems: Cartesian to spherical coordinates (3-D)',
-      code: '\\begin{array}{*{20}c}\n   {x = R\\sin \\theta \\cos \\phi } & {R = \\sqrt {x^2  + y^2  + z^2 } } & {}  \\\\\n   {y = R\\sin \\theta \\sin \\phi } & {\\phi  = \\tan ^{ - 1} \\left( {\\frac{y}{x}} \\right)} & {}  \\\\\n   {z = R\\cos \\theta } & {\\theta  = \\cos ^{ - 1} \\left( {\\frac{z}{{\\sqrt {x^2  + y^2  + z^2 } }}} \\right)} & {}  \\\\\n\\end{array}' // tslint:disable-line
+      code: '\\begin{array}{*{20}c}\n   {x = R\\sin \\theta \\cos \\phi } & {R = \\sqrt {x^2  + y^2  + z^2 } } & {}  \\\\\n   {y = R\\sin \\theta \\sin \\phi } & {\\phi  = \\tan ^{ - 1} \\left( {\\frac{y}{x}} \\right)} & {}  \\\\\n   {z = R\\cos \\theta } & {\\theta  = \\cos ^{ - 1} \\left( {\\frac{z}{{\\sqrt {x^2  + y^2  + z^2 } }}} \\right)} & {}  \\\\\n\\end{array}' // eslint-disable-line
     },
     {
       name: 'Geometry: coordinate systems: Cartesian to cylindrical coordinates (3-D)',
-      code: '\\begin{array}{*{20}c}\n   {x = r\\cos \\theta } & {r = \\sqrt {x^2  + y^2 } } & {}  \\\\\n   {y = r\\sin \\theta } & {\\theta  = \\tan ^{ - 1} \\left( {\\frac{y}{x}} \\right)} & {}  \\\\\n   {z = z} & {z = z} & {}  \\\\\n\\end{array}' // tslint:disable-line
+      code: '\\begin{array}{*{20}c}\n   {x = r\\cos \\theta } & {r = \\sqrt {x^2  + y^2 } } & {}  \\\\\n   {y = r\\sin \\theta } & {\\theta  = \\tan ^{ - 1} \\left( {\\frac{y}{x}} \\right)} & {}  \\\\\n   {z = z} & {z = z} & {}  \\\\\n\\end{array}' // eslint-disable-line
     },
     {
       name: 'Geometry: coordinate systems: cylindrical to spherical coordinates (3-D)',
-      code: '\\begin{array}{*{20}c}\n   {r = R\\sin \\theta } & {R = \\sqrt {r^2  + z^2 } } & {}  \\\\\n   {z = R\\sin \\theta } & {\\phi  = \\theta } & {}  \\\\\n   {\\theta  = \\phi } & {\\theta  = \\tan ^{ - 1} \\left( {\\frac{r}{z}} \\right)} & {}  \\\\\n\\end{array}' // tslint:disable-line
+      code: '\\begin{array}{*{20}c}\n   {r = R\\sin \\theta } & {R = \\sqrt {r^2  + z^2 } } & {}  \\\\\n   {z = R\\sin \\theta } & {\\phi  = \\theta } & {}  \\\\\n   {\\theta  = \\phi } & {\\theta  = \\tan ^{ - 1} \\left( {\\frac{r}{z}} \\right)} & {}  \\\\\n\\end{array}' // eslint-disable-line
     },
     {
       name: 'Geometry: curves and shapes: equation of a line',
@@ -649,7 +648,7 @@ export const scienceEquationsSamples: Sample[] =
     },
     {
       name: 'Geometry: curves and shapes: equation of an ellipsoid',
-      code: '\\frac{{\\left( {x - x_0 } \\right)^2 }}{{a^2 }} + \\frac{{\\left( {y - y_0 } \\right)^2 }}{{b^2 }} + \\frac{{\\left( {z - z_0 } \\right)^2 }}{{c^2 }} = 1' // tslint:disable-line
+      code: '\\frac{{\\left( {x - x_0 } \\right)^2 }}{{a^2 }} + \\frac{{\\left( {y - y_0 } \\right)^2 }}{{b^2 }} + \\frac{{\\left( {z - z_0 } \\right)^2 }}{{c^2 }} = 1' // eslint-disable-line
     },
     {
       name: 'Geometry: curves and shapes: equation of an ellipse',
@@ -661,7 +660,7 @@ export const scienceEquationsSamples: Sample[] =
     },
     {
       name: 'Geometry: curves and shapes: distance between two points (3-D)',
-      code: 'd = \\sqrt {\\left( {x_1  - x_2 } \\right)^2  + \\left( {y_1  - y_2 } \\right)^2  + \\left( {z_1  - z_2 } \\right)^2 }' // tslint:disable-line
+      code: 'd = \\sqrt {\\left( {x_1  - x_2 } \\right)^2  + \\left( {y_1  - y_2 } \\right)^2  + \\left( {z_1  - z_2 } \\right)^2 }' // eslint-disable-line
     },
     {
       name: 'Geometry: curves and shapes: eccentricity of an ellipse',
@@ -689,11 +688,11 @@ export const scienceEquationsSamples: Sample[] =
     },
     {
       name: 'Physics: electricity and magnetism: Maxwell\'s equations',
-      code: '\\nabla\\cdot{\\bf D} = \\rho \\quad\\quad\n\\nabla\\cdot{\\bf B} = 0 \\quad\\quad\n\\nabla\\times{\\bf E} = - {{\\partial{\\bf B}}\\over{\\partial t}} \\quad\\quad\n\\nabla\\times{\\bf H} = {\\bf J} + {{\\partial{\\bf D}}\\over{\\partial t}}' // tslint:disable-line
+      code: '\\nabla\\cdot{\\bf D} = \\rho \\quad\\quad\n\\nabla\\cdot{\\bf B} = 0 \\quad\\quad\n\\nabla\\times{\\bf E} = - {{\\partial{\\bf B}}\\over{\\partial t}} \\quad\\quad\n\\nabla\\times{\\bf H} = {\\bf J} + {{\\partial{\\bf D}}\\over{\\partial t}}' // eslint-disable-line
     },
     {
       name: 'Physics: electricity and magnetism: Maxwell\'s equations',
-      code: '\\Rot\\vec{E} =-\\frac{1}{c}\\parder{\\vec{B}}{t} \\quad\\quad\n\\Div\\vec{B} =0 \\quad\\quad\n\\Rot\\vec{B} =\\frac{1}{c}\\parder{\\vec{E}}{t}+\\frac{4\\pi}{c}\\,\\vec{j} \\quad\\quad\n\\Div\\vec{E} =4\\pi\\rho_{\\varepsilon}' // tslint:disable-line
+      code: '\\Rot\\vec{E} =-\\frac{1}{c}\\parder{\\vec{B}}{t} \\quad\\quad\n\\Div\\vec{B} =0 \\quad\\quad\n\\Rot\\vec{B} =\\frac{1}{c}\\parder{\\vec{E}}{t}+\\frac{4\\pi}{c}\\,\\vec{j} \\quad\\quad\n\\Div\\vec{E} =4\\pi\\rho_{\\varepsilon}' // eslint-disable-line
     },
     {
       name: 'Physics: electricity and magnetism: Maxwell\'s equation - Faraday\'s law',
@@ -741,7 +740,7 @@ export const scienceEquationsSamples: Sample[] =
     },
     {
       name: 'Physics: modern physics: time-dependent, one-dimensional Schrödinger equation',
-      code: '- \\frac{{\\hbar ^2 }}{{2m}}\\frac{{\\partial ^2 \\psi (x,t)}}{{\\partial x^2 }} + U(x)\\psi (x,t) = i\\hbar \\frac{{\\partial \\psi (x,t)}}{{\\partial t}}' // tslint:disable-line
+      code: '- \\frac{{\\hbar ^2 }}{{2m}}\\frac{{\\partial ^2 \\psi (x,t)}}{{\\partial x^2 }} + U(x)\\psi (x,t) = i\\hbar \\frac{{\\partial \\psi (x,t)}}{{\\partial t}}' // eslint-disable-line
     },
     {
       name: 'Physics: modern physics: Bohr radius',
@@ -769,7 +768,7 @@ export const scienceEquationsSamples: Sample[] =
     },
     {
       name: 'Physics: modern physics: reaction quotient',
-      code: '\\begin{array}{*{20}c}\n   {Q = \\frac{{\\left[ C \\right]^c \\left[ D \\right]^d }}{{\\left[ A \\right]^a \\left[ B \\right]^b }}}  \\\\\n   {\\begin{array}{*{20}c}\n   {where} & {aA + bB \\to cC + dD}  \\\\\n\\end{array}}  \\\\\n\\end{array}' // tslint:disable-line
+      code: '\\begin{array}{*{20}c}\n   {Q = \\frac{{\\left[ C \\right]^c \\left[ D \\right]^d }}{{\\left[ A \\right]^a \\left[ B \\right]^b }}}  \\\\\n   {\\begin{array}{*{20}c}\n   {where} & {aA + bB \\to cC + dD}  \\\\\n\\end{array}}  \\\\\n\\end{array}' // eslint-disable-line
     },
     {
       name: 'Physics: modern physics: cell voltage',
@@ -805,7 +804,7 @@ export const scienceEquationsSamples: Sample[] =
     },
     {
       name: 'Physics: oscillations and waves: velocity at resonance frequency of a driven oscillator',
-      code: '\\upsilon  =  + A\\omega \\cos \\left( {\\omega t} \\right) =  - A\\omega \\sin \\left( {\\omega t - \\frac{\\pi }{2}} \\right)' // tslint:disable-line
+      code: '\\upsilon  =  + A\\omega \\cos \\left( {\\omega t} \\right) =  - A\\omega \\sin \\left( {\\omega t - \\frac{\\pi }{2}} \\right)' // eslint-disable-line
     },
     {
       name: 'Physics: oscillations and waves: amplitude of a driven oscillation',
@@ -841,7 +840,7 @@ export const scienceEquationsSamples: Sample[] =
     },
     {
       name: 'Physics: general: Navier-Stokes equation',
-      code: '{\\partial{\\bf u}\\over{\\partial t}} + ({\\bf u} \\cdot \\nabla) {\\bf u} = - {1\\over\\rho} \\nabla p + \\gamma\\nabla^2{\\bf u} + {1\\over\rho}{\\bf F}' // tslint:disable-line
+      code: '{\\partial{\\bf u}\\over{\\partial t}} + ({\\bf u} \\cdot \\nabla) {\\bf u} = - {1\\over\\rho} \\nabla p + \\gamma\\nabla^2{\\bf u} + {1\\over\rho}{\\bf F}' // eslint-disable-line
     },
     {
       name: 'Polynomials: Chebyshev polynomial of the first kind arises as a solution to',
@@ -888,15 +887,15 @@ export const scienceEquationsSamples: Sample[] =
       code: 'P_n(x) = (2^n n!)^{-1} {\\frac{d^n}{dx^n} } \\left[ (x^2 -1)^n \\right]'
     },
     {
-      name: 'Polynomials: Associated Legendre functions of the first kind can be given in terms of the usual Legendre polynomials by', // tslint:disable-line
-      code: 'P_\\ell^m(x)\\ =\\ (-1)^m(1-x^2)^{m/2}\\frac{d^m}{dx^m}P_\\ell(x)\\ =\\ \\frac{(-1)^m}{2^\\ell \\ell!} (1-x^2)^{m/2}\\frac{d^{\\ell+m}}{dx^{\\ell+m}}(x^2-1)^\\ell' // tslint:disable-line
+      name: 'Polynomials: Associated Legendre functions of the first kind can be given in terms of the usual Legendre polynomials by', // eslint-disable-line
+      code: 'P_\\ell^m(x)\\ =\\ (-1)^m(1-x^2)^{m/2}\\frac{d^m}{dx^m}P_\\ell(x)\\ =\\ \\frac{(-1)^m}{2^\\ell \\ell!} (1-x^2)^{m/2}\\frac{d^{\\ell+m}}{dx^{\\ell+m}}(x^2-1)^\\ell' // eslint-disable-line
     },
     {
       name: 'Polynomials: Associated Legendre functions of the first kind satisfy the orthogonality relation',
-      code: '\\int_{-1}^{1} P_k ^{(m)} P_\\ell ^{(m)} dx  = \\frac{2 (\\ell+m)!}{(2\\ell+1)(\\ell-m)!}\\ \\delta _{k,\\ell},\\quad 0 \\le m \\le \\ell,\\quad \\delta _{k,\\ell}\\ is\\ Kronecker\\ delta' // tslint:disable-line
+      code: '\\int_{-1}^{1} P_k ^{(m)} P_\\ell ^{(m)} dx  = \\frac{2 (\\ell+m)!}{(2\\ell+1)(\\ell-m)!}\\ \\delta _{k,\\ell},\\quad 0 \\le m \\le \\ell,\\quad \\delta _{k,\\ell}\\ is\\ Kronecker\\ delta' // eslint-disable-line
     },
     {
-      name: 'Polynomials: Associated Legendre functions of the second kind can be given in terms of the usual Legendre polynomials by', // tslint:disable-line
+      name: 'Polynomials: Associated Legendre functions of the second kind can be given in terms of the usual Legendre polynomials by', // eslint-disable-line
       code: 'Q_\\ell^m(x) = (-1)^m(1-x^2)^{m/2}\\frac{d^m}{dx^m}Q_\\ell(x)'
     },
     {
@@ -912,16 +911,16 @@ export const scienceEquationsSamples: Sample[] =
       code: 'L_n(x)=\\frac{e^x}{n!}\\frac{d^n}{dx^n}\\left(e^{-x} x^n\\right)'
     },
     {
-      name: 'Polynomials: The generalized (sometimes called the associated) Laguerre polynomials may be defined by the Rodrigues\' formula', // tslint:disable-line
+      name: 'Polynomials: The generalized (sometimes called the associated) Laguerre polynomials may be defined by the Rodrigues\' formula', // eslint-disable-line
       code: 'L_n^{(\\alpha)}(x) = {\\frac{x^{-\\alpha} e^x}{n!}}{\\frac{d^n}{dx^n}} \\left(e^{-x} x^{n+\\alpha}\\right)'
     },
     {
       name: 'Polynomials: Jacobi polynomials are obtained from hypergeometric series in cases where the series is in fact finite',
-      code: 'P_n^{(\\alpha,\\beta)}(z) =\\frac{(\\alpha+1)_n}{n!} \\,_2F_1\\left(-n,1+\\alpha+\\beta+n;\\alpha+1;\\frac{1-z}{2}\\right),\\quad ()_n\\ is\\ Pochhammer\'s\\ symbol' // tslint:disable-line
+      code: 'P_n^{(\\alpha,\\beta)}(z) =\\frac{(\\alpha+1)_n}{n!} \\,_2F_1\\left(-n,1+\\alpha+\\beta+n;\\alpha+1;\\frac{1-z}{2}\\right),\\quad ()_n\\ is\\ Pochhammer\'s\\ symbol' // eslint-disable-line
     },
     {
       name: 'Polynomials: Explicit expression for the Jacobi polynomials',
-      code: 'P_n^{(\\alpha,\\beta)} (z) = \\frac{\\Gamma (\\alpha+n+1)}{n!\\Gamma (\\alpha+\\beta+n+1)} \\sum_{m=0}^n {n\\choose m} \\frac{\\Gamma (\\alpha + \\beta + n + m + 1)}{\\Gamma (\\alpha + m + 1)} \\left(\\frac{z-1}{2}\\right)^m' // tslint:disable-line
+      code: 'P_n^{(\\alpha,\\beta)} (z) = \\frac{\\Gamma (\\alpha+n+1)}{n!\\Gamma (\\alpha+\\beta+n+1)} \\sum_{m=0}^n {n\\choose m} \\frac{\\Gamma (\\alpha + \\beta + n + m + 1)}{\\Gamma (\\alpha + m + 1)} \\left(\\frac{z-1}{2}\\right)^m' // eslint-disable-line
     },
     {
       name: 'Polynomials: Ultraspherical or Gegenbauer polynomials are given in terms of the Jacobi polynomials',
@@ -929,14 +928,14 @@ export const scienceEquationsSamples: Sample[] =
     },
     {
       name: 'Polynomials: Gegenbauer polynomials satisfy the orthogonality relation',
-      code: '\\int_{-1}^1(1-x^2)^{a-1/2}C_m^{(a)}(x)C_n^{(a)}(x)\\, dx =\\delta_{mn}2^{1-2a}\\pi \\frac{\\Gamma(n+2a)}{(n+a)\\Gamma^2(a)\\Gamma(n+1)}' // tslint:disable-line
+      code: '\\int_{-1}^1(1-x^2)^{a-1/2}C_m^{(a)}(x)C_n^{(a)}(x)\\, dx =\\delta_{mn}2^{1-2a}\\pi \\frac{\\Gamma(n+2a)}{(n+a)\\Gamma^2(a)\\Gamma(n+1)}' // eslint-disable-line
     },
     {
-      name: 'Polynomials: Gegenbauer polynomials are obtained from hypergeometric series in cases where the series is in fact finite', // tslint:disable-line
-      code: 'C_n^{(a)}(z) =\\frac{(2a)^{\\underline{n}}}{n!} \\,_2F_1\\left(-n,2a+n;a+\\frac{1}{2};\\frac{1-z}{2}\\right),\\quad \\underline{n}\\ is\\ the\\ falling\\ factorial' // tslint:disable-line
+      name: 'Polynomials: Gegenbauer polynomials are obtained from hypergeometric series in cases where the series is in fact finite', // eslint-disable-line
+      code: 'C_n^{(a)}(z) =\\frac{(2a)^{\\underline{n}}}{n!} \\,_2F_1\\left(-n,2a+n;a+\\frac{1}{2};\\frac{1-z}{2}\\right),\\quad \\underline{n}\\ is\\ the\\ falling\\ factorial' // eslint-disable-line
     },
     {
-      name: 'Polynomials: Pochhammer symbol is used in the theory of special functions to represent the rising (or upper) factorial', // tslint:disable-line
+      name: 'Polynomials: Pochhammer symbol is used in the theory of special functions to represent the rising (or upper) factorial', // eslint-disable-line
       code: '(x)_n=x(x+1)(x+2)\\cdots(x+n-1)=\\frac{(x+n-1)!}{(x-1)!}'
     },
     {
@@ -965,7 +964,7 @@ export const scienceEquationsSamples: Sample[] =
     },
     {
       name: 'Special functions: Beta function is defined in terms of Gamma function as',
-      code: 'B(p,q) = \\Gamma(p)\\Gamma(q)/\\Gamma(p+q),\\ or\\quad B(p,q) =  \\exp[\\log\\Gamma(p)+\\log\\Gamma(q)-\\log\\Gamma(p+q)]' // tslint:disable-line
+      code: 'B(p,q) = \\Gamma(p)\\Gamma(q)/\\Gamma(p+q),\\ or\\quad B(p,q) =  \\exp[\\log\\Gamma(p)+\\log\\Gamma(q)-\\log\\Gamma(p+q)]' // eslint-disable-line
     },
     {
       name: 'Special functions: Beta function satisfies relation',
@@ -1000,11 +999,11 @@ export const scienceEquationsSamples: Sample[] =
       code: 'x^2 \\frac{d^2 y}{dx^2} + x \\frac{dy}{dx} + \\left(x^2 - \\nu^2\\right)y = 0'
     },
     {
-      name: 'Special functions: Bessel function of the first kind denotes the unique solution of Bessel\'s equation which is non-singular at x = 0', // tslint:disable-line
+      name: 'Special functions: Bessel function of the first kind denotes the unique solution of Bessel\'s equation which is non-singular at x = 0', // eslint-disable-line
       code: 'J_\\nu(x) = \\frac{x^n}{2^\\nu \\Gamma(\\nu + 1)} {}_0F_1(\\nu + 1, -\\frac{x^2}{4})'
     },
     {
-      name: 'Special functions: Bessel function of the second kind is the second linearly independent solution to Bessel\s equation (which is singular at x=0)', // tslint:disable-line
+      name: 'Special functions: Bessel function of the second kind is the second linearly independent solution to Bessel\s equation (which is singular at x=0)', // eslint-disable-line
       code: 'Y_\\nu(x) = \\frac{ J_\\nu(x) \\cos(\\pi \\nu) - J_{-\\nu}(x)}{\\sin(\\pi \\nu)}'
     },
     {

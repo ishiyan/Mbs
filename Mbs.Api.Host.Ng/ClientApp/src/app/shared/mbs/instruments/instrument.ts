@@ -67,7 +67,7 @@ export class Instrument {
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
-    // tslint:disable:no-string-literal
+    /* eslint-disable @typescript-eslint/dot-notation */
     data['Symbol'] = this.symbol;
     data['Name'] = this.name;
     data['Description'] = this.description;
@@ -80,7 +80,7 @@ export class Instrument {
     data['Inav'] = this.inav ? this.inav.toJSON() : (undefined as any);
     data['Fund'] = this.fund ? this.fund.toJSON() : (undefined as any);
     data['Index'] = this.index ? this.index.toJSON() : (undefined as any);
-    // tslint:enable:no-string-literal
+    /* eslint-enable @typescript-eslint/dot-notation */
     return data;
   }
 }

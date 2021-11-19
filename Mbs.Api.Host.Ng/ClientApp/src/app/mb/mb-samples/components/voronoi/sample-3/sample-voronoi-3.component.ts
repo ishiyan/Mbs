@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-// tslint:disable:max-line-length
+/* eslint-disable max-len */
 import { HierarchyTreeNode } from '../../../../../shared/mbs/charts/hierarchy-tree/hierarchy-tree';
 import { HierarchyTreeSumFunction, sumNodeValues, sumNumberOfLeafNodes, sumNumberOfNodes } from '../../../../../shared/mbs/charts/hierarchy-tree/functions/sum-function';
 import { HierarchyTreeFillFunction, coolFill, coolFillInverted, warmFill, warmFillInverted, viridisFill, viridisFillInverted, bluesFill, bluesFillInverted, rainbowFill, rainbowFillInverted } from '../../../../../shared/mbs/charts/hierarchy-tree/functions/fill-function';
@@ -283,5 +283,5 @@ export class SampleVoronoi3Component {
       text += ` description: ${c.description}`;
     }
     this.selectedNodeInfo = text;
-  }
+  };
 }

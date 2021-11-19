@@ -31,7 +31,7 @@ export class D3tcFeedComponent implements OnInit {
 
     const x = d3tc.scale.financetime().range([0, width]);
     const y = d3.scaleLinear().range([height, 0]);
-    const yVolume = d3.scaleLinear().range([<number>y(0), <number>y(0.2)]);
+    const yVolume = d3.scaleLinear().range([y(0) as number, y(0.2) as number]);
     const ohlc = d3tc.plot.ohlc().xScale(x).yScale(y);
     const accessor = ohlc.accessor();
     // Set the accessor to a ohlc accessor so we get highlighted bars.
@@ -75,7 +75,7 @@ export class D3tcFeedComponent implements OnInit {
       // Setup a transition for all that support
       svg.transition() // Disable transition for now, each is only for transitions
         .each(function() {
-          // tslint:disable-next-line:no-shadowed-variable
+          // eslint-disable-next-line @typescript-eslint/no-shadow
           // @ts-ignore
           const selection = d3.select(this);
           selection.select('g.x.axis').call(xAxis);

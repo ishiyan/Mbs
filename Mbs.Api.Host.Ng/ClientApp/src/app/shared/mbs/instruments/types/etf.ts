@@ -54,7 +54,7 @@ export class Etf {
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
-    // tslint:disable:no-string-literal
+    /* eslint-disable @typescript-eslint/dot-notation */
     data['Currency'] = this.currency;
     data['TradingMode'] = this.tradingMode;
     data['Cfi'] = this.cfi;
@@ -67,7 +67,7 @@ export class Etf {
     data['Issuer'] = this.issuer;
     data['Inav'] = this.inav ? this.inav.toJSON() : (undefined as any);
     data['Underlying'] = this.underlying ? this.underlying.toJSON() : (undefined as any);
-    // tslint:enable:no-string-literal
+    /* eslint-enable @typescript-eslint/dot-notation */
     return data;
   }
 }

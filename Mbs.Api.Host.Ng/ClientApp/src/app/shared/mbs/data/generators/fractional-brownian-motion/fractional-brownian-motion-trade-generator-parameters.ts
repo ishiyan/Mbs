@@ -29,7 +29,7 @@ export class FractionalBrownianMotionTradeGeneratorParameters {
     if (data) {
       for (const property in data) {
         if (data.hasOwnProperty(property)) {
-          (<any>this)[property] = (<any>data)[property];
+          (this as any)[property] = (data as any)[property];
         }
       }
     }
@@ -38,10 +38,10 @@ export class FractionalBrownianMotionTradeGeneratorParameters {
   toJSON(data?: any) {
     data = typeof data === objectName ? data : {};
     data[sampleCountName] = this.sampleCount;
-    data[timeParametersName] = this.timeParameters ? this.timeParameters.toJSON() : <any>undefined;
-    data[waveformParametersName] = this.waveformParameters ? this.waveformParameters.toJSON() : <any>undefined;
-    data[fbmParametersName] = this.fbmParameters ? this.fbmParameters.toJSON() : <any>undefined;
-    data[tradeParametersName] = this.tradeParameters ? this.tradeParameters.toJSON() : <any>undefined;
+    data[timeParametersName] = this.timeParameters ? this.timeParameters.toJSON() : undefined as any;
+    data[waveformParametersName] = this.waveformParameters ? this.waveformParameters.toJSON() : undefined as any;
+    data[fbmParametersName] = this.fbmParameters ? this.fbmParameters.toJSON() : undefined as any;
+    data[tradeParametersName] = this.tradeParameters ? this.tradeParameters.toJSON() : undefined as any;
     return data;
   }
 }

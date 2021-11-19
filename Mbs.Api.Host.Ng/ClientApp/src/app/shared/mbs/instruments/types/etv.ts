@@ -35,7 +35,7 @@ export class Etv {
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
-    // tslint:disable:no-string-literal
+    /* eslint-disable @typescript-eslint/dot-notation */
     data['Currency'] = this.currency;
     data['TradingMode'] = this.tradingMode;
     data['AllInFees'] = this.allInFees;
@@ -43,7 +43,7 @@ export class Etv {
     data['DividendFrequency'] = this.dividendFrequency;
     data['Issuer'] = this.issuer;
     data['SharesOutstanding'] = this.sharesOutstanding;
-    // tslint:enable:no-string-literal
+    /* eslint-enable @typescript-eslint/dot-notation */
     return data;
   }
 }

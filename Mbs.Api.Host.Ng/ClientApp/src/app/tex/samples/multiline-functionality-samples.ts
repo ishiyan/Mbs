@@ -28,7 +28,7 @@ export const multilineFunctionalitySamples: Sample[] =
     },
     {
       name: 'Arrays 03',
-      code: '\\chi(\\lambda) = \\left| \\begin{array}{ccc}\n\\lambda - a & -b & -c \\\\\n-d & \\lambda - e & -f \\\\\n-g & -h & \\lambda - i \\end{array} \\right|' // tslint:disable-line
+      code: '\\chi(\\lambda) = \\left| \\begin{array}{ccc}\n\\lambda - a & -b & -c \\\\\n-d & \\lambda - e & -f \\\\\n-g & -h & \\lambda - i \\end{array} \\right|' // eslint-disable-line
     },
     {
       name: 'Arrays 04 controlling horizontal spacing',
@@ -36,11 +36,11 @@ export const multilineFunctionalitySamples: Sample[] =
     },
     {
       name: 'Arrays 05',
-      code: 'F(x,y)=0\\ \\mbox{and}\\ \\left| \\begin{array}{ccc}\n          F\'\'_{xx} & F\'\'_{xy} &  F\'_x \\\\\n          F\'\'_{ yx } & F\'\'_{ yy } & F\'_y \\\\\n          F\'_x & F\'_y     & 0 \n          \\end{array}\\right| = 0' // tslint:disable-line
+      code: 'F(x,y)=0\\ \\mbox{and}\\ \\left| \\begin{array}{ccc}\n          F\'\'_{xx} & F\'\'_{xy} &  F\'_x \\\\\n          F\'\'_{ yx } & F\'\'_{ yy } & F\'_y \\\\\n          F\'_x & F\'_y     & 0 \n          \\end{array}\\right| = 0' // eslint-disable-line
     },
     {
       name: 'Arrays 06',
-      code: '|x| = \\left\\{ \\begin{array}{rl}\n        -x &\\mbox{ if $x<0$} \\\\\n         x &\\mbox{ otherwise}\n\\end{array} \\right.' // tslint:disable-line
+      code: '|x| = \\left\\{ \\begin{array}{rl}\n        -x &\\mbox{ if $x<0$} \\\\\n         x &\\mbox{ otherwise}\n\\end{array} \\right.' // eslint-disable-line
     },
     {
       name: 'Arrays 07',
@@ -48,7 +48,7 @@ export const multilineFunctionalitySamples: Sample[] =
     },
     {
       name: 'Arrays 08',
-      code: '\\begin{eqnarray*}\n    e^x &\\approx& 1+x+x^2/2! + \\\\\n    && {}+x^3/3! + x^4/4! + \\\\\n    && + x^5/5!\n\\end{eqnarray*}' // tslint:disable-line
+      code: '\\begin{eqnarray*}\n    e^x &\\approx& 1+x+x^2/2! + \\\\\n    && {}+x^3/3! + x^4/4! + \\\\\n    && + x^5/5!\n\\end{eqnarray*}' // eslint-disable-line
     },
     {
       name: 'Arrays 09',
@@ -56,27 +56,27 @@ export const multilineFunctionalitySamples: Sample[] =
     },
     {
       name: 'Arrays 10',
-      code: '\\begin{eqnarray*}\n    x&=&\\sin \\alpha = \\cos \\beta\\\\\n     &=&\\cos(\\pi-\\alpha) = \\sin(\\pi-\\beta)\n\\end{eqnarray*}' // tslint:disable-line
+      code: '\\begin{eqnarray*}\n    x&=&\\sin \\alpha = \\cos \\beta\\\\\n     &=&\\cos(\\pi-\\alpha) = \\sin(\\pi-\\beta)\n\\end{eqnarray*}' // eslint-disable-line
     },
     {
       name: 'Arrays 11',
-      code: '{\\begin{eqnarray*}\n        x&=&\\sin \\alpha = \\cos \\beta\\\\\n        &=&\\cos(\\pi-\\alpha) = \\sin(\\pi-\\beta)\n    \\end{eqnarray*}\n}' // tslint:disable-line
+      code: '{\\begin{eqnarray*}\n        x&=&\\sin \\alpha = \\cos \\beta\\\\\n        &=&\\cos(\\pi-\\alpha) = \\sin(\\pi-\\beta)\n    \\end{eqnarray*}\n}' // eslint-disable-line
     },
     {
       name: 'Arrays 12',
-      code: '$$\\begin{array}{rclcl}\n        x&=&\\sin \\alpha &=& \\cos \\beta\\\\\n         &=&\\cos(\\pi-\\alpha) &=& \\sin(\\pi-\\beta)\n    \\end{array}\n$$' // tslint:disable-line
+      code: '$$\\begin{array}{rclcl}\n        x&=&\\sin \\alpha &=& \\cos \\beta\\\\\n         &=&\\cos(\\pi-\\alpha) &=& \\sin(\\pi-\\beta)\n    \\end{array}\n$$' // eslint-disable-line
     },
     {
       name: 'Arrays 13',
-      code: '\\Psi\' = \\frac{ d } { d \\phi } \\left(\\begin{ array }{ c }\n  \\phi_{ 2}  \\\\  \\phi_{ 3}  \\\\  1 - \\phi_{ 2} - \\phi_{ 1} ^ { 2} / 2\n\\end{ array } \\right) \\qquad\n\\Theta = \\left(\\begin{ array }{ ccc }\n  0 & 1 & 0 \\\\\n - \\theta_{ 1} \\psi_{ 1} - \\psi_{ 2} & 0 & \\psi_3 \\\\\n -\\phi_{ 1} & -1 & 0\n\\end{ array } \\right)' // tslint:disable-line
+      code: '\\Psi\' = \\frac{ d } { d \\phi } \\left(\\begin{ array }{ c }\n  \\phi_{ 2}  \\\\  \\phi_{ 3}  \\\\  1 - \\phi_{ 2} - \\phi_{ 1} ^ { 2} / 2\n\\end{ array } \\right) \\qquad\n\\Theta = \\left(\\begin{ array }{ ccc }\n  0 & 1 & 0 \\\\\n - \\theta_{ 1} \\psi_{ 1} - \\psi_{ 2} & 0 & \\psi_3 \\\\\n -\\phi_{ 1} & -1 & 0\n\\end{ array } \\right)' // eslint-disable-line
     },
     {
       name: 'Arrays 14',
-      code: '\\begin{eqnarray}\n    \\int_0^{\\infty} e^{-x^2}\\,dx\n    & = &   e^{-\\left(\\int_0^{\\infty}x\\,dx\\right)^2}  \\\\\n    & = &   e^{-\\infty}\\ \\mbox{(bogus)} \\\\\n    & = &   0.38-1.7i\\ \\mbox{(not!)}\n\\end{eqnarray}' // tslint:disable-line
+      code: '\\begin{eqnarray}\n    \\int_0^{\\infty} e^{-x^2}\\,dx\n    & = &   e^{-\\left(\\int_0^{\\infty}x\\,dx\\right)^2}  \\\\\n    & = &   e^{-\\infty}\\ \\mbox{(bogus)} \\\\\n    & = &   0.38-1.7i\\ \\mbox{(not!)}\n\\end{eqnarray}' // eslint-disable-line
     },
     {
       name: 'Arrays 15',
-      code: '\\begin{eqnarray*}\n  \\sum_{n=1}^k \\frac1n\n    & \\approx & \\ln k + \\gamma  \\\\\n    & = &       (\\ln 10)(\\log_{10}k) + \\gamma \\\\\n    & \\approx & 2.3026\\log_{10}k + 0.57772\n\\end{eqnarray*}' // tslint:disable-line
+      code: '\\begin{eqnarray*}\n  \\sum_{n=1}^k \\frac1n\n    & \\approx & \\ln k + \\gamma  \\\\\n    & = &       (\\ln 10)(\\log_{10}k) + \\gamma \\\\\n    & \\approx & 2.3026\\log_{10}k + 0.57772\n\\end{eqnarray*}' // eslint-disable-line
     },
     {
       name: 'Arrays 16',
@@ -88,15 +88,15 @@ export const multilineFunctionalitySamples: Sample[] =
     },
     {
       name: 'Arrays 18',
-      code: '\\begin{eqnarray*}\n  e^x &=& \\sum_{n=0}^\\infty \\frac{x^n}{n!}\n  \\quad\\text{where }n!=\\prod_{i=1}^n i\\,,  \\\\\n  \\overline{U_\\alpha}\n  & = & \\bigcap_\\alpha U_\\alpha\n\\end{eqnarray*}' // tslint:disable-line
+      code: '\\begin{eqnarray*}\n  e^x &=& \\sum_{n=0}^\\infty \\frac{x^n}{n!}\n  \\quad\\text{where }n!=\\prod_{i=1}^n i\\,,  \\\\\n  \\overline{U_\\alpha}\n  & = & \\bigcap_\\alpha U_\\alpha\n\\end{eqnarray*}' // eslint-disable-line
     },
     {
       name: 'Arrays 19',
-      code: '\\begin{eqnarray}\n  u_\\alpha & = & \\epsilon^2 \\kappa_{xxx} \n  \\left( y-\\frac{1}{2}y^2 \\right)  \\\\\n  v & = & \\epsilon^3 \\kappa_{xxx} y\\,,  \\\\\n  p & = & \\epsilon \\kappa_{xx}\\,.\n\\end{eqnarray}' // tslint:disable-line
+      code: '\\begin{eqnarray}\n  u_\\alpha & = & \\epsilon^2 \\kappa_{xxx} \n  \\left( y-\\frac{1}{2}y^2 \\right)  \\\\\n  v & = & \\epsilon^3 \\kappa_{xxx} y\\,,  \\\\\n  p & = & \\epsilon \\kappa_{xx}\\,.\n\\end{eqnarray}' // eslint-disable-line
     },
     {
       name: 'Arrays 20',
-      code: '\\begin{eqnarray}\n  \\omega_1 & = &\n  \\frac{\\partial w}{\\partial y}\n  -\\frac{\\partial v}{\\partial z}\\,, \\\\\n  \\omega_2 & = & \n  \\frac{\\partial u}{\\partial z}\n  -\\frac{\\partial w}{\\partial x}\\,, \\\\\n  \\omega_3 & = & \n  \\frac{\\partial v}{\\partial x}\n  -\\frac{\\partial u}{\\partial y}\\,.\n\\end{eqnarray}' // tslint:disable-line
+      code: '\\begin{eqnarray}\n  \\omega_1 & = &\n  \\frac{\\partial w}{\\partial y}\n  -\\frac{\\partial v}{\\partial z}\\,, \\\\\n  \\omega_2 & = & \n  \\frac{\\partial u}{\\partial z}\n  -\\frac{\\partial w}{\\partial x}\\,, \\\\\n  \\omega_3 & = & \n  \\frac{\\partial v}{\\partial x}\n  -\\frac{\\partial u}{\\partial y}\\,.\n\\end{eqnarray}' // eslint-disable-line
     },
     {
       name: 'Case definitions 01',
@@ -148,15 +148,15 @@ export const multilineFunctionalitySamples: Sample[] =
     },
     {
       name: 'Matrices 10',
-      code: '\\left[ \\begin{array}{c} x_1 \\\\ x_2 \\end{array} \\right] = \\begin{bmatrix} A & B \\\\ C & D \\end{bmatrix} \\times \\left[ \\begin{array}{c} y_1 \\\\ y_2 \\end{array} \\right]' // tslint:disable-line
+      code: '\\left[ \\begin{array}{c} x_1 \\\\ x_2 \\end{array} \\right] = \\begin{bmatrix} A & B \\\\ C & D \\end{bmatrix} \\times \\left[ \\begin{array}{c} y_1 \\\\ y_2 \\end{array} \\right]' // eslint-disable-line
     },
     {
       name: 'Matrices 11',
-      code: '\\begin{bmatrix} xz & xw \\\\ yz & yw \\end{bmatrix} = \\left[ \\begin{array}{c} x \\\\ y \\end{array} \\right] \\times \\left[ \\begin{array}{cc} z & w \\end{array} \\right]' // tslint:disable-line
+      code: '\\begin{bmatrix} xz & xw \\\\ yz & yw \\end{bmatrix} = \\left[ \\begin{array}{c} x \\\\ y \\end{array} \\right] \\times \\left[ \\begin{array}{cc} z & w \\end{array} \\right]' // eslint-disable-line
     },
     {
       name: 'Matrices 12',
-      code: 'A_{m,n}=\\begin{pmatrix}a_{1,1} & a_{1,2} & \\cdots & a_{1,n} a_{2,1} & a_{2,2} & \\cdots\n & a_{2,n} \\vdots  & \\vdots  & \\ddots & \\vdots  \\\\ a_{m,1} & a_{m,2} & \\cdots & a_{m,n}\\end{pmatrix}' // tslint:disable-line
+      code: 'A_{m,n}=\\begin{pmatrix}a_{1,1} & a_{1,2} & \\cdots & a_{1,n} a_{2,1} & a_{2,2} & \\cdots\n & a_{2,n} \\vdots  & \\vdots  & \\ddots & \\vdots  \\\\ a_{m,1} & a_{m,2} & \\cdots & a_{m,n}\\end{pmatrix}' // eslint-disable-line
     },
     {
       name: 'Matrices 13',
@@ -192,10 +192,10 @@ export const multilineFunctionalitySamples: Sample[] =
     },
     {
       name: 'Matrices 21',
-      code: '\\begin{bmatrix}\n    1 & x & 0 \\\\\n    0 & 1 & -1\n  \\end{bmatrix}\\begin{bmatrix}\n    1 \\\\ y \\\\ 1\n  \\end{bmatrix}\n  =\\begin{bmatrix}\n    1+xy \\\\ y-1\n\\end{bmatrix}' // tslint:disable-line
+      code: '\\begin{bmatrix}\n    1 & x & 0 \\\\\n    0 & 1 & -1\n  \\end{bmatrix}\\begin{bmatrix}\n    1 \\\\ y \\\\ 1\n  \\end{bmatrix}\n  =\\begin{bmatrix}\n    1+xy \\\\ y-1\n\\end{bmatrix}' // eslint-disable-line
     },
     {
       name: 'Matrices 22',
-      code: '\\begin{matrix}\n    -2 & 1 & 0 & 0 & \\cdots & 0  \\\\\n    1 & -2 & 1 & 0 & \\cdots & 0  \\\\\n    0 & 1 & -2 & 1 & \\cdots & 0  \\\\\n    0 & 0 & 1 & -2 & \\ddots & \\vdots \\\\\n    \\vdots & \\vdots & \\vdots & \\ddots \n    & \\ddots & 1  \\\\\n    0 & 0 & 0 & \\cdots & 1 & -2\n\\end{matrix}' // tslint:disable-line
+      code: '\\begin{matrix}\n    -2 & 1 & 0 & 0 & \\cdots & 0  \\\\\n    1 & -2 & 1 & 0 & \\cdots & 0  \\\\\n    0 & 1 & -2 & 1 & \\cdots & 0  \\\\\n    0 & 0 & 1 & -2 & \\ddots & \\vdots \\\\\n    \\vdots & \\vdots & \\vdots & \\ddots \n    & \\ddots & 1  \\\\\n    0 & 0 & 0 & \\cdots & 1 & -2\n\\end{matrix}' // eslint-disable-line
     }
   ];

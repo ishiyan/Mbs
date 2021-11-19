@@ -36,30 +36,4 @@ export class Quote {
   }*/
 }
 
-/*
-export namespace Quote {
-  export function fromJson(json?: any): Quote {
-    const quote = new Quote();
-    if (json) {
-      for (const property in json) {
-        if (json.hasOwnProperty(property)) {
-          (quote as any)[property] = json[property];
-        }
-      }
-    }
-    return quote;
-  }
-
-  export function toJson(quote: Quote, json?: any): any {
-    json = typeof json === 'object' ? json : {};
-    // tslint:disable:no-string-literal
-    json['time'] = quote.time ? quote.time.toISOString() : (undefined as any);
-    json['bidPrice'] = quote.bidPrice;
-    json['bidSize'] = quote.bidSize;
-    json['askPrice'] = quote.askPrice;
-    json['askSize'] = quote.askSize;
-    // tslint:enable:no-string-literal
-    return json;
-  }
-}
-*/
+/* eslint-disable , , , , , , , , , , , ,  */

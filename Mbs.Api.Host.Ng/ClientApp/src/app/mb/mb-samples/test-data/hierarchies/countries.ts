@@ -1,5 +1,5 @@
 import { HierarchyTreeNode } from '../../../../shared/mbs/charts/hierarchy-tree/hierarchy-tree';
-// tslint:disable:max-line-length
+/* eslint-disable max-len */
 
 export interface CountryHierarchyTreeNode extends HierarchyTreeNode {
   /**

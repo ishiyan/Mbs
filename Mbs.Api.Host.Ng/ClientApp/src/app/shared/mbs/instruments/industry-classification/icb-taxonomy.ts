@@ -1,5 +1,5 @@
 // This code is automatically generated. Do not edit!
-// tslint:disable:max-line-length
+/* eslint-disable max-len */
 
 import { HierarchyTreeNode } from '../../charts/hierarchy-tree/hierarchy-tree';
 

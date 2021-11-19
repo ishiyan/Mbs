@@ -16,7 +16,7 @@ export const basicFunctionalitySamples: Sample[] =
     },
     {
       name: 'Overset and underset 01',
-      code: '\\overset{\\alpha}{\\omega} \\underset{\\mu}{\\nu} \\overset{\\beta}{\\underset{\\Delta}{\\tau}} \\stackrel{\\zeta}{\\eta}' // tslint:disable-line
+      code: '\\overset{\\alpha}{\\omega} \\underset{\\mu}{\\nu} \\overset{\\beta}{\\underset{\\Delta}{\\tau}} \\stackrel{\\zeta}{\\eta}' // eslint-disable-line
     },
     {
       name: 'Relation operators 01',
@@ -88,7 +88,7 @@ export const basicFunctionalitySamples: Sample[] =
     },
     {
       name: 'Accents - wide accents, under and overline',
-      code: '\\hat{T} = \\widehat{T}, \\bar{T} = \\overline{T}, \\widetilde{xyz}, \\overline{\\overline{a}^2+\\underline{xy} +\\overline{\\overline{z}}}' // tslint:disable-line
+      code: '\\hat{T} = \\widehat{T}, \\bar{T} = \\overline{T}, \\widetilde{xyz}, \\overline{\\overline{a}^2+\\underline{xy} +\\overline{\\overline{z}}}' // eslint-disable-line
     },
     {
       name: 'Powers and indices 01',
@@ -264,7 +264,7 @@ export const basicFunctionalitySamples: Sample[] =
     },
     {
       name: 'Boxes 01 -- does not work',
-      code: '\\fbox{\\text{A framed box}}\\qquad\n\\shadowbox{\\text{A shadowed box}}\\qquad\n\\doublebox{\\text{A double framed box}}\\qquad\n\\ovalbox{\\text{An oval framed box}}' // tslint:disable-line
+      code: '\\fbox{\\text{A framed box}}\\qquad\n\\shadowbox{\\text{A shadowed box}}\\qquad\n\\doublebox{\\text{A double framed box}}\\qquad\n\\ovalbox{\\text{An oval framed box}}' // eslint-disable-line
     },
     {
       name: 'Braces 01',
@@ -288,7 +288,7 @@ export const basicFunctionalitySamples: Sample[] =
     },
     {
       name: 'Braces 06 - incorrectly displayed',
-      code: 'y = a + f(\\underbrace{b x}_{ \\ge 0 \\text{ by assumption}})\n  = a + f(\\underbrace{b x}_{ \\mathclap{\\ge 0 \\text{ by assumption}}})' // tslint:disable-line
+      code: 'y = a + f(\\underbrace{b x}_{ \\ge 0 \\text{ by assumption}})\n  = a + f(\\underbrace{b x}_{ \\mathclap{\\ge 0 \\text{ by assumption}}})' // eslint-disable-line
     },
     {
       name: 'Brackets 01',
@@ -340,11 +340,11 @@ export const basicFunctionalitySamples: Sample[] =
     },
     {
       name: 'Brackets 13',
-      code: 'z = \\overbracket[3pt]{\n    \\underbracket{x}_{\\text{real}} +\n    \\underbracket[0.5pt][7pt]{iy}_{\\text{imaginary}}\n    }^{\\text{complex number}}' // tslint:disable-line
+      code: 'z = \\overbracket[3pt]{\n    \\underbracket{x}_{\\text{real}} +\n    \\underbracket[0.5pt][7pt]{iy}_{\\text{imaginary}}\n    }^{\\text{complex number}}' // eslint-disable-line
     },
     {
       name: 'Brackets, braces and delimiters 01',
-      code: '( a )\\ [ b ]\\ \\{ c \\}\\ | d |\\ \\| e \\|\\ \\langle f \\rangle\\ \\lfloor g \\rfloor\\ \\lceil h \\rceil\\ \\ulcorner i \\urcorner' // tslint:disable-line
+      code: '( a )\\ [ b ]\\ \\{ c \\}\\ | d |\\ \\| e \\|\\ \\langle f \\rangle\\ \\lfloor g \\rfloor\\ \\lceil h \\rceil\\ \\ulcorner i \\urcorner' // eslint-disable-line
     },
     {
       name: 'Brackets, braces and delimiters 02',
@@ -392,7 +392,7 @@ export const basicFunctionalitySamples: Sample[] =
     },
     {
       name: 'Brackets, braces and delimiters 13 - throws exception',
-      code: '\\left \\uparrow \\frac{a}{b} \\right \\downarrow \\quad \\left \\Uparrow \\frac{a}{b} \\right \\Downarrow \\quad \\left \\updownarrow \\frac{a}{b} \\right \\Updownarrow' // tslint:disable-line
+      code: '\\left \\uparrow \\frac{a}{b} \\right \\downarrow \\quad \\left \\Uparrow \\frac{a}{b} \\right \\Downarrow \\quad \\left \\updownarrow \\frac{a}{b} \\right \\Updownarrow' // eslint-disable-line
     },
     {
       name: 'Brackets, braces and delimiters 14 - throws exception',
@@ -420,7 +420,7 @@ export const basicFunctionalitySamples: Sample[] =
     },
     {
       name: 'Parenthesizing big expressions, brackets, bars 05',
-      code: '\\big\\uparrow \\Big\\uparrow \\bigg\\uparrow \\Bigg\\uparrow … \\Bigg\\Downarrow \\bigg\\Downarrow \\Big\\Downarrow \\big\\Downarrow' // tslint:disable-line
+      code: '\\big\\uparrow \\Big\\uparrow \\bigg\\uparrow \\Bigg\\uparrow … \\Bigg\\Downarrow \\bigg\\Downarrow \\Big\\Downarrow \\big\\Downarrow' // eslint-disable-line
     },
     {
       name: 'Parenthesizing big expressions, brackets, bars 06',
@@ -456,7 +456,7 @@ export const basicFunctionalitySamples: Sample[] =
     },
     {
       name: 'Spaces and text in formulas 03',
-      code: '\\mathop{\\int \\!\\!\\! \\int}_{\\mathbf{x} \\in \\mathbf{R}^2} \\! \\langle \\mathbf{x},\\mathbf{y}\rangle \\,d\\mathbf{x}' // tslint:disable-line
+      code: '\\mathop{\\int \\!\\!\\! \\int}_{\\mathbf{x} \\in \\mathbf{R}^2} \\! \\langle \\mathbf{x},\\mathbf{y}\rangle \\,d\\mathbf{x}' // eslint-disable-line
     },
     {
       name: 'Spaces and text in formulas 04',
@@ -540,7 +540,7 @@ export const basicFunctionalitySamples: Sample[] =
     },
     {
       name: 'Functions 11',
-      code: '\\sum_{n=1}^k \\frac1n\\ \\approx\\ \\ln k + \\gamma\\ = \\ (\\ln 10)(\\log_{10}k) + \\gamma\\ \\approx\\ 2.3026\\log_{10}k + 0.57772' // tslint:disable-line
+      code: '\\sum_{n=1}^k \\frac1n\\ \\approx\\ \\ln k + \\gamma\\ = \\ (\\ln 10)(\\log_{10}k) + \\gamma\\ \\approx\\ 2.3026\\log_{10}k + 0.57772' // eslint-disable-line
     },
     {
       name: 'Functions 12 Airy and Bessel functions',
@@ -548,7 +548,7 @@ export const basicFunctionalitySamples: Sample[] =
     },
     {
       name: 'Functions 13 Airy and Bessel functions',
-      code: 'Ai(-z) = \\frac13\\sqrt{z}\n \\left[ J_{1/3}(\\zeta) + J_{-1/3}(\\zeta) \\right]\n = \\frac12 \\sqrt{z/3} \\left[\n e^{\\pi i/6} H_{1/3}^{(1)}(\\zeta)\n + e^{-\\pi i/6}H_{1/3}^{(2)}(\\zeta) \\right]' // tslint:disable-line
+      code: 'Ai(-z) = \\frac13\\sqrt{z}\n \\left[ J_{1/3}(\\zeta) + J_{-1/3}(\\zeta) \\right]\n = \\frac12 \\sqrt{z/3} \\left[\n e^{\\pi i/6} H_{1/3}^{(1)}(\\zeta)\n + e^{-\\pi i/6}H_{1/3}^{(2)}(\\zeta) \\right]' // eslint-disable-line
     },
     {
       name: 'Functions 14',
@@ -572,7 +572,7 @@ export const basicFunctionalitySamples: Sample[] =
     },
     {
       name: 'Functions 19',
-      code: 'e^x = \\sum_{n=0}^\\infty \\frac{x^n}{n!}\\quad\\text{where }n!=\\prod_{i=1}^n i\\,,\\ \\overline{U_\\alpha} = \\bigcap_\\alpha U_\\alpha' // tslint:disable-line
+      code: 'e^x = \\sum_{n=0}^\\infty \\frac{x^n}{n!}\\quad\\text{where }n!=\\prod_{i=1}^n i\\,,\\ \\overline{U_\\alpha} = \\bigcap_\\alpha U_\\alpha' // eslint-disable-line
     },
     {
       name: 'Functions 20',
@@ -604,7 +604,7 @@ export const basicFunctionalitySamples: Sample[] =
     },
     {
       name: 'Spacing in formulas 01',
-      code: '\\forall x,y \\, \\exists z \\quad\n\\forall x,y \\: \\exists z \\quad\n\\forall x,y \\; \\exists z \\quad\n\\forall x,y \\! \\exists z ' // tslint:disable-line
+      code: '\\forall x,y \\, \\exists z \\quad\n\\forall x,y \\: \\exists z \\quad\n\\forall x,y \\; \\exists z \\quad\n\\forall x,y \\! \\exists z ' // eslint-disable-line
     },
     {
       name: 'Spacing in formulas 02',
@@ -692,7 +692,7 @@ export const basicFunctionalitySamples: Sample[] =
     },
     {
       name: 'Very basic 01',
-      code: '123 \\quad -321 \\quad 1.23 \\quad \\infty \\quad 12 + 34 \\quad 34 - 12 \\quad 12 * 34 \\quad 34 / 12 \\quad 12 \\pm 34 \\quad 34 \\mp 12' // tslint:disable-line
+      code: '123 \\quad -321 \\quad 1.23 \\quad \\infty \\quad 12 + 34 \\quad 34 - 12 \\quad 12 * 34 \\quad 34 / 12 \\quad 12 \\pm 34 \\quad 34 \\mp 12' // eslint-disable-line
     },
     {
       name: 'Very basic 02',

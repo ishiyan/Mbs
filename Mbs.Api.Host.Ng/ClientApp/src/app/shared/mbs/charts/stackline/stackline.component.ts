@@ -32,22 +32,43 @@ const TIME_AXIS_HEIGHT = 18;
   encapsulation: ViewEncapsulation.None
 })
 export class StacklineComponent implements OnChanges, AfterViewInit {
-  private currentConfiguration: LineConfiguration[] = [];
-  private currentDataStacked: (Band[])[] = [];
-  private currentDataEmpty = true;
-  private dataTimeMin: Date;
-  private dataTimeMax: Date;
-  private dataValueMax: number;
-  private forcedTimeMin?: Date;
-  private forcedTimeMax?: Date;
-  private forcedValueMin?: number;
-  private forcedValueMax?: number;
-
   /** A width of the multiline. */
   @Input() width: number | string = DEFAULT_WIDTH;
 
   /** A height of the multiline. */
   @Input() height: number | string = DEFAULT_HEIGHT;
+
+  /**
+   * Specifies how time axis will be shown. Possible values are the combination of:
+   *
+   * - *'top'*: top time axis is visible
+   * - *'bottom'*: bottom time axis is visible
+   *
+   * If no value provided then nothing is visible.
+   */
+   @Input() timeAxis: ('top' | 'bottom')[] = [];
+
+   /**
+    * Specifies how value axis will be shown. Possible values are the combination of:
+    *
+    * - *'left'*: left value axis is visible
+    * - *'right'*: right value axis is visible
+    * - *'grid'*: value grid lines are visible
+    *
+    * If no value provided then nothing is visible.
+    */
+   @Input() valueAxis: ('grid' | 'left' | 'right')[] = [];
+
+   private currentConfiguration: LineConfiguration[] = [];
+   private currentDataStacked: (Band[])[] = [];
+   private currentDataEmpty = true;
+   private dataTimeMin: Date;
+   private dataTimeMax: Date;
+   private dataValueMax: number;
+   private forcedTimeMin?: Date;
+   private forcedTimeMax?: Date;
+   private forcedValueMin?: number;
+   private forcedValueMax?: number;
 
   /** Specifies fill, stroke and interpolation. */
   @Input() set configuration(cfg: LineConfiguration[]) {
@@ -74,27 +95,6 @@ export class StacklineComponent implements OnChanges, AfterViewInit {
   get configuration(): LineConfiguration[] {
     return this.currentConfiguration;
   }
-
-  /**
-   * Specifies how time axis will be shown. Possible values are the combination of:
-   *
-   * - *'top'*: top time axis is visible
-   * - *'bottom'*: bottom time axis is visible
-   *
-   * If no value provided then nothing is visible.
-   */
-  @Input() timeAxis: ('top' | 'bottom')[] = [];
-
-  /**
-   * Specifies how value axis will be shown. Possible values are the combination of:
-   *
-   * - *'left'*: left value axis is visible
-   * - *'right'*: right value axis is visible
-   * - *'grid'*: value grid lines are visible
-   *
-   * If no value provided then nothing is visible.
-   */
-  @Input() valueAxis: ('grid' | 'left' | 'right')[] = [];
 
   /** The minimum value to use. */
   @Input() set min(value: number | undefined) {
@@ -280,9 +280,9 @@ export class StacklineComponent implements OnChanges, AfterViewInit {
         const area: any = d3.area()
           .curve(convertInterpolation(interp))
           .defined((d: any) => d.time >= timeMin && d.time <= timeMax)
-          .x((d: any) => <number>xScale(d.time))
-          .y0((d: any) => <number>yScale(d.lower))
-          .y1((d: any) => <number>yScale(d.upper));
+          .x((d: any) => xScale(d.time) as number)
+          .y0((d: any) => yScale(d.lower) as number)
+          .y1((d: any) => yScale(d.upper) as number);
         svg.append('path')
           .datum(dati)
           .attr('fill', cfgi.fillColor)
@@ -292,8 +292,8 @@ export class StacklineComponent implements OnChanges, AfterViewInit {
         const line: any = d3.line()
           .curve(convertInterpolation(interp))
           .defined((d: any) => d.time >= timeMin && d.time <= timeMax)
-          .x((d: any) => <number>xScale(d.time))
-          .y((d: any) => <number>yScale(d.upper));
+          .x((d: any) => xScale(d.time) as number)
+          .y((d: any) => yScale(d.upper) as number);
         svg.append('path')
           .datum(dati)
           .attr('stroke-width', cfgi.strokeWidth)

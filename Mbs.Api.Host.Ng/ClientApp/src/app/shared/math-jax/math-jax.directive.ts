@@ -22,11 +22,10 @@ export class MathJaxDirective implements OnChanges {
       // Line break error.
       .replace(/<br \/>/gi, '<br/> ')
       // Automatic breakline.
-      .replace(/[$]([\s\S]+?)[$]/gi, (m, p: string, o, s) => {
-        return p.includes('\\\\') && !p.includes('\\begin')
+      .replace(/[$]([\s\S]+?)[$]/gi, (m, p: string, o, s) =>
+        p.includes('\\\\') && !p.includes('\\begin')
           ? `$\\begin{align*}${p}\\end{align*}$`
-          : `$${p}$`;
-      });
+          : `$${p}$`);
   }
 
   private static typeset(code: () => void) {

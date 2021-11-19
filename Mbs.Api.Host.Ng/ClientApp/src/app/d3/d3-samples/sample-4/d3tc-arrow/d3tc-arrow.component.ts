@@ -46,9 +46,8 @@ export class D3tcArrowComponent implements OnInit {
     svg.selectAll('path.arrow.rotate').data(data).enter()
       .append('path')
       .attr('class', (d: any) => 'arrow rotate ' + d)
-      .attr('transform', (d: any, i: any) => {
-        return 'translate(' + (100 + i * 50) + ', ' + (0 + i * 50) + ') rotate(' + i * 45 + ')';
-      })
+      .attr('transform', (d: any, i: any) =>
+        'translate(' + (100 + i * 50) + ', ' + (0 + i * 50) + ') rotate(' + i * 45 + ')')
       .attr('d', arrowTranslate);
   }
 }

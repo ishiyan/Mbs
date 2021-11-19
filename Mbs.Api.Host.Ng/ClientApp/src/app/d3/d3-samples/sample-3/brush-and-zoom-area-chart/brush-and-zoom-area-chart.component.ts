@@ -54,15 +54,15 @@ export class BrushAndZoomAreaChartComponent implements OnInit {
     const p = 'price';
     const area = d3.area()
       .curve(d3.curveMonotoneX)
-      .x((d: any) => <number>x(d[ti]))
+      .x((d: any) => x(d[ti]) as number)
       .y0(height)
-      .y1((d: any) => <number>y(d[p]));
+      .y1((d: any) => y(d[p]) as number);
 
     const area2 = d3.area()
       .curve(d3.curveMonotoneX)
-      .x((d: any) => <number>x2(d[ti]))
+      .x((d: any) => x2(d[ti]) as number)
       .y0(height2)
-      .y1((d: any) => <number>y2(d[p]));
+      .y1((d: any) => y2(d[p]) as number);
 
     svg.append('defs').append('clipPath')
       .attr('id', 'clip')

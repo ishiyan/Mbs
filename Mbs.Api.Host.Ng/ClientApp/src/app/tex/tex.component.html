@@ -9,7 +9,7 @@
     <mat-nav-list>
       <mat-list-item *ngFor="let c of categories" [routerLink]="'/tex/' + c.route"
         routerLinkActive="sidenav-item-selected" (click)="category = c; texSidenav.close();"
-        [class.sidenav-item-selected]="category == c">
+        [class.sidenav-item-selected]="category === c">
         {{c.name}}
       </mat-list-item>
     </mat-nav-list>

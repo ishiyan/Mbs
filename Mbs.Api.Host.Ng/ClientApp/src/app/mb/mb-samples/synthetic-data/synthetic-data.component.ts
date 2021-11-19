@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { TemporalEntityKind } from '../../../shared/mbs/data/entities/temporal-entity-kind.enum';
 import { SyntheticDataParameters } from '../../../shared/mbs/data/generators/synthetic-data-parameters';
 import { SyntheticDataService } from '../../../shared/mbs/data/generators/synthetic-data.service';
@@ -10,7 +10,7 @@ import { HistoricalData } from '../../../shared/mbs/data/historical-data';
   templateUrl: './synthetic-data.component.html',
   styleUrls: ['./synthetic-data.component.scss']
 })
-export class SyntheticDataComponent implements OnInit {
+export class SyntheticDataComponent {
   readonly temporalEntityKinds = Object.keys(TemporalEntityKind);
   syntheticDataParameters: SyntheticDataParameters = new SyntheticDataParameters();
   historicalData: HistoricalData | undefined;
@@ -20,9 +20,6 @@ export class SyntheticDataComponent implements OnInit {
   }
 
   @ViewChild('container', { static: true }) container: ElementRef;
-
-  ngOnInit() {
-  }
 
   generateData(): void {
     this.syntheticDataService.getSyntheticData(this.syntheticDataParameters)

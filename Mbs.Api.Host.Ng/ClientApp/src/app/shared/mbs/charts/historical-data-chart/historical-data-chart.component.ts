@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, ViewChild, Input, ViewEncapsulation, HostListener } from '@angular/core';
+import { Component, ElementRef, ViewChild, Input, ViewEncapsulation, HostListener } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material/icon';
 import * as d3 from 'd3';
@@ -48,7 +48,7 @@ const textAfterSvg = `
   styleUrls: ['./historical-data-chart.component.scss'],
   encapsulation: ViewEncapsulation.Emulated
 })
-export class HistoricalDataChartComponent implements OnInit {
+export class HistoricalDataChartComponent {
   @ViewChild('container', { static: true }) container: ElementRef;
   @Input() svgheight: any;
   @Input()
@@ -168,9 +168,6 @@ export class HistoricalDataChartComponent implements OnInit {
       sanitizer.bypassSecurityTrustResourceUrl('assets/img/mb-dots.svg'));
   }
 
-  ngOnInit() {
-  }
-
   @HostListener('window:resize', [])
   render() {
     const chartId = '#chart';
@@ -217,12 +214,12 @@ export class HistoricalDataChartComponent implements OnInit {
 
     const focus = svg.append('g').attr('class', 'focus').attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
     focus.append('clipPath').attr('id', 'clip')
-      .append('rect').attr('x', 0).attr('y', y(1)).attr('width', width).attr('height', <number>y(0) - <number>y(1));
+      .append('rect').attr('x', 0).attr('y', y(1)).attr('width', width).attr('height', y(0) as number - y(1) as number);
 
     let yVolume: d3.ScaleLinear<number, number>;
     let volume: any;
     if (this.renderVolume) {
-      yVolume = d3.scaleLinear().range([<number>y(0), <number>y(0.3)]);
+      yVolume = d3.scaleLinear().range([y(0) as number, y(0.3) as number]);
       volume = d3ts.plot.volume().xScale(x).yScale(yVolume);
       focus.append('g').attr('class', 'volume').attr('clip-path', 'url(#clip)');
     }

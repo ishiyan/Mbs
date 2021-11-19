@@ -4,7 +4,7 @@ export const exampleFormulasSamples: Sample[] =
   [
     {
       name: '01',
-      code: '\\int_0^{\\infty}{x^{2n}e^{-ax^2}dx}=\\frac{2n-1}{2a}\\int_0^{\\infty}{x^{2(n-1)}e^{-ax^2}dx}=\\frac{(2n-1)!!}{2^{n+1}}\\sqrt{\\frac{\\pi}{a^{2n+1}}}' // tslint:disable-line
+      code: '\\int_0^{\\infty}{x^{2n}e^{-ax^2}dx}=\\frac{2n-1}{2a}\\int_0^{\\infty}{x^{2(n-1)}e^{-ax^2}dx}=\\frac{(2n-1)!!}{2^{n+1}}\\sqrt{\\frac{\\pi}{a^{2n+1}}}' // eslint-disable-line
     },
     {
       name: '02',
@@ -20,7 +20,7 @@ export const exampleFormulasSamples: Sample[] =
     },
     {
       name: '05',
-      code: '\\mathop{\\int \\!\\!\\! \\int}_{\\mathbf{x} \\in \\mathbf{R}^2} \\! \\langle \\mathbf{x},\\mathbf{y}\\rangle \\,d\\mathbf{x}' // tslint:disable-line
+      code: '\\mathop{\\int \\!\\!\\! \\int}_{\\mathbf{x} \\in \\mathbf{R}^2} \\! \\langle \\mathbf{x},\\mathbf{y}\\rangle \\,d\\mathbf{x}' // eslint-disable-line
     },
     {
       name: '06',
@@ -28,7 +28,7 @@ export const exampleFormulasSamples: Sample[] =
     },
     {
       name: '07',
-      code: 'L=\\int_a^b\\sqrt[4]{|\\sum_{i,j=1}^ng_{ij}(\\gamma(t))(\\frac{d}{dt}x^i\\circ\\gamma(t))(\\frac{d}{dt}x^j\\circ\\gamma(t))|}dt' // tslint:disable-line
+      code: 'L=\\int_a^b\\sqrt[4]{|\\sum_{i,j=1}^ng_{ij}(\\gamma(t))(\\frac{d}{dt}x^i\\circ\\gamma(t))(\\frac{d}{dt}x^j\\circ\\gamma(t))|}dt' // eslint-disable-line
     },
     {
       name: '08',
@@ -48,23 +48,23 @@ export const exampleFormulasSamples: Sample[] =
     },
     {
       name: '12 L\'Hôpital\'s rule',
-      code: '\\lim_{x\\to 0}{\\frac{e^x-1}{2x}} \\overset{\\left[\\frac{0}{0}\\right]}{\\underset{\\mathrm{H}}{=}} \\lim_{x\\to 0}{\\frac{e^x}{2}}={\\frac{1}{2}}' // tslint:disable-line
+      code: '\\lim_{x\\to 0}{\\frac{e^x-1}{2x}} \\overset{\\left[\\frac{0}{0}\\right]}{\\underset{\\mathrm{H}}{=}} \\lim_{x\\to 0}{\\frac{e^x}{2}}={\\frac{1}{2}}' // eslint-disable-line
     },
     {
       name: '13 Navier-Stokes equation',
-      code: '{\\partial{\\bf u}\\over{\\partial t}} + ({\\bf u} \\cdot \\nabla) {\\bf u} = - {1\\over\\rho} \\nabla p + \\gamma\\nabla^2{\\bf u} + {1\\over\\rho}{\\bf F}' // tslint:disable-line
+      code: '{\\partial{\\bf u}\\over{\\partial t}} + ({\\bf u} \\cdot \\nabla) {\\bf u} = - {1\\over\\rho} \\nabla p + \\gamma\\nabla^2{\\bf u} + {1\\over\\rho}{\\bf F}' // eslint-disable-line
     },
     {
       name: '14 time-dependent one-dimensional Schrödinger equation',
-      code: '- \\frac{{\\hbar ^2 }}{{2m}}\\frac{{\\partial ^2 \\psi (x,t)}}{{\\partial x^2 }} + U(x)\\psi (x,t) = i\\hbar \\frac{{\\partial \\psi (x,t)}}{{\\partial t}}' // tslint:disable-line
+      code: '- \\frac{{\\hbar ^2 }}{{2m}}\\frac{{\\partial ^2 \\psi (x,t)}}{{\\partial x^2 }} + U(x)\\psi (x,t) = i\\hbar \\frac{{\\partial \\psi (x,t)}}{{\\partial t}}' // eslint-disable-line
     },
     {
       name: '15 Maxwell\'s equations',
-      code: '\\nabla\\cdot{\\bf D} = \\rho \\quad\\quad\n\\nabla\\cdot{\\bf B} = 0 \\quad\\quad\n\\nabla\\times{\\bf E} = - {{\\partial{\\bf B}}\\over{\\partial t}} \\quad\\quad\n\\nabla\\times{\\bf H} = {\\bf J} + {{\\partial{\\bf D}}\\over{\\partial t}}' // tslint:disable-line
+      code: '\\nabla\\cdot{\\bf D} = \\rho \\quad\\quad\n\\nabla\\cdot{\\bf B} = 0 \\quad\\quad\n\\nabla\\times{\\bf E} = - {{\\partial{\\bf B}}\\over{\\partial t}} \\quad\\quad\n\\nabla\\times{\\bf H} = {\\bf J} + {{\\partial{\\bf D}}\\over{\\partial t}}' // eslint-disable-line
     },
     {
       name: '16',
-      code: '\\overset{\\alpha}{\\omega} \\underset{\\mu}{\\nu} \\overset{\\beta}{\\underset{\\Delta}{\\tau}} \\stackrel{\\zeta}{\\eta}' // tslint:disable-line
+      code: '\\overset{\\alpha}{\\omega} \\underset{\\mu}{\\nu} \\overset{\\beta}{\\underset{\\Delta}{\\tau}} \\stackrel{\\zeta}{\\eta}' // eslint-disable-line
     },
     {
       name: '17',
@@ -84,7 +84,7 @@ export const exampleFormulasSamples: Sample[] =
     },
     {
       name: '21',
-      code: 'y = a + f(\\underbrace{b x}_{ \\ge 0 \\text{ by assumption}})\n  = a + f(\\underbrace{b x}_{ \\mathclap{\\ge 0 \\text{ by assumption}}})' // tslint:disable-line
+      code: 'y = a + f(\\underbrace{b x}_{ \\ge 0 \\text{ by assumption}})\n  = a + f(\\underbrace{b x}_{ \\mathclap{\\ge 0 \\text{ by assumption}}})' // eslint-disable-line
     },
     {
       name: '22',
@@ -104,7 +104,7 @@ export const exampleFormulasSamples: Sample[] =
     },
     {
       name: '26',
-      code: '\\oint_C \\nabla \\phi \\cdot dl = \\iint_S rot \\, E \\cdot dS\\qquad\n\\oint_C \\triangledown \\phi \\cdot dl = \\iint_S {\\bf rot} \\, {\\sf E} \\cdot dS' // tslint:disable-line
+      code: '\\oint_C \\nabla \\phi \\cdot dl = \\iint_S rot \\, E \\cdot dS\\qquad\n\\oint_C \\triangledown \\phi \\cdot dl = \\iint_S {\\bf rot} \\, {\\sf E} \\cdot dS' // eslint-disable-line
     },
     {
       name: '27',
@@ -148,7 +148,7 @@ export const exampleFormulasSamples: Sample[] =
     },
     {
       name: '37',
-      code: '\\sum_{n=1}^k \\frac1n\\ \\approx\\ \\ln k + \\gamma\\ = \\ (\\ln 10)(\\log_{10}k) + \\gamma\\ \\approx\\ 2.3026\\log_{10}k + 0.57772' // tslint:disable-line
+      code: '\\sum_{n=1}^k \\frac1n\\ \\approx\\ \\ln k + \\gamma\\ = \\ (\\ln 10)(\\log_{10}k) + \\gamma\\ \\approx\\ 2.3026\\log_{10}k + 0.57772' // eslint-disable-line
     },
     {
       name: '38 Airy and Bessel functions',
@@ -156,7 +156,7 @@ export const exampleFormulasSamples: Sample[] =
     },
     {
       name: '39 Airy and Bessel functions',
-      code: 'Ai(-z) = \\frac13\\sqrt{z}\n \\left[ J_{1/3}(\\zeta) + J_{-1/3}(\\zeta) \\right]\n = \\frac12 \\sqrt{z/3} \\left[\n e^{\\pi i/6} H_{1/3}^{(1)}(\\zeta)\n + e^{-\\pi i/6}H_{1/3}^{(2)}(\\zeta) \\right]' // tslint:disable-line
+      code: 'Ai(-z) = \\frac13\\sqrt{z}\n \\left[ J_{1/3}(\\zeta) + J_{-1/3}(\\zeta) \\right]\n = \\frac12 \\sqrt{z/3} \\left[\n e^{\\pi i/6} H_{1/3}^{(1)}(\\zeta)\n + e^{-\\pi i/6}H_{1/3}^{(2)}(\\zeta) \\right]' // eslint-disable-line
     },
     {
       name: '40',
@@ -168,7 +168,7 @@ export const exampleFormulasSamples: Sample[] =
     },
     {
       name: '42',
-      code: 'e^x = \\sum_{n=0}^\\infty \\frac{x^n}{n!}\\quad\\text{where }n!=\\prod_{i=1}^n i\\,,\\ \\overline{U_\\alpha} = \\bigcap_\\alpha U_\\alpha' // tslint:disable-line
+      code: 'e^x = \\sum_{n=0}^\\infty \\frac{x^n}{n!}\\quad\\text{where }n!=\\prod_{i=1}^n i\\,,\\ \\overline{U_\\alpha} = \\bigcap_\\alpha U_\\alpha' // eslint-disable-line
     },
     {
       name: '43',

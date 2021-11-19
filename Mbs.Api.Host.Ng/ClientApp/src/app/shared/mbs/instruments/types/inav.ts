@@ -23,10 +23,10 @@ export class Inav {
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
-    // tslint:disable:no-string-literal
+    /* eslint-disable @typescript-eslint/dot-notation */
     data['Currency'] = this.currency;
     data['Target'] = this.target ? this.target.toJSON() : (undefined as any);
-    // tslint:enable:no-string-literal
+    /* eslint-enable @typescript-eslint/dot-notation */
     return data;
   }
 }

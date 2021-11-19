@@ -406,7 +406,7 @@ export class OhlcvChartComponent implements OnChanges {
     const clipUrl = `url(#${clip})`;
     pane.group = svg.append('g').attr('class', 'price-pane').attr('transform', `translate(${lh.content.left}, ${lv.pricePane.top})`);
     pane.group.append('clipPath').attr('id', clip).append('rect').attr('x', 0).attr('y', pane.yPrice(1))
-      .attr('width', lh.content.width).attr('height', <number>pane.yPrice(0) - <number>pane.yPrice(1));
+      .attr('width', lh.content.width).attr('height', pane.yPrice(0) as number - pane.yPrice(1) as number);
 
     for (let i = 0; i < cf.bands.length; ++i) {
       const band = cf.bands[i];
@@ -417,8 +417,8 @@ export class OhlcvChartComponent implements OnChanges {
         .curve(OhlcvChartComponent.convertInterpolation(band.interpolation))
         .defined(d => { const w: any = d; return !isNaN(w.lower) && !isNaN(w.upper); })
         .x(d => { const w: any = d; return timeScale(w.time); })
-        .y0(d => { const w: any = d; return <number>pane.yPrice(w.lower); })
-        .y1(d => { const w: any = d; return <number>pane.yPrice(w.upper); });
+        .y0(d => { const w: any = d; return pane.yPrice(w.lower) as number; })
+        .y1(d => { const w: any = d; return pane.yPrice(w.upper) as number; });
       indicatorBand.data = band.data;
       pane.indicatorBands.push(indicatorBand);
     }
@@ -433,8 +433,8 @@ export class OhlcvChartComponent implements OnChanges {
         .curve(OhlcvChartComponent.convertInterpolation(lineArea.interpolation))
         .defined(d => { const w: any = d; return !isNaN(w.value); })
         .x(d => { const w: any = d; return timeScale(w.time); })
-        .y0(d => { const w: any = d; return <number>pane.yPrice(w.value); })
-        .y1(d => { const w: any = d; return <number>pane.yPrice(value); });
+        .y0(d => { const w: any = d; return pane.yPrice(w.value) as number; })
+        .y1(d => { const w: any = d; return pane.yPrice(value) as number; });
       indicatorLineArea.data = lineArea.data;
       indicatorLineArea.value = lineArea.value;
       pane.indicatorLineAreas.push(indicatorLineArea);
@@ -456,7 +456,7 @@ export class OhlcvChartComponent implements OnChanges {
         [{ time: minDate, value: val }, { time: maxDate, value: val }];
       indicatorHorizontal.line = d3.line()
         .x(d => { const w: any = d; return timeScale(w.time); })
-        .y(d => <number>pane.yPrice(val));
+        .y(d => pane.yPrice(val) as number);
       pane.indicatorHorizontals.push(indicatorHorizontal);
     }
 
@@ -474,7 +474,7 @@ export class OhlcvChartComponent implements OnChanges {
         .curve(OhlcvChartComponent.convertInterpolation(line.interpolation))
         .defined(d => { const w: any = d; return !isNaN(w.value); })
         .x(d => { const w: any = d; return timeScale(w.time); })
-        .y(d => { const w: any = d; return <number>pane.yPrice(w.value); });
+        .y(d => { const w: any = d; return pane.yPrice(w.value) as number; });
       indicatorLine.data = line.data;
       pane.indicatorLines.push(indicatorLine);
     }
@@ -482,7 +482,7 @@ export class OhlcvChartComponent implements OnChanges {
     pane.groupPrice = pane.group.append('g').attr('class', 'price').attr('clip-path', clipUrl);
 
     if (isVolume) {
-      pane.yVolume = d3.scaleLinear().range([<number>pane.yPrice(0), <number>pane.yPrice(0.3)]);
+      pane.yVolume = d3.scaleLinear().range([pane.yPrice(0) as number, pane.yPrice(0.3) as number]);
       pane.volume = d3ts.plot.volume().xScale(timeScale).yScale(pane.yVolume);
       pane.groupVolume = pane.group.append('g').attr('class', 'volume').attr('clip-path', clipUrl);
     }
@@ -503,7 +503,7 @@ export class OhlcvChartComponent implements OnChanges {
         .orient(arrow.down ? 'down' : 'up')
         .x((d: any) => timeScale(arrow.time))
         .y((d: any) => {
-          const p = <number>pane.yPrice(price);
+          const p = pane.yPrice(price) as number;
           return arrow.down ? p - Chart.verticalArrowGap : p + Chart.verticalArrowGap;
         });
       pane.indicatorArrows.push(indicatorArrow);
@@ -570,7 +570,7 @@ export class OhlcvChartComponent implements OnChanges {
     const clipUrl = `url(#${clip})`;
     pane.group = svg.append('g').attr('class', 'indicator-pane').attr('transform', `translate(${lh.content.left}, ${block.top})`);
     pane.group.append('clipPath').attr('id', clip).append('rect').attr('x', 0).attr('y', pane.yValue(1))
-      .attr('width', lh.content.width).attr('height', <number>pane.yValue(0) - <number>pane.yValue(1));
+      .attr('width', lh.content.width).attr('height', pane.yValue(0) as number - pane.yValue(1) as number);
 
     if (cf.heatmap) {
       const heatmap = cf.heatmap;
@@ -592,8 +592,8 @@ export class OhlcvChartComponent implements OnChanges {
         .curve(OhlcvChartComponent.convertInterpolation(band.interpolation))
         .defined(d => { const w: any = d; return !isNaN(w.lower) && !isNaN(w.upper); })
         .x(d => { const w: any = d; return timeScale(w.time); })
-        .y0(d => { const w: any = d; return <number>pane.yValue(w.lower); })
-        .y1(d => { const w: any = d; return <number>pane.yValue(w.upper); });
+        .y0(d => { const w: any = d; return pane.yValue(w.lower) as number; })
+        .y1(d => { const w: any = d; return pane.yValue(w.upper) as number; });
       indicatorBand.data = band.data;
       pane.indicatorBands.push(indicatorBand);
     }
@@ -608,8 +608,8 @@ export class OhlcvChartComponent implements OnChanges {
         .curve(OhlcvChartComponent.convertInterpolation(lineArea.interpolation))
         .defined(d => { const w: any = d; return !isNaN(w.value); })
         .x(d => { const w: any = d; return timeScale(w.time); })
-        .y0(d => { const w: any = d; return <number>pane.yValue(w.value); })
-        .y1(d => { const w: any = d; return <number>pane.yValue(value); });
+        .y0(d => { const w: any = d; return pane.yValue(w.value) as number; })
+        .y1(d => { const w: any = d; return pane.yValue(value) as number; });
       indicatorLineArea.data = lineArea.data;
       indicatorLineArea.value = lineArea.value;
       pane.indicatorLineAreas.push(indicatorLineArea);
@@ -631,7 +631,7 @@ export class OhlcvChartComponent implements OnChanges {
         [{ time: minDate, value: val }, { time: maxDate, value: val }];
       indicatorHorizontal.line = d3.line()
         .x(d => { const w: any = d; return timeScale(w.time); })
-        .y(d => <number>pane.yValue(val));
+        .y(d => pane.yValue(val) as number);
       pane.indicatorHorizontals.push(indicatorHorizontal);
     }
 
@@ -649,7 +649,7 @@ export class OhlcvChartComponent implements OnChanges {
         .curve(OhlcvChartComponent.convertInterpolation(line.interpolation))
         .defined(d => { const w: any = d; return !isNaN(w.value); })
         .x(d => { const w: any = d; return timeScale(w.time); })
-        .y(d => { const w: any = d; return <number>pane.yValue(w.value); });
+        .y(d => { const w: any = d; return pane.yValue(w.value) as number; });
       indicatorLine.data = line.data;
       pane.indicatorLines.push(indicatorLine);
     }

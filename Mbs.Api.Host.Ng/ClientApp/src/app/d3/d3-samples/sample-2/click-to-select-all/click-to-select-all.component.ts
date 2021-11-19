@@ -57,7 +57,7 @@ export class ClickToSelectAllComponent implements OnInit {
       .selectAll('.overlay')
       .on('mousedown touchstart', function(event: any) { // Recenter before brushing.
         event.stopImmediatePropagation();
-        // tslint:disable-next-line:no-shadowed-variable
+        // eslint-disable-next-line @typescript-eslint/no-shadow
         // @ts-ignore
         d3.select(this.parentNode).transition().call(brush.move, x.range());
       }, true);

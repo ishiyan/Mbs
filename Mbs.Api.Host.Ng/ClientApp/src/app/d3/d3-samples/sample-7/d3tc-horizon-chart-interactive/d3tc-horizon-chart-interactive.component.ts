@@ -16,9 +16,6 @@ import { dataOhlcvDaily } from '../../data/data-ohlcv-daily-big';
 export class D3tcHorizonChartInteractiveComponent implements OnInit {
   @ViewChild('container', { static: true }) container: ElementRef;
   @Input() svgheight: any;
-  private svg: any;
-  private chart: any;
-  private height: number;
   bands = 1;
   mode = 'mirror';
   interpolations = [
@@ -44,22 +41,9 @@ export class D3tcHorizonChartInteractiveComponent implements OnInit {
   ];
   color = this.colors[0];
 
-  bandsChanged(event: number) {
-    const n = Math.max(1, +event);
-    this.svg.call(this.chart.duration(500).height(this.height / n).bands(n));
-  }
-
-  modeChanged(event: MatSelectChange) {
-    this.svg.call(this.chart.duration(500).mode(event.value));
-  }
-
-  interpolationChanged(event: MatSelectChange) {
-    this.svg.call(this.chart.duration(500).interpolate(event.value));
-  }
-
-  colorChanged(event: MatRadioChange) {
-    this.svg.call(this.chart.duration(500).colors(this.colors[+event.value]));
-  }
+  private svg: any;
+  private chart: any;
+  private height: number;
 
   constructor(private element: ElementRef) {
   }
@@ -76,5 +60,22 @@ export class D3tcHorizonChartInteractiveComponent implements OnInit {
     this.chart = d3tc.horizonChart().width(width).height(this.height / this.bands).bands(this.bands).mode(this.mode)
       .interpolate(this.interpolation).colors(this.color).defined((d: any) => d[1]);
     this.svg.data([horizonData]).call(this.chart);
+  }
+
+  bandsChanged(event: number) {
+    const n = Math.max(1, +event);
+    this.svg.call(this.chart.duration(500).height(this.height / n).bands(n));
+  }
+
+  modeChanged(event: MatSelectChange) {
+    this.svg.call(this.chart.duration(500).mode(event.value));
+  }
+
+  interpolationChanged(event: MatSelectChange) {
+    this.svg.call(this.chart.duration(500).interpolate(event.value));
+  }
+
+  colorChanged(event: MatRadioChange) {
+    this.svg.call(this.chart.duration(500).colors(this.colors[+event.value]));
   }
 }

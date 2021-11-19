@@ -38,7 +38,7 @@ export class ChirpGeneratorParameters {
     if (data) {
       for (const property in data) {
         if (data.hasOwnProperty(property)) {
-          (<any>this)[property] = (<any>data)[property];
+          (this as any)[property] = (data as any)[property];
         }
       }
     }
@@ -47,12 +47,12 @@ export class ChirpGeneratorParameters {
   toJSON(data?: any) {
     data = typeof data === objectName ? data : {};
     data[sampleCountName] = this.sampleCount;
-    data[timeParametersName] = this.timeParameters ? this.timeParameters.toJSON() : <any>undefined;
-    data[waveformParametersName] = this.waveformParameters ? this.waveformParameters.toJSON() : <any>undefined;
-    data[chirpParametersName] = this.chirpParameters ? this.chirpParameters.toJSON() : <any>undefined;
-    data[ohlcvParametersName] = this.ohlcvParameters ? this.ohlcvParameters.toJSON() : <any>undefined;
-    data[quoteParametersName] = this.quoteParameters ? this.quoteParameters.toJSON() : <any>undefined;
-    data[tradeParametersName] = this.tradeParameters ? this.tradeParameters.toJSON() : <any>undefined;
+    data[timeParametersName] = this.timeParameters ? this.timeParameters.toJSON() : undefined as any;
+    data[waveformParametersName] = this.waveformParameters ? this.waveformParameters.toJSON() : undefined as any;
+    data[chirpParametersName] = this.chirpParameters ? this.chirpParameters.toJSON() : undefined as any;
+    data[ohlcvParametersName] = this.ohlcvParameters ? this.ohlcvParameters.toJSON() : undefined as any;
+    data[quoteParametersName] = this.quoteParameters ? this.quoteParameters.toJSON() : undefined as any;
+    data[tradeParametersName] = this.tradeParameters ? this.tradeParameters.toJSON() : undefined as any;
     return data;
   }
 }

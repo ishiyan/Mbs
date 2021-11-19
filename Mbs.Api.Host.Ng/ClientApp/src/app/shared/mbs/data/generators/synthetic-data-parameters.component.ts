@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { SyntheticDataKind } from './synthetic-data-kind.enum';
 import { TemporalEntityKind } from '../entities/temporal-entity-kind.enum';
 import { SyntheticDataParameters } from './synthetic-data-parameters';
@@ -8,14 +8,11 @@ import { SyntheticDataParameters } from './synthetic-data-parameters';
   templateUrl: './synthetic-data-parameters.component.html',
   styleUrls: ['./synthetic-data-parameters.component.scss']
 })
-export class SyntheticDataParametersComponent implements OnInit {
+export class SyntheticDataParametersComponent {
   @Input() syntheticDataParameters: SyntheticDataParameters;
   readonly dataKinds: string[] = Object.values(SyntheticDataKind);
 
   syntheticDataKind: SyntheticDataKind = SyntheticDataKind.FractionalBrownianMotion;
-
-  ngOnInit() {
-  }
 
   public dataKindChanged(value: SyntheticDataKind): void {
     this.syntheticDataParameters.syntheticDataKind = value;

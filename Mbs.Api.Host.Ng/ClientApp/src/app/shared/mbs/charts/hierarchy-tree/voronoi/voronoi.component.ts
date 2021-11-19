@@ -143,10 +143,6 @@ export class VoronoiComponent implements OnChanges {
 
   constructor(private elementRef: ElementRef) { }
 
-  ngOnChanges(changes: any) {
-    this.render();
-  }
-
   @HostListener('window:resize', [])
   public render(): void {
     const sel = d3.select(this.elementRef.nativeElement);
@@ -265,5 +261,9 @@ export class VoronoiComponent implements OnChanges {
       .attr('x', 0)
       .attr('y', (d: any, i: number, nodes: any) => `${i - nodes.length / 2 + 0.8}em`)
       .text((d: string) => d);
+  }
+
+  ngOnChanges(changes: any) {
+    this.render();
   }
 }

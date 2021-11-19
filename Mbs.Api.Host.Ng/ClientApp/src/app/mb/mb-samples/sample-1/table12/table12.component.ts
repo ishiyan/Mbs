@@ -37,9 +37,9 @@ export class Table12Component implements OnInit {
   constructor(private listService: ListService, private snackBarService: SnackBarService) {
     this.dataSource = new MatTableDataSource<Instrument>();
     // @ts-ignore
-    this.dataSource.filterPredicate = (data: Instrument, filter: string) => {
-      // return (data.description && data.description.toLowerCase().indexOf(filter) !== -1) ||
-      return (data.name && data.name.toLowerCase().indexOf(filter) !== -1) ||
+    this.dataSource.filterPredicate = (data: Instrument, filter: string) =>
+      // (data.description && data.description.toLowerCase().indexOf(filter) !== -1) ||
+      (data.name && data.name.toLowerCase().indexOf(filter) !== -1) ||
         (data.symbol && data.symbol.toLowerCase().indexOf(filter) !== -1) ||
         (data.isin && data.isin.toLowerCase().indexOf(filter) !== -1) ||
         (data.type && data.type.toLowerCase().indexOf(filter) !== -1) ||
@@ -88,7 +88,6 @@ export class Table12Component implements OnInit {
             (data.fund.tradingMode && data.fund.tradingMode.toLowerCase().indexOf(filter) !== -1) ||
             (data.fund.cfi && data.fund.cfi.toLowerCase().indexOf(filter) !== -1) ||
             (data.fund.issuer && data.fund.issuer.toLowerCase().indexOf(filter) !== -1)));
-    };
   }
 
   ngOnInit() {

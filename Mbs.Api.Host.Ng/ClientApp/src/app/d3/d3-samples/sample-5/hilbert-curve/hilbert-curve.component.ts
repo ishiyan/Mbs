@@ -25,6 +25,15 @@ export class HilbertCurveComponent implements OnInit {
   constructor(private element: ElementRef) {
   }
 
+  ngOnInit() {
+    // why can't it find the svg element? have to use svg id instead
+    this.g = d3.select(this.element.nativeElement).select('#d3-hilbert-curve').attr('width', this.w).attr('height', this.w)
+      .append('g');
+    this.g.append('path').attr('d', 'M0,0').style('fill', 'none').style('stroke', 'black');
+    this.line = d3.line().x(d => this.x(d[0]) as number).y(d => this.x(d[1]) as number);
+    this.redraw();
+  }
+
   selectionChanged(event: MatSelectChange) {
     this.level = +event.value;
     this.level10 = Math.pow(2, this.level); // 1 << this.level
@@ -48,15 +57,6 @@ export class HilbertCurveComponent implements OnInit {
       .style('fill', (d: any, i: any) => d3.hsl(Math.floor(i * 360 / this.level102), 1, .5).rgb())
       // .style('fill', (d, i) => d3.hsl(~~(i * 360 / this.level102), 1, .5).rgb())
       .attr('x', (d: any) => this.x(d[0] - .5)).attr('y', (d: any) => this.x(d[1] - .5))
-      .attr('width', <number>this.x(1) - <number>this.x(0) + 1).attr('height', <number>this.x(1) - <number>this.x(0) + 1);
-  }
-
-  ngOnInit() {
-    // why can't it find the svg element? have to use svg id instead
-    this.g = d3.select(this.element.nativeElement).select('#d3-hilbert-curve').attr('width', this.w).attr('height', this.w)
-      .append('g');
-    this.g.append('path').attr('d', 'M0,0').style('fill', 'none').style('stroke', 'black');
-    this.line = d3.line().x(d => <number>this.x(d[0])).y(d => <number>this.x(d[1]));
-    this.redraw();
+      .attr('width', this.x(1) as number - this.x(0) as number + 1).attr('height', this.x(1) as number - this.x(0) as number + 1);
   }
 }

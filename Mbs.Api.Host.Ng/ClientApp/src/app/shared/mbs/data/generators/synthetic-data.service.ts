@@ -73,7 +73,7 @@ export class SyntheticDataService {
         }),
         catchError(this.handleError) // then handle the error
       );
-  }
+  };
 
   private handleError(error: any) {
     let text: string;

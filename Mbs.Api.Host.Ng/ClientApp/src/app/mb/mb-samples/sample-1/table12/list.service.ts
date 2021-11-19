@@ -18,13 +18,11 @@ const httpOptions = {
 export class ListService {
   constructor(private httpClient: HttpClient) { }
 
-  public getInstrumentList = (name: string): Observable<Instrument[]> => {
-    return this.httpClient.get<Instrument[]>(apiUrl + name, httpOptions)
+  public getInstrumentList = (name: string): Observable<Instrument[]> =>
+    this.httpClient.get<Instrument[]>(apiUrl + name, httpOptions)
       .pipe(
         retry(3), // retry a failed request up to 3 times
-        catchError(this.handleError) // then handle the error
-      );
-  }
+        catchError(this.handleError)); // then handle the error
 
   private handleError(error: any) {
     let text: string;

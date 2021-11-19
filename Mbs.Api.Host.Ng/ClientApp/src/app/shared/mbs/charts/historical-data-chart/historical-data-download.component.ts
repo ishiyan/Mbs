@@ -57,6 +57,29 @@ export class HistoricalDataDownloadComponent {
   private datePipe = new DatePipe(this.locale);
   private decimalPipe = new DecimalPipe(this.locale);
 
+  doDownload(): void {
+    if (!this.canDownload) {
+      return;
+    }
+    const csv = this.writeByteOrderMark ? '\ufeff' + this.convertToCSV() : this.convertToCSV();
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf8;' });
+    // @ts-ignore
+    const filename = this.currentHistoricalData.name.replace(/ /g, '_') + '.csv';
+
+    if (navigator.msSaveBlob) {
+      navigator.msSaveBlob(blob, filename);
+    } else {
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.setAttribute('visibility', 'hidden');
+      link.download = filename;
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  }
+
   private convertToCSV(): string {
     if (!this.canDownload) {
       return '';
@@ -89,28 +112,5 @@ export class HistoricalDataDownloadComponent {
       csv.unshift(headers.join(separator));
     }
     return csv.join(eol);
-  }
-
-  doDownload(): void {
-    if (!this.canDownload) {
-      return;
-    }
-    const csv = this.writeByteOrderMark ? '\ufeff' + this.convertToCSV() : this.convertToCSV();
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf8;' });
-    // @ts-ignore
-    const filename = this.currentHistoricalData.name.replace(/ /g, '_') + '.csv';
-
-    if (navigator.msSaveBlob) {
-      navigator.msSaveBlob(blob, filename);
-    } else {
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.setAttribute('visibility', 'hidden');
-      link.download = filename;
-
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
   }
 }

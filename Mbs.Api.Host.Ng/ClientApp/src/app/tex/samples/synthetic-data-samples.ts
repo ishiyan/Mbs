@@ -64,7 +64,7 @@ export const syntheticDataSamples: Sample[] =
     },
     {
       name: 'Square - 1',
-      code: 'mid_t=\\left\\{\\begin{array}{rl}\\alpha+\\beta&t\\in [1, \\lambda]\\\\\\beta&t\\in [\\lambda+1, 2\\lambda]\\end{array}\\right.,' // tslint:disable-line
+      code: 'mid_t=\\left\\{\\begin{array}{rl}\\alpha+\\beta&t\\in [1, \\lambda]\\\\\\beta&t\\in [\\lambda+1, 2\\lambda]\\end{array}\\right.,' // eslint-disable-line
     },
     {
       name: 'Square - 2',

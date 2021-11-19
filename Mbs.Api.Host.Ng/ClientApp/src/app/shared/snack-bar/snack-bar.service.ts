@@ -35,7 +35,8 @@ export class SnackBarService {
   }
 
   /**
-   * Add a message
+   * Add a message.
+   *
    * @param message The message to show in the snackbar.
    * @param action The label for the snackbar action.
    * @param config Additional configuration options for the snackbar.

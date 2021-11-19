@@ -39,7 +39,7 @@ export class D3tcZoomingComponent implements OnInit {
     const yAxis = d3.axisLeft(y);
 
     svg.append('clipPath').attr('id', 'clip')
-      .append('rect').attr('x', 0).attr('y', y(1)).attr('width', width).attr('height', <number>y(0) - <number>y(1));
+      .append('rect').attr('x', 0).attr('y', y(1)).attr('width', width).attr('height', y(0) as number - y(1) as number);
     svg.append('g').attr('class', 'candlestick').attr('clip-path', 'url(#clip)');
     svg.append('g').attr('class', 'x axis').attr('transform', 'translate(0,' + height + ')');
     svg.append('g').attr('class', 'y axis').append('text')

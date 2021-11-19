@@ -28,28 +28,4 @@ export class Trade {
   }*/
 }
 
-/*
-export namespace Trade {
-  export function fromJson(json?: any): Trade {
-    const trade = new Trade();
-    if (json) {
-      for (const property in json) {
-        if (json.hasOwnProperty(property)) {
-          (trade as any)[property] = json[property];
-        }
-      }
-    }
-    return trade;
-  }
-
-  export function toJson(trade: Trade, json?: any): any {
-    json = typeof json === 'object' ? json : {};
-    // tslint:disable:no-string-literal
-    json['time'] = trade.time ? trade.time.toISOString() : (undefined as any);
-    json['price'] = trade.price;
-    json['volume'] = trade.volume;
-    // tslint:enable:no-string-literal
-    return json;
-  }
-}
-*/
+/* eslint-disable , , , , , , , , , , , ,  */

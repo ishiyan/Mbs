@@ -24,12 +24,12 @@ export class InstrumentReference {
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
-    // tslint:disable:no-string-literal
+    /* eslint-disable @typescript-eslint/dot-notation */
     data['Mic'] = this.mic;
     data['Isin'] = this.isin;
     data['Symbol'] = this.symbol;
     data['Name'] = this.name;
-    // tslint:enable:no-string-literal
+    /* eslint-enable @typescript-eslint/dot-notation */
     return data;
   }
 }

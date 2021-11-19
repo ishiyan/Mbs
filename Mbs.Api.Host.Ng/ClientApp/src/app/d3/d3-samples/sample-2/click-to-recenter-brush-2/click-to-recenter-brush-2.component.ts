@@ -75,13 +75,10 @@ export class ClickToRecenterBrush2Component implements OnInit {
       .selectAll('.overlay')
       .each((d: any) => { d.type = 'selection'; }) // Treat overlay interaction as move.
       .on('mousedown touchstart', function(event: any) { // Recenter before brushing.
-        const dx = <number>x(1) - <number>x(0); // Use a fixed width when recentering.
-        // tslint:disable-next-line:no-shadowed-variable
-        // @ts-ignore
+        const dx = x(1) as number - x(0) as number; // Use a fixed width when recentering.
         const cx = d3.pointers(event)[0][0];
         const x0 = cx - dx / 2;
         const x1 = cx + dx / 2;
-        // tslint:disable-next-line:no-shadowed-variable
         // @ts-ignore
         const s = d3.select(this.parentNode);
         s.call(brush.move, x1 > width ? [width - dx, width] : x0 < 0 ? [0, dx] : [x0, x1]);

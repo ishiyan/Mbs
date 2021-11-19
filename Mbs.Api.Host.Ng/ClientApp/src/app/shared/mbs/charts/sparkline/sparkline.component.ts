@@ -20,16 +20,16 @@ const defaultHeight = 24;
   encapsulation: ViewEncapsulation.None
 })
 export class SparklineComponent implements OnChanges, AfterViewInit {
-  private currentConfiguration: SparklineConfiguration = {
-    fillColor: 'steelblue', strokeColor: undefined, strokeWidth: 1, interpolation: 'linear'
-  };
-  private currentData: Ohlcv[] | Quote[] | Trade[] | Scalar[];
-
   /** A width of the sparkline. */
   @Input() width: number | string = defaultWidth;
 
   /** A height of the sparkline. */
   @Input() height: number | string = defaultHeight;
+
+  private currentConfiguration: SparklineConfiguration = {
+    fillColor: 'steelblue', strokeColor: undefined, strokeWidth: 1, interpolation: 'linear'
+  };
+  private currentData: Ohlcv[] | Quote[] | Trade[] | Scalar[];
 
   /** Specifies fill, stroke and interpolation. */
   @Input() set configuration(cfg: SparklineConfiguration) {
@@ -103,9 +103,9 @@ export class SparklineComponent implements OnChanges, AfterViewInit {
         .curve(convertInterpolation(interp))
         .defined((d: any) => !isNaN(getY(d)))
         // .x((d: any, i: number) => xScale(i))
-        .x((d: any, i: number) => <number>xScale(d.time))
-        .y0((d: any) => <number>yScale(min))
-        .y1((d: any) => <number>yScale(getY(d)));
+        .x((d: any, i: number) => xScale(d.time) as number)
+        .y0((d: any) => yScale(min) as number)
+        .y1((d: any) => yScale(getY(d)) as number);
       svg.append('path')
         .attr('fill', cfg.fillColor)
         .attr('d', area);
@@ -115,8 +115,8 @@ export class SparklineComponent implements OnChanges, AfterViewInit {
         .curve(convertInterpolation(interp))
         .defined((d: any) => !isNaN(getY(d)))
         // .x((d: any, i: number) => xScale(i))
-        .x((d: any, i: number) => <number>xScale(d.time))
-        .y((d: any) => <number>yScale(getY(d)));
+        .x((d: any, i: number) => xScale(d.time) as number)
+        .y((d: any) => yScale(getY(d)) as number);
       svg.append('path')
         .attr('stroke-width', cfg.strokeWidth)
         .attr('stroke', cfg.strokeColor)

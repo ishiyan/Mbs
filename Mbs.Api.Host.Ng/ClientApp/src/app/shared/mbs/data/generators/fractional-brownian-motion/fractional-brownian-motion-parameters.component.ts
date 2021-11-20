@@ -11,7 +11,7 @@ import { Enums } from '../../../utils/enums';
   styleUrls: ['./fractional-brownian-motion-parameters.component.scss']
 })
 export class FractionalBrownianMotionParametersComponent {
-  @Input() fractionalBrownianMotionParameters: FractionalBrownianMotionParameters;
+  @Input() fractionalBrownianMotionParameters!: FractionalBrownianMotionParameters;
 
   options: any = {throwOnError: false, strict: true};
 

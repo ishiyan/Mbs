@@ -1,7 +1,7 @@
 import { Scalar } from '../../../data/entities/scalar';
 
 export class IndicatorLine {
-  data: Scalar[];
+  data!: Scalar[];
   line: any;
   path: any;
 }

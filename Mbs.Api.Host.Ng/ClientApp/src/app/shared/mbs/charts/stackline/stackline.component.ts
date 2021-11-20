@@ -62,9 +62,9 @@ export class StacklineComponent implements OnChanges, AfterViewInit {
    private currentConfiguration: LineConfiguration[] = [];
    private currentDataStacked: (Band[])[] = [];
    private currentDataEmpty = true;
-   private dataTimeMin: Date;
-   private dataTimeMax: Date;
-   private dataValueMax: number;
+   private dataTimeMin!: Date;
+   private dataTimeMax!: Date;
+   private dataValueMax!: number;
    private forcedTimeMin?: Date;
    private forcedTimeMax?: Date;
    private forcedValueMin?: number;

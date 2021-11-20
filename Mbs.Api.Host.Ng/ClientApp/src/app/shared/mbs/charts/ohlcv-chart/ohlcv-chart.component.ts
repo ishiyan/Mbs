@@ -74,14 +74,14 @@ const smoothBrushing = false;
   styleUrls: ['./ohlcv-chart.component.scss']
 })
 export class OhlcvChartComponent implements OnChanges {
-  private config: Template.Configuration;
+  private config!: Template.Configuration;
   private currentSelection: any = null;
   private renderVolume: boolean;
   private renderCrosshair: boolean;
   private ohlcvView: number;
   public readonly ohlcvViewCandlesticks = ohlcvViewCandlesticks;
   public readonly ohlcvViewBars = ohlcvViewBars;
-  @ViewChild('container', { static: true }) container: ElementRef;
+  @ViewChild('container', { static: true }) container!: ElementRef;
 
   private static valueToPixels(value: number | string, reference: number): number {
     if (typeof value === 'number') {

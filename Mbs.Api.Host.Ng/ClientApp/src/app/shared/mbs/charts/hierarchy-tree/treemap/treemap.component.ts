@@ -91,7 +91,7 @@ export class TreemapComponent implements OnChanges {
   @Input() rectangleRatio: number = defaultRectangleRatio;
 
   /** The data hierarchy to use. */
-  @Input() data: HierarchyTreeNode;
+  @Input() data!: HierarchyTreeNode;
 
   /** If the hierarchy should be flatterned to an array of a leaf nodes. */
   @Input() flat: boolean = defaultFlat;

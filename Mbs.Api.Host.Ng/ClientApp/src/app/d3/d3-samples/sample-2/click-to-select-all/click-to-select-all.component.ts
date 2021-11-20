@@ -7,7 +7,7 @@ import * as d3 from 'd3';
   styleUrls: ['./click-to-select-all.component.scss']
 })
 export class ClickToSelectAllComponent implements OnInit {
-  @ViewChild('container5', { static: true }) container: ElementRef;
+  @ViewChild('container5', { static: true }) container!: ElementRef;
   @Input() svgheight: any;
 
   constructor(private element: ElementRef) {

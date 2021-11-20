@@ -1,7 +1,7 @@
 import { Band } from '../../entities/band';
 
 export class IndicatorBand {
-  data: Band[];
+  data!: Band[];
   area: any;
   path: any;
 }

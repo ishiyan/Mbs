@@ -58,8 +58,8 @@ export class SingleComponent {
   lrCalculated: Scalar[] = [];
   cashCalculated: Scalar[] = [];
   percentageCalculated: Scalar[] = [];
-  hrPercentageMin: number;
-  hrPercentageMax: number;
+  hrPercentageMin!: number;
+  hrPercentageMax!: number;
 
   initialAmount = 5000;
   hrIdeal = 65;

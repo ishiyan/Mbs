@@ -9,6 +9,6 @@ export const arowHeightToWidthRatio = 5 / 4;
 export class IndicatorArrow {
   arrow: any;
   path: any;
-  isDown: boolean;
-  price: number;
+  isDown!: boolean;
+  price!: number;
 }

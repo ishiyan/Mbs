@@ -7,10 +7,10 @@ import { MathJaxDirective } from './math-jax.directive';
   styleUrls: ['./math-jax.component.scss']
 })
 export class MathJaxComponent implements OnChanges {
-  @Input() expression: string;
+  @Input() expression!: string;
 
   @ViewChild(MathJaxDirective)
-  mathJaxDirective: MathJaxDirective;
+  mathJaxDirective!: MathJaxDirective;
 
   ngOnChanges(changes: SimpleChanges): void {
     if (this.mathJaxDirective) {

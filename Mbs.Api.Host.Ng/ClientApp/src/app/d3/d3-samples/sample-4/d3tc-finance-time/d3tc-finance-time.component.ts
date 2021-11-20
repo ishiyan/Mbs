@@ -14,7 +14,7 @@ import { dataOhlcvIntraday } from '../../data/data-ohlcv-intraday';
   encapsulation: ViewEncapsulation.None // does not see css without this
 })
 export class D3tcFinanceTimeComponent implements OnInit {
-  @ViewChild('container', { static: true }) container: ElementRef;
+  @ViewChild('container', { static: true }) container!: ElementRef;
   @Input() svgheight: any;
 
   constructor(private element: ElementRef) {

@@ -16,7 +16,7 @@ import { Scalar } from '../../data/entities/scalar';
 })
 export class HistoricalDataTableComponent implements OnInit {
   @Input() enableDownload = true;
-  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+  @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
 
   @Input()
   set historicalData(historicalData: HistoricalData) {
@@ -60,7 +60,7 @@ export class HistoricalDataTableComponent implements OnInit {
   selectedTimeFormat: string = this.timeFormats[0];
   selectedDecimalFormat = 2;
   canDownload = false;
-  currentHistoricalData: HistoricalData;
+  currentHistoricalData!: HistoricalData;
   dataSource: MatTableDataSource<Ohlcv | Quote | Trade | Scalar> = new MatTableDataSource<Ohlcv | Quote | Trade | Scalar>();
   private temporalEntityKind: TemporalEntityKind | undefined;
 

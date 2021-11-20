@@ -9,7 +9,7 @@ import { SyntheticDataParameters } from './synthetic-data-parameters';
   styleUrls: ['./synthetic-data-parameters.component.scss']
 })
 export class SyntheticDataParametersComponent {
-  @Input() syntheticDataParameters: SyntheticDataParameters;
+  @Input() syntheticDataParameters!: SyntheticDataParameters;
   readonly dataKinds: string[] = Object.values(SyntheticDataKind);
 
   syntheticDataKind: SyntheticDataKind = SyntheticDataKind.FractionalBrownianMotion;

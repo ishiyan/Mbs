@@ -9,7 +9,7 @@ import { Enums } from '../../../utils/enums';
   styleUrls: ['./chirp-parameters.component.scss']
 })
 export class ChirpParametersComponent {
-  @Input() chirpParameters: ChirpParameters;
+  @Input() chirpParameters!: ChirpParameters;
 
   options: any = {throwOnError: false, strict: true};
 

@@ -185,7 +185,7 @@ export class SampleIcicle3Component {
   ];
   labelFontSizeFuncSelected: HierarchyTreeFontSizeFunction = this.labelFontSizeFuncArray[0].value;
 
-  selectedNodeInfo: string;
+  selectedNodeInfo!: string;
   tapFunc: HierarchyTreeTapFunction = (d: d3.HierarchyNode<HierarchyTreeNode>) => {
     const t = pathParentTooltips(d);
     const n = d.data as AexIndexHierarchyTreeNode;

@@ -10,7 +10,7 @@ import * as d3tc from '../../../../shared/d3tc';
   encapsulation: ViewEncapsulation.None // does not see css without this
 })
 export class D3tcArrowComponent implements OnInit {
-  @ViewChild('container', { static: true }) container: ElementRef;
+  @ViewChild('container', { static: true }) container!: ElementRef;
   @Input() svgheight: any;
 
   constructor(private element: ElementRef) {

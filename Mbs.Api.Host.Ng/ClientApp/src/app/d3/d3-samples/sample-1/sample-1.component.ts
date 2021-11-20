@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./sample-1.component.scss']
 })
 export class Sample1Component implements OnInit {
-  public chartData: Array<any>;
+  public chartData!: Array<any>;
 
   ngOnInit() {
     // give everything a chance to get loaded before starting the animation to reduce choppiness

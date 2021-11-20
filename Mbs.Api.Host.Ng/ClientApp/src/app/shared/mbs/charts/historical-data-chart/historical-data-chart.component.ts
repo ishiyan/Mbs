@@ -49,7 +49,7 @@ const textAfterSvg = `
   encapsulation: ViewEncapsulation.Emulated
 })
 export class HistoricalDataChartComponent {
-  @ViewChild('container', { static: true }) container: ElementRef;
+  @ViewChild('container', { static: true }) container!: ElementRef;
   @Input() svgheight: any;
   @Input()
   set historicalData(historicalData: HistoricalData) {
@@ -144,7 +144,7 @@ export class HistoricalDataChartComponent {
     this.render();
   }
 
-  private currentHistoricalData: HistoricalData;
+  private currentHistoricalData!: HistoricalData;
   get chartTitle(): string {
     if (this.currentHistoricalData && this.currentHistoricalData.moniker) {
       return this.currentHistoricalData.moniker;

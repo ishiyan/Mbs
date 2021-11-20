@@ -4,10 +4,10 @@ export class ArrowData {
   public name = '';
 
   /** Is an arrow points up or down. */
-  public down: boolean;
+  public down!: boolean;
 
   /** Arrow time. */
-  public time: Date;
+  public time!: Date;
 
   /** An optional value to which the arrow points. */
   public value?: number;
@@ -19,5 +19,5 @@ export class ArrowData {
   public output = 0;
 
   /** A color of the arrow. */
-  public color: string;
+  public color!: string;
 }

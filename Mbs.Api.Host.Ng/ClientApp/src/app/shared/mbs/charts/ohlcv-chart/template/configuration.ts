@@ -10,7 +10,7 @@ export class Configuration {
    * Defines the width of all chart panes.
    * Can be either a positive number of pixels or a percentage string (e.g. '45%') of a reference width.
    */
-  public width: string | number;
+  public width!: string | number;
 
   /** An optional minimal width in pixels including margins. */
   public widthMin?: number;

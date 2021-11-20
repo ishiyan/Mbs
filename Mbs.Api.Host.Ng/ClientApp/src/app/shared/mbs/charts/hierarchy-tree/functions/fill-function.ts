@@ -16,12 +16,12 @@ const fourPi = 4 * Math.PI;
  * Provides an implementation of the **HierarchyTreeFillFunction** type which will uss the
  * **d3.interpolateRainbow** to fill a node acconding to the middle angle of the angular sector it occupies.
  */
-export const rainbowMiddleFill: HierarchyTreeFillFunction = (d: d3.HierarchyRectangularNode<HierarchyTreeNode>) => {
+export const rainbowMiddleFill: HierarchyTreeFillFunction = ((d: d3.HierarchyRectangularNode<HierarchyTreeNode>) => {
   const t = (d.x1 + d.x0) / fourPi;
   return d3.interpolateRainbow(t);
   // return d3.interpolateViridis(t);
   // return d3.interpolateHslLong("yellow", "blue")(t);
-};
+}) as HierarchyTreeFillFunction;
 
 export const gradientValueFill = (
   d: d3.HierarchyNode<HierarchyTreeNode>,

@@ -7,7 +7,7 @@ import { SinusoidalParameters } from './sinusoidal-parameters';
   styleUrls: ['./sinusoidal-parameters.component.scss']
 })
 export class SinusoidalParametersComponent {
-  @Input() sinusoidalParameters: SinusoidalParameters;
+  @Input() sinusoidalParameters!: SinusoidalParameters;
 
   options: any = {throwOnError: false, strict: true};
 

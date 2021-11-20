@@ -7,7 +7,7 @@ import * as d3 from 'd3';
   styleUrls: ['./brush-handles-2.component.scss']
 })
 export class BrushHandles2Component implements OnInit {
-  @ViewChild('container2', { static: true }) container: ElementRef;
+  @ViewChild('container2', { static: true }) container!: ElementRef;
   @Input() svgheight: any;
 
   constructor(private element: ElementRef) {

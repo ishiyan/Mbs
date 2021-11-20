@@ -7,7 +7,7 @@ import { QuoteParameters } from './quote-parameters';
   styleUrls: ['./quote-parameters.component.scss']
 })
 export class QuoteParametersComponent {
-  @Input() quoteParameters: QuoteParameters;
+  @Input() quoteParameters!: QuoteParameters;
 
   options: any = {throwOnError: false, strict: true};
 

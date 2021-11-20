@@ -136,7 +136,7 @@ export class VoronoiComponent implements OnChanges {
   @Input() maxIterationCount: number = defaultMaxIterationCount;
 
   /** The data hierarchy to use. */
-  @Input() data: HierarchyTreeNode;
+  @Input() data!: HierarchyTreeNode;
 
   /** If the hierarchy should be flatterned to an array of a leaf nodes. */
   @Input() flat: boolean = defaultFlat;

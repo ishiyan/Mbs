@@ -12,7 +12,7 @@ import { dataOhlcvDaily } from '../../data/data-ohlcv-daily';
   styleUrls: ['./d3tc-crosshair.component.scss']
 })
 export class D3tcCrosshairComponent implements OnInit {
-  @ViewChild('container', { static: true }) container: ElementRef;
+  @ViewChild('container', { static: true }) container!: ElementRef;
   @Input() svgheight: any;
 
   constructor(private element: ElementRef) {

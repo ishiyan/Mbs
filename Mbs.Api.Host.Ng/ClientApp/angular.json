@@ -39,13 +39,13 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
+              "buildOptimizer": true,
               "optimization": true,
-              "outputHashing": "all",
+              "vendorChunk": false,
+              "extractLicenses": true,
               "sourceMap": false,
               "namedChunks": false,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
+              "outputHashing": "all",
               "budgets": [
                 {
                   "type": "initial",
@@ -58,20 +58,29 @@
                   "maximumError": "10kb"
                 }
               ]
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
             }
           },
-          "defaultConfiguration": ""
+          "defaultConfiguration": "production"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
-          "options": {
-            "browserTarget": "mbs-api-host-ng:build"
-          },
           "configurations": {
             "production": {
               "browserTarget": "mbs-api-host-ng:build:production"
+            },
+            "development": {
+              "browserTarget": "mbs-api-host-ng:build:development"
             }
-          }
+          },
+          "defaultConfiguration": "development"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -86,6 +95,7 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
+            "inlineStyleLanguage": "scss",
             "assets": [
               "src/assets",
               "src/favicon.ico"

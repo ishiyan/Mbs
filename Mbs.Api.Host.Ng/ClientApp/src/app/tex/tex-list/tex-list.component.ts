@@ -7,7 +7,7 @@ import { Sample } from '../samples/sample';
   styleUrls: ['./tex-list.component.scss']
 })
 export class TexListComponent {
-  @Input() samples: Sample[];
+  @Input() samples!: Sample[];
   @Input()
   showMathJax = true;
   @Input()

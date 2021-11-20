@@ -7,7 +7,7 @@ import { Directive, ElementRef, Input, OnChanges, SimpleChanges } from '@angular
 export class MathJaxDirective implements OnChanges {
   /** An input MathJax expression. */
   @Input()
-  public mbMathJax: string;
+  public mbMathJax!: string;
 
   /** The associated native element. */
   readonly element: HTMLElement;
@@ -49,7 +49,7 @@ export class MathJaxDirective implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    const expressions = changes.mbMathJax;
+    const expressions = changes['mbMathJax'];
     if (!expressions) {
       return;
     }

@@ -13,7 +13,7 @@ import { d3Sp500 } from '../../data/d3-sp500';
   encapsulation: ViewEncapsulation.None
 })
 export class BrushAndZoomAreaChartComponent implements OnInit {
-  @ViewChild('container', { static: true }) container: ElementRef;
+  @ViewChild('container', { static: true }) container!: ElementRef;
   // @Input() svgwidth: any;
   @Input() svgheight: any;
 

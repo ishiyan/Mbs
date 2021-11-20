@@ -24,13 +24,13 @@ import { SnackBarService } from '../../../../shared/snack-bar/snack-bar.service'
   ],
 })
 export class Table12Component implements OnInit {
-  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-  @ViewChild(MatSort, { static: true }) sort: MatSort;
+  @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
+  @ViewChild(MatSort, { static: true }) sort!: MatSort;
 
   public InstrumentType = InstrumentType;
   public ExchangeMic = ExchangeMic;
   public CurrencyCode = CurrencyCode;
-  public expandedInstrument: Instrument | null;
+  public expandedInstrument!: Instrument | null;
   displayedColumns: string[] = ['type', 'symbol', 'name', 'isin', 'mic'];
   dataSource: MatTableDataSource<Instrument>;
 

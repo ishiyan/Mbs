@@ -34,10 +34,10 @@ export class MultilineComponent implements OnChanges, AfterViewInit {
   private currentConfiguration: LineConfiguration[] = [];
   private currentData: (Ohlcv[] | Quote[] | Trade[] | Scalar[])[] = [];
   private currentDataEmpty = true;
-  private dataTimeMin: Date;
-  private dataTimeMax: Date;
-  private dataValueMin: number;
-  private dataValueMax: number;
+  private dataTimeMin!: Date;
+  private dataTimeMax!: Date;
+  private dataValueMin!: number;
+  private dataValueMax!: number;
   private forcedTimeMin?: Date;
   private forcedTimeMax?: Date;
   private forcedValueMin?: number;

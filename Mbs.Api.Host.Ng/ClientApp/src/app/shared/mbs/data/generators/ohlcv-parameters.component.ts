@@ -7,7 +7,7 @@ import { OhlcvParameters } from './ohlcv-parameters';
   styleUrls: ['./ohlcv-parameters.component.scss']
 })
 export class OhlcvParametersComponent {
-  @Input() ohlcvParameters: OhlcvParameters;
+  @Input() ohlcvParameters!: OhlcvParameters;
 
   options: any = {throwOnError: false, strict: true};
 

@@ -14,7 +14,7 @@ import { dataOhlcvDaily } from '../../data/data-ohlcv-daily-big';
   styleUrls: ['./d3tc-horizon-chart-interactive.component.scss']
 })
 export class D3tcHorizonChartInteractiveComponent implements OnInit {
-  @ViewChild('container', { static: true }) container: ElementRef;
+  @ViewChild('container', { static: true }) container!: ElementRef;
   @Input() svgheight: any;
   bands = 1;
   mode = 'mirror';
@@ -43,7 +43,7 @@ export class D3tcHorizonChartInteractiveComponent implements OnInit {
 
   private svg: any;
   private chart: any;
-  private height: number;
+  private height!: number;
 
   constructor(private element: ElementRef) {
   }

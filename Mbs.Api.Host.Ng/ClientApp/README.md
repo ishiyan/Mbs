@@ -1,5 +1,35 @@
 # Notes
 
+## To do
+
+- Migrate Nbs to `.Net 6`.
+- In `tsconfig.json` set `"strictTemplates": true` in `angularCompilerOptions` and fix all errors in html. 
+- Lint errors one-by-one.
+- Latest Katex 0.15.1 does non work.
+- MathJax does not redraw when changing decks.
+- Update price histories from Binck.
+- Price chart does not work for Quotes (in synthetics).
+- Restructure `Notes` to a blog style with categories, searcheable text, etc.
+- Finish Industry Classifications presentation. More text, more classifications. Academic style, footnotes.
+- Make dummy up-to-date spec tests.
+
+## Updating
+
+Install latest tools, run `ng update`, run `ncu`.
+
+```bash
+npm install -g @angular/cli@latest
+npm install -g npm-check-updates@latest
+npm list -g
+
+ng update
+ng update --force @angular/cli @angular/core @angular-eslint/schematics @angular/material @angular/cdk
+
+ncu
+# edit package.json
+npm install
+```
+
 ## Naming and styling
 
 Follow Angular [naming conventions](https://github.com/angular/angular/blob/master/docs/NAMING.md),

@@ -14,7 +14,7 @@ import { dataOhlcvDaily } from '../../data/data-ohlcv-daily';
   encapsulation: ViewEncapsulation.None // does not see css without this
 })
 export class D3tcOhlcComponent implements OnInit {
-  @ViewChild('container', { static: true }) container: ElementRef;
+  @ViewChild('container', { static: true }) container!: ElementRef;
   @Input() svgheight: any;
 
   constructor(private element: ElementRef) {

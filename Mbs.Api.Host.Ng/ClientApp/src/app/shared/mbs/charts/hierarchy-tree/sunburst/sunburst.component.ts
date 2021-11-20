@@ -78,7 +78,7 @@ export class SunburstComponent implements OnChanges {
   @Input() diameter: number | string = defaultDiameter;
 
   /** The data hierarchy to use. */
-  @Input() data: HierarchyTreeNode;
+  @Input() data!: HierarchyTreeNode;
 
   constructor(private elementRef: ElementRef) { }
 
@@ -116,7 +116,7 @@ export class SunburstComponent implements OnChanges {
 
     const n = (this.levels < 1 ? root.height : this.levels) + 1;
     const radius = s / (2 * n);
-    const arc = d3.arc<HierarchyTreeNode>()
+    const arc = d3.arc<d3.HierarchyRectangularNode<HierarchyTreeNode>>()
       .startAngle((d: d3.HierarchyRectangularNode<HierarchyTreeNode>) => d.x0)
       .endAngle((d: d3.HierarchyRectangularNode<HierarchyTreeNode>) => d.x1)
       .padAngle((d: d3.HierarchyRectangularNode<HierarchyTreeNode>) => Math.min((d.x1 - d.x0) / 2, 0.005))

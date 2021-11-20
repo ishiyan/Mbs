@@ -12,7 +12,7 @@ import { dataOhlcvDaily } from '../../data/data-ohlcv-daily';
   styleUrls: ['./d3tc-volume.component.scss']
 })
 export class D3tcVolumeComponent implements OnInit {
-  @ViewChild('container', { static: true }) container: ElementRef;
+  @ViewChild('container', { static: true }) container!: ElementRef;
   @Input() svgheight: any;
 
   constructor(private element: ElementRef) {

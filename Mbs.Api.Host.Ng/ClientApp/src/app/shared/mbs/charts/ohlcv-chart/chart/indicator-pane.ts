@@ -13,9 +13,9 @@ export class IndicatorPane {
   group: any;
   groupAxisLeft: any;
   groupAxisRight: any;
-  yValue: d3.ScaleLinear<number, number>;
-  yMarginFactorTop: number;
-  yMarginFactorBottom: number;
+  yValue!: d3.ScaleLinear<number, number>;
+  yMarginFactorTop!: number;
+  yMarginFactorBottom!: number;
   yAxisLeft: any;
   yAxisRight: any;
   indicatorHeatmap?: IndicatorHeatmap;

@@ -19,7 +19,7 @@ export class SyntheticDataComponent {
   constructor(private element: ElementRef, private syntheticDataService: SyntheticDataService, private snackBarService: SnackBarService) {
   }
 
-  @ViewChild('container', { static: true }) container: ElementRef;
+  @ViewChild('container', { static: true }) container!: ElementRef;
 
   generateData(): void {
     this.syntheticDataService.getSyntheticData(this.syntheticDataParameters)

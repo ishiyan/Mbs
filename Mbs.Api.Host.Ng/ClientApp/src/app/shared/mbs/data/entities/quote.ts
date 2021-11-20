@@ -1,19 +1,19 @@
 /** A price _quote_ (bid/ask price and size pair). */
 export class Quote {
   /** The date and time. */
-  time: Date;
+  time!: Date;
 
   /** The bid price. */
-  bidPrice: number;
+  bidPrice!: number;
 
   /** The bid size. */
-  bidSize: number;
+  bidSize!: number;
 
   /** The ask price. */
-  askPrice: number;
+  askPrice!: number;
 
   /** The ask size. */
-  askSize: number;
+  askSize!: number;
 
   /*constructor(data?: any) {
     if (data) {

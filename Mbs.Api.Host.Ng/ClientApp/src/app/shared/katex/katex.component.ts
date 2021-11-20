@@ -7,8 +7,8 @@ import { KatexOptions } from 'katex';
   styleUrls: ['./katex.component.scss']
 })
 export class KatexComponent {
-  @Input() expression: string;
-  @Input() options?: KatexOptions;
+  @Input() expression!: string;
+  @Input() options: KatexOptions = {};
   @Output() hasError = new EventEmitter<any>();
 
   public outputError(error: any): void {

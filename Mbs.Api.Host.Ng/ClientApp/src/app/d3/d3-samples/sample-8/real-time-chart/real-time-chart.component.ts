@@ -10,7 +10,7 @@ import * as rtc from './realTimeChart.js';
   encapsulation: ViewEncapsulation.None
 })
 export class RealTimeChartComponent implements OnInit, OnDestroy {
-  @ViewChild('container', { static: true }) container: ElementRef;
+  @ViewChild('container', { static: true }) container!: ElementRef;
   @Input() svgheight: any;
   private chart: any;
 

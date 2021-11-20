@@ -1,11 +1,11 @@
 /** Holds two band values and a time stamp. */
 export class Band {
   /** The date and time. */
-  time: Date;
+  time!: Date;
 
   /** A lower value of the band. */
-  lower: number;
+  lower!: number;
 
   /** A higher value of the band. */
-  upper: number;
+  upper!: number;
 }

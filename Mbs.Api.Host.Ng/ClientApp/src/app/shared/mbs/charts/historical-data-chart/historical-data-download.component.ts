@@ -47,7 +47,7 @@ export class HistoricalDataDownloadComponent {
   readonly locale = 'en-US';
 
   currentColumns: string[] = [];
-  currentHistoricalData: HistoricalData;
+  currentHistoricalData!: HistoricalData;
   selectedTimeFormat: string = this.timeFormats[0];
   selectedDecimalFormat = 0;
   canDownload = false;

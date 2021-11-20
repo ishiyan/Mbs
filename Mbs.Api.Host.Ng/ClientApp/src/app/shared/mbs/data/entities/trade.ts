@@ -1,13 +1,13 @@
 /** A _trade_ (price and volume) entity. */
 export class Trade {
   /** The date and time. */
-  time: Date;
+  time!: Date;
 
   /** The price. */
-  price: number;
+  price!: number;
 
   /** The volume (quantity). */
-  volume: number;
+  volume!: number;
 
   /*constructor(data?: any) {
     if (data) {

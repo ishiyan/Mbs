@@ -1,10 +1,10 @@
 /** A _scalar_ (value and time) entity. */
 export class Scalar {
   /** The date and time. */
-  time: Date;
+  time!: Date;
 
   /** The value. */
-  value: number;
+  value!: number;
 
   /*constructor(data?: any) {
     if (data) {

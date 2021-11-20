@@ -17,7 +17,7 @@ import { ThemeStorageService } from './theme-storage.service';
 })
 export class ThemePickerComponent implements OnInit, OnDestroy {
   private queryParamSubscription = Subscription.EMPTY;
-  currentTheme: Theme;
+  currentTheme!: Theme;
 
   themes: Theme[] = [
     {

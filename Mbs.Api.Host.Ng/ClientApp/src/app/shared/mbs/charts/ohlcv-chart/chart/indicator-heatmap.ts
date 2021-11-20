@@ -1,9 +1,9 @@
 import { Heatmap } from '../../entities/heatmap';
 
 export class IndicatorHeatmap {
-  data: Heatmap[];
+  data!: Heatmap[];
   gradient: any;
-  invertGradient: boolean;
+  invertGradient!: boolean;
   path: any;
-  height: number;
+  height!: number;
 }

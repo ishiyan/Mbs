@@ -10,7 +10,7 @@ import { Enums } from '../../../utils/enums';
   styleUrls: ['./geometric-brownian-motion-parameters.component.scss']
 })
 export class GeometricBrownianMotionParametersComponent {
-  @Input() geometricBrownianMotionParameters: GeometricBrownianMotionParameters;
+  @Input() geometricBrownianMotionParameters!: GeometricBrownianMotionParameters;
 
   options: any = {throwOnError: false, strict: true};
 

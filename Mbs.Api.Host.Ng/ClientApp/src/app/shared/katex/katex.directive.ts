@@ -7,8 +7,8 @@ import { KatexService } from './katex.service';
   selector: '[mbKatex]',
 })
 export class KatexDirective implements OnChanges {
-  @Input() mbKatex: string;
-  @Input() options: KatexOptions;
+  @Input() mbKatex!: string;
+  @Input() options!: KatexOptions;
   @Output() hasError = new EventEmitter<any>();
 
   constructor(private element: ElementRef, private katexService: KatexService) { }

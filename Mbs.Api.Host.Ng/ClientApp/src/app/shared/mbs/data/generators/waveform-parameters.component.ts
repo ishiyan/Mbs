@@ -9,7 +9,7 @@ import { Enums } from '../../utils/enums';
   styleUrls: ['./waveform-parameters.component.scss']
 })
 export class WaveformParametersComponent {
-  @Input() waveformParameters: WaveformParameters;
+  @Input() waveformParameters!: WaveformParameters;
 
   options: any = {throwOnError: false, strict: true};
 

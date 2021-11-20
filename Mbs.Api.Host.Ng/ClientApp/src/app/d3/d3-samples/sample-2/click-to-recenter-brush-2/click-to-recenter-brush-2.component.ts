@@ -7,7 +7,7 @@ import * as d3 from 'd3';
   styleUrls: ['./click-to-recenter-brush-2.component.scss']
 })
 export class ClickToRecenterBrush2Component implements OnInit {
-  @ViewChild('container4', { static: true }) container: ElementRef;
+  @ViewChild('container4', { static: true }) container!: ElementRef;
   @Input() svgheight: any;
 
   constructor(private element: ElementRef) {

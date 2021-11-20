@@ -3,14 +3,14 @@ import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { MatSnackBarRef, SimpleSnackBar } from '@angular/material/snack-bar';
 
 export class SnackBarMessage {
-  message: string;
+  message!: string;
   action: string | undefined | null = null;
   config: MatSnackBarConfig | undefined | null = null;
 }
 
 @Injectable()
 export class SnackBarService {
-  private snackBarRef: MatSnackBarRef<SimpleSnackBar>;
+  private snackBarRef!: MatSnackBarRef<SimpleSnackBar>;
   private msgQueue: any[] = [];
   private isInstanceVisible = false;
 

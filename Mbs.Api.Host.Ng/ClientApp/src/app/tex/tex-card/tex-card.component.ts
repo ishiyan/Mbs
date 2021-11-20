@@ -9,7 +9,7 @@ import { Sample } from '../samples/sample';
 })
 export class TexCardComponent implements AfterViewChecked {
   @Input()
-  sample: Sample;
+  sample!: Sample;
   @Input()
   showMathJax = true;
   @Input()

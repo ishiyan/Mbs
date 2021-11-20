@@ -83,7 +83,7 @@ export class IcicleComponent implements OnChanges {
   @Input() height: number | string = defaultHeight;
 
   /** The data hierarchy to use. */
-  @Input() data: HierarchyTreeNode;
+  @Input() data!: HierarchyTreeNode;
 
   /** If the root node should be visible. */
   @Input() rootVisible: boolean = defaultRootVisible;

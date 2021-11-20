@@ -9,7 +9,7 @@ import { Enums } from '../../../utils/enums';
   styleUrls: ['./sawtooth-parameters.component.scss']
 })
 export class SawtoothParametersComponent {
-  @Input() sawtoothParameters: SawtoothParameters;
+  @Input() sawtoothParameters!: SawtoothParameters;
 
   options: any = {throwOnError: false, strict: true};
 

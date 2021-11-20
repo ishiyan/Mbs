@@ -18,7 +18,7 @@ export class D3tcHorizonChartSingleComponent implements OnInit {
   private theMode = 'mirror';
   private theInterpolation = d3.curveCatmullRom;
   private theColors = ['#08519c', '#bdd7e7', '#bae4b3', '#006d2c'];
-  private horizonData: (number | Date | null)[][];
+  private horizonData!: (number | Date | null)[][];
   private svg: any;
   private g: any;
   private chart: any;

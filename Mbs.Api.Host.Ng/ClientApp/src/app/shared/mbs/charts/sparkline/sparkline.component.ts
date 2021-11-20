@@ -29,7 +29,7 @@ export class SparklineComponent implements OnChanges, AfterViewInit {
   private currentConfiguration: SparklineConfiguration = {
     fillColor: 'steelblue', strokeColor: undefined, strokeWidth: 1, interpolation: 'linear'
   };
-  private currentData: Ohlcv[] | Quote[] | Trade[] | Scalar[];
+  private currentData!: Ohlcv[] | Quote[] | Trade[] | Scalar[];
 
   /** Specifies fill, stroke and interpolation. */
   @Input() set configuration(cfg: SparklineConfiguration) {

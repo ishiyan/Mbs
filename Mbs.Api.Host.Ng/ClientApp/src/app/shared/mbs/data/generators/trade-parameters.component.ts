@@ -7,5 +7,5 @@ import { TradeParameters } from './trade-parameters';
   styleUrls: ['./trade-parameters.component.scss']
 })
 export class TradeParametersComponent {
-  @Input() tradeParameters: TradeParameters;
+  @Input() tradeParameters!: TradeParameters;
 }

@@ -7,7 +7,7 @@ import { SquareParameters } from './square-parameters';
   styleUrls: ['./square-parameters.component.scss']
 })
 export class SquareParametersComponent {
-  @Input() squareParameters: SquareParameters;
+  @Input() squareParameters!: SquareParameters;
 
   options: any = {throwOnError: false, strict: true};
 

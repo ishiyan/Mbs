@@ -7,7 +7,7 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./svg-viewer.component.scss']
 })
 export class SvgViewerComponent implements OnInit {
-  @Input() src: string;
+  @Input() src!: string;
   @Input() scaleToContainer = false;
 
   constructor(private elementRef: ElementRef, private httpClient: HttpClient) { }

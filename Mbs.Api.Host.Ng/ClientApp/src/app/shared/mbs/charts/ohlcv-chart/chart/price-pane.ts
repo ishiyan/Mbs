@@ -15,10 +15,10 @@ export class PricePane {
   groupVolume: any;
   groupAxisLeft: any;
   groupAxisRight: any;
-  yPrice: d3.ScaleLinear<number, number>;
-  yVolume: d3.ScaleLinear<number, number>;
-  yMarginFactorTop: number;
-  yMarginFactorBottom: number;
+  yPrice!: d3.ScaleLinear<number, number>;
+  yVolume!: d3.ScaleLinear<number, number>;
+  yMarginFactorTop!: number;
+  yMarginFactorBottom!: number;
   yAxisLeft: any;
   yAxisRight: any;
   priceShape: any;

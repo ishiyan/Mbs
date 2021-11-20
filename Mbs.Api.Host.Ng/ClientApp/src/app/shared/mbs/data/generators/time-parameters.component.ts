@@ -12,7 +12,7 @@ import { Enums } from '../../utils/enums';
   styleUrls: ['./time-parameters.component.scss']
 })
 export class TimeParametersComponent {
-  @Input() timeParameters: TimeParameters;
+  @Input() timeParameters!: TimeParameters;
 
   timeGranularities = Object.keys(TimeGranularity);
   businessDayCalendars = Object.keys(BusinessDayCalendar);

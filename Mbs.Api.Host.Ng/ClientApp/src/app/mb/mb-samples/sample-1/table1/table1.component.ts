@@ -19,12 +19,12 @@ import { Instrument } from '../../../../shared/mbs/instruments/instrument';
   ],
 })
 export class Table1Component implements OnInit {
-  @ViewChild('container') container: ElementRef;
+  @ViewChild('container') container!: ElementRef;
 
   public InstrumentType = InstrumentType;
   public ExchangeMic = ExchangeMic;
   public CurrencyCode = CurrencyCode; // added
-  public expandedInstrument: Instrument; // added
+  public expandedInstrument!: Instrument; // added
   displayedColumns: string[] = ['type', 'symbol', 'name', 'isin', 'mic'];
   dataSource: any[] = []; // euronextListShort;
 

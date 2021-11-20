@@ -20,6 +20,7 @@ Install latest tools, run `ng update`, run `ncu`.
 ```bash
 npm install -g @angular/cli@latest
 npm install -g npm-check-updates@latest
+npm install -g sass@latest
 npm list -g
 
 ng update
@@ -29,6 +30,10 @@ ncu
 # edit package.json
 npm install
 ```
+
+- Run `prod.cmd`.
+- Go to the `src/themes` and run `build_themes_compressed.cmd`.
+- Run `prod_notes.cmd`
 
 ## Naming and styling
 

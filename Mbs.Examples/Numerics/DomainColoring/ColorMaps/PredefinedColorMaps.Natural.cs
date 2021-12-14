@@ -114,7 +114,7 @@ namespace DomainColoring.ColorMaps
             long signed64 = BitConverter.DoubleToInt64Bits(value);
             if (signed64 == 0)
             {
-                return BitConverter.Int64BitsToDouble(++signed64) - value;
+                return BitConverter.Int64BitsToDouble(1) - value;
             }
 
             if (signed64-- < 0)

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Net;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
-using Newtonsoft.Json;
 
 namespace Mbs.Api.Extensions.ExceptionHandling
 {
@@ -92,7 +92,7 @@ namespace Mbs.Api.Extensions.ExceptionHandling
             context.Response.ContentType = ApplicationJson;
             context.Response.StatusCode = error.StatusCode;
 
-            var result = JsonConvert.SerializeObject(error);
+            var result = JsonSerializer.Serialize(error);
             await context.Response.WriteAsync(result);
         }
     }

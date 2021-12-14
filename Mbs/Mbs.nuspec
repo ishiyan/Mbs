@@ -16,15 +16,15 @@
     <tags>mbrane mbs</tags>
     <!-- content -->
     <dependencies>
-      <group targetFramework="net5.0">
-        <dependency id="Microsoft.Extensions.Logging" version="5.0.0" exclude="Build,Analyzers" />
+      <group targetFramework="net6.0">
+        <dependency id="Microsoft.Extensions.Logging" version="6.0.0" exclude="Build,Analyzers" />
       </group>
     </dependencies>
   </metadata>
   <files>
     <file src="mb.png" target="Icon.png" />
-    <file src="bin\x64\Release\net5.0\published\Mbs.dll" target="lib\net5.0\Mbs.dll" />
-    <file src="bin\x64\Release\net5.0\published\Mbs.pdb" target="lib\net5.0\Mbs.pdb" />
-    <file src="bin\x64\Release\net5.0\published\Mbs.xml" target="lib\net5.0\Mbs.xml" />
+    <file src="bin\x64\Release\net6.0\published\Mbs.dll" target="lib\net6.0\Mbs.dll" />
+    <file src="bin\x64\Release\net6.0\published\Mbs.pdb" target="lib\net6.0\Mbs.pdb" />
+    <file src="bin\x64\Release\net6.0\published\Mbs.xml" target="lib\net6.0\Mbs.xml" />
   </files>
 </package>

@@ -2642,6 +2642,15 @@ namespace Mbs.Trading.Markets
         /// <summary>MIC TO USE FOR OFF-EXCHANGE TRANSACTIONS IN LISTED INSTRUMENTS</summary>
         Xoff,
 
+        /// <summary>Xdub</summary>
+        Xdub,
+
+        /// <summary>XESM</summary>
+        Xesm,
+
+        /// <summary>XMSM</summary>
+        Xmsm,
+
         /// <summary>NO MARKET (EG UNLISTED)</summary>
         Xxxx,
     }

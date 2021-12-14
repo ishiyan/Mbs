@@ -27,7 +27,7 @@ Note the `Mbs.nuspec`is referenced from the `Mbs.csproj`.
 Run the `create_nuget.cmd` which will issue the following commands.
 
 ```bash
-dotnet publish --configuration Release --output bin\x64\Release\net5.0\published --self-contained False
+dotnet publish --configuration Release --output bin\x64\Release\net6.0\published --self-contained False
 
 nuget pack Mbs.nuspec 
 ```
@@ -48,9 +48,9 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
   <PropertyGroup>
     <Configuration>Release</Configuration>
     <Platform>x64</Platform>
-    <PublishDir>bin\x64\Release\net5.0\published</PublishDir>
+    <PublishDir>bin\x64\Release\net6.0\published</PublishDir>
     <PublishProtocol>FileSystem</PublishProtocol>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <SelfContained>false</SelfContained>
   </PropertyGroup>
 </Project>
@@ -59,7 +59,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
 Right-click on `Mbs` project in the `Solution Explorer` tab and select `Publish...`.
 You should see the information from the file above in the summary section.
 
-Click on `Publish` button. The package will be created in the `bin\x64\Release\net5.0\published` directory.
+Click on `Publish` button. The package will be created in the `bin\x64\Release\net6.0\published` directory.
 
 ## Inspect the package
 

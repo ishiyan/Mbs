@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Mbs.Api.Models.Trading.Instruments;
-using Newtonsoft.Json;
 
 namespace Mbs.Api.Services.Trading.Instruments
 {
@@ -26,7 +27,14 @@ namespace Mbs.Api.Services.Trading.Instruments
         /// <inheritdoc/>
         public void AddListFromJsonString(string name, string json)
         {
-            IEnumerable<Instrument> list = JsonConvert.DeserializeObject<IEnumerable<Instrument>>(json);
+            var serializeOptions = new JsonSerializerOptions
+            {
+                // PropertyNameCaseInsensitive = true
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) },
+            };
+
+            IEnumerable<Instrument> list = JsonSerializer.Deserialize<IEnumerable<Instrument>>(json, serializeOptions);
             AddToDictionary(name, list);
         }
 

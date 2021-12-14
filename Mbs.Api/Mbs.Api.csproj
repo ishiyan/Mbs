@@ -3,7 +3,7 @@
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <Configurations>Debug;Release</Configurations>
     <Platforms>x64</Platforms>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -31,7 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="SonarAnalyzer.CSharp" Version="8.16.0.25740">
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="8.33.0.40503">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -40,9 +40,9 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="AutoMapper" Version="10.1.1" />
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
-    <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="6.0.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="7.0.2" />
   </ItemGroup>
 
   <ItemGroup>

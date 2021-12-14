@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Newtonsoft.Json;
 
 namespace Mbs.Api.Extensions.ExceptionHandling
 {
@@ -66,7 +66,7 @@ namespace Mbs.Api.Extensions.ExceptionHandling
         /// <summary>
         /// Gets or sets inner errors of this error.
         /// </summary>
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public IEnumerable<InnerError> Details { get; set; }
     }
 }

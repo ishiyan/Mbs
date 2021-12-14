@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net5.0-windows</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>App.ico</ApplicationIcon>
     <Configurations>Debug;Release</Configurations>
@@ -31,7 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="SonarAnalyzer.CSharp" Version="8.16.0.25740">
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="8.33.0.40503">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

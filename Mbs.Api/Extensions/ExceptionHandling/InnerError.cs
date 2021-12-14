@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace Mbs.Api.Extensions.ExceptionHandling
 {
@@ -10,13 +10,13 @@ namespace Mbs.Api.Extensions.ExceptionHandling
         /// <summary>
         /// Gets or sets the message of an inner error.
         /// </summary>
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string Message { get; set; }
 
         /// <summary>
         /// Gets or sets inner errors of this inner error.
         /// </summary>
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public InnerError Details { get; set; }
     }
 }

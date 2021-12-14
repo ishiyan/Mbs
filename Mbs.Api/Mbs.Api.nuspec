@@ -16,7 +16,7 @@
     <tags>mbrane mbs rest api</tags>
     <!-- content -->
     <dependencies>
-      <group targetFramework="net5.0">
+      <group targetFramework="net6.0">
         <dependency id="AutoMapper" version="10.1.1" exclude="Build,Analyzers" />
         <dependency id="AutoMapper.Extensions.Microsoft.DependencyInjection" version="8.1.0" exclude="Build,Analyzers" />
         <dependency id="Swashbuckle.AspNetCore" version="5.6.3" exclude="Build,Analyzers" />
@@ -24,18 +24,18 @@
       </group>
     </dependencies>
     <frameworkReferences>
-      <group targetFramework="net5.0">
+      <group targetFramework="net6.0">
         <frameworkReference name="Microsoft.AspNetCore.App" />
       </group>
     </frameworkReferences>
   </metadata>
   <files>
     <file src="mb.png" target="Icon.png" />
-    <file src="bin\x64\Release\net5.0\published\Mbs.dll" target="lib\net5.0\Mbs.dll" />
-    <file src="bin\x64\Release\net5.0\published\Mbs.pdb" target="lib\net5.0\Mbs.pdb" />
-    <file src="bin\x64\Release\net5.0\published\Mbs.xml" target="lib\net5.0\Mbs.xml" />
-    <file src="bin\x64\Release\net5.0\published\Mbs.Api.dll" target="lib\net5.0\Mbs.Api.dll" />
-    <file src="bin\x64\Release\net5.0\published\Mbs.Api.pdb" target="lib\net5.0\Mbs.Api.pdb" />
-    <file src="bin\x64\Release\net5.0\published\Mbs.Api.xml" target="lib\net5.0\Mbs.Api.xml" />
+    <file src="bin\x64\Release\net6.0\published\Mbs.dll" target="lib\net6.0\Mbs.dll" />
+    <file src="bin\x64\Release\net6.0\published\Mbs.pdb" target="lib\net6.0\Mbs.pdb" />
+    <file src="bin\x64\Release\net6.0\published\Mbs.xml" target="lib\net6.0\Mbs.xml" />
+    <file src="bin\x64\Release\net6.0\published\Mbs.Api.dll" target="lib\net6.0\Mbs.Api.dll" />
+    <file src="bin\x64\Release\net6.0\published\Mbs.Api.pdb" target="lib\net6.0\Mbs.Api.pdb" />
+    <file src="bin\x64\Release\net6.0\published\Mbs.Api.xml" target="lib\net6.0\Mbs.Api.xml" />
   </files>
 </package>

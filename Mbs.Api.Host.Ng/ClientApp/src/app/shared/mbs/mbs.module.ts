@@ -43,39 +43,36 @@ import { SwatchesComponent } from './colors/swatches/swatches.component';
 import { SwatchesSelectComponent } from './colors/swatches/swatches-select.component';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    RouterModule,
-    MaterialModule,
-    FlexLayoutModule,
-    FormsModule,
-    MathJaxModule.forChild(),
-    KatexModule,
-    SvgViewerModule
-  ],
-  exports: [
-    BusinessDayCalendarDescriptionComponent, TimeParametersComponent, WaveformParametersComponent,
-    OhlcvParametersComponent, QuoteParametersComponent, TradeParametersComponent,
-    FractionalBrownianMotionParametersComponent, GeometricBrownianMotionParametersComponent, ChirpParametersComponent,
-    SawtoothParametersComponent, SquareParametersComponent, SinusoidalParametersComponent, SyntheticDataParametersComponent,
-    HistoricalDataTableComponent, HistoricalDataDownloadComponent, HistoricalDataChartComponent,
-    OhlcvChartComponent, SparklineComponent, MultilineComponent, StacklineComponent, SunburstComponent, CirclepackComponent,
-    IcicleComponent, TreemapComponent, VoronoiComponent, SwatchesComponent, SwatchesSelectComponent
-  ],
-  declarations: [
-    BusinessDayCalendarDescriptionComponent, TimeParametersComponent, WaveformParametersComponent,
-    OhlcvParametersComponent, QuoteParametersComponent, TradeParametersComponent,
-    FractionalBrownianMotionParametersComponent, GeometricBrownianMotionParametersComponent, ChirpParametersComponent,
-    SawtoothParametersComponent, SquareParametersComponent, SinusoidalParametersComponent, SyntheticDataParametersComponent,
-    HistoricalDataTableComponent, HistoricalDataDownloadComponent, HistoricalDataChartComponent,
-    OhlcvChartComponent, SparklineComponent, MultilineComponent, StacklineComponent, SunburstComponent, CirclepackComponent,
-    IcicleComponent, TreemapComponent, VoronoiComponent, SwatchesComponent, SwatchesSelectComponent
-  ],
-  providers: [
-    SyntheticDataService
-  ],
-  entryComponents: [
-    BusinessDayCalendarDescriptionComponent
-  ]
+    imports: [
+        CommonModule,
+        RouterModule,
+        MaterialModule,
+        FlexLayoutModule,
+        FormsModule,
+        MathJaxModule.forChild(),
+        KatexModule,
+        SvgViewerModule
+    ],
+    exports: [
+        BusinessDayCalendarDescriptionComponent, TimeParametersComponent, WaveformParametersComponent,
+        OhlcvParametersComponent, QuoteParametersComponent, TradeParametersComponent,
+        FractionalBrownianMotionParametersComponent, GeometricBrownianMotionParametersComponent, ChirpParametersComponent,
+        SawtoothParametersComponent, SquareParametersComponent, SinusoidalParametersComponent, SyntheticDataParametersComponent,
+        HistoricalDataTableComponent, HistoricalDataDownloadComponent, HistoricalDataChartComponent,
+        OhlcvChartComponent, SparklineComponent, MultilineComponent, StacklineComponent, SunburstComponent, CirclepackComponent,
+        IcicleComponent, TreemapComponent, VoronoiComponent, SwatchesComponent, SwatchesSelectComponent
+    ],
+    declarations: [
+        BusinessDayCalendarDescriptionComponent, TimeParametersComponent, WaveformParametersComponent,
+        OhlcvParametersComponent, QuoteParametersComponent, TradeParametersComponent,
+        FractionalBrownianMotionParametersComponent, GeometricBrownianMotionParametersComponent, ChirpParametersComponent,
+        SawtoothParametersComponent, SquareParametersComponent, SinusoidalParametersComponent, SyntheticDataParametersComponent,
+        HistoricalDataTableComponent, HistoricalDataDownloadComponent, HistoricalDataChartComponent,
+        OhlcvChartComponent, SparklineComponent, MultilineComponent, StacklineComponent, SunburstComponent, CirclepackComponent,
+        IcicleComponent, TreemapComponent, VoronoiComponent, SwatchesComponent, SwatchesSelectComponent
+    ],
+    providers: [
+        SyntheticDataService
+    ]
 })
 export class MbsModule { }

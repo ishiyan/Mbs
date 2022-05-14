@@ -1,0 +1,1 @@
+./node_modules/.bin/ng build --configuration production --aot=true --optimization=true --build-optimizer=true --subresource-integrity=true --extract-licenses=true --common-chunk=true

@@ -130,10 +130,12 @@
       }
     }
   },
-  "defaultProject": "mbs-api-host-ng",
   "cli": {
     "warnings": {},
-    "defaultCollection": "@angular-eslint/schematics"
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ],
+    "analytics": false
   },
   "schematics": {
     "@schematics/angular:component": {

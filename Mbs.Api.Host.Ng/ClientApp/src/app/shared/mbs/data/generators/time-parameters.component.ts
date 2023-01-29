@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { TimeGranularity } from './../../time/time-granularity.enum';
 import { BusinessDayCalendar } from './../../time/business-day-calendar.enum';
 import { BusinessDayCalendarDescriptionComponent } from '../../time/business-day-calendar-description.component';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { TimeParameters } from './time-parameters';
 import { Enums } from '../../utils/enums';
 

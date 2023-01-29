@@ -1,6 +1,6 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
-import { MatSelectChange } from '@angular/material/select';
-import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { MatLegacySelectChange as MatSelectChange } from '@angular/material/legacy-select';
+import { MatLegacySlideToggleChange as MatSlideToggleChange } from '@angular/material/legacy-slide-toggle';
 import * as d3 from 'd3';
 
 // @ts-ignore

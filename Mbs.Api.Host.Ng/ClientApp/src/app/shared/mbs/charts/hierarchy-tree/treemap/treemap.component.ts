@@ -102,6 +102,7 @@ export class TreemapComponent implements OnChanges {
     this.render();
   }
 
+  // eslint-disable-next-line @typescript-eslint/member-ordering
   @HostListener('window:resize', [])
   public render(): void {
     const sel = d3.select(this.elementRef.nativeElement);
@@ -124,7 +125,8 @@ export class TreemapComponent implements OnChanges {
       if (sortFunc !== sortNone) {
         rootNode = rootNode.sort((a: d3.HierarchyNode<HierarchyTreeNode>, b: d3.HierarchyNode<HierarchyTreeNode>) => sortFunc(a, b));
       }
-      return d3.treemap().tile(d3.treemapSquarify.ratio(1)).size([w / this.rectangleRatio, h]).padding(this.padding).round(false)(rootNode);
+      return d3.treemap<HierarchyTreeNode>().tile(d3.treemapSquarify.ratio(1)).size([w / this.rectangleRatio, h])
+        .padding(this.padding).round(false)(rootNode);
     };
     let root = squarify(dat);
     if (this.flat) {

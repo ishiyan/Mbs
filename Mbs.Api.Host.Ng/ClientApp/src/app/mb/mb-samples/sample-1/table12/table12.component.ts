@@ -1,8 +1,8 @@
 import { Component, OnInit, ElementRef, ViewChild, Input } from '@angular/core';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatLegacyPaginator as MatPaginator } from '@angular/material/legacy-paginator';
 import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 
 import { InstrumentType } from '../../../../shared/mbs/instruments/types/instrument-type.enum';
 import { ExchangeMic } from '../../../../shared/mbs/markets/exchange-mic.enum';

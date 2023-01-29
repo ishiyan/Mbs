@@ -1,5 +1,5 @@
 import { Component, Input, ChangeDetectionStrategy, ViewEncapsulation, Output, EventEmitter } from '@angular/core';
-import { MatSelectChange } from '@angular/material/select';
+import { MatLegacySelectChange as MatSelectChange } from '@angular/material/legacy-select';
 
 const SELECT_PADDING_PIXELS = 20;
 const TRIGGER_HEIGHT_PIXELS = 24;

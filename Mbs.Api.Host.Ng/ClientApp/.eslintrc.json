@@ -26,13 +26,19 @@
           "error",
           {
             "selector": "enumMember",
-            "format": ["PascalCase"]
+            "format": [
+              "PascalCase"
+            ]
           }
         ],
         "@angular-eslint/component-selector": [
           "error",
           {
-            "prefix": ["d3-sample", "tex-sample", "mb"],
+            "prefix": [
+              "d3-sample",
+              "tex-sample",
+              "mb"
+            ],
             "style": "kebab-case",
             "type": "element"
           }
@@ -40,7 +46,10 @@
         "@angular-eslint/directive-selector": [
           "error",
           {
-            "prefix": ["d3", "mb"],
+            "prefix": [
+              "d3",
+              "mb"
+            ],
             "style": "camelCase",
             "type": "attribute"
           }
